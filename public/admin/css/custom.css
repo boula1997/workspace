@@ -153,8 +153,8 @@ body, .navbar, .sidebar, .content-wrapper {
 
 /* Navbar color adjustments */
 .navbar {
-  background-color: #2e3b4e; /* Softer dark color for the navbar */
-  color: #f5f6f7; /* Light color for text */
+  background-color: #2e3b4e !important; /* Softer dark color for the navbar */
+  color: #f5f6f7 !important; /* Light color for text */
 }
 
 .navbar a {
