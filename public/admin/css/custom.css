@@ -29,7 +29,7 @@
 /* Sidebar Links: Hover and Focus Fix */
 .nav-sidebar .nav-item>.nav-link {
   position: relative;
-  color: #fff; /* Base color */
+  color: #fff !important; /* Base color */
   transition: background-color 0.3s, color 0.3s ease-in-out; /* Smooth transition */
 }
 
@@ -93,7 +93,7 @@
   padding: 2px 5px; /* Adjusted padding for consistency */
   font-size: 0.85rem; /* Slightly larger text */
   border-radius: 5px; /* Smooth rounding */
-  color: #fff; /* White text */
+  color: #fff !important; /* White text */
 }
 
 .label.label-primary {
@@ -104,7 +104,7 @@
 .btn {
   background-color: #4a90e2;
   border-color: #3a7bba;
-  color: #fff;
+  color: #fff !important;
   padding: 8px 16px; /* Consistent button padding */
   border-radius: 4px; /* Rounded corners */
   transition: background-color 0.3s ease-in-out; /* Smooth hover effect */
