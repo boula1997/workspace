@@ -58,7 +58,7 @@ class TaskController extends Controller
     public function create()
     {
         $employees=Admin::get();
-        $projects=Project::where('status',1)->get();
+        $projects=Project::where('status',1)->latest()->get();
         return view('admin.crud.tasks.create',compact('employees','projects'));
     }
     public function bulkAction(Request $request)
