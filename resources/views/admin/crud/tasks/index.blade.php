@@ -76,14 +76,12 @@
                                                 @foreach ($tasks as $task)
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
-                                                        <td style="cursor: pointer;   white-space: normal; word-wrap: break-word;"
+                                                        <td style="cursor: pointer; white-space: normal; word-wrap: break-word;"
                                                             onclick="toggleCheckbox({{ $task->id }})">
-                                                            {{ Str::limit($task->title, 30) }}
+                                                            {{ Str::limit($task->title, 30) }} <!-- Truncated title -->
                                                         </td>
                                                         <td class="d-none">
-                                                            <input type="checkbox" name="tasks[]"
-                                                                value="{{ $task->id }}"
-                                                                id="checkbox-{{ $task->id }}">
+                                                            <input type="checkbox" name="tasks[]" value="{{ $task->id }}" id="checkbox-{{ $task->id }}">
                                                         </td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
                                                         <td>{{ $task->project->title }}</td>
@@ -91,6 +89,7 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
+                                        
                                     </form>
                                 </div>
                             </div>
@@ -107,48 +106,42 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            // Function to load the value into the search input and trigger search
-            function loadSearchValue() {
-                if (localStorage.getItem('searchValue')) {
-                    const $searchInput = $('input[type="search"]');
-                    $searchInput.val(localStorage.getItem('searchValue'));
-                    $searchInput.trigger('input'); // Trigger the input event to start the search
-                }
-            }
-
-            // Check for the input field's existence every 500ms
-            const interval = setInterval(function() {
-                if ($('input[type="search"]').length > 0) {
-                    loadSearchValue();
-                    clearInterval(interval); // Stop checking once the input is found
-                }
-            }, 500);
-
-            // Save the value to localStorage whenever the input value changes
-            $(document).on('input', 'input[type="search"]', function() {
-                localStorage.setItem('searchValue', $(this).val());
-            });
-        });
-
-
-
-
-
-        $(function() {
-            $("#example1").DataTable({
+            // Initialize DataTable with responsive feature
+            var table = $("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
                 "paging": false,
                 "searching": true,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                "columnDefs": [
+                    {
+                        "targets": 1, // Target the 'title' column
+                        "render": function (data, type, row) {
+                            // Truncate title for display in the table
+                            return type === 'display' && data.length > 30 ?
+                                data.substr(0, 30) + '...' :
+                                data;
+                        }
+                    }
+                ]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+            // Handle responsive row details to show full title
+            table.on('responsive-display', function (e, datatable, row, showHide, update) {
+                if (showHide) {
+                    var rowData = row.data();
+                    var fullTitle = rowData[1]; // The full title from the row data
+
+                    // Insert the full title into the expanded row details
+                    row.child('<strong>Full Title:</strong> ' + fullTitle).show();
+                }
+            });
         });
 
         function toggleCheckbox(taskId) {
             const checkbox = document.getElementById(`checkbox-${taskId}`);
             const taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(2)');
-
             checkbox.checked = !checkbox.checked;
 
             if (checkbox.checked) {
