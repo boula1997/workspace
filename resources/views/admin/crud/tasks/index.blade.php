@@ -1,27 +1,6 @@
 @extends('admin.layouts.master')
 
 @section('content')
-<style>
-    .collapse {
-    display: none;
-}
-
-.collapse.show {
-    display: table-row;
-}
-
-button[data-toggle="collapse"] {
-    background: none;
-    border: none;
-    font-size: 1.2em;
-    cursor: pointer;
-}
-
-button[data-toggle="collapse"]:focus {
-    outline: none;
-}
-
-</style>
     <!-- Content Wrapper. Contains task content -->
     <div class="content-wrapper">
         <!-- Main content -->
@@ -87,8 +66,8 @@ button[data-toggle="collapse"]:focus {
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th></th> <!-- For the +/- toggle button -->
                                                     <th>{{ __('general.title') }}</th>
+                                                    <th class="d-none">{{ __('general.select') }}</th>
                                                     <th>{{ __('general.employees') }}</th>
                                                     <th>{{ __('general.project') }}</th>
                                                 </tr>
@@ -97,27 +76,21 @@ button[data-toggle="collapse"]:focus {
                                                 @foreach ($tasks as $task)
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-link" data-toggle="collapse" data-target="#details-{{ $task->id }}">
-                                                                <i class="fa fa-plus"></i>
-                                                            </button>
-                                                        </td>
-                                                        <td style="cursor: pointer;">
+                                                        <td style="cursor: pointer;   white-space: normal; word-wrap: break-word;"
+                                                            onclick="toggleCheckbox({{ $task->id }})">
                                                             {{ $task->title }}
+                                                        </td>
+                                                        <td class="d-none">
+                                                            <input type="checkbox" name="tasks[]"
+                                                                value="{{ $task->id }}"
+                                                                id="checkbox-{{ $task->id }}">
                                                         </td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
                                                         <td>{{ $task->project->title }}</td>
                                                     </tr>
-                                                    <!-- Row for expandable details -->
-                                                    <tr id="details-{{ $task->id }}" class="collapse">
-                                                        <td colspan="5">
-                                                            <strong>Full Task Details:</strong> {{ $task->description ?? 'No description available' }}
-                                                        </td>
-                                                    </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
-                                        
                                     </form>
                                 </div>
                             </div>
@@ -162,19 +135,15 @@ button[data-toggle="collapse"]:focus {
 
 
         $(function() {
-    $("#example1").DataTable({
-        "responsive": true,
-        "lengthChange": false,
-        "autoWidth": false,
-        "paging": false,
-        "searching": true,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-        "columnDefs": [
-            { "orderable": false, "targets": 1 } // Disable sorting on the +/- button column
-        ]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-});
-
+            $("#example1").DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "paging": false,
+                "searching": true,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        });
 
         function toggleCheckbox(taskId) {
             const checkbox = document.getElementById(`checkbox-${taskId}`);
