@@ -90,6 +90,7 @@
                                             </tbody>
                                         </table>
                                         
+                                        
                                     </form>
                                 </div>
                             </div>
@@ -106,7 +107,7 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            // Initialize DataTable with responsive feature
+            // Initialize DataTable with responsive details renderer
             var table = $("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": false,
@@ -124,24 +125,41 @@
                                 data;
                         }
                     }
-                ]
+                ],
+                responsive: {
+                    details: {
+                        renderer: function ( api, rowIdx, columns ) {
+                            var data = $.map( columns, function ( col, i ) {
+                                // Full title logic: For the title column (index 1), show full data
+                                if (i === 1) {
+                                    return col.hidden ?
+                                        '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
+                                            '<td>'+col.title+':'+'</td> '+
+                                            '<td>'+ col.data + '</td>'+
+                                        '</tr>' :
+                                        '';
+                                }
+
+                                // For other columns, keep default behavior
+                                return col.hidden ?
+                                    '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
+                                        '<td>'+col.title+':'+'</td> '+
+                                        '<td>'+col.data+'</td>'+
+                                    '</tr>' :
+                                    '';
+                            }).join('');
+
+                            return data ? $('<table/>').append( data ) : false;
+                        }
+                    }
+                }
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-            // Handle responsive row details to show full title
-            table.on('responsive-display', function (e, datatable, row, showHide, update) {
-                if (showHide) {
-                    var rowData = row.data();
-                    var fullTitle = rowData[1]; // The full title from the row data
-
-                    // Insert the full title into the expanded row details
-                    row.child('<strong>Full Title:</strong> ' + fullTitle).show();
-                }
-            });
         });
 
         function toggleCheckbox(taskId) {
             const checkbox = document.getElementById(`checkbox-${taskId}`);
-            const taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(2)');
+            const taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(2)`);
             checkbox.checked = !checkbox.checked;
 
             if (checkbox.checked) {
@@ -152,3 +170,4 @@
         }
     </script>
 @endpush
+
