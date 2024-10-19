@@ -138,7 +138,7 @@
             $("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": false,
-                "autoWidth": false,
+                "autoWidth": true,
                 "paging": false,
                 "searching": true,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
