@@ -78,7 +78,7 @@
                                                         <td>{{ $loop->iteration }}</td>
                                                         <td style="cursor: pointer"
                                                             onclick="toggleCheckbox({{ $task->id }})">
-                                                            <span style="width: 50px !important;">{{ $task->title }}</span>
+                                                            <span style="width: 20px !important;">{{ $task->title }}</span>
                                                         </td>
                                                         <td class="d-none">
                                                             <input type="checkbox" name="tasks[]"
