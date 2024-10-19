@@ -66,7 +66,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>{{ __('general.title') }}</th>
+                                                    <th style="width: 500px;">{{ __('general.title') }}</th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
                                                     <th>{{ __('general.employees') }}</th>
                                                     <th>{{ __('general.project') }}</th>
@@ -76,9 +76,9 @@
                                                 @foreach ($tasks as $task)
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
-                                                        <td style="cursor: pointer; white-space: normal; word-wrap: break-word;"
-                                                            onclick="toggleCheckbox({{ $task->id }})" title="{{ $task->title }}">
-                                                            {{ Str::limit($task->title, 30) }} <!-- Truncated title -->
+                                                        <td style="cursor: pointer; 
+                                                            onclick="toggleCheckbox({{ $task->id }})">
+                                                            {{ $task->title }}
                                                         </td>
                                                         <td class="d-none">
                                                             <input type="checkbox" name="tasks[]" value="{{ $task->id }}" id="checkbox-{{ $task->id }}">
