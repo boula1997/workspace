@@ -159,7 +159,7 @@
 
         function toggleCheckbox(taskId) {
             const checkbox = document.getElementById(`checkbox-${taskId}`);
-            const taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(2)`);
+            const taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(2)');
             checkbox.checked = !checkbox.checked;
 
             if (checkbox.checked) {
