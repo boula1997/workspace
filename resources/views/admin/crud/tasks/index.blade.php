@@ -77,7 +77,7 @@
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
                                                         <td style="cursor: pointer; white-space: normal; word-wrap: break-word;"
-                                                            onclick="toggleCheckbox({{ $task->id }})">
+                                                            onclick="toggleCheckbox({{ $task->id }})" title="{{ $task->title }}">
                                                             {{ Str::limit($task->title, 30) }} <!-- Truncated title -->
                                                         </td>
                                                         <td class="d-none">
