@@ -15,7 +15,13 @@
                                 <div class="card-header">
                                     <div class="row">
                                         <div class="col-md-6 d-flex justify-content-start">
+                                            @if (request()->routeIs('tasks.index'))
+                                                
                                             <h1 class="card-title fw-bold">@lang('general.tasks')</h1>
+                                            @else
+                                            <h1 class="card-title fw-bold">@lang('general.finishedTasks')</h1>
+                                                
+                                            @endif
                                         </div>
                                         <div class="col-md-6 d-flex justify-content-end">
                                             <a href="{{ route('tasks.create') }}">
