@@ -55,9 +55,9 @@
                                         </button>
 
                                     </div>
-                                    <form class="thisForm" action="{{ route('tasks.bulkAction') }}" method="POST">
+                                    <form  action="{{ route('tasks.bulkAction') }}" method="POST">
                                         @csrf
-                                        <div class="row d-flex align-items-center">
+                                        <div class="row d-flex align-items-center thisForm">
                                             {{-- Dynamic Select Input --}}
                                             <div class="col-md-4 mb-4">
                                                 <label
