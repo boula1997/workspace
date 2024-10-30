@@ -33,9 +33,10 @@
                                             @if (request()->routeIs('tasks.index'))
                                                 
                                             <h1 class="card-title fw-bold">@lang('general.tasks')</h1>
+                                            @elseif(request()->routeIs('tasks.all'))
+                                            <h1 class="card-title fw-bold">@lang('general.alltasks')</h1>
                                             @else
                                             <h1 class="card-title fw-bold">@lang('general.finishedTasks')</h1>
-                                                
                                             @endif
                                         </div>
                                         <div class="col-md-6 d-flex justify-content-end">
