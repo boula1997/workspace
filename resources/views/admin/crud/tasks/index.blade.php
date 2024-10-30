@@ -8,7 +8,7 @@
 .fullscreen-mode .sidebar,
 .fullscreen-mode .navbar,
 .fullscreen-mode .card-header .btn,
-.fullscreen-mode .content-wrapper .card-header > *:not(.container) {
+.fullscreen-mode .content-wrapper .thisForm > *:not(.container) {
     display: none !important;
 }
 
@@ -55,7 +55,7 @@
                                         </button>
 
                                     </div>
-                                    <form action="{{ route('tasks.bulkAction') }}" method="POST">
+                                    <form class="thisForm" action="{{ route('tasks.bulkAction') }}" method="POST">
                                         @csrf
                                         <div class="row d-flex align-items-center">
                                             {{-- Dynamic Select Input --}}
