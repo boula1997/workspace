@@ -7,7 +7,7 @@
 
 .fullscreen-mode .sidebar,
 .fullscreen-mode .navbar,
-.fullscreen-mode .btn,
+.fullscreen-mode .card-header .btn,
 .fullscreen-mode .content-wrapper .thisForm > *:not(.container) {
     display: none !important;
 }
