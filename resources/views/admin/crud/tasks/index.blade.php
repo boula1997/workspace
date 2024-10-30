@@ -64,6 +64,12 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
+                                    <div class="">
+                                        <button class="btn btn-outline-secondary px-5" id="toggle-fullscreen">
+                                            <i class="fa fa-expand" aria-hidden="true"></i> Full Screen
+                                        </button>
+
+                                    </div>
                                     <form action="{{ route('tasks.bulkAction') }}" method="POST">
                                         @csrf
                                         <div class="row d-flex align-items-center">
@@ -86,12 +92,6 @@
                                                     <button type="submit" name="action" value="assign"
                                                         class="btn btn-primary">
                                                         @lang('general.assign_employee')
-                                                    </button>
-
-                                                </div>
-                                                <div class="">
-                                                    <button class="btn btn-outline-secondary px-5" id="toggle-fullscreen">
-                                                        <i class="fa fa-expand" aria-hidden="true"></i> Full Screen
                                                     </button>
 
                                                 </div>
