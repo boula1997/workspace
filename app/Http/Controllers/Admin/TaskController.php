@@ -34,14 +34,16 @@ class TaskController extends Controller
             $employees=Admin::get();
 
             if(request()->routeIs('tasks.finished'))
-            $status=1;
+            $status=[1];
+            else if(request()->routeIs('tasks.index'))
+            $status=[0];
             else
-            $status=0;
+            $status=[0,1];
 
             if(auth()->user()->email!="boula@gmail.com"){
                 if(auth()->user()->type=='admin')
                 $tasks = $this->task
-                    ->where('status', $status)
+                    ->whereIn('status', $status)
                     ->whereDoesntHave('employee', function ($query) {
                         $query->where('email', 'boula@gmail.com');
                     })
@@ -50,7 +52,7 @@ class TaskController extends Controller
                     ->unique('title');
                 else
                 $tasks = $this->task
-                ->where('status', $status)
+                ->whereIn('status', $status)
                 ->where('employee_id', auth()->user()->id)
                 ->whereDoesntHave('employee', function ($query) {
                     $query->where('email', 'boula@gmail.com');
@@ -61,9 +63,9 @@ class TaskController extends Controller
             }else{
 
                 if(auth()->user()->type=='admin')
-                $tasks = $this->task->where('status',$status)->latest()->get() ->unique('title');
+                $tasks = $this->task->whereIn('status',$status)->latest()->get() ->unique('title');
                 else
-                $tasks = $this->task->where('status',$status)->where('employee_id',auth()->user()->id)->latest()->get() ->unique('title');
+                $tasks = $this->task->whereIn('status',$status)->where('employee_id',auth()->user()->id)->latest()->get() ->unique('title');
             }
             return view('admin.crud.tasks.index', compact('tasks','employees'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);
