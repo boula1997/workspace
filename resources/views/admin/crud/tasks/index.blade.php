@@ -1,6 +1,36 @@
 @extends('admin.layouts.master')
 
 @section('content')
+<style>
+    .fullscreen-mode .content-wrapper,
+.fullscreen-mode .container-fluid,
+.fullscreen-mode .card {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.fullscreen-mode #example1_wrapper {
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+.fullscreen-mode .sidebar,
+.fullscreen-mode .navbar,
+.fullscreen-mode .card-header .btn,
+.fullscreen-mode .content-wrapper > *:not(.container) {
+    display: none !important;
+}
+
+.fullscreen-mode .content-wrapper {
+    padding: 0 !important;
+}
+
+.fullscreen-mode .card-body {
+    padding: 0;
+}
+</style>
     <!-- Content Wrapper. Contains task content -->
     <div class="content-wrapper">
         <!-- Main content -->
@@ -59,6 +89,12 @@
                                                     </button>
 
                                                 </div>
+                                                <div class="">
+                                                    <button class="btn btn-outline-secondary px-5" id="toggle-fullscreen">
+                                                        <i class="fa fa-expand" aria-hidden="true"></i> Full Screen
+                                                    </button>
+
+                                                </div>
                                                 <div class="mt-2">
                                                     <button type="submit" name="action" value="delete"
                                                         class="btn btn-danger">
@@ -112,6 +148,17 @@
 
 @push('scripts')
     <script>
+
+    document.getElementById('toggle-fullscreen').addEventListener('click', function() {
+        document.body.classList.toggle('fullscreen-mode');
+
+        const icon = this.querySelector('i');
+        icon.classList.toggle('fa-expand');
+        icon.classList.toggle('fa-compress');
+        this.textContent = icon.classList.contains('fa-expand') ? ' Full Screen' : ' Exit Full Screen';
+    });
+
+
         $(document).ready(function() {
             // Function to load the value into the search input and trigger search
             function loadSearchValue() {
