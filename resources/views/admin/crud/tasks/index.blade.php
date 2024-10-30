@@ -2,30 +2,19 @@
 
 @section('content')
 <style>
-    .fullscreen-mode .content-wrapper,
-.fullscreen-mode .container-fluid,
-.fullscreen-mode .card {
-    width: 100vw;
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-}
+
 
 
 .fullscreen-mode .sidebar,
 .fullscreen-mode .navbar,
 .fullscreen-mode .card-header .btn,
-.fullscreen-mode .content-wrapper > *:not(.container) {
+.fullscreen-mode .content-wrapper .card-header > *:not(.container) {
     display: none !important;
 }
 
-.fullscreen-mode .content-wrapper {
-    padding: 0 !important;
-}
 
-.fullscreen-mode .card-body {
-    padding: 0;
-}
+
+
 </style>
     <!-- Content Wrapper. Contains task content -->
     <div class="content-wrapper">
