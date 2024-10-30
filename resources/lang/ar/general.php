@@ -85,6 +85,7 @@ return [
 
 "Logout" => "تسجيل الخروج",
 
+"alltasks" => "جميع المهام",
 "tasks" => "المهام",
 "finishedTasks" => "المهام المنجزة",
 "show_all" => "عرض الكل",

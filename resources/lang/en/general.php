@@ -78,6 +78,7 @@ return [
 "projects" => "Projects",
 
 "tasks" => "Tasks",
+"alltasks" => "All Tasks",
 "finishedTasks" => "Finished Tasks",
 "assign_employee" => "Assign Employee",
 "delete_tasks" => "Delete Tasks",
