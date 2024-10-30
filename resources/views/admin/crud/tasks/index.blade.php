@@ -11,10 +11,6 @@
     padding: 0;
 }
 
-.fullscreen-mode #example1_wrapper {
-    overflow-y: auto;
-    max-height: 90vh;
-}
 
 .fullscreen-mode .sidebar,
 .fullscreen-mode .navbar,
