@@ -680,7 +680,7 @@
                             <i class=" px-1 far fa-address-card"></i>
                             <p>
                                 @lang('general.alltasks') <i class=" px-1 fas fa-angle-left right"></i>
-                                <span class="badge badge-info right">{{ itemsCount('tasks') }}</span>
+                                <span class="badge badge-info right">{{ itemsCount('alltasks') }}</span>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
