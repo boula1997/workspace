@@ -84,9 +84,11 @@ function itemsCount($model)
     if(auth()->user()->type=='admin'){
         $tasks=count(Task::where('status',0)->get()->unique('title'));
         $finishedTAsks=count(Task::where('status',1)->get()->unique('title'));
+        $allTAsks=count(Task::get()->unique('title'));
     }else{
         $tasks=count(Task::where('status',0)->where('employee_id',auth()->user()->id)->get()->unique('title'));
         $finishedTAsks=count(Task::where('status',1)->where('employee_id',auth()->user()->id)->get()->unique('title'));
+        $allTAsks=count(Task::where('employee_id',auth()->user()->id)->get()->unique('title'));
     }
     $items = [
         "faqs" => count(Faq::get()),
@@ -100,7 +102,7 @@ function itemsCount($model)
         "projects" => count(Project::get()),
         "tasks" => $tasks,
         "finishedTasks" => $finishedTAsks,
-        "alltasks" =>count(Task::where('employee_id',auth()->user()->id)->get()->unique('title')),
+        "alltasks" =>$allTAsks,
         "teams" => count(Team::get()),
         "fees" => count(Fee::get()),
         "finishedFees" => count(Fee::get()),
