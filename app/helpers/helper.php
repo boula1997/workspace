@@ -100,7 +100,7 @@ function itemsCount($model)
         "projects" => count(Project::get()),
         "tasks" => $tasks,
         "finishedTasks" => $finishedTAsks,
-        "alltasks" => count(Task::get()),
+        "alltasks" => count(Task::where('employee_id',auth()->user()->id)->get()),
         "teams" => count(Team::get()),
         "fees" => count(Fee::get()),
         "finishedFees" => count(Fee::get()),
