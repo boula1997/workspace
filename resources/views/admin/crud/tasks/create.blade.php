@@ -85,24 +85,31 @@
 
         <script>
             $(document).ready(function() {
-                // Retrieve the searchValue from localStorage
-                let searchValue = localStorage.getItem('searchValue');
-                
-                if (searchValue) {
-                    // Iterate over each option in the project select element
-                    $('#project option').each(function() {
-                        // Check if the option's text contains the searchValue (case-insensitive)
-                        if ($(this).text().toLowerCase().includes(searchValue.toLowerCase())) {
-                            // Set this option as selected
-                            $(this).prop('selected', true);
-                            return false; // Exit loop after first match
-                        }
-                    });
-                }
+                // Retrieve the search value from localStorage
+                let searchValue = localStorage.getItem('searchValue') || '';
+        
+                // Select option in "projects" dropdown based on searchValue (using "contains" logic)
+                $('#project option').each(function() {
+                    if ($(this).text().toLowerCase().includes(searchValue.toLowerCase())) {
+                        $(this).prop('selected', true);
+                        return false; // stop after first match
+                    }
+                });
+        
+                // Select option in "employees" dropdown if text contains "Boula"
+                $('#multiSelect1 option').each(function() {
+                    if ($(this).text().toLowerCase().includes('boula')) {
+                        $(this).prop('selected', true);
+                    }
+                });
+        
+                // Refresh selectpicker to reflect selections in UI (if using Bootstrap selectpicker)
+                $('#multiSelect1').selectpicker('refresh');
+                $('#project').selectpicker('refresh');
             });
         </script>
 
-        
+
             <script>
                 $(function() {
                     // Summernote
