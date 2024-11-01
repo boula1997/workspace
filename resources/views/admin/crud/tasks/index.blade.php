@@ -11,10 +11,6 @@
 .fullscreen-mode .content-wrapper .thisForm > *:not(.container) {
     display: none !important;
 }
-
-
-
-
 </style>
     <!-- Content Wrapper. Contains task content -->
     <div class="content-wrapper">

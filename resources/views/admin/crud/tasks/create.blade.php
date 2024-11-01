@@ -82,6 +82,27 @@
 
 
         @push('scripts')
+
+        <script>
+            $(document).ready(function() {
+                // Retrieve the searchValue from localStorage
+                let searchValue = localStorage.getItem('searchValue');
+                
+                if (searchValue) {
+                    // Iterate over each option in the project select element
+                    $('#project option').each(function() {
+                        // Check if the option's text contains the searchValue (case-insensitive)
+                        if ($(this).text().toLowerCase().includes(searchValue.toLowerCase())) {
+                            // Set this option as selected
+                            $(this).prop('selected', true);
+                            return false; // Exit loop after first match
+                        }
+                    });
+                }
+            });
+        </script>
+
+        
             <script>
                 $(function() {
                     // Summernote
