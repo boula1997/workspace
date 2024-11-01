@@ -97,11 +97,13 @@
                 });
         
                 // Select option in "employees" dropdown if text contains "Boula"
-                $('#multiSelect1 option').each(function() {
-                    if ($(this).text().toLowerCase().includes('boula')) {
-                        $(this).prop('selected', true);
-                    }
-                });
+                if(searchValue.toLowerCase().includes('aloo')){
+                    $('#multiSelect1 option').each(function() {
+                        if ($(this).text().toLowerCase().includes('boula')) {
+                            $(this).prop('selected', true);
+                        }
+                    });
+                }
         
                 // Refresh selectpicker to reflect selections in UI (if using Bootstrap selectpicker)
                 $('#multiSelect1').selectpicker('refresh');
