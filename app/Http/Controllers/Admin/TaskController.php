@@ -47,6 +47,7 @@ class TaskController extends Controller
                     ->whereDoesntHave('employee', function ($query) {
                         $query->where('email', 'boula@gmail.com');
                     })
+                    ->orderBy('status')
                     ->latest()
                     ->get()
                     ->unique('title');
@@ -57,15 +58,16 @@ class TaskController extends Controller
                 ->whereDoesntHave('employee', function ($query) {
                     $query->where('email', 'boula@gmail.com');
                 })
-                ->latest()
+                ->orderBy('status') // Order by status
+                ->latest()          // Then order by latest date
                 ->get()
                 ->unique('title');
             }else{
 
                 if(auth()->user()->type=='admin')
-                $tasks = $this->task->whereIn('status',$status)->latest()->get() ->unique('title');
+                $tasks = $this->task->whereIn('status',$status)->orderBy('status')->latest()->get() ->unique('title');
                 else
-                $tasks = $this->task->whereIn('status',$status)->where('employee_id',auth()->user()->id)->latest()->get() ->unique('title');
+                $tasks = $this->task->whereIn('status',$status)->where('employee_id',auth()->user()->id) ->orderBy('status')->latest()->get() ->unique('title');
             }
             return view('admin.crud.tasks.index', compact('tasks','employees'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);
