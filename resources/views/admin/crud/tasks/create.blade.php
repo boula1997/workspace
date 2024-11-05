@@ -84,6 +84,20 @@
         @push('scripts')
 
         <script>
+
+        $(document).ready(function() {
+            // Check if there is a title value in local storage and set it to the input field
+            if (localStorage.getItem('title')) {
+                $('input[name="title"]').val(localStorage.getItem('title'));
+            }
+
+            // Save the title to local storage whenever it changes
+            $('input[name="title"]').on('input', function() {
+                localStorage.setItem('title', $(this).val());
+            });
+        });
+
+
             $(document).ready(function() {
                 // Retrieve the search value from localStorage
                 let searchValue = localStorage.getItem('searchValue') || '';
