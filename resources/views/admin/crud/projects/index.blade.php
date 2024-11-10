@@ -12,7 +12,7 @@
                             <div class="col-md-12">
                                 <select id="projectFilter" class="form-control" multiple>
                                     @foreach ($projects as $project)
-                                    @if ($project->rest>0)                                        
+                                    @if (rest($project)>0)                                        
                                     <option value="{{ $project->title }}">{{ $project->title }}</option>
                                     @endif
                                     @endforeach
