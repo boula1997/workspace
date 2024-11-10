@@ -9,6 +9,7 @@
 </aside>
 <!-- /.control-sidebar -->
 <!-- ./wrapper -->
+
 <script src="{{ asset('bootstrap-5.3.1-dist\js\bootstrap.js') }}"></script>
 <!-- jQuery -->
 <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
@@ -67,19 +68,6 @@
 <script src="{{ asset('js/iconpicker-1.5.0.js') }}"></script>
 <script src="{{ asset('admin/file-upload/image-input.js') }}"></script>
 <!-- Page specific script -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Include Select2 CSS and JavaScript -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-    $('#mySelect').select2({
-        placeholder: "Select an option",
-        allowClear: true
-    });
-});
 {{-- <script>
     $(document).ready(function() {
       $('select').each(function() {

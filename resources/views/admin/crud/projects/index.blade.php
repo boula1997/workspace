@@ -83,20 +83,24 @@
 
 <script>
     $(function() {
+        // Define a unique key for your DataTable state in localStorage
         const tableStateKey = "coursesTableState";
 
+        // Initialize DataTable with stateSave and custom state management
         var table = $("#example1").DataTable({
             "responsive": true,
             "lengthChange": false,
             "autoWidth": false,
             "paging": true,
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-            "stateSave": true,
+            "stateSave": true, // Enable state saving
             "stateLoadCallback": function(settings) {
+                // Load the state from localStorage
                 var savedState = localStorage.getItem(tableStateKey);
                 return savedState ? JSON.parse(savedState) : null;
             },
             "stateSaveCallback": function(settings, data) {
+                // Save the state to localStorage
                 localStorage.setItem(tableStateKey, JSON.stringify(data));
             }
         });
@@ -104,56 +108,40 @@
         // Append DataTable buttons to container
         table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-        // Multi-term search functionality
-        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-            const searchInput = $('#example1_filter input').val();
-            if (!searchInput) return true;  // If no input, show all rows
-
-            const terms = searchInput.split(/\s+/); // Split by space (or add commas if needed)
-            for (let term of terms) {
-                // If a term is not found in the row data, exclude this row
-                if (!data.join(' ').toLowerCase().includes(term.toLowerCase())) {
-                    return false;
-                }
-            }
-            return true;
-        });
-
-        // Trigger recalculating totals after multi-term search
-        $('#example1_filter input').on('keyup', function() {
-            table.draw();
-            calculateTotals(); // Recalculate totals after search
-        });
-
+        // Function to calculate the total cost and rest for visible rows
         function calculateTotals() {
             let totalCost = 0;
             let totalRest = 0;
 
+            // Iterate over each visible row in the DataTable
             table.rows({ search: 'applied' }).every(function() {
                 const rowNode = $(this.node());
 
+                // Extract and parse the cost value
                 let costText = rowNode.find('.cost').text().trim();
                 let cost = parseFloat(costText.replace(/[^0-9.-]+/g, "")) || 0;
                 totalCost += cost;
 
+                // Extract and parse the rest value
                 let restText = rowNode.find('.rest').text().trim();
                 let rest = parseFloat(restText.replace(/[^0-9.-]+/g, "")) || 0;
                 totalRest += rest;
             });
 
+            // Display the totals in the summary row
             $('#total-cost').text(totalCost.toFixed(2));
             $('#total-rest').text(totalRest.toFixed(2));
         }
 
-        // Calculate totals initially
+        // Calculate the initial totals for all visible rows
         calculateTotals();
 
-        // Recalculate totals whenever search or column visibility changes
+        // Recalculate the totals whenever a search/filter or column visibility change occurs
         table.on('search.dt column-visibility.dt', function() {
             calculateTotals();
         });
     });
 </script>
 
-@endpush
 
+@endpush
