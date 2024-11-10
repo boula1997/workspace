@@ -8,6 +8,16 @@
             <section class="content pt-2">
                 <div class="container-fluid">
                     <div class="row">
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <select id="projectFilter" class="form-control" multiple>
+                                    @foreach ($projects as $project)
+                                        <option value="{{ $project->title }}">{{ $project->title }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        
                         <!-- left column -->
                         <div class="col-md-12">
                             <!-- general form elements -->
@@ -83,9 +93,6 @@
 
 <script>
     $(function() {
-        // Define a unique key for your DataTable state in localStorage
-        const tableStateKey = "coursesTableState";
-
         // Initialize DataTable with stateSave and custom state management
         var table = $("#example1").DataTable({
             "responsive": true,
@@ -95,21 +102,18 @@
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
             "stateSave": true, // Enable state saving
             "search": {
-            "smart": true  // Enable smart search
-                   },
-            "stateLoadCallback": function(settings) {
-                // Load the state from localStorage
-                var savedState = localStorage.getItem(tableStateKey);
-                return savedState ? JSON.parse(savedState) : null;
-            },
-            "stateSaveCallback": function(settings, data) {
-                // Save the state to localStorage
-                localStorage.setItem(tableStateKey, JSON.stringify(data));
+                "smart": true  // Enable smart search
             }
         });
 
         // Append DataTable buttons to container
         table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+        // Filter the table based on selected titles
+        $('#projectFilter').on('change', function() {
+            var selectedTitles = $(this).val(); // Get selected project titles
+            table.columns(1).search(selectedTitles.join('|'), true, false).draw(); // Search the title column (index 1)
+        });
 
         // Function to calculate the total cost and rest for visible rows
         function calculateTotals() {
@@ -146,5 +150,5 @@
     });
 </script>
 
-
 @endpush
+
