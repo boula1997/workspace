@@ -94,6 +94,9 @@
             "paging": true,
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
             "stateSave": true, // Enable state saving
+            "search": {
+            "smart": true  // Enable smart search
+                   },
             "stateLoadCallback": function(settings) {
                 // Load the state from localStorage
                 var savedState = localStorage.getItem(tableStateKey);
