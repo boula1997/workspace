@@ -18,10 +18,11 @@
                                     </span></label>
                                 <div class="input-group">
                                     <div class="input-group-prepend"> <span class="input-group-text"><i
-                                                class="fas fa-pen"></i></span> </div> <input type="text" name="title"
-                                        placeholder="ex:task1+task2+task3+task4"
-                                        class="form-control pl-1 min-h-40px @error('title') is-invalid @enderror"
-                                        value="{{ old('title') }}">
+                                                class="fas fa-pen"></i></span> </div> 
+                                                <textarea name="title" class="form-control @error('title') is-invalid @enderror" placeholder="ex:task1+task2+task3+task4" id="" cols="30" rows="10" >{{ old('title') }}</textarea>
+                                            
+                                        
+     
                                 </div>
                             </div>
                         </div>
