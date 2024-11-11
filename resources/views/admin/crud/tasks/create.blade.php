@@ -17,7 +17,7 @@
                             <div class="form-group"> <label>{{ __('general.title') }} <span class="text-danger"> *
                                     </span></label>
                                 <div class="input-group">
-                                                <textarea name="title" class="form-control @error('title') is-invalid @enderror" placeholder="ex:task1+task2+task3+task4" id="" cols="30" rows="10" >{{ old('title') }}</textarea>
+                                                <textarea name="title" id="titlearea" class="form-control @error('title') is-invalid @enderror" placeholder="ex:task1+task2+task3+task4" id="" cols="30" rows="10" >{{ old('title') }}</textarea>
 
                                 </div>
                             </div>
@@ -74,11 +74,11 @@
         $(document).ready(function() {
             // Check if there is a title value in local storage and set it to the input field
             if (localStorage.getItem('title')) {
-                $('input[name="title"]').val(localStorage.getItem('title'));
+                $('textarea[name="title"]').val(localStorage.getItem('title'));
             }
 
             // Save the title to local storage whenever it changes
-            $('input[name="title"]').on('input', function() {
+            $('#titlearea').on('input', function() {
                 localStorage.setItem('title', $(this).val());
             });
         });
