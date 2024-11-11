@@ -18,22 +18,12 @@
                                     </span></label>
                                 <div class="input-group">
                                                 <textarea name="title" class="form-control @error('title') is-invalid @enderror" placeholder="ex:task1+task2+task3+task4" id="" cols="30" rows="10" >{{ old('title') }}</textarea>
+
                                 </div>
                             </div>
                         </div>
 
-                        {{-- Checkbox Input --}} 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <div class="form-group">
-                                    <div class="form-check form-switch"> <input class="form-check-input"
-                                            @checked(old('status')) type="checkbox" id="status" name="status"
-                                            value="1"> <label class="form-check-label"
-                                            for="status">{{ __('general.status') }} <span class="text-danger"> *
-                                            </span></label> </div>
-                                </div>
-                            </div>
-                        </div>
+
 
                         {{-- Multi Select Input Create --}}
                          <div class="form-group col-md-6"> 
