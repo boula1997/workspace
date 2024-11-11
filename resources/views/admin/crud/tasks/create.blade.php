@@ -17,12 +17,7 @@
                             <div class="form-group"> <label>{{ __('general.title') }} <span class="text-danger"> *
                                     </span></label>
                                 <div class="input-group">
-                                    <div class="input-group-prepend"> <span class="input-group-text"><i
-                                                class="fas fa-pen"></i></span> </div> 
                                                 <textarea name="title" class="form-control @error('title') is-invalid @enderror" placeholder="ex:task1+task2+task3+task4" id="" cols="30" rows="10" >{{ old('title') }}</textarea>
-                                            
-                                        
-     
                                 </div>
                             </div>
                         </div>
