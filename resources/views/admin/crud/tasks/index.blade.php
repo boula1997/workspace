@@ -18,6 +18,18 @@
         <div class="container p-3">
             <section class="content pt-2">
                 <div class="container-fluid">
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <select id="projectFilter" class="form-control" multiple>
+                                @foreach ($projects as $project)
+                                @if (rest($project)>0)                                        
+                                <option value="{{ $project->title }}">{{ $project->title }}</option>
+                                @endif
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="row">
                         <!-- left column -->
                         <div class="col-md-12">
@@ -192,5 +204,12 @@
                 taskRow.css('background-color', '');
             }
         }
+
+
+                // Filter the table based on selected titles
+                $('#projectFilter').on('change', function() {
+            var selectedTitles = $(this).val(); // Get selected project titles
+            table.columns(1).search(selectedTitles.join('|'), true, false).draw(); // Search the title column (index 1)
+        });
     </script>
 @endpush
