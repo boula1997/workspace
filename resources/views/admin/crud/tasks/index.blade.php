@@ -178,22 +178,30 @@
 
 
         $(function() {
-            var table =$("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "paging": false,
-                "searching": true,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        // Initialize DataTable with stateSave and custom state management
+        var table = $("#example1").DataTable({
+            "responsive": true,
+            "lengthChange": false,
+            "autoWidth": false,
+            "paging": true,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+            "stateSave": true, // Enable state saving
+            "search": {
+                "smart": true  // Enable smart search
+            }
+        });
 
-                    // Filter the table based on selected titles
+        // Append DataTable buttons to container
+        table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+        // Filter the table based on selected titles
         $('#projectFilter').on('change', function() {
             var selectedTitles = $(this).val(); // Get selected project titles
-            table.columns(1).search(selectedTitles.join('|'), true, false)
-        .draw(); // Search the title column (index 1)
+            table.columns(1).search(selectedTitles.join('|'), true, false).draw(); // Search the title column (index 1)
         });
-        });
+
+
+    });
 
         function toggleCheckbox(taskId) {
             const checkbox = document.getElementById(`checkbox-${taskId}`);
