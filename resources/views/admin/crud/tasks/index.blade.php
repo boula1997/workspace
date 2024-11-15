@@ -1,17 +1,14 @@
 @extends('admin.layouts.master')
 
 @section('content')
-<style>
-
-
-
-.fullscreen-mode .sidebar,
-.fullscreen-mode .navbar,
-.fullscreen-mode .card-header .btn,
-.fullscreen-mode .content-wrapper .thisForm > *:not(.container) {
-    display: none !important;
-}
-</style>
+    <style>
+        .fullscreen-mode .sidebar,
+        .fullscreen-mode .navbar,
+        .fullscreen-mode .card-header .btn,
+        .fullscreen-mode .content-wrapper .thisForm>*:not(.container) {
+            display: none !important;
+        }
+    </style>
     <!-- Content Wrapper. Contains task content -->
     <div class="content-wrapper">
         <!-- Main content -->
@@ -23,9 +20,9 @@
                         <div class="col-md-12">
                             <select id="projectFilter" class="form-control" multiple>
                                 @foreach ($projects as $project)
-                                @if (rest($project)>0)                                        
-                                <option value="{{ $project->title }}">{{ $project->title }}</option>
-                                @endif
+                                    @if (rest($project) > 0)
+                                        <option value="{{ $project->title }}">{{ $project->title }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
@@ -39,12 +36,11 @@
                                     <div class="row">
                                         <div class="col-md-6 d-flex justify-content-start">
                                             @if (request()->routeIs('tasks.index'))
-                                                
-                                            <h1 class="card-title fw-bold">@lang('general.tasks')</h1>
+                                                <h1 class="card-title fw-bold">@lang('general.tasks')</h1>
                                             @elseif(request()->routeIs('tasks.all'))
-                                            <h1 class="card-title fw-bold">@lang('general.alltasks')</h1>
+                                                <h1 class="card-title fw-bold">@lang('general.alltasks')</h1>
                                             @else
-                                            <h1 class="card-title fw-bold">@lang('general.finishedTasks')</h1>
+                                                <h1 class="card-title fw-bold">@lang('general.finishedTasks')</h1>
                                             @endif
                                         </div>
                                         <div class="col-md-6 d-flex justify-content-end">
@@ -64,7 +60,7 @@
                                         </button>
 
                                     </div>
-                                    <form  action="{{ route('tasks.bulkAction') }}" method="POST">
+                                    <form action="{{ route('tasks.bulkAction') }}" method="POST">
                                         @csrf
                                         <div class="row d-flex align-items-center thisForm">
                                             {{-- Dynamic Select Input --}}
@@ -112,10 +108,11 @@
                                                 @foreach ($tasks as $task)
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
-                                                        <td class="{{ request()->routeIs('tasks.all') && $task->status==1?'text-success' : '' }}" style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 100px;"
-                                                        onclick="toggleCheckbox({{ $task->id }})">
-                                                        {{ $task->title }}
-                                                    </td>
+                                                        <td class="{{ request()->routeIs('tasks.all') && $task->status == 1 ? 'text-success' : '' }}"
+                                                            style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 100px;"
+                                                            onclick="toggleCheckbox({{ $task->id }})">
+                                                            {{ $task->title }}
+                                                        </td>
                                                         <td class="d-none">
                                                             <input type="checkbox" name="tasks[]"
                                                                 value="{{ $task->id }}"
@@ -142,15 +139,14 @@
 
 @push('scripts')
     <script>
+        document.getElementById('toggle-fullscreen').addEventListener('click', function() {
+            document.body.classList.toggle('fullscreen-mode');
 
-    document.getElementById('toggle-fullscreen').addEventListener('click', function() {
-        document.body.classList.toggle('fullscreen-mode');
-
-        const icon = this.querySelector('i');
-        icon.classList.toggle('fa-expand');
-        icon.classList.toggle('fa-compress');
-        this.textContent = icon.classList.contains('fa-expand') ? ' Full Screen' : ' Exit Full Screen';
-    });
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-expand');
+            icon.classList.toggle('fa-compress');
+            this.textContent = icon.classList.contains('fa-expand') ? ' Full Screen' : ' Exit Full Screen';
+        });
 
 
         $(document).ready(function() {
@@ -182,7 +178,7 @@
 
 
         $(function() {
-            $("#example1").DataTable({
+            var table =$("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
@@ -190,6 +186,13 @@
                 "searching": true,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+                    // Filter the table based on selected titles
+        $('#projectFilter').on('change', function() {
+            var selectedTitles = $(this).val(); // Get selected project titles
+            table.columns(1).search(selectedTitles.join('|'), true, false)
+        .draw(); // Search the title column (index 1)
+        });
         });
 
         function toggleCheckbox(taskId) {
@@ -206,10 +209,6 @@
         }
 
 
-                // Filter the table based on selected titles
-                $('#projectFilter').on('change', function() {
-            var selectedTitles = $(this).val(); // Get selected project titles
-            table.columns(1).search(selectedTitles.join('|'), true, false).draw(); // Search the title column (index 1)
-        });
+
     </script>
 @endpush
