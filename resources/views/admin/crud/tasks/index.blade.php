@@ -197,7 +197,7 @@
         // Filter the table based on selected titles
         $('#projectFilter').on('change', function() {
             var selectedTitles = $(this).val(); // Get selected project titles
-            table.columns(1).search(selectedTitles.join('|'), true, false).draw(); // Search the title column (index 1)
+            table.columns(4).search(selectedTitles.join('|'), true, false).draw(); // Search the title column (index 1)
         });
 
 
