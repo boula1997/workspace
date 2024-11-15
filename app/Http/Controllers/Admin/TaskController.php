@@ -17,15 +17,14 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    private $task,$project;
-    function __construct(Task $task,Project $project)
+    private $task;
+    function __construct(Task $task)
     {
         $this->middleware('permission:task-list|task-create|task-edit|task-delete', ['only' => ['index', 'show']]);
         $this->middleware('permission:task-create', ['only' => ['create', 'store']]);
         $this->middleware('permission:task-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:task-delete', ['only' => ['destroy']]);
         $this->task = $task;
-        $this->project = $project;
     }
 
 
@@ -33,7 +32,7 @@ class TaskController extends Controller
     {
         try {
             $employees=Admin::get();
-            $projects = $this->project->latest()->get();
+
             if(request()->routeIs('tasks.finished'))
             $status=[1];
             else if(request()->routeIs('tasks.index'))
@@ -70,7 +69,7 @@ class TaskController extends Controller
                 else
                 $tasks = $this->task->whereIn('status',$status)->where('employee_id',auth()->user()->id) ->orderBy('status')->latest()->get() ->unique('title');
             }
-            return view('admin.crud.tasks.index', compact('tasks','employees','projects'))
+            return view('admin.crud.tasks.index', compact('tasks','employees'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);
         } catch (Exception $e) {
             dd($e->getMessage());
