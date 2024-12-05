@@ -61,6 +61,43 @@
                     </div>
                     <!-- /.row -->
 
+                                        <!-- Small boxes (Stat box) -->
+                                        <div class="row">
+
+                                            <div class="col-lg-3 col-6">
+                                                <!-- small box -->
+                                                <div class="small-box bg-info">
+                                                    <div class="inner">
+                                                        <h3>{{itemsCount('followups')}}</h3>
+                    
+                                                        <p>@lang('general.followups')</p>
+                                                    </div>
+                                                    <div class="icon">
+                                                        <i class="ion ion-bag"></i>
+                                                    </div>
+                                                    <a href="{{route('followups.index')}}" class="small-box-footer">@lang('general.moreinfo') <i
+                                                            class="fas fa-arrow-circle-{{ app()->getLocale() =='ar'?'left':'right' }}"></i></a>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-6">
+                                                <!-- small box -->
+                                                <div class="small-box bg-info">
+                                                    <div class="inner">
+                                                        <h3>{{itemsCount('finishedFollowups')}}</h3>
+                    
+                                                        <p>@lang('general.finishedFollowups')</p>
+                                                    </div>
+                                                    <div class="icon">
+                                                        <i class="ion ion-bag"></i>
+                                                    </div>
+                                                    <a href="{{route('followups.finished')}}" class="small-box-footer">@lang('general.moreinfo') <i
+                                                            class="fas fa-arrow-circle-{{ app()->getLocale() =='ar'?'left':'right' }}"></i></a>
+                                                </div>
+                                            </div>
+                     
+                    
+                                        </div>
+
                 </div><!-- /.container-fluid -->
             </section>
             <!-- /.content -->

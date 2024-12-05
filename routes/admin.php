@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VaccancyController;
+use App\Http\Controllers\Admin\FollowupController;
 use App\Http\Controllers\Admin\FeeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -95,11 +96,14 @@ Route::group(
             Route::resource('admins', AdminController::class);
             Route::resource('messages', MessageController::class);
             Route::resource('complains', ComplainController::class);
+            Route::resource('followups', FollowupController::class);
             Route::resource('fees', FeeController::class);
             Route::resource('vaccancies',VaccancyController::class);
 
             
             Route::get('/finished/fees', [App\Http\Controllers\Admin\FeeController::class, 'index'])->name('fees.finished');
+            Route::get('/finished/followups', [App\Http\Controllers\Admin\FollowupController::class, 'index'])->name('followups.finished');
+            Route::get('/all/followups', [App\Http\Controllers\Admin\FollowupController::class, 'index'])->name('followups.all');
             Route::get('/reply-message/{id}', [App\Http\Controllers\Admin\MessageController::class, 'reply'])->name('messages.reply');
             Route::get('/finished/tasks', [App\Http\Controllers\Admin\TaskController::class, 'index'])->name('tasks.finished');
             Route::get('/all/tasks', [App\Http\Controllers\Admin\TaskController::class, 'index'])->name('tasks.all');
@@ -109,8 +113,13 @@ Route::group(
             Route::post('/tasks/bulk-action', [TaskController::class, 'bulkAction'])->name('tasks.bulkAction');
            
             Route::post('/tasks/finish/delete', [App\Http\Controllers\Admin\TaskController::class, 'tasksDelete'])->name('tasks.finish');
-
+            
             Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+            Route::post('/followups/changEmployees', [App\Http\Controllers\Admin\FollowupController::class, 'followupChangeEmployee'])->name('followups.changeEmployee');
+
+            Route::post('/followups/bulk-action', [FollowupController::class, 'bulkAction'])->name('followups.bulkAction');
+           
+            Route::post('/followups/finish/delete', [App\Http\Controllers\Admin\FollowupController::class, 'followupsDelete'])->name('followups.finish');
             Route::resource('newsletters', NewsletterController::class);
 
             Route::post('/fees/changEmployees', [App\Http\Controllers\Admin\FeeController::class, 'feeChangeEmployee'])->name('fees.changeEmployee');

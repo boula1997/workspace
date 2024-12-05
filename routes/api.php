@@ -13,6 +13,7 @@ use App\Http\Controllers\API\TaskController;
 use App\Http\Controllers\API\ProjectController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ServiceController;
+use App\Http\Controllers\API\FollowupController;
 use App\Http\Controllers\API\TestimonialController;
 use App\Http\Controllers\API\ProcessController;
 use App\Http\Controllers\API\CategoryController;
@@ -101,6 +102,8 @@ Route::group(['middleware' => ['apiLocalization','cors']], function () {
     Route::get('/task/{id}', [TaskController::class, 'show']);
     Route::get('/pages', [PageController::class, 'index']);
     Route::get('/page/{id}', [PageController::class, 'show']);
+    Route::get('/followups', [FollowupController::class, 'index']);
+    Route::get('/followup/{id}', [FollowupController::class, 'show']);
     Route::get('/fees', [FeeController::class, 'index']);
     Route::get('/fee/{id}', [FeeController::class, 'show']);
 

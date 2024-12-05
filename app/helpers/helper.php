@@ -9,6 +9,7 @@ use App\Models\Counter;
 use App\Models\Newsletter;
 use App\Models\Contact;
 use App\Models\Gallery;
+use App\Models\Followup;
 use App\Models\Image;
 use App\Models\Project;
 use App\Models\Page;
@@ -90,6 +91,16 @@ function itemsCount($model)
         $finishedTAsks=count(Task::where('status',1)->where('employee_id',auth()->user()->id)->get()->unique('title'));
         $allTAsks=count(Task::where('employee_id',auth()->user()->id)->get()->unique('title'));
     }
+
+    if(auth()->user()->type=='admin'){
+        $followups=count(Followup::where('status',0)->get()->unique('title'));
+        $finishedTAsks=count(Followup::where('status',1)->get()->unique('title'));
+        $allTAsks=count(Followup::get()->unique('title'));
+    }else{
+        $followups=count(Followup::where('status',0)->where('employee_id',auth()->user()->id)->get()->unique('title'));
+        $finishedTAsks=count(Followup::where('status',1)->where('employee_id',auth()->user()->id)->get()->unique('title'));
+        $allTAsks=count(Followup::where('employee_id',auth()->user()->id)->get()->unique('title'));}
+
     $items = [
         "faqs" => count(Faq::get()),
         "messages" => count(Message::get()),
@@ -105,6 +116,9 @@ function itemsCount($model)
         "alltasks" =>$allTAsks,
         "teams" => count(Team::get()),
         "fees" => count(Fee::get()),
+        "followups" => $followups,
+        "finishedFollowups" => $finishedTAsks,
+        "allfollowups" =>$allTAsks,
         "finishedFees" => count(Fee::get()),
         "partners" => count(Partner::get()),
         "services" => count(Service::get()),
@@ -155,6 +169,13 @@ function products()
     return $products;
 }
 
+function followupEmployees($title){
+    $employee_ids=Followup::where('title',$title)->pluck('employee_id');
+    $names=Admin::whereIn('id',$employee_ids)->pluck('name');
+    return json_encode($names);
+}
+
+
 
 
 if (!function_exists('cart')) {
@@ -186,6 +207,22 @@ if (!function_exists('favourite')) {
     function favourite()
     {
         return cart()->newInstance('favourites')->useForCommercial(false);
+    }
+}
+
+if (!function_exists('followups')) {
+
+    function followups($type)
+    {
+        return isset($type) ?  Followup::where('type', $type)->get() : Followup::latest()->get();;
+    }
+}
+
+if (!function_exists('followup')) {
+
+    function followup($type)
+    {
+      Followup::where('type', $type)->first();
     }
 }
 
