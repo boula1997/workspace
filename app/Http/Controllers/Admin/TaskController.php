@@ -63,7 +63,12 @@ class TaskController extends Controller
                 else
                 $tasks = $this->task
                 ->whereIn('status', $status)
-                ->where('employee_id', auth()->user()->id)
+                ->where(function ($query) {
+                    $query->where('employee_id', auth()->user()->id)
+                          ->orWhereHas('employee', function ($query) {
+                              $query->where('name', 'All');
+                          });
+                })
                 ->whereDoesntHave('employee', function ($query) {
                     $query->where('email', 'boula@gmail.com');
                 })
@@ -71,6 +76,7 @@ class TaskController extends Controller
                 ->latest()          // Then order by latest date
                 ->get()
                 ->unique('title');
+            
             }else{
 
                 if(auth()->user()->type=='admin')
