@@ -1,17 +1,14 @@
 @extends('admin.layouts.master')
 
 @section('content')
-<style>
-
-
-
-.fullscreen-mode .sidebar,
-.fullscreen-mode .navbar,
-.fullscreen-mode .card-header .btn,
-.fullscreen-mode .content-wrapper .thisForm > *:not(.container) {
-    display: none !important;
-}
-</style>
+    <style>
+        .fullscreen-mode .sidebar,
+        .fullscreen-mode .navbar,
+        .fullscreen-mode .card-header .btn,
+        .fullscreen-mode .content-wrapper .thisForm>*:not(.container) {
+            display: none !important;
+        }
+    </style>
     <!-- Content Wrapper. Contains followup content -->
     <div class="content-wrapper">
         <!-- Main content -->
@@ -27,12 +24,11 @@
                                     <div class="row">
                                         <div class="col-md-6 d-flex justify-content-start">
                                             @if (request()->routeIs('followups.index'))
-                                                
-                                            <h1 class="card-title fw-bold">@lang('general.followups')</h1>
+                                                <h1 class="card-title fw-bold">@lang('general.followups')</h1>
                                             @elseif(request()->routeIs('followups.all'))
-                                            <h1 class="card-title fw-bold">@lang('general.allfollowups')</h1>
+                                                <h1 class="card-title fw-bold">@lang('general.allfollowups')</h1>
                                             @else
-                                            <h1 class="card-title fw-bold">@lang('general.finishedFollowups')</h1>
+                                                <h1 class="card-title fw-bold">@lang('general.finishedFollowups')</h1>
                                             @endif
                                         </div>
                                         <div class="col-md-6 d-flex justify-content-end">
@@ -52,7 +48,7 @@
                                         </button>
 
                                     </div>
-                                    <form  action="{{ route('followups.bulkAction') }}" method="POST">
+                                    <form action="{{ route('followups.bulkAction') }}" method="POST">
                                         @csrf
                                         <div class="row d-flex align-items-center thisForm">
                                             {{-- Dynamic Select Input --}}
@@ -69,6 +65,30 @@
                                                     @endforeach
                                                 </select>
                                             </div>
+                                            {{-- Date input --}} <div class="col-md-6">
+                                                <div class="form-group"> <label
+                                                        for="dateInput">{{ __('general.startdate') }} <span
+                                                            class="text-danger"> *</span></label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend"> <span class="input-group-text"><i
+                                                                    class="fas fa-calendar-alt"></i></span> </div> <input
+                                                            type="date" id="dateInput" class="form-control"
+                                                            value="{{ old('startdate') }}" name="startdate">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- Date input --}} <div class="col-md-6">
+                                                <div class="form-group"> <label for="dateInput">{{ __('general.enddate') }}
+                                                        <span class="text-danger"> *</span></label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend"> <span class="input-group-text"><i
+                                                                    class="fas fa-calendar-alt"></i></span> </div> <input
+                                                            type="date" id="dateInput" class="form-control"
+                                                            value="{{ old('enddate') }}" name="enddate">
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="col-md-4">
                                                 <div class="">
                                                     <button type="submit" name="action" value="assign"
@@ -83,6 +103,12 @@
                                                         @lang('general.delete_followups')
                                                     </button>
                                                 </div>
+                                                <div class="mt-2">
+                                                    <button type="submit" name="action" value="filter"
+                                                        class="btn btn-danger">
+                                                        @lang('general.filter')
+                                                    </button>
+                                                </div>
                                             </div>
 
                                         </div>
@@ -93,7 +119,7 @@
                                                     <th style="width: 500px;">{{ __('general.title') }}</th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
                                                     <th>{{ __('general.employees') }}</th>
-                                                    <th>{{__('general.difficulty')}}</th>
+                                                    <th>{{ __('general.difficulty') }}</th>
                                                     <th>{{ __('general.created_at') }}</th>
                                                 </tr>
                                             </thead>
@@ -101,17 +127,19 @@
                                                 @foreach ($followups as $followup)
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
-                                                        <td class="{{ request()->routeIs('followups.all') && $followup->status==1?'text-success' : '' }}" style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 100px;"
-                                                        onclick="toggleCheckbox({{ $followup->id }})">
-                                                        {{ $followup->title }}
-                                                    </td>
+                                                        <td class="{{ request()->routeIs('followups.all') && $followup->status == 1 ? 'text-success' : '' }}"
+                                                            style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 100px;"
+                                                            onclick="toggleCheckbox({{ $followup->id }})">
+                                                            {{ $followup->title }}
+                                                        </td>
                                                         <td class="d-none">
                                                             <input type="checkbox" name="followups[]"
                                                                 value="{{ $followup->id }}"
                                                                 id="checkbox-{{ $followup->id }}">
                                                         </td>
                                                         <td>{{ followupEmployees($followup->title) }}</td>
-                                                        <td>{{$followup->difficulty?__('general.yes'):__('general.no') }}</td>
+                                                        <td>{{ $followup->difficulty ? __('general.yes') : __('general.no') }}
+                                                        </td>
                                                         <td>{{ $followup->created_at }}</td>
                                                     </tr>
                                                 @endforeach
@@ -132,15 +160,14 @@
 
 @push('scripts')
     <script>
+        document.getElementById('toggle-fullscreen').addEventListener('click', function() {
+            document.body.classList.toggle('fullscreen-mode');
 
-    document.getElementById('toggle-fullscreen').addEventListener('click', function() {
-        document.body.classList.toggle('fullscreen-mode');
-
-        const icon = this.querySelector('i');
-        icon.classList.toggle('fa-expand');
-        icon.classList.toggle('fa-compress');
-        this.textContent = icon.classList.contains('fa-expand') ? ' Full Screen' : ' Exit Full Screen';
-    });
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-expand');
+            icon.classList.toggle('fa-compress');
+            this.textContent = icon.classList.contains('fa-expand') ? ' Full Screen' : ' Exit Full Screen';
+        });
 
 
         $(document).ready(function() {

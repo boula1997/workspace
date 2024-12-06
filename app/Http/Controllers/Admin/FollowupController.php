@@ -91,9 +91,16 @@ class FollowupController extends Controller
     public function bulkAction(Request $request)
     {
 
-
-        $followupIds = $request->input('followups');
         $action = $request->input('action');
+
+
+        if ($action == 'filter') {
+            $employees=Admin::get();
+            $followups=Followup::where('created_at','>=', $request->startdate)->where('created_at','<=', $request->enddate)->get();
+            return view('admin.crud.followups.index', compact('followups','employees'))
+                ->with('i', (request()->input('page', 1) - 1) * 5);
+        }
+        $followupIds = $request->input('followups');
          
         if(!isset($request->employees)&& $action == 'assign')
         return redirect()->back()->with('error', __('Select Employee!'));
