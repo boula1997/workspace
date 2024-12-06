@@ -47,7 +47,7 @@
                                     <option value="">{{ __('general.select') }}</option>
                                     @foreach ($employees as $employee)
                                         <option value="{{ $employee->id }}"
-                                            {{ collect(old('employees', $employees))->contains($employee->id) ? 'selected' : '' }}>
+                                            {{ collect(old('employees', $selectedEmployees))->contains($employee->id) ? 'selected' : '' }}>
                                             {{ $employee->name }}</option>
                                     @endforeach
                                 </select> </div>
