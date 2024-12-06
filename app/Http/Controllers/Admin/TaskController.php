@@ -212,6 +212,7 @@ class TaskController extends Controller
         //    dd($task->title);
         $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('status',1)->get();
+        $selectedEmployees=$task->employees->pluck('id');
         return view('admin.crud.tasks.edit', compact('task','employees','projects'));
     }
     /**
