@@ -40,7 +40,7 @@ class TaskController extends Controller
     public function index()
     {
         try {
-            $employees=Admin::get();
+            $employees=Admin::orderBy('name', 'ASC')->get();
 
             if(request()->routeIs('tasks.finished'))
             $status=[1];
@@ -93,7 +93,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $employees=Admin::get();
+        $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('status',1)->latest()->get();
         return view('admin.crud.tasks.create',compact('employees','projects'));
     }
@@ -192,7 +192,7 @@ class TaskController extends Controller
     public function edit(Task $task)
     {
         //    dd($task->title);
-        $employees=Admin::get();
+        $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('status',1)->get();
         return view('admin.crud.tasks.edit', compact('task','employees','projects'));
     }

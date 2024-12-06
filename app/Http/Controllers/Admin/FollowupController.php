@@ -31,7 +31,7 @@ class FollowupController extends Controller
     public function index()
     {
         try {
-            $employees=Admin::get();
+            $employees=Admin::orderBy('name', 'ASC')->get();
 
             if(request()->routeIs('followups.finished'))
             $status=[1];
@@ -84,7 +84,7 @@ class FollowupController extends Controller
      */
     public function create()
     {
-        $employees=Admin::get();
+        $employees=Admin::orderBy('name', 'ASC')->get();
         // $projects=Project::where('status',1)->latest()->get();
         return view('admin.crud.followups.create',compact('employees'));
     }
@@ -205,7 +205,7 @@ class FollowupController extends Controller
     public function edit(Followup $followup)
     {
         //    dd($followup->title);
-        $employees=Admin::get();
+        $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('status',1)->get();
         return view('admin.crud.followups.edit', compact('followup','employees','projects'));
     }

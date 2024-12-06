@@ -58,6 +58,7 @@
                                                 <select class="form-control selectpicker" id="multiSelect1"
                                                     multiple="multiple" data-live-search="true" name="employees[]">
                                                     <option value="">{{ __('general.select') }}</option>
+
                                                     @foreach ($employees as $employee)
                                                         <option value="{{ $employee->id }}"
                                                             {{ collect(old('employees'))->contains($employee->id) ? 'selected' : '' }}>
