@@ -100,6 +100,7 @@ return [
 "keywords" => "الكلمات المفتاحية",
 "close" => "اغلاق",
 "enter_keywords" => "أدخل الكلمات المفتاحية",
+"edit_keywords" => "تعديل الكلمات المفتاحية",
 "Dashboard" => "لوحة التحكم",
 "Password" => "كلمة المرور",
 "Confirm" => "تأكيد",
