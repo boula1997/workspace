@@ -224,8 +224,8 @@ class FollowupController extends Controller
         //    dd($followup->title);
         $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('status',1)->get();
-
-        return view('admin.crud.followups.edit', compact('followup','employees','projects'));
+        $selectedEmployees=$followup->employees->pluck('id');
+        return view('admin.crud.followups.edit', compact('followup','employees','projects','selectedEmployees'));
     }
     /**
      * Update the specified resource in storage.
