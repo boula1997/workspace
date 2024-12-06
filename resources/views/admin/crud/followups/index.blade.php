@@ -109,6 +109,12 @@
                                                         @lang('general.filter')
                                                     </button>
                                                 </div>
+                                                <div class="mt-2">
+                                                    <button type="button" id="openLinks" 
+                                                        class="btn btn-danger">
+                                                        @lang('general.filter')
+                                                    </button>
+                                                </div>
                                             </div>
 
                                         </div>
@@ -159,6 +165,18 @@
 @endsection
 
 @push('scripts')
+
+<script>
+    $('#openLinks').on('click',function () {
+        // Assuming `followups` is passed as a JavaScript variable
+        const followups = @json($followups);
+
+        // Loop through the followups array and log each title
+        followups.forEach(function (followup) {
+            window.open(followup);
+        });
+    });
+</script>
     <script>
         document.getElementById('toggle-fullscreen').addEventListener('click', function() {
             document.body.classList.toggle('fullscreen-mode');
