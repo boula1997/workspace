@@ -83,6 +83,49 @@ return [
 "assign_employee" => "Assign Employee",
 "delete_tasks" => "Delete Tasks",
 
+
+"keywords_updated" => "Keywords updated",
+
+"allfollowups" => "Allfollowups",
+
+"followups" => "Followups",
+
+"finishedFollowups" => "FinishedFollowups",
+
+"show_all" => "Show all",
+
+"cancel" => "Cancel",
+
+"no_result" => "No result",
+
+"difficulty" => "Difficulty",
+
+"specifications" => "Specifications",
+
+"delete_followups" => "Delete followups",
+
+"actions" => "Actions",
+
+"copy_keywords" => "Copy keywords",
+
+"enter_keywords" => "Enter keywords",
+
+"Dashboard" => "Dashboard",
+
+"Password" => "Password",
+
+"Confirm" => "Confirm",
+
+"Email" => "Email",
+
+"Login" => "Login",
+
+"Register" => "Register",
+
+"Name" => "Name",
+
+"Logout" => "Logout",
+
 "show_all" => "Show all",
 
 "cancel" => "Cancel",
