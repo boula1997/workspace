@@ -116,13 +116,13 @@
                                                                 <i class="fas fa-edit  text-secondary  fa-lg"></i>
                                                             </a>
 
-                                                            <button class=""
+                                                            <button class="btn btn-outline-secondary btn-sm mx-1"
                                                                 data-toggle="modal" data-target="#keywordsModal"
                                                                 data-task-id="{{ $task->id }}"
                                                                 data-keywords="{{ $task->keywords }}" type="button">
                                                                 <i class="fas fa-key fa-lg"></i>
                                                             </button>
-                                                            <button class="copy-keywords clickable-text" content="{{ $task->keywords }}" type="button" 
+                                                            <button class="btn btn-outline-secondary btn-sm copy-keywords clickable-text" content="{{ $task->keywords }}" type="button" 
                                                             data-keywords="{{ $task->keywords }}"
                                                             title="@lang('general.copy_keywords')">
                                                             <i class="fas fa-copy"></i>
