@@ -65,7 +65,8 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            {{-- Date input --}} <div class="col-md-6">
+
+                                            {{-- Date input --}} <div class="col-md-4">
                                                 <div class="form-group"> <label
                                                         for="dateInput">{{ __('general.startdate') }} <span
                                                             class="text-danger"> *</span></label>
@@ -78,7 +79,7 @@
                                                 </div>
                                             </div>
 
-                                            {{-- Date input --}} <div class="col-md-6">
+                                            {{-- Date input --}} <div class="col-md-4">
                                                 <div class="form-group"> <label for="dateInput">{{ __('general.enddate') }}
                                                         <span class="text-danger"> *</span></label>
                                                     <div class="input-group">
@@ -89,17 +90,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="">
+
+                                        </div>
+
+                                        <div class="row">
+
+                                            <div class="col-md-12 d-flex justify-content-around mb-3">
+                                                <div class="mt-2">
                                                     <button type="submit" name="action" value="assign"
                                                         class="btn btn-primary">
                                                         @lang('general.assign_employee')
                                                     </button>
-
+    
                                                 </div>
                                                 <div class="mt-2">
-                                                    <button type="submit" name="action" value="delete"
-                                                        class="btn btn-danger">
+                                                    <button type="submit" name="action" value="delete" class="btn btn-danger">
                                                         @lang('general.delete_followups')
                                                     </button>
                                                 </div>
@@ -110,14 +115,13 @@
                                                     </button>
                                                 </div>
                                                 <div class="mt-2">
-                                                    <button type="button" id="openLinks" 
-                                                        class="btn btn-info">
+                                                    <button type="button" id="openLinks" class="btn btn-info">
                                                         @lang('general.openLinks')
                                                     </button>
                                                 </div>
                                             </div>
-
                                         </div>
+
                                         <table id="example1" class="table table-hover">
                                             <thead>
                                                 <tr>
@@ -165,40 +169,38 @@
 @endsection
 
 @push('scripts')
+    <script>
+        $('#openLinks').on('click', function() {
+            // Assuming `followups` is passed as a JavaScript variable
+            let followups = @json($followups);
 
-<script>
-$('#openLinks').on('click', function () {
-    // Assuming `followups` is passed as a JavaScript variable
-    let followups = @json($followups);
+            // Check the data structure
+            console.log('Followups:', followups);
 
-    // Check the data structure
-    console.log('Followups:', followups);
-
-    // Convert followups to an array if it's not already
-    if (!Array.isArray(followups)) {
-        followups = Object.values(followups);
-        console.log('Converted followups to array:', followups);
-    }
-
-    // Loop through the followups array and open each link
-    followups.forEach(function (followup) {
-        // Ensure each followup is a valid URL string
-        if (typeof followup === 'string' && followup.startsWith('http')) {
-            window.open(followup, '_blank');
-        } else if (typeof followup === 'object' && followup.title) {
-            // Handle case where followup is an object with a `title` property
-            if (typeof followup.title === 'string' && followup.title.startsWith('http')) {
-                window.open(followup.title, '_blank');
-            } else {
-                console.error('Invalid link property in followup:', followup);
+            // Convert followups to an array if it's not already
+            if (!Array.isArray(followups)) {
+                followups = Object.values(followups);
+                console.log('Converted followups to array:', followups);
             }
-        } else {
-            console.error('Invalid followup item:', followup);
-        }
-    });
-});
 
-</script>
+            // Loop through the followups array and open each link
+            followups.forEach(function(followup) {
+                // Ensure each followup is a valid URL string
+                if (typeof followup === 'string' && followup.startsWith('http')) {
+                    window.open(followup, '_blank');
+                } else if (typeof followup === 'object' && followup.title) {
+                    // Handle case where followup is an object with a `title` property
+                    if (typeof followup.title === 'string' && followup.title.startsWith('http')) {
+                        window.open(followup.title, '_blank');
+                    } else {
+                        console.error('Invalid link property in followup:', followup);
+                    }
+                } else {
+                    console.error('Invalid followup item:', followup);
+                }
+            });
+        });
+    </script>
 
     <script>
         document.getElementById('toggle-fullscreen').addEventListener('click', function() {

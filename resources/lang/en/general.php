@@ -117,6 +117,26 @@ return [
 
 "Password" => "Password",
 
+'followups' => 'Follow-ups',
+'allfollowups' => 'All Follow-ups',
+'finishedFollowups' => 'Finished Follow-ups',
+'add' => 'Add',
+'employees' => 'Employees',
+'select' => 'Select',
+'startdate' => 'Start Date',
+'enddate' => 'End Date',
+'assign_employee' => 'Assign Employee',
+'delete_followups' => 'Delete Follow-ups',
+'filter' => 'Filter',
+'openLinks' => 'Open Links',
+'title' => 'Title',
+'difficulty' => 'Difficulty',
+'created_at' => 'Created At',
+'yes' => 'Yes',
+'no' => 'No',
+
+
+
 "Confirm" => "Confirm",
 
 "Email" => "Email",
