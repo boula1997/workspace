@@ -224,6 +224,7 @@ class FollowupController extends Controller
         //    dd($followup->title);
         $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('status',1)->get();
+
         return view('admin.crud.followups.edit', compact('followup','employees','projects'));
     }
     /**
@@ -237,6 +238,8 @@ class FollowupController extends Controller
     {
         try {
             $data = $request->all();
+            $followups=Followup::where('title',$followup->title)->get();
+            foreach($followups as $followup) 
             $followup->update($data);
             return redirect()->back()->with(['success' => __('general.created_successfully')]);
         } catch (Exception $e) {

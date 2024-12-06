@@ -225,6 +225,8 @@ class TaskController extends Controller
     {
         try {
             $data = $request->all();
+            $tasks=Task::where('title',$task->title)->get();
+            foreach($tasks as $task)
             $task->update($data);
             return redirect()->back()->with(['success' => __('general.created_successfully')]);
         } catch (Exception $e) {
