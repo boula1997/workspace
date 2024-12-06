@@ -39,9 +39,11 @@
                                 </div>
                             </div>
                         </div>
-
-                        {{-- Multi Select Input Edit --}} <div class="form-group row"> <label
-                                class="col-form-label text-right col-lg-3 col-sm-12">{{ __('words.specifications') }}</label>
+                    </div>
+                    <div class="row">
+                        {{-- Multi Select Input Edit --}}
+                        <div class="form-group row"> <label
+                                class="col-form-label text-right">{{ __('general.employees') }}</label>
                             <div class="col-lg-4 col-md-9 col-sm-12"> <select class="form-control selectpicker"
                                     id="multiSelect1" multiple="multiple" data-live-search="true" name="employees[]">
                                     <option value="">{{ __('general.select') }}</option>
@@ -53,7 +55,8 @@
                                 </select> </div>
                         </div>
 
-                        {{-- Dynamic Select Input --}} <div class="col-md-6">
+                        {{-- Dynamic Select Input --}}
+                        <div class="col-md-6">
                             <div class="mb-3"> <label for=""
                                     class="form-label">{{ __('general.project') }}</label> <select
                                     class="form-select form-select-lg" name="project_id" id="project">
