@@ -132,7 +132,6 @@
                                                     <th>{{ __('general.employees') }}</th>
                                                     <th>{{ __('general.difficulty') }}</th>
                                                     <th>{{ __('general.created_at') }}</th>
-                                                    <th>{{ __('general.actions') }}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -150,14 +149,11 @@
                                                                 id="checkbox-{{ $followup->id }}">
                                                         </td>
                                                         <td>{{ followupEmployees($followup->title) }}</td>
-                                                        <td>{{ $followup->difficulty ? __('general.yes') : __('general.no') }}
+                                                        <td>{{ $followup->difficulty ? __
+                                                        ('general.yes') : __('general.no') }}
                                                         </td>
                                                         <td>{{ $followup->created_at }}</td>
-                                                        <td>
-                                                            <a href="{{ route('followups.edit', $followup) }}" title="edit">
-                                                                <i class="fas fa-edit  text-secondary  fa-lg"></i>
-                                                            </a>
-                                                        </td>
+
                                                     </tr>
                                                 @endforeach
                                             </tbody>
