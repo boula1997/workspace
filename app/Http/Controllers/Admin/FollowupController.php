@@ -95,11 +95,26 @@ class FollowupController extends Controller
 
 
         if ($action == 'filter') {
-            $employees=Admin::get();
-            $followups=Followup::where('created_at','>=', $request->startdate)->where('created_at','<=', $request->enddate)->get();
-            return view('admin.crud.followups.index', compact('followups','employees'))
+            $employees = Admin::get();
+        
+            // Validate and set default dates if necessary
+            $startdate = $request->startdate ?? '1970-01-01'; // Default to a very early date
+            $enddate = $request->enddate ?? now();           // Default to the current date and time
+        
+            // Ensure valid date formats
+            if (!strtotime($startdate) || !strtotime($enddate)) {
+                return redirect()->back()->with('error', __('Invalid date format.'));
+            }
+        
+            // Fetch filtered followups
+            $followups = Followup::whereDate('created_at', '>=', $startdate)
+                                 ->whereDate('created_at', '<=', $enddate)
+                                 ->get();
+        
+            return view('admin.crud.followups.index', compact('followups', 'employees'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);
         }
+        
         $followupIds = $request->input('followups');
          
         if(!isset($request->employees)&& $action == 'assign')

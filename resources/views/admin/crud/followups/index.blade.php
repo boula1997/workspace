@@ -105,14 +105,14 @@
                                                 </div>
                                                 <div class="mt-2">
                                                     <button type="submit" name="action" value="filter"
-                                                        class="btn btn-danger">
+                                                        class="btn btn-success">
                                                         @lang('general.filter')
                                                     </button>
                                                 </div>
                                                 <div class="mt-2">
                                                     <button type="button" id="openLinks" 
-                                                        class="btn btn-danger">
-                                                        @lang('general.filter')
+                                                        class="btn btn-info">
+                                                        @lang('general.openLinks')
                                                     </button>
                                                 </div>
                                             </div>
@@ -167,16 +167,39 @@
 @push('scripts')
 
 <script>
-    $('#openLinks').on('click',function () {
-        // Assuming `followups` is passed as a JavaScript variable
-        const followups = @json($followups);
+$('#openLinks').on('click', function () {
+    // Assuming `followups` is passed as a JavaScript variable
+    let followups = @json($followups);
 
-        // Loop through the followups array and log each title
-        followups.forEach(function (followup) {
-            window.open(followup);
-        });
+    // Check the data structure
+    console.log('Followups:', followups);
+
+    // Convert followups to an array if it's not already
+    if (!Array.isArray(followups)) {
+        followups = Object.values(followups);
+        console.log('Converted followups to array:', followups);
+    }
+
+    // Loop through the followups array and open each link
+    followups.forEach(function (followup) {
+        // Ensure each followup is a valid URL string
+        if (typeof followup === 'string' && followup.startsWith('http')) {
+            window.open(followup, '_blank');
+        } else if (typeof followup === 'object' && followup.title) {
+            // Handle case where followup is an object with a `title` property
+            if (typeof followup.title === 'string' && followup.title.startsWith('http')) {
+                window.open(followup.title, '_blank');
+            } else {
+                console.error('Invalid link property in followup:', followup);
+            }
+        } else {
+            console.error('Invalid followup item:', followup);
+        }
     });
+});
+
 </script>
+
     <script>
         document.getElementById('toggle-fullscreen').addEventListener('click', function() {
             document.body.classList.toggle('fullscreen-mode');
