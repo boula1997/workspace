@@ -17,6 +17,7 @@ class CreateFeesTable extends Migration
             $table->id();
             $table->double('amount')->nullable();
             $table->string('note')->nullable();
+            $table->string('rest')->nullable();
             $table->unsignedBigInteger('project_id')->nullable(); $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
 
             $table->timestamps();
