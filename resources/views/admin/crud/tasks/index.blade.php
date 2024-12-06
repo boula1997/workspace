@@ -112,10 +112,10 @@
               
                                                         <td class="d-flex justify-content-center flex-row">
 
-                                                            <a href="{{ route($route . '.edit', $module) }}" title="edit">
+                                                            <a href="{{ route('tasks.edit', $task) }}" title="edit">
                                                                 <i class="fas fa-edit  text-secondary  fa-lg"></i>
                                                             </a>
-                                                            
+
                                                             <button class="btn btn-outline-secondary btn-sm mx-1"
                                                                 data-toggle="modal" data-target="#keywordsModal"
                                                                 data-task-id="{{ $task->id }}"
