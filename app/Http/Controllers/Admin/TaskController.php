@@ -212,8 +212,8 @@ class TaskController extends Controller
         //    dd($task->title);
         $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('status',1)->get();
-        $selectedEmployees=$task->employees->pluck('id');
-        return view('admin.crud.tasks.edit', compact('task','employees','projects'));
+        $selectedEmployees=Task::where('title',$task->title)->pluck('employee_id')->toArray();
+        return view('admin.crud.tasks.edit', compact('task','employees','projects','selectedEmployees'));
     }
     /**
      * Update the specified resource in storage.
