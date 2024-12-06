@@ -27,6 +27,15 @@ class TaskController extends Controller
         $this->task = $task;
     }
 
+    public function updateKeywords(Request $request)
+{
+    $task = Task::findOrFail($request->task_id);
+    $task->keywords = $request->keywords;
+    $task->save();
+
+    return redirect()->back()->with('success', __('general.keywords_updated'));
+}
+
 
     public function index()
     {

@@ -1,17 +1,14 @@
 @extends('admin.layouts.master')
 
 @section('content')
-<style>
-
-
-
-.fullscreen-mode .sidebar,
-.fullscreen-mode .navbar,
-.fullscreen-mode .card-header .btn,
-.fullscreen-mode .content-wrapper .thisForm > *:not(.container) {
-    display: none !important;
-}
-</style>
+    <style>
+        .fullscreen-mode .sidebar,
+        .fullscreen-mode .navbar,
+        .fullscreen-mode .card-header .btn,
+        .fullscreen-mode .content-wrapper .thisForm>*:not(.container) {
+            display: none !important;
+        }
+    </style>
     <!-- Content Wrapper. Contains task content -->
     <div class="content-wrapper">
         <!-- Main content -->
@@ -27,12 +24,11 @@
                                     <div class="row">
                                         <div class="col-md-6 d-flex justify-content-start">
                                             @if (request()->routeIs('tasks.index'))
-                                                
-                                            <h1 class="card-title fw-bold">@lang('general.tasks')</h1>
+                                                <h1 class="card-title fw-bold">@lang('general.tasks')</h1>
                                             @elseif(request()->routeIs('tasks.all'))
-                                            <h1 class="card-title fw-bold">@lang('general.alltasks')</h1>
+                                                <h1 class="card-title fw-bold">@lang('general.alltasks')</h1>
                                             @else
-                                            <h1 class="card-title fw-bold">@lang('general.finishedTasks')</h1>
+                                                <h1 class="card-title fw-bold">@lang('general.finishedTasks')</h1>
                                             @endif
                                         </div>
                                         <div class="col-md-6 d-flex justify-content-end">
@@ -52,7 +48,7 @@
                                         </button>
 
                                     </div>
-                                    <form  action="{{ route('tasks.bulkAction') }}" method="POST">
+                                    <form action="{{ route('tasks.bulkAction') }}" method="POST">
                                         @csrf
                                         <div class="row d-flex align-items-center thisForm">
                                             {{-- Dynamic Select Input --}}
@@ -94,16 +90,18 @@
                                                     <th class="d-none">{{ __('general.select') }}</th>
                                                     <th>{{ __('general.employees') }}</th>
                                                     <th>{{ __('general.project') }}</th>
+                                                    <th>{{ __('general.actions') }}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($tasks as $task)
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
-                                                        <td class="{{ request()->routeIs('tasks.all') && $task->status==1?'text-success' : '' }}" style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 100px;"
-                                                        onclick="toggleCheckbox({{ $task->id }})">
-                                                        {{ $task->title }}
-                                                    </td>
+                                                        <td class="{{ request()->routeIs('tasks.all') && $task->status == 1 ? 'text-success' : '' }}"
+                                                            style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 100px;"
+                                                            onclick="toggleCheckbox({{ $task->id }})">
+                                                            {{ $task->title }}
+                                                        </td>
                                                         <td class="d-none">
                                                             <input type="checkbox" name="tasks[]"
                                                                 value="{{ $task->id }}"
@@ -111,6 +109,20 @@
                                                         </td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
                                                         <td>{{ $task->project->title }}</td>
+              
+                                                        <td class="d-flex justify-content-center flex-row">
+                                                            <button class="btn btn-outline-secondary btn-sm mx-1"
+                                                                data-toggle="modal" data-target="#keywordsModal"
+                                                                data-task-id="{{ $task->id }}"
+                                                                data-keywords="{{ $task->keywords }}" type="button">
+                                                                <i class="fas fa-key fa-lg"></i>
+                                                            </button>
+                                                            <button class="btn btn-outline-secondary btn-sm copy-keywords clickable-text" content="{{ $task->keywords }}" type="button" 
+                                                            data-keywords="{{ $task->keywords }}"
+                                                            title="@lang('general.copy_keywords')">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -125,20 +137,86 @@
         </div>
         <!-- /.content -->
     </div>
+
+
+    <div class="modal fade" id="keywordsModal" tabindex="-1" aria-labelledby="keywordsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="keywordsModalLabel">@lang('general.edit_keywords')</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="keywordsForm" action="{{ route('tasks.updateKeywords') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" name="task_id" id="taskId">
+                        <div class="form-group">
+                            <label for="taskKeywords">@lang('general.keywords')</label>
+                            <textarea class="form-control" name="keywords" id="taskKeywords" rows="3" placeholder="@lang('general.enter_keywords')"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('general.close')</button>
+                        <button type="submit" class="btn btn-primary">@lang('general.save')</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- /.content-wrapper -->
 @endsection
 
 @push('scripts')
-    <script>
+<script>
+    $(document).on('click', '.clickable-text', function(e) {
+        navigator.clipboard.writeText($(this).attr('content'));
 
-    document.getElementById('toggle-fullscreen').addEventListener('click', function() {
-        document.body.classList.toggle('fullscreen-mode');
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "{{app()->getLocale() == 'ar' ? 'toast-top-right' : 'toast-top-left'}}",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
 
-        const icon = this.querySelector('i');
-        icon.classList.toggle('fa-expand');
-        icon.classList.toggle('fa-compress');
-        this.textContent = icon.classList.contains('fa-expand') ? ' Full Screen' : ' Exit Full Screen';
+        toastr.success("Copied successfully!");
+
     });
+</script>
+    <script>
+        $(document).ready(function() {
+            $('#keywordsModal').on('show.bs.modal', function(event) {
+                const button = $(event.relatedTarget); // Button that triggered the modal
+                const taskId = button.data('task-id');
+                const keywords = button.data('keywords');
+
+                const modal = $(this);
+                modal.find('#taskId').val(taskId);
+                modal.find('#taskKeywords').val(keywords);
+            });
+        });
+
+        document.getElementById('toggle-fullscreen').addEventListener('click', function() {
+            document.body.classList.toggle('fullscreen-mode');
+
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-expand');
+            icon.classList.toggle('fa-compress');
+            this.textContent = icon.classList.contains('fa-expand') ? ' Full Screen' : ' Exit Full Screen';
+        });
 
 
         $(document).ready(function() {

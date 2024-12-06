@@ -139,6 +139,8 @@ Route::group(
 
             Route::put('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('update.profile');
             Route::get('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'edit'])->name('edit.profile');
+
+            Route::post('/tasks/update-keywords', [TaskController::class, 'updateKeywords'])->name('tasks.updateKeywords');
         });
     });
 }

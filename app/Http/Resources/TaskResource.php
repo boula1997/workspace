@@ -23,6 +23,7 @@ class TaskResource extends JsonResource
             'employee'=>$this->employee,
 
             'project'=>$this->project,
+            'keywords'=>$this->keywords,
         ];
     }
 }
