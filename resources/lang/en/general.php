@@ -111,7 +111,7 @@ return [
 
 "copy_keywords" => "Copy keywords",
 
-"enter_keywords" => "Enter keywords",
+"enter_keywords" => "Enter keywords, routes and file paths related to this task",
 
 "Dashboard" => "Dashboard",
 
