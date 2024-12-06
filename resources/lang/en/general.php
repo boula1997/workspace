@@ -85,6 +85,8 @@ return [
 
 
 "keywords_updated" => "Keywords updated",
+"keywords" => "Keywords",
+"close" => "Close",
 
 "allfollowups" => "Allfollowups",
 

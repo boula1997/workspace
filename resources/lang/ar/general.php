@@ -97,6 +97,8 @@ return [
 "delete_followups" => "حذف المتابعات",
 "actions" => "الإجراءات",
 "copy_keywords" => "نسخ الكلمات المفتاحية",
+"keywords" => "الكلمات المفتاحية",
+"close" => "اغلاق",
 "enter_keywords" => "أدخل الكلمات المفتاحية",
 "Dashboard" => "لوحة التحكم",
 "Password" => "كلمة المرور",
