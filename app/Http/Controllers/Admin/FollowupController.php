@@ -67,7 +67,18 @@ class FollowupController extends Controller
                 if(auth()->user()->type=='admin')
                 $followups = $this->followup->whereIn('status',$status)->orderBy('status')->latest()->get() ->unique('title');
                 else
-                $followups = $this->followup->whereIn('status',$status)->where('employee_id',auth()->user()->id) ->orderBy('status')->latest()->get() ->unique('title');
+                $followups = $this->followup
+                ->whereIn('status', $status)
+                ->where(function ($query) {
+                    $query->where('employee_id', auth()->user()->id)
+                          ->orWhereHas('employee', function ($query) {
+                              $query->where('name', 'All');
+                          });
+                })
+                ->orderBy('status')
+                ->latest()
+                ->get()
+                ->unique('title');
             }
             return view('admin.crud.followups.index', compact('followups','employees'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);

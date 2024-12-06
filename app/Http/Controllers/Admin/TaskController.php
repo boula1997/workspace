@@ -76,7 +76,19 @@ class TaskController extends Controller
                 if(auth()->user()->type=='admin')
                 $tasks = $this->task->whereIn('status',$status)->orderBy('status')->latest()->get() ->unique('title');
                 else
-                $tasks = $this->task->whereIn('status',$status)->where('employee_id',auth()->user()->id) ->orderBy('status')->latest()->get() ->unique('title');
+                $tasks = $this->task
+                ->whereIn('status', $status)
+                ->where(function ($query) {
+                    $query->where('employee_id', auth()->user()->id)
+                          ->orWhereHas('employee', function ($query) {
+                              $query->where('name', 'All');
+                          });
+                })
+                ->orderBy('status')
+                ->latest()
+                ->get()
+                ->unique('title');
+            
             }
             return view('admin.crud.tasks.index', compact('tasks','employees'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);
