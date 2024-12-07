@@ -156,6 +156,17 @@ function rest($project)
     return $project->cost-$totalFee;
 }
 
+function getFollowupTitles($followups)
+{
+    // Extract unique titles
+    $titles = $followups->pluck('title')->unique();
+
+    // Format the titles into the desired string
+    return $titles->reduce(function ($carry, $title) {
+        return $carry . ' start ' . $title;
+    }, '');
+}
+
 function taskEmployees($title){
     $employee_ids=Task::where('title',$title)->pluck('employee_id');
     $names=Admin::whereIn('id',$employee_ids)->pluck('name');
