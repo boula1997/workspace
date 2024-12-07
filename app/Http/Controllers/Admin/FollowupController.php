@@ -252,7 +252,7 @@ class FollowupController extends Controller
     public function update(FollowupRequest $request, Followup $followup)
     {
         try {
-            $data = $request->all();
+            $data = $request->except('employees');
             $followups=Followup::where('title',$followup->title)->get();
             foreach($followups as $followup) 
             $followup->update($data);
