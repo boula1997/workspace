@@ -32,7 +32,7 @@
 
                     <div class="row">
                         
-                        {{-- Multi Select Input Edit --}} <div class="form-group  col-md-4 ps-4"> <label
+                        {{-- Multi Select Input Edit --}} <div class="form-group  col-md-4 "> <label
                             class="col-form-label text-right col-lg-4 col-sm-12">{{ __('general.employees') }}</label>
                             <div class="col-lg-4 col-md-9 col-sm-12"> <select class="form-control selectpicker"
                                     id="multiSelect1" multiple="multiple" data-live-search="true" name="employees[]">
@@ -45,7 +45,7 @@
                                 </select> </div>
                         </div>
 
-                        {{-- Checkbox Input --}} <div class="col-md-4 ps-4">
+                        {{-- Checkbox Input --}} <div class="col-md-4 ">
                             <div class="form-group">
                                 <div class="form-group">
                                     <div class="form-check form-switch"> <input class="form-check-input"
@@ -56,7 +56,7 @@
                                 </div>
                             </div>
                             </div>
-                        {{-- Checkbox Input --}} <div class="col-md-4 ps-4">
+                        {{-- Checkbox Input --}} <div class="col-md-4 ">
                             <div class="form-group">
                                 <div class="form-group">
                                     <div class="form-check form-switch"> <input class="form-check-input"
