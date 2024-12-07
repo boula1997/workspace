@@ -28,20 +28,12 @@
                             </div>
                         </div>
 
-                        {{-- Checkbox Input --}} <div class="col-md-6 ps-4">
-                            <div class="form-group">
-                                <div class="form-group">
-                                    <div class="form-check form-switch"> <input class="form-check-input"
-                                            @checked(old('status', $followup->status)) type="checkbox" id="status" name="status"
-                                            value="1"> <label class="form-check-label"
-                                            for="status">{{ __('general.status') }} <span class="text-danger"> *
-                                            </span></label> </div>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
 
-                        {{-- Multi Select Input Edit --}} <div class="form-group row"> <label
-                                class="col-form-label text-right col-lg-4 col-sm-12">{{ __('words.specifications') }}</label>
+                    <div class="row">
+                        
+                        {{-- Multi Select Input Edit --}} <div class="form-group  col-md-4 ps-4"> <label
+                            class="col-form-label text-right col-lg-4 col-sm-12">{{ __('words.specifications') }}</label>
                             <div class="col-lg-4 col-md-9 col-sm-12"> <select class="form-control selectpicker"
                                     id="multiSelect1" multiple="multiple" data-live-search="true" name="employees[]">
                                     <option value="">{{ __('general.select') }}</option>
@@ -62,6 +54,7 @@
                                             for="difficulty">{{ __('general.difficulty') }} <span class="text-danger"> *
                                             </span></label> </div>
                                 </div>
+                            </div>
                             </div>
                         {{-- Checkbox Input --}} <div class="col-md-4 ps-4">
                             <div class="form-group">
