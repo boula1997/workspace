@@ -30,7 +30,7 @@
 
 
                         {{-- Multi Select Input Create --}}
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <label class="col-form-label text-right">{{ __('general.employees') }}</label>
                             <select class="form-control selectpicker" id="multiSelect1" multiple="multiple"
                                 data-live-search="true" name="employees[]">
@@ -43,7 +43,7 @@
                             </select>
                         </div>
 
-                        {{-- Checkbox Input --}} <div class="col-md-6 ps-4">
+                        {{-- Checkbox Input --}} <div class="col-md-4 ps-4">
                             <div class="form-group">
                                 <div class="form-group">
                                     <div class="form-check form-switch"> <input class="form-check-input"
@@ -54,7 +54,7 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- Checkbox Input --}} <div class="col-md-6 ps-4">
+                        {{-- Checkbox Input --}} <div class="col-md-4 ps-4">
                             <div class="form-group">
                                 <div class="form-group">
                                     <div class="form-check form-switch"> <input class="form-check-input"
