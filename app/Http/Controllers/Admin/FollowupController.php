@@ -119,6 +119,7 @@ class FollowupController extends Controller
             $difficulty = $request->difficulty ?? 0; // Default to a very early date
             $hasPhone = $request->hasPhone ?? 0; // Default to a very early date
             $enddate = $request->enddate ?? now()->format('Y-m-d');           // Default to the current date and time
+        dd([$startdate,$difficulty,$hasPhone,$enddate]);
             // Ensure valid date formats
             if (!strtotime($startdate) || !strtotime($enddate)) {
                 return redirect()->back()->with('error', __('Invalid date format.'));
