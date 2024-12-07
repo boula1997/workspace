@@ -116,6 +116,8 @@ class FollowupController extends Controller
         
             // Validate and set default dates if necessary
             $startdate = $request->startdate ?? '1970-01-01'; // Default to a very early date
+            $difficulty = $request->difficulty ?? 0; // Default to a very early date
+            $hasPhone = $request->hasPhone ?? 0; // Default to a very early date
             $enddate = $request->enddate ?? now();           // Default to the current date and time
         
             // Ensure valid date formats
