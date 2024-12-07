@@ -256,7 +256,13 @@ class FollowupController extends Controller
             $followups=Followup::where('title',$followup->title)->get();
             foreach($followups as $followup) 
             $followup->update($data);
-            return redirect()->back()->with(['success' => __('general.created_successfully')]);
+                      // Get the previous and the one before the previous route
+                      $previousRoute = session('previousRoute');
+                      $twoRoutesAgo = session('twoRoutesAgo');
+              
+                      // Redirect to either the previous or the one before
+                      return redirect($twoRoutesAgo)
+                          ->with(['success' => __('general.created_successfully')]);
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
