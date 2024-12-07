@@ -232,7 +232,13 @@ class TaskController extends Controller
             $tasks=Task::where('title',$task->title)->get();
             foreach($tasks as $task)
             $task->update($data);
-            return redirect()->back()->with(['success' => __('general.created_successfully')]);
+            // Get the previous and the one before the previous route
+            $previousRoute = session('previousRoute');
+            $twoRoutesAgo = session('twoRoutesAgo');
+    
+            // Redirect to either the previous or the one before
+            return redirect($twoRoutesAgo)
+                ->with(['success' => __('general.updated_successfully')]);
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
