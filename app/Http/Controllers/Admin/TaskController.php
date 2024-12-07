@@ -225,7 +225,7 @@ class TaskController extends Controller
     public function update(TaskRequest $request, Task $task)
     {
         try {
-            $data = $request->all();
+            $data = $request->except('employees');
             $tasks=Task::where('title',$task->title)->get();
             foreach($tasks as $task)
             $task->update($data);
