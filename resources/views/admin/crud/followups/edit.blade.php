@@ -33,7 +33,7 @@
                     <div class="row">
                         
                         {{-- Multi Select Input Edit --}} <div class="form-group  col-md-4 ps-4"> <label
-                            class="col-form-label text-right col-lg-4 col-sm-12">{{ __('words.specifications') }}</label>
+                            class="col-form-label text-right col-lg-4 col-sm-12">{{ __('general.employees') }}</label>
                             <div class="col-lg-4 col-md-9 col-sm-12"> <select class="form-control selectpicker"
                                     id="multiSelect1" multiple="multiple" data-live-search="true" name="employees[]">
                                     <option value="">{{ __('general.select') }}</option>
