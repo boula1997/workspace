@@ -156,6 +156,7 @@
                                                     <th>{{ __('general.difficulty') }}</th>
                                                     <th>{{ __('general.hasPhone') }}</th>
                                                     <th>{{ __('general.created_at') }}</th>
+                                                    <th>{{ __('general.actions') }}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -180,6 +181,11 @@
                                                         ('general.yes') : __('general.no') }}
                                                         </td>
                                                         <td>{{ $followup->created_at }}</td>
+                                                        <td>
+                                                            <a href="{{ route('followups.edit', $followup) }}" title="edit">
+                                                                <i class="fas fa-edit  text-secondary  fa-lg"></i>
+                                                            </a>
+                                                        </td>
 
                                                     </tr>
                                                 @endforeach
