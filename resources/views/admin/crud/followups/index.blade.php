@@ -92,6 +92,29 @@
                                                 </div>
                                             </div>
 
+                                                                  {{-- Checkbox Input --}} <div class="col-md-4 ps-4">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <div class="form-check form-switch"> <input class="form-check-input"
+                                            @checked(old('difficulty')) type="checkbox" id="difficulty" name="difficulty"
+                                            value="1"> <label class="form-check-label"
+                                            for="difficulty">{{ __('general.difficulty') }} <span class="text-danger"> *
+                                            </span></label> </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- Checkbox Input --}} <div class="col-md-4 ps-4">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <div class="form-check form-switch"> <input class="form-check-input"
+                                            @checked(old('hasPhone')) type="checkbox" id="hasPhone" name="hasPhone"
+                                            value="1"> <label class="form-check-label"
+                                            for="hasPhone">{{ __('general.hasPhone') }} <span class="text-danger"> *
+                                            </span></label> </div>
+                                </div>
+                            </div>
+                        </div>
+
                                         </div>
 
                                         <div class="row">

@@ -126,6 +126,8 @@ class FollowupController extends Controller
             // Fetch filtered followups
             $followups = Followup::whereDate('created_at', '>=', $startdate)
                                  ->whereDate('created_at', '<=', $enddate)
+                                 ->where('difficulty',$request->difficulty)
+                                 ->where('hasPhone',$request->hasPhone)
                                  ->get()->unique('title');
         
             return view('admin.crud.followups.index', compact('followups', 'employees'))
