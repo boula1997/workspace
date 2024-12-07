@@ -138,7 +138,8 @@ class TaskController extends Controller
                     Task::create([
                         'title'=>$tasksameTitle->title,
                         'employee_id'=>$employee,
-                        'project_id'=>$tasksameTitle->project_id
+                        'project_id'=>$tasksameTitle->project_id,
+                        'keywords'=>$tasksameTitle->keywords
                     ]);
                 }
                 $tasksameTitle->delete();
@@ -174,7 +175,8 @@ class TaskController extends Controller
                     Task::create([
                         'title' => $title,
                         'employee_id' => $employee,
-                        'project_id' => $request->project_id
+                        'project_id' => $request->project_id,
+   
                     ]);
                 }
             }
