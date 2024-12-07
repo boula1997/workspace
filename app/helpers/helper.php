@@ -161,11 +161,12 @@ function getFollowupTitles($followups)
     // Extract unique titles
     $titles = $followups->pluck('title')->unique();
 
-    // Format the titles into the desired string
+    // Format the titles into the desired string with each title on a new line
     return $titles->reduce(function ($carry, $title) {
-        return $carry . ' start ' . $title;
+        return $carry . "start " . $title . "\n";
     }, '');
 }
+
 
 function taskEmployees($title){
     $employee_ids=Task::where('title',$title)->pluck('employee_id');
