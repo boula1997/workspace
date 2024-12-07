@@ -113,27 +113,37 @@ class FollowupController extends Controller
 
         if ($action == 'filter') {
             $employees = Admin::get();
+            
+            // Validate request inputs
+            $validatedData = $request->validate([
+                'startdate' => 'nullable|date',
+                'enddate' => 'nullable|date',
+                'difficulty' => 'nullable|integer',
+                'hasPhone' => 'nullable|boolean',
+            ]);
         
-            // Validate and set default dates if necessary
-            $startdate = $request->startdate ?? '1970-01-01'; // Default to a very early date
-            $difficulty = $request->difficulty ?? 0; // Default to a very early date
-            $hasPhone = $request->hasPhone ?? 0; // Default to a very early date
-            $enddate = $request->enddate ?? '2029-01-01';           // Default to the current date and time
-            // Ensure valid date formats
-            if (!strtotime($startdate) || !strtotime($enddate)) {
-                return redirect()->back()->with('error', __('Invalid date format.'));
-            }
+            // Set default values
+            $startdate = $validatedData['startdate'] ?? '1970-01-01';
+            $enddate = $validatedData['enddate'] ?? now()->format('Y-m-d');
+            $difficulty = $validatedData['difficulty'] ?? null;
+            $hasPhone = $validatedData['hasPhone'] ?? null;
         
-            // Fetch filtered followups
+            // Build the query dynamically
             $followups = Followup::whereDate('created_at', '>=', $startdate)
                                  ->whereDate('created_at', '<=', $enddate)
-                                 ->where('difficulty',$request->difficulty)
-                                 ->where('hasPhone',$request->hasPhone)
-                                 ->get()->unique('title');
+                                 ->when($difficulty, function ($query, $difficulty) {
+                                     return $query->where('difficulty', $difficulty);
+                                 })
+                                 ->when($hasPhone, function ($query, $hasPhone) {
+                                     return $query->where('hasPhone', $hasPhone);
+                                 })
+                                 ->get()
+                                 ->unique('title');
         
             return view('admin.crud.followups.index', compact('followups', 'employees'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);
         }
+        
         
         $followupIds = $request->input('followups');
          
