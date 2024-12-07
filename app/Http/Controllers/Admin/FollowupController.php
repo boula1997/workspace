@@ -253,6 +253,8 @@ class FollowupController extends Controller
     {
         try {
             $data = $request->except('employees');
+            $data['difficulty']=$request->has('difficulty')?1:0;
+            $data['hasPhone']=$request->has('hasPhone')?1:0;
             $followups=Followup::where('title',$followup->title)->get();
             foreach($followups as $followup) 
             $followup->update($data);
