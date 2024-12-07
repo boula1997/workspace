@@ -131,6 +131,7 @@
                                                     <th class="d-none">{{ __('general.select') }}</th>
                                                     <th>{{ __('general.employees') }}</th>
                                                     <th>{{ __('general.difficulty') }}</th>
+                                                    <th>{{ __('general.hasPhone') }}</th>
                                                     <th>{{ __('general.created_at') }}</th>
                                                 </tr>
                                             </thead>
@@ -150,6 +151,9 @@
                                                         </td>
                                                         <td>{{ followupEmployees($followup->title) }}</td>
                                                         <td>{{ $followup->difficulty ? __
+                                                        ('general.yes') : __('general.no') }}
+                                                        </td>
+                                                        <td>{{ $followup->hasPhone ? __
                                                         ('general.yes') : __('general.no') }}
                                                         </td>
                                                         <td>{{ $followup->created_at }}</td>

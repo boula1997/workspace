@@ -23,6 +23,7 @@ class FollowupResource extends JsonResource
             'employee'=>$this->employee,
 
             'difficulty'=>$this->difficulty,
+            'hasPhone'=>$this->hasPhone,
         ];
     }
 }

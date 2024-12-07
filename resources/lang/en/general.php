@@ -131,6 +131,7 @@ return [
 'openLinks' => 'Open Links',
 'title' => 'Title',
 'difficulty' => 'Difficulty',
+'hasPhone' => 'Has Phone',
 'created_at' => 'Created At',
 'yes' => 'Yes',
 'no' => 'No',

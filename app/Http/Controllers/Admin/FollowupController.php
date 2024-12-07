@@ -178,12 +178,14 @@ class FollowupController extends Controller
         try {
             $titles = explode('+', $request->title);
             $data['difficulty']=$request->has('difficulty')?1:0;
+            $data['hasPhone']=$request->has('hasPhone')?1:0;
             foreach ($titles as $title) {
                 foreach ($request->employees as $employee) {
                     Followup::create([
                         'title' => $title,
                         'employee_id' => $employee,
                         'difficulty' => $data['difficulty'],
+                        'hasPhone' => $data['hasPhone'],
                     ]);
                 }
             }
