@@ -166,7 +166,9 @@
                                                         <td class="{{ request()->routeIs('followups.all') && $followup->status == 1 ? 'text-success' : '' }}"
                                                             style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 100px;"
                                                             onclick="toggleCheckbox({{ $followup->id }})">
-                                                            {{ $followup->title }}
+                                                            <a href="{{ $followup->title }}" target="__blank">
+                                                                {{ $followup->title }}
+                                                            </a>
                                                         </td>
                                                         <td class="d-none">
                                                             <input type="checkbox" name="followups[]"
