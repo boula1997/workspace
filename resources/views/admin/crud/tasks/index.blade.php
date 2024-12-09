@@ -159,7 +159,7 @@
                         <input type="hidden" name="task_id" id="taskId">
                         <div class="form-group">
                             <label for="taskKeywords">@lang('general.keywords')</label>
-                            <textarea class="form-control" name="keywords" id="taskKeywords" rows="50" placeholder="@lang('general.enter_keywords')"></textarea>
+                            <textarea class="form-control" name="keywords" id="taskKeywords" rows="18" placeholder="@lang('general.enter_keywords')"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
