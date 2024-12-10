@@ -109,7 +109,7 @@
                                                         </td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
                                                         <td>{{ $task->project->title }}</td>
-              
+
                                                         <td>
 
                                                             <a href="{{ route('tasks.edit', $task) }}" title="edit">
@@ -123,10 +123,12 @@
                                                                 <i class="fas fa-key fa-lg"></i>
                                                             </button>
 
-                                                            <button class="btn btn-outline-secondary btn-sm copy-keywords clickable-text" content="{{ $task->keywords }}" type="button" 
-                                                            data-keywords="{{ $task->keywords }}"
-                                                            title="@lang('general.copy_keywords')">
-                                                            <i class="fas fa-copy"></i>
+                                                            <button
+                                                                class="btn btn-outline-secondary btn-sm copy-keywords clickable-text"
+                                                                content="{{ $task->keywords }}" type="button"
+                                                                data-keywords="{{ $task->keywords }}"
+                                                                title="@lang('general.copy_keywords')">
+                                                                <i class="fas fa-copy"></i>
                                                             </button>
 
                                                         </td>
@@ -177,19 +179,28 @@
 @endsection
 
 @push('scripts')
-
     <script>
         $(document).ready(function() {
-            $('#keywordsModal').on('show.bs.modal', function(event) {
-                const button = $(event.relatedTarget); // Button that triggered the modal
-                const taskId = button.data('task-id');
-                const keywords = button.data('keywords');
+            const keywordsModal = $('#keywordsModal');
 
-                const modal = $(this);
-                modal.find('#taskId').val(taskId);
-                modal.find('#taskKeywords').val(keywords);
+            // Load keywords from localStorage when the modal is shown
+            keywordsModal.on('show.bs.modal', function(event) {
+                const button = $(event.relatedTarget);
+                const taskId = button.data('task-id');
+                const savedKeywords = localStorage.getItem(`task_keywords_${taskId}`);
+
+                $('#taskId').val(taskId);
+                $('#taskKeywords').val(savedKeywords || button.data('keywords') || '');
+            });
+
+            // Save keywords to localStorage on change
+            $('#taskKeywords').on('input', function() {
+                const taskId = $('#taskId').val();
+                const keywords = $(this).val();
+                localStorage.setItem(`task_keywords_${taskId}`, keywords);
             });
         });
+
 
         document.getElementById('toggle-fullscreen').addEventListener('click', function() {
             document.body.classList.toggle('fullscreen-mode');
