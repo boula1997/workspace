@@ -110,7 +110,7 @@
                                                         <td>{{ taskEmployees($task->title) }}</td>
                                                         <td>{{ $task->project->title }}</td>
               
-                                                        <td class="d-flex justify-content-center flex-row">
+                                                        <td>
 
                                                             <a href="{{ route('tasks.edit', $task) }}" title="edit">
                                                                 <i class="fas fa-edit  text-secondary  fa-lg"></i>
@@ -122,11 +122,13 @@
                                                                 data-keywords="{{ $task->keywords }}" type="button">
                                                                 <i class="fas fa-key fa-lg"></i>
                                                             </button>
+
                                                             <button class="btn btn-outline-secondary btn-sm copy-keywords clickable-text" content="{{ $task->keywords }}" type="button" 
                                                             data-keywords="{{ $task->keywords }}"
                                                             title="@lang('general.copy_keywords')">
                                                             <i class="fas fa-copy"></i>
-                                                        </button>
+                                                            </button>
+
                                                         </td>
                                                     </tr>
                                                 @endforeach
