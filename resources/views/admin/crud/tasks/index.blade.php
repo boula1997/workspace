@@ -119,7 +119,8 @@
                                                             <button class="btn btn-outline-secondary btn-sm mx-1"
                                                                 data-toggle="modal" data-target="#keywordsModal"
                                                                 data-task-id="{{ $task->id }}"
-                                                                data-keywords="{{ $task->keywords }}" type="button">
+                                                                data-keywords="{{ $task->keywords }}"
+                                                                data-task-title="{{ $task->title }}" type="button">
                                                                 <i class="fas fa-key fa-lg"></i>
                                                             </button>
 
@@ -183,11 +184,15 @@
         $(document).ready(function() {
             const keywordsModal = $('#keywordsModal');
 
-            // Load keywords from localStorage when the modal is shown
+            // Load task title and keywords when the modal is shown
             keywordsModal.on('show.bs.modal', function(event) {
                 const button = $(event.relatedTarget);
                 const taskId = button.data('task-id');
+                const taskTitle = button.data('task-title'); // Get task title
                 const savedKeywords = localStorage.getItem(`task_keywords_${taskId}`);
+
+                // Update modal title
+                $('#keywordsModalLabel').text(taskTitle);
 
                 $('#taskId').val(taskId);
                 $('#taskKeywords').val(savedKeywords || button.data('keywords') || '');
@@ -200,6 +205,7 @@
                 localStorage.setItem(`task_keywords_${taskId}`, keywords);
             });
         });
+
 
 
         document.getElementById('toggle-fullscreen').addEventListener('click', function() {
