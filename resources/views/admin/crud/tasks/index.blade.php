@@ -80,7 +80,7 @@
                                                 </select>
                                             </div>
 
-                                            <input type="hidden" value="{{ request()->route() }}" name="type">
+                                            <input type="text" value="{{ request()->routeName() }}" name="type">
 
                                             <div class="col-md-4">
                                                 <div class="">
