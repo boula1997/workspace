@@ -161,13 +161,14 @@ class TaskController extends Controller
             }; 
             return redirect()->back()->with('success', __('Tasks deleted successfully.'));
         }else if($action=='filterProject'){
-
             if($request->type=="tasks.all")
             $tasks=Task::whereIn('project_id', $request->projects)->get();
             else if($request->type=="tasks.index")
             $tasks=Task::whereIn('project_id', $request->projects)->where('status',1)->get();
             else if($request->type=="tasks.finished")
             $tasks=Task::whereIn('project_id', $request->projects)->where('status',0)->get();
+
+            dd($request->type,$tasks);
 
             $employees=Admin::orderBy('name', 'ASC')->get();
             $projects=Project::orderBy('title', 'ASC')->get();
