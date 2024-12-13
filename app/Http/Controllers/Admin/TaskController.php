@@ -100,7 +100,7 @@ class TaskController extends Controller
                 ->unique('title');
             
             }
-            
+
             return view('admin.crud.tasks.index', compact('tasks','employees','projects'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);
         } catch (Exception $e) {
@@ -164,9 +164,9 @@ class TaskController extends Controller
         }else if($action=='filterProject'){
          
             if($request->route_name=="tasks.index")
-            $tasks=Task::whereIn('project_id', $request->projects)->where('status',1)->get();
-            else if($request->route_name=="tasks.finished")
             $tasks=Task::whereIn('project_id', $request->projects)->where('status',0)->get();
+            else if($request->route_name=="tasks.finished")
+            $tasks=Task::whereIn('project_id', $request->projects)->where('status',1)->get();
             else
             $tasks=Task::whereIn('project_id', $request->projects)->get();
 
