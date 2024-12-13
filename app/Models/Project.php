@@ -17,5 +17,6 @@ class Project extends Model
     public $timestamps = true;
     
     public function fees(){ return $this->hasMany(Fee::class); }
+    public function tasks(){ return $this->hasMany(Task::class); }
 
 }
