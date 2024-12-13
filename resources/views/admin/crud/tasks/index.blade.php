@@ -75,7 +75,7 @@
                                                     @foreach ($projects as $project)
                                                         <option value="{{ $project->id }}"
                                                             {{ collect(old('projects'))->contains($project->id) ? 'selected' : '' }}>
-                                                            {{ $project->name }}</option>
+                                                            {{ $project->title }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -92,6 +92,12 @@
                                                     <button type="submit" name="action" value="delete"
                                                         class="btn btn-danger">
                                                         @lang('general.delete_tasks')
+                                                    </button>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <button type="submit" name="action" value="filterProject"
+                                                        class="btn btn-success">
+                                                       {{ __('general.filter_projects') }}
                                                     </button>
                                                 </div>
                                             </div>

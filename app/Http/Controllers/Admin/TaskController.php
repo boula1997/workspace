@@ -125,12 +125,19 @@ class TaskController extends Controller
 
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
+
          
         if(!isset($request->employees)&& $action == 'assign')
         return redirect()->back()->with('error', __('Select Employee!'));
-    
-        $task=Task::whereIn('id', $taskIds)->first();
-        $tasks=Task::whereIn('id', $taskIds)->get();
+
+        if(!isset($request->projects)&& $action == 'filterProject')
+        return redirect()->back()->with('error', __('Select Project!'));
+         if(isset($taskIds)){
+             $task=Task::whereIn('id', $taskIds)->first();
+             $tasks=Task::whereIn('id', $taskIds)->get();
+         }else{
+          $tasks=[];
+         }
         if ($action == 'assign') {
             foreach($tasks as $task) {
                 $taskssameTitles=Task::where('title', $task->title)->get();
@@ -152,6 +159,9 @@ class TaskController extends Controller
             foreach($tasks as $task) {
              Task::where('title',$task->title)->update(['status' => !$task->status]);
             }; 
+            return redirect()->back()->with('success', __('Tasks deleted successfully.'));
+        }else if($action=='filterProject'){
+            $tasks=Task::whereIn('project_id', $request->projects)->get();
             return redirect()->back()->with('success', __('Tasks deleted successfully.'));
         }
     
