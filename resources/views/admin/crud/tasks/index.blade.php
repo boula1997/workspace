@@ -80,7 +80,7 @@
                                                 </select>
                                             </div>
 
-                                            <input type="hidden" name="route_name" value="{{ Route::currentRouteName() }}">
+                                            <input type="hidden" name="route_name" value="{{ isset($type)?$type:Route::currentRouteName() }}">
 
                                             <div class="col-md-4">
                                                 <div class="">

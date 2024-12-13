@@ -100,6 +100,7 @@ class TaskController extends Controller
                 ->unique('title');
             
             }
+            
             return view('admin.crud.tasks.index', compact('tasks','employees','projects'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);
         } catch (Exception $e) {
@@ -174,7 +175,8 @@ class TaskController extends Controller
 
             $employees=Admin::orderBy('name', 'ASC')->get();
             $projects=Project::orderBy('title', 'ASC')->get();
-            return view('admin.crud.tasks.index', compact('tasks','employees','projects'))
+            $type=$request->route_name;
+            return view('admin.crud.tasks.index', compact('tasks','employees','projects','type'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         }
     
