@@ -169,7 +169,7 @@ class TaskController extends Controller
             $tasks=Task::whereIn('project_id', $request->projects)->where('status',0)->get();
            
 
-            dd($request->type,$tasks);
+            dd($request->type,$tasks,$request->all());
 
             $employees=Admin::orderBy('name', 'ASC')->get();
             $projects=Project::orderBy('title', 'ASC')->get();
