@@ -130,6 +130,7 @@ return [
 'filter' => 'Filter',
 'openLinks' => 'Open Links',
 'title' => 'Title',
+'filter_project' => 'Filter Projects',
 'difficulty' => 'Difficulty',
 'hasPhone' => 'Has Phone',
 'created_at' => 'Created At',
