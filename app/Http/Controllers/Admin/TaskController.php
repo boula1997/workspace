@@ -161,9 +161,11 @@ class TaskController extends Controller
             }; 
             return redirect()->back()->with('success', __('Tasks deleted successfully.'));
         }else if($action=='filterProject'){
-            dd($request->projects);
             $tasks=Task::whereIn('project_id', $request->projects)->get();
-            return redirect()->back()->with('success', __('Tasks deleted successfully.'));
+            $employees=Admin::orderBy('name', 'ASC')->get();
+            $projects=Project::orderBy('title', 'ASC')->get();
+            return view('admin.crud.tasks.index', compact('tasks','employees','projects'))
+            ->with('i', (request()->input('page', 1) - 1) * 5);
         }
     
         return redirect()->back()->with('error', __('Invalid action selected.'));
