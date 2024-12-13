@@ -85,7 +85,7 @@ return [
 
 "Logout" => "تسجيل الخروج",
 
-'filter_project' => 'فلتر مشاريع',
+'filter_projects' => 'فلتر مشاريع',
 'followups' => 'متابعة',
     'allfollowups' => 'كل المتابعات',
     'finishedFollowups' => 'المتابعات المنتهية',
