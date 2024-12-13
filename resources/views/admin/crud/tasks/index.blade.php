@@ -65,6 +65,21 @@
                                                     @endforeach
                                                 </select>
                                             </div>
+                                            {{-- Dynamic Select Input --}}
+                                            <div class="col-md-4 mb-4">
+                                                <label
+                                                    class="col-form-label text-right">{{ __('general.projects') }}</label>
+                                                <select class="form-control selectpicker" id="multiSelect1"
+                                                    multiple="multiple" data-live-search="true" name="projects[]">
+                                                    <option value="">{{ __('general.select') }}</option>
+                                                    @foreach ($projects as $project)
+                                                        <option value="{{ $project->id }}"
+                                                            {{ collect(old('projects'))->contains($project->id) ? 'selected' : '' }}>
+                                                            {{ $project->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
                                             <div class="col-md-4">
                                                 <div class="">
                                                     <button type="submit" name="action" value="assign"
@@ -181,6 +196,7 @@
 
 @push('scripts')
     <script>
+        
         $(document).ready(function() {
             const keywordsModal = $('#keywordsModal');
 

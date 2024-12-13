@@ -44,6 +44,7 @@ class TaskController extends Controller
     {
         try {
             $employees=Admin::orderBy('name', 'ASC')->get();
+            $projects=Project::orderBy('title', 'ASC')->get();
 
             if(request()->routeIs('tasks.finished'))
             $status=[1];
@@ -99,7 +100,7 @@ class TaskController extends Controller
                 ->unique('title');
             
             }
-            return view('admin.crud.tasks.index', compact('tasks','employees'))
+            return view('admin.crud.tasks.index', compact('tasks','employees','projects'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);
         } catch (Exception $e) {
             dd($e->getMessage());
