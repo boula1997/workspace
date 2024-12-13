@@ -80,6 +80,8 @@
                                                 </select>
                                             </div>
 
+                                            <input type="hidden" value="{{ request()->route() }}" name="type">
+
                                             <div class="col-md-4">
                                                 <div class="">
                                                     <button type="submit" name="action" value="assign"

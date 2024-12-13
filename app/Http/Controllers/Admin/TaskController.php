@@ -122,7 +122,7 @@ class TaskController extends Controller
     public function bulkAction(Request $request)
     {
 
-
+        dd($request->all());
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
 
