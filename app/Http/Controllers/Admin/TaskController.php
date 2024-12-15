@@ -166,11 +166,11 @@ class TaskController extends Controller
         }else if($action=='filterProject'){
          
             if($request->route_name=="tasks.index")
-            $tasks=Task::whereIn('project_id', $request->projects)->where('status',0)->orderBy('project_id','desc')->get();
+            $tasks=Task::whereIn('project_id', $request->projects)->where('status',0)->orderBy('project_id','desc')->get()->unique('title');
             else if($request->route_name=="tasks.finished")
-            $tasks=Task::whereIn('project_id', $request->projects)->where('status',1)->orderBy('project_id','desc')->get();
+            $tasks=Task::whereIn('project_id', $request->projects)->where('status',1)->orderBy('project_id','desc')->get()->unique('title');
             else
-            $tasks=Task::whereIn('project_id', $request->projects)->orderBy('project_id','desc')->get();
+            $tasks=Task::whereIn('project_id', $request->projects)->orderBy('project_id','desc')->get()->unique('title');
 
            
 
