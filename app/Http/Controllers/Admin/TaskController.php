@@ -172,9 +172,6 @@ class TaskController extends Controller
             else
             $tasks=Task::whereIn('project_id', $request->projects)->orderBy('project_id','desc')->get()->unique('title');
 
-           
-
-
             $employees=Admin::orderBy('name', 'ASC')->get();
             $projects = Project::whereHas('tasks', function ($query) {
                $query->whereNotNull('id'); // Ensures tasks exist
