@@ -177,8 +177,8 @@ class TaskController extends Controller
 
             $employees=Admin::orderBy('name', 'ASC')->get();
             $projects = Project::whereHas('tasks', function ($query) {
-    $query->whereNotNull('id'); // Ensures tasks exist
-})->orderBy('title', 'ASC')->get();
+               $query->whereNotNull('id'); // Ensures tasks exist
+            })->orderBy('title', 'ASC')->get();
             $type=$request->route_name;
             return view('admin.crud.tasks.index', compact('tasks','employees','projects','type'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
