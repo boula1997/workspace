@@ -258,18 +258,16 @@ class TaskController extends Controller
     {
         try {
 
-        $taskssameTitles=Task::where('title', $task->title)->get();
-        foreach($taskssameTitles as $tasksameTitle){
-                foreach($request->employees as $employee){
-                Task::create([
-                    'title'=>$tasksameTitle->title,
-                    'employee_id'=>$employee,
-                    'project_id'=>$tasksameTitle->project_id,
-                    'keywords'=>$tasksameTitle->keywords
-                ]);
-            }
-            $tasksameTitle->delete();
-                }
+        foreach($request->employees as $employee){
+        Task::create([
+            'title'=>$task->title,
+            'employee_id'=>$employee,
+            'project_id'=>$task->project_id,
+            'keywords'=>$task->keywords
+        ]);
+        }
+      $task->delete();
+
             
             // Get the previous and the one before the previous route
             $previousRoute = session('previousRoute');
