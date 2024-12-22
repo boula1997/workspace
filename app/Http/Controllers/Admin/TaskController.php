@@ -257,10 +257,21 @@ class TaskController extends Controller
     public function update(TaskRequest $request, Task $task)
     {
         try {
-            $data = $request->except('employees');
-            $tasks=Task::where('title',$task->title)->get();
-            foreach($tasks as $task)
-            $task->update($data);
+                    foreach($tasks as $task) {
+                $taskssameTitles=Task::where('title', $task->title)->get();
+                foreach($taskssameTitles as $tasksameTitle){
+                    foreach($request->employees as $employee){
+                    Task::create([
+                        'title'=>$tasksameTitle->title,
+                        'employee_id'=>$employee,
+                        'project_id'=>$tasksameTitle->project_id,
+                        'keywords'=>$tasksameTitle->keywords
+                    ]);
+                }
+                $tasksameTitle->delete();
+             }
+            }
+
             // Get the previous and the one before the previous route
             $previousRoute = session('previousRoute');
             $twoRoutesAgo = session('twoRoutesAgo');
