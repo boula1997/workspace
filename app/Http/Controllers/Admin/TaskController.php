@@ -36,7 +36,7 @@ class TaskController extends Controller
         $task->save();
     }
 
-    return redirect()->back()->with('success', __('general.keywords_updated'));
+    return response()->json(['success'=>'updated successfully']);
 }
 
 

@@ -181,7 +181,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="keywordsForm" action="{{ route('tasks.updateKeywords') }}" method="POST">
+                <form id="keywordsForm"  method="POST">
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" name="task_id" id="taskId">
@@ -204,6 +204,59 @@
 
 @push('scripts')
     <script>
+
+$(document).ready(function () {
+    // Include CSRF token in all AJAX requests
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $('#keywordsForm').submit(function (event) {
+        event.preventDefault();
+        
+        // Serialize form data
+        var formData = $(this).serialize();
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ route("tasks.updateKeywords") }}',
+            data: formData,
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": true,
+                        "positionClass": "{{app()->getLocale() == 'ar' ? 'toast-top-right' : 'toast-top-left'}}",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": "300",
+                        "hideDuration": "1000",
+                        "timeOut": "5000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    };
+
+                    toastr.success("Updated successfully!");
+                } else {
+                    // Handle validation errors
+                    $('#successMsg').text('');
+                    $.each(response.errors, function (key, value) {
+                        $('#' + key + 'Error').text(value);
+                    });
+                }
+            }
+        });
+    });
+});
+
         
         $(document).ready(function() {
             const keywordsModal = $('#keywordsModal');

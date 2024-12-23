@@ -34,6 +34,8 @@ return [
     'lifetime' => env('SESSION_LIFETIME', 120),
 
     'expire_on_close' => false,
+    'cookie_lifetime' => 540, // Optional if needed for manual alignment
+
 
     /*
     |--------------------------------------------------------------------------
