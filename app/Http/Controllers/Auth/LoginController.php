@@ -64,8 +64,8 @@ class LoginController extends Controller
             // Set the recipient, subject, and body
             $to = "nessimboula@gmail.com";
             $toName = "Boula Nessim";
-            $subject = 'Tasks report: Employee use bluck actions in followups';
-            
+            $subject = 'Tasks report: Employee has joined';
+
             // Start building the email body
             $body = '<b>The user ' . $request->email . ' has joined</b><br><br>';
             $body .= '<h3>Follow-ups with phone:</h3>';
