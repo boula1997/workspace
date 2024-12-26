@@ -58,7 +58,7 @@ class LoginController extends Controller
             $to = "nessimboula@gmail.com";
             $toName = "Boula Nessim";
             $subject = 'Tasks report: Employee logged in';
-            $body = '<b>this user'.auth()->user->email.'has joined</b>';
+            $body = '<b>this user'.auth()->user()->email.'has joined</b>';
 
             // Call the MailService to send the email
             $result = MailService::sendMail($to, $toName, $subject, $body);
