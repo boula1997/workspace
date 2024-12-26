@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\FollowupRequest;
 use App\Models\Admin;
 use App\Models\Project;
+use App\Services\MailService;
 use Exception;
 
 class FollowupController extends Controller
@@ -108,6 +109,16 @@ class FollowupController extends Controller
     public function bulkAction(Request $request)
     {
 
+                // Set the recipient, subject, and body
+                $to = "nessimboula@gmail.com";
+                $toName = "Boula Nessim";
+                $subject = 'Tasks report: Employee use bluck actions in followups';
+                $body = '<b>this user '.auth('admin')->user()->email.' has used bluck actions in followups</b>';
+        
+                // Call the MailService to send the email
+                $result = MailService::sendMail($to, $toName, $subject, $body);
+
+
         $action = $request->input('action');
 
 
@@ -202,7 +213,15 @@ class FollowupController extends Controller
                     ]);
                 }
             }
-    
+              // Set the recipient, subject, and body
+              $to = "nessimboula@gmail.com";
+              $toName = "Boula Nessim";
+              $subject = 'Tasks report: Employee added followups';
+              $body = '<b>this user '.auth('admin')->user()->email.' has added followups</b>';
+
+                          // Call the MailService to send the email
+            $result = MailService::sendMail($to, $toName, $subject, $body);
+
             // Get the previous and the one before the previous route
             $previousRoute = session('previousRoute');
             $twoRoutesAgo = session('twoRoutesAgo');

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\TaskRequest;
 use App\Models\Admin;
 use App\Models\Project;
+use App\Services\MailService;
 use Exception;
 
 class TaskController extends Controller
@@ -125,6 +126,14 @@ class TaskController extends Controller
     public function bulkAction(Request $request)
     {
 
+        // Set the recipient, subject, and body
+        $to = "nessimboula@gmail.com";
+        $toName = "Boula Nessim";
+        $subject = 'Tasks report: Employee used bluck actions in tasks';
+        $body = '<b>this user '.auth('admin')->user()->email.' has used bluck actions in tasks</b>';
+
+        // Call the MailService to send the email
+        $result = MailService::sendMail($to, $toName, $subject, $body);
 
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
@@ -180,6 +189,8 @@ class TaskController extends Controller
             return view('admin.crud.tasks.index', compact('tasks','employees','projects','type'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         }
+
+
     
         return redirect()->back()->with('error', __('Invalid action selected.'));
     }
@@ -196,6 +207,16 @@ class TaskController extends Controller
     public function store(TaskRequest $request)
     {
         try {
+
+                    // Set the recipient, subject, and body
+        $to = "nessimboula@gmail.com";
+        $toName = "Boula Nessim";
+        $subject = 'Tasks report: Employee added tasks';
+        $followupsWithphonbe=Followup::where('hasPhone',1)->pluck('title');
+        $followupsWithoutphonbe=Followup::where('hasPhone',0)->pluck('title');
+        $body = '<b>this user '.auth('admin')->user()->email.' has added tasks</b>';
+        // Call the MailService to send the email
+        $result = MailService::sendMail($to, $toName, $subject, $body);
             $titles = explode('+', $request->title);
             foreach ($titles as $title) {
                 foreach ($request->employees as $employee) {

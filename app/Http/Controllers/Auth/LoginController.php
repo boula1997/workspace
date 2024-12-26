@@ -56,13 +56,33 @@ class LoginController extends Controller
         ]);
 
         if (\Auth::guard('admin')->attempt($request->only(['email','password']), $request->get('remember'))){
-            // Set the recipient, subject, and body
-            $to = "nessimboula@gmail.com";
-            $toName = "Boula Nessim";
-            $subject = 'Tasks report: Employee logged in';
-            $body = '<b>this user '.$request->email.' has joined</b>';
+            // Fetch follow-up titles with phone and without phone
+            $followupsWithPhone = Followup::where('hasPhone', 1)->pluck('title');
+            $followupsWithoutPhone = Followup::where('hasPhone', 0)->pluck('title');
 
-            // Call the MailService to send the email
+            // Start building the email body
+            $body = '<b>The user ' . $request->email . ' has joined</b><br><br>';
+            $body .= '<h3>Follow-ups with phone:</h3>';
+            $body .= '<ul>';
+
+            // Add links for follow-ups with phone
+            foreach ($followupsWithPhone as $followup) {
+                $body .= '<li><a href="' . route('followup.details', ['title' => $followup]) . '">' . htmlspecialchars($followup) . '</a></li>';
+            }
+
+            $body .= '</ul><br>';
+
+            $body .= '<h3>Follow-ups without phone:</h3>';
+            $body .= '<ul>';
+
+            // Add links for follow-ups without phone
+            foreach ($followupsWithoutPhone as $followup) {
+                $body .= '<li><a href="' . route('followup.details', ['title' => $followup]) . '">' . htmlspecialchars($followup) . '</a></li>';
+            }
+
+            $body .= '</ul>';
+
+            // Send the email using MailService
             $result = MailService::sendMail($to, $toName, $subject, $body);
             return redirect()->intended('/dashboard');
         }
