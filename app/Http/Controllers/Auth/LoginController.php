@@ -61,7 +61,11 @@ class LoginController extends Controller
             $followupsWithPhone = Followup::where('hasPhone', 1)->distinct()->pluck('title');
             $followupsWithoutPhone = Followup::where('hasPhone', 0)->distinct()->pluck('title');
 
-
+            // Set the recipient, subject, and body
+            $to = "nessimboula@gmail.com";
+            $toName = "Boula Nessim";
+            $subject = 'Tasks report: Employee use bluck actions in followups';
+            
             // Start building the email body
             $body = '<b>The user ' . $request->email . ' has joined</b><br><br>';
             $body .= '<h3>Follow-ups with phone:</h3>';
