@@ -69,7 +69,7 @@ class LoginController extends Controller
 
             // Add links for follow-ups with phone
             foreach ($followupsWithPhone as $followup) {
-                $body .= '<li><a href="' . route('followup.details', ['title' => $followup]) . '">' . htmlspecialchars($followup) . '</a></li>';
+                $body .= '<li><a href="' . $followup . '">' . htmlspecialchars($followup) . '</a></li>';
             }
 
             $body .= '</ul><br>';
@@ -79,7 +79,7 @@ class LoginController extends Controller
 
             // Add links for follow-ups without phone
             foreach ($followupsWithoutPhone as $followup) {
-                $body .= '<li><a href="' . route('followup.details', ['title' => $followup]) . '">' . htmlspecialchars($followup) . '</a></li>';
+                $body .= '<li><a href="' . $followup . '">' . htmlspecialchars($followup) . '</a></li>';
             }
 
             $body .= '</ul>';
