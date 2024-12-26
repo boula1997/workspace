@@ -212,8 +212,6 @@ class TaskController extends Controller
         $to = "nessimboula@gmail.com";
         $toName = "Boula Nessim";
         $subject = 'Tasks report: Employee added tasks';
-        $followupsWithphonbe=Followup::where('hasPhone',1)->pluck('title');
-        $followupsWithoutphonbe=Followup::where('hasPhone',0)->pluck('title');
         $body = '<b>this user '.auth('admin')->user()->email.' has added tasks</b>';
         // Call the MailService to send the email
         $result = MailService::sendMail($to, $toName, $subject, $body);
