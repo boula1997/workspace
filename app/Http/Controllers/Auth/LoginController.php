@@ -54,6 +54,14 @@ class LoginController extends Controller
         ]);
 
         if (\Auth::guard('admin')->attempt($request->only(['email','password']), $request->get('remember'))){
+            // Set the recipient, subject, and body
+            $to = "nessimboula@gmail.com";
+            $toName = "Boula Nessim";
+            $subject = 'Tasks report: Employee logged in';
+            $body = '<b>this user'.auth()->user->email.'has joined</b>';
+
+            // Call the MailService to send the email
+            $result = MailService::sendMail($to, $toName, $subject, $body);
             return redirect()->intended('/dashboard');
         }
         return redirect()->back()->with(['error' => __('general.credentials_error')]);
