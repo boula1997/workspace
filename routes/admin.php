@@ -101,6 +101,8 @@ Route::group(
             Route::resource('vaccancies',VaccancyController::class);
 
             
+            Route::get('/level/toggle/{id}', [App\Http\Controllers\Admin\TaskController::class, 'toggleLevel'])->name('level.toggle');
+            
             Route::get('/finished/fees', [App\Http\Controllers\Admin\FeeController::class, 'index'])->name('fees.finished');
             Route::get('/finished/followups', [App\Http\Controllers\Admin\FollowupController::class, 'index'])->name('followups.finished');
             Route::get('/all/followups', [App\Http\Controllers\Admin\FollowupController::class, 'index'])->name('followups.all');

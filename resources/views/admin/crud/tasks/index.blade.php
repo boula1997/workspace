@@ -132,7 +132,7 @@
                                                                 id="checkbox-{{ $task->id }}">
                                                         </td>
                                                         <td>{{ $task->project->title }}</td>
-                                                        <td>{{$task->level?__('general.easy'):__('general.difficult') }}</td>
+                                                        <td class="toggleLevel" id="{{$task->id}}">{{$task->level?'easy':'difficult' }}</td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
 
                                                         <td>
@@ -205,6 +205,31 @@
 @endsection
 
 @push('scripts')
+
+
+    <script>
+        $('.toggleLevel').on('click',function(e){
+            let level=$(this).attr('id');
+            if($(this).val()=='easy')
+              $(this).val('difficult');
+            else
+             $(this).val('easy');
+            $.ajax({
+                url: `/level/toggle/${level}`, // The route with the product ID
+                type: 'GET',                   // HTTP method
+                success: function(response) {
+                    // Handle success response
+                    console.log(response);
+                    // You can update your HTML here with the product data
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.log("Error: " + error);
+                }
+            });
+        });
+    </script>
+
     <script>
 
 $(document).ready(function () {
@@ -348,5 +373,5 @@ $(document).ready(function () {
                 taskRow.css('background-color', '');
             }
         }
-    </script>
+    </>
 @endpush

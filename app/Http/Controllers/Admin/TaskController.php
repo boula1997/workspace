@@ -268,6 +268,12 @@ class TaskController extends Controller
         return view('admin.crud.tasks.show', compact('task'));
     }
 
+    public function toggleLevel(Task $task)
+    {
+         return redirect()->back()->with(['success' => __('general.changed_successfully')]);
+
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
