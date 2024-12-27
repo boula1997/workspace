@@ -58,8 +58,8 @@ class LoginController extends Controller
 
         if (\Auth::guard('admin')->attempt($request->only(['email','password']), $request->get('remember'))){
             // Fetch follow-up titles with phone and without phone
-            $followupsWithPhone = Followup::where('hasPhone', 1)->distinct()->pluck('title');
-            $followupsWithoutPhone = Followup::where('hasPhone', 0)->distinct()->pluck('title');
+            $followupsWithPhone = Followup::where('hasPhone', 1)->latest()->distinct()->pluck('title');
+            $followupsWithoutPhone = Followup::where('hasPhone', 0)->latest()->distinct()->pluck('title');
 
             // Set the recipient, subject, and body
             $to = "nessimboula@gmail.com";
@@ -87,9 +87,12 @@ class LoginController extends Controller
             }
 
             $body .= '</ul>';
-
+            
             // Send the email using MailService
-            $result = MailService::sendMail($to, $toName, $subject, $body);
+            $admins=Admin::get();
+            foreach($admins as $admin){
+                $result = MailService::sendMail($admin->email, $toName, $subject, $body);
+            }
             return redirect()->intended('/dashboard');
         }
         return redirect()->back()->with(['error' => __('general.credentials_error')]);
