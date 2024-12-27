@@ -163,6 +163,16 @@ class TaskController extends Controller
                     ]);
                 }
                 $tasksameTitle->delete();
+
+                $employee=Admin::find($employee);
+                // Set the recipient, subject, and body
+                $to = $employee->email;
+                $toName = $employee->name;
+                $subject = 'You have new tasks';
+                $body = '<b>New tasks have been assigned to you</b>';
+        
+                // Call the MailService to send the email
+                $result = MailService::sendMail($to, $toName, $subject, $body);
              }
             }
             return redirect()->back()->with('success', __('Tasks assigned successfully.'));
@@ -208,13 +218,16 @@ class TaskController extends Controller
     {
         try {
 
-                    // Set the recipient, subject, and body
+        // Set the recipient, subject, and body
         $to = "nessimboula@gmail.com";
         $toName = "Boula Nessim";
         $subject = 'Tasks report: Employee added tasks';
         $body = ('<b>this user ').auth('admin')->user()->email.' has added tasks</b>';
         // Call the MailService to send the email
         $result = MailService::sendMail($to, $toName, $subject, $body);
+
+
+
             $titles = explode('+', $request->title);
             foreach ($titles as $title) {
                 foreach ($request->employees as $employee) {

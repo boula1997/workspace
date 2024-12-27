@@ -252,7 +252,7 @@ class FollowupController extends Controller
                 // Send the email using MailService
                 $admins=Admin::get();
                 foreach($admins as $admin){
-                    $result = MailService::sendMail($admin->email, $toName, $subject, $body);
+                    $result = MailService::sendMail($admin->email, $admin->name, $subject, $body);
                 }
     
             // Redirect to either the previous or the one before
