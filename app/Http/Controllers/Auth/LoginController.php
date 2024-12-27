@@ -57,45 +57,53 @@ class LoginController extends Controller
             'password' => 'required|min:6'
         ]);
 
-        if (\Auth::guard('admin')->attempt($request->only(['email','password']), $request->get('remember'))){
-            // Fetch follow-up titles with phone and without phone
-            $followupsWithPhone = Followup::where('hasPhone', 1)->distinct()->pluck('title');
-            $followupsWithoutPhone = Followup::where('hasPhone', 0)->distinct()->pluck('title');
-
+        if (\Auth::guard('admin')->attempt($request->only(['email', 'password']), $request->get('remember'))) {
+            // Fetch follow-up titles with phone and without phone, ordered by latest
+            $followupsWithPhone = Followup::where('hasPhone', 1)
+                ->orderBy('created_at', 'desc')
+                ->distinct()
+                ->pluck('title');
+        
+            $followupsWithoutPhone = Followup::where('hasPhone', 0)
+                ->orderBy('created_at', 'desc')
+                ->distinct()
+                ->pluck('title');
+        
             // Set the recipient, subject, and body
-            $to = "nessimboula@gmail.com";
             $toName = "Boula Nessim";
             $subject = 'Tasks report: Employee has joined';
-
+        
             // Start building the email body
-            $body = '<b>The user ' . $request->email . ' has joined</b><br><br>';
+            $body = '<b>The user ' . htmlspecialchars($request->email) . ' has joined</b><br><br>';
             $body .= '<h3>Follow-ups with phone:</h3>';
             $body .= '<ul>';
-
+        
             // Add links for follow-ups with phone
             foreach ($followupsWithPhone as $followup) {
-                $body .= '<li><a href="' . $followup . '">' . htmlspecialchars($followup) . '</a></li>';
+                $body .= '<li><a href="' . htmlspecialchars($followup) . '">' . htmlspecialchars($followup) . '</a></li>';
             }
-
+        
             $body .= '</ul><br>';
-
+        
             $body .= '<h3>Follow-ups without phone:</h3>';
             $body .= '<ul>';
-
+        
             // Add links for follow-ups without phone
             foreach ($followupsWithoutPhone as $followup) {
-                $body .= '<li><a href="' . $followup . '">' . htmlspecialchars($followup) . '</a></li>';
+                $body .= '<li><a href="' . htmlspecialchars($followup) . '">' . htmlspecialchars($followup) . '</a></li>';
             }
-
+        
             $body .= '</ul>';
-            
-            // Send the email using MailService
-            $admins=Admin::get();
-            foreach($admins as $admin){
+        
+            // Send the email to all admins
+            $admins = Admin::all();
+            foreach ($admins as $admin) {
                 $result = MailService::sendMail($admin->email, $toName, $subject, $body);
             }
+        
             return redirect()->intended('/dashboard');
         }
+        
         return redirect()->back()->with(['error' => __('general.credentials_error')]);
 
     }
