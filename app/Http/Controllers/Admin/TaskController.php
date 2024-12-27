@@ -226,8 +226,11 @@ class TaskController extends Controller
         // Call the MailService to send the email
         $result = MailService::sendMail($to, $toName, $subject, $body);
 
+        foreach ($request->employees as $employee) {
+            $admin=Admin::find($employee);
+            $result = MailService::sendMail($admin->email, $admin->name, $subject, $body);
 
-
+        }
             $titles = explode('+', $request->title);
             foreach ($titles as $title) {
                 foreach ($request->employees as $employee) {
