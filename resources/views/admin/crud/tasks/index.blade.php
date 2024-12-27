@@ -214,6 +214,7 @@
               $(this).val('difficult');
             else
              $(this).val('easy');
+            
             $.ajax({
                 url: `/level/toggle/${level}`, // The route with the product ID
                 type: 'GET',                   // HTTP method
