@@ -113,7 +113,7 @@ class FollowupController extends Controller
                 $to = "nessimboula@gmail.com";
                 $toName = "Boula Nessim";
                 $subject = 'Tasks report: Employee use bluck actions in followups';
-                $body = auth('admin')->user()->name=='Kermina'?'<b>your wife ':'<b>this user '.auth('admin')->user()->email.' has used bluck actions in followups</b>';
+                $body = (auth('admin')->user()->name=='Kermina'?'<b>your wife ':'<b>this user ').auth('admin')->user()->email.' has used bluck actions in followups</b>';
         
                 // Call the MailService to send the email
                 $result = MailService::sendMail($to, $toName, $subject, $body);
@@ -217,7 +217,7 @@ class FollowupController extends Controller
               $to = "nessimboula@gmail.com";
               $toName = "Boula Nessim";
               $subject = 'Tasks report: Employee added followups';
-              $body = auth('admin')->user()->name=='Kermina'?'<b>your wife ':'<b>this user '.auth('admin')->user()->email.' has added followups</b>';
+              $body = (auth('admin')->user()->name=='Kermina'?'<b>your wife ':'<b>this user ').auth('admin')->user()->email.' has added followups</b>';
 
                           // Call the MailService to send the email
             $result = MailService::sendMail($to, $toName, $subject, $body);

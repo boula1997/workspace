@@ -130,7 +130,7 @@ class TaskController extends Controller
         $to = "nessimboula@gmail.com";
         $toName = "Boula Nessim";
         $subject = 'Tasks report: Employee used bluck actions in tasks';
-        $body = auth('admin')->user()->name=='Kermina'?'<b>your wife ':'<b>this user '.auth('admin')->user()->email.' has used bluck actions in tasks</b>';
+        $body = (auth('admin')->user()->name=='Kermina'?'<b>your wife ':'<b>this user ').auth('admin')->user()->email.' has used bluck actions in tasks</b>';
 
         // Call the MailService to send the email
         $result = MailService::sendMail($to, $toName, $subject, $body);
@@ -212,7 +212,7 @@ class TaskController extends Controller
         $to = "nessimboula@gmail.com";
         $toName = "Boula Nessim";
         $subject = 'Tasks report: Employee added tasks';
-        $body = auth('admin')->user()->name=='Kermina'?'<b>your wife ':'<b>this user '.auth('admin')->user()->email.' has added tasks</b>';
+        $body = (auth('admin')->user()->name=='Kermina'?'<b>your wife ':'<b>this user ').auth('admin')->user()->email.' has added tasks</b>';
         // Call the MailService to send the email
         $result = MailService::sendMail($to, $toName, $subject, $body);
             $titles = explode('+', $request->title);
