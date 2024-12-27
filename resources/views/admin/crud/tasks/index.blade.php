@@ -111,6 +111,7 @@
                                                     <th>#</th>
                                                     <th style="width: 500px;">{{ __('general.title') }}</th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
+                                                    <th>{{__('general.level')}}</th>
                                                     <th>{{ __('general.project') }}</th>
                                                     <th>{{ __('general.employees') }}</th>
                                                     <th>{{ __('general.actions') }}</th>
@@ -131,6 +132,7 @@
                                                                 id="checkbox-{{ $task->id }}">
                                                         </td>
                                                         <td>{{ $task->project->title }}</td>
+                                                        <td>{{$task->level?__('general.easy'):__('general.difficult') }}</td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
 
                                                         <td>
