@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Services\MailService;
 use App\Models\Followup;
+use App\Models\Admin;
 
 
 class LoginController extends Controller
