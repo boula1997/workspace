@@ -58,8 +58,8 @@ class LoginController extends Controller
 
         if (\Auth::guard('admin')->attempt($request->only(['email','password']), $request->get('remember'))){
             // Fetch follow-up titles with phone and without phone
-            $followupsWithPhone = Followup::where('hasPhone', 1)->latest()->distinct()->pluck('title');
-            $followupsWithoutPhone = Followup::where('hasPhone', 0)->latest()->distinct()->pluck('title');
+            $followupsWithPhone = Followup::where('hasPhone', 1)->distinct()->pluck('title');
+            $followupsWithoutPhone = Followup::where('hasPhone', 0)->distinct()->pluck('title');
 
             // Set the recipient, subject, and body
             $to = "nessimboula@gmail.com";
