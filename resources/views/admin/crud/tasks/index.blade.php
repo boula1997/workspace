@@ -111,8 +111,8 @@
                                                     <th>#</th>
                                                     <th style="width: 500px;">{{ __('general.title') }}</th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
-                                                    <th>{{__('general.level')}}</th>
                                                     <th>{{ __('general.project') }}</th>
+                                                    <th>{{__('general.level')}}</th>
                                                     <th>{{ __('general.employees') }}</th>
                                                     <th>{{ __('general.actions') }}</th>
                                                 </tr>
