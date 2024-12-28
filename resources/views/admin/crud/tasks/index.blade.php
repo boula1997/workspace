@@ -214,9 +214,9 @@
               $(this).val('difficult');
             else
              $(this).val('easy');
-
+            
             $.ajax({
-                url: `ar/dashboard/level/toggle/${level}`, // The route with the product ID
+                url: `level/toggle/${level}`, // The route with the product ID
                 type: 'GET',                   // HTTP method
                 success: function(response) {
                     // Handle success response
