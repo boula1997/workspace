@@ -114,7 +114,7 @@
                                                     <th>{{__('general.level')}}</th>
                                                     <th>{{ __('general.project') }}</th>
                                                     <th>{{ __('general.employees') }}</th>
-                                                    <th style="width:100px !important;">{{ __('general.actions') }}</th>
+                                                    <th>{{ __('general.actions') }}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
