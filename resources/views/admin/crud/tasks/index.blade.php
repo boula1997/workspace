@@ -135,7 +135,7 @@
                                                         <td>{{ $task->project->title }}</td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
 
-                                                        <td>
+                                                        <td class="d-inline">
                                                             <a href="{{ route('tasks.edit', $task) }}" title="edit">
                                                                 <i class="fas fa-edit  text-secondary  fa-lg"></i>
                                                             </a>
