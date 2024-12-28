@@ -131,7 +131,7 @@
                                                                 value="{{ $task->id }}"
                                                                 id="checkbox-{{ $task->id }}">
                                                         </td>
-                                                        <td class="toggleLevel" id="{{$task->id}}">{{$task->level?'easy':'difficult' }}</td>
+                                                        <td class="toggleLevel" style="cursor: pointer" id="{{$task->id}}">{{$task->level?'easy':'difficult' }}</td>
                                                         <td>{{ $task->project->title }}</td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
 
@@ -208,23 +208,25 @@
 
 <script>
     $('.toggleLevel').on('click', function (e) {
-        let self = $(this); // Reference the clicked element
+        let self = $(this); // Reference to the clicked element
         let level = self.attr('id'); // Get the level ID
         
         $.ajax({
-            url: `{{route("level.toggle",${level})}}`, // Dynamically build the URL
+            url: `level/toggle/${level}`, // The route with the level ID
             type: 'GET', // HTTP method
             success: function (response) {
-                // Toggle the HTML content
+                // Toggle the HTML content based on current value
                 if (self.html() == 'easy') {
                     self.html('difficult');
                 } else {
                     self.html('easy');
                 }
-                console.log(response); // Log the response
+                // Handle success response
+                console.log(response);
             },
             error: function (xhr, status, error) {
-                console.log("Error: " + error); // Log the error
+                // Handle error response
+                console.log("Error: " + error);
             }
         });
     });
