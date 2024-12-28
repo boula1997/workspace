@@ -136,7 +136,6 @@
                                                         <td>{{ taskEmployees($task->title) }}</td>
 
                                                         <td>
-
                                                             <a href="{{ route('tasks.edit', $task) }}" title="edit">
                                                                 <i class="fas fa-edit  text-secondary  fa-lg"></i>
                                                             </a>
@@ -209,6 +208,7 @@
 
     <script>
         $('.toggleLevel').on('click',function(e){
+            alert($(this).val());
             let level=$(this).attr('id');
             if($(this).val()=='easy')
               $(this).val('difficult');
