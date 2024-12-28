@@ -208,6 +208,7 @@
 
     <script>
         $('.toggleLevel').on('click',function(e){
+            
             let level=$(this).attr('id');
             if($(this).html()=='easy')
               $(this).html('difficult');
