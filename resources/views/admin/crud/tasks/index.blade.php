@@ -131,7 +131,7 @@
                                                                 value="{{ $task->id }}"
                                                                 id="checkbox-{{ $task->id }}">
                                                         </td>
-                                                        <td class="toggleLevel" style="cursor: pointer" id="{{$task->id}}">{{$task->level?'easy':'difficult' }}</td>
+                                                        <td class="toggleLevel" id="{{$task->id}}">{{$task->level?'easy':'difficult' }}</td>
                                                         <td>{{ $task->project->title }}</td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
 
@@ -207,31 +207,30 @@
 
 
 <script>
-    $('.toggleLevel').on('click', function (e) {
-        let self = $(this); // Reference to the clicked element
-        let level = self.attr('id'); // Get the level ID
+    $('.toggleLevel').on('click',function(e){
+        
+        let level=$(this).attr('id');
+
         
         $.ajax({
-            url: `{{route('level.toggle',${level})}}`, // The route with the level ID
-            type: 'GET', // HTTP method
-            success: function (response) {
-                // Toggle the HTML content based on current value
-                if (self.html() == 'easy') {
-                    self.html('difficult');
-                } else {
-                    self.html('easy');
-                }
+            url: `{{route('level.toggle',${level})}}`, // The route with the product ID
+            type: 'GET',                   // HTTP method
+            success: function(response) {
+                if($(this).html()=='easy')
+                $(this).html('difficult');
+                else
+                $(this).html('easy');
                 // Handle success response
                 console.log(response);
+                // You can update your HTML here with the product data
             },
-            error: function (xhr, status, error) {
+            error: function(xhr, status, error) {
                 // Handle error response
                 console.log("Error: " + error);
             }
         });
     });
 </script>
-
 
     <script>
 
