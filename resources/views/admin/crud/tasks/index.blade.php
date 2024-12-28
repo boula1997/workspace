@@ -209,11 +209,11 @@
 <script>
     $('.toggleLevel').on('click',function(e){
         
-       
+        level=$(this).attr('id');
 
         
         $.ajax({
-            url: `{{route('level.toggle',${$(this).attr('id')})}}`, // The route with the product ID
+            url: `{{route('level.toggle',${level})}}`, // The route with the product ID
             type: 'GET',                   // HTTP method
             success: function(response) {
                 if($(this).html()=='easy')
