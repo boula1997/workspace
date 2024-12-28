@@ -212,7 +212,7 @@
         let level = self.attr('id'); // Get the level ID
         
         $.ajax({
-            url: `level/toggle/${level}`, // The route with the level ID
+            url: `{{ route('level.toggle', '') }}/${level}`, // Generate the correct route
             type: 'GET', // HTTP method
             success: function (response) {
                 // Toggle the HTML content based on current value
@@ -221,16 +221,15 @@
                 } else {
                     self.html('easy');
                 }
-                // Handle success response
-                console.log(response);
+                console.log(response); // Log the success response
             },
             error: function (xhr, status, error) {
-                // Handle error response
-                console.log("Error: " + error);
+                console.log("Error: " + error); // Log the error
             }
         });
     });
 </script>
+
 
 
     <script>
