@@ -268,8 +268,9 @@ class TaskController extends Controller
         return view('admin.crud.tasks.show', compact('task'));
     }
 
-    public function toggleLevel(Task $task)
+    public function toggleLevel($id)
     {
+        $task=Task::find($id);
         $task->update(['level'=>!$task->level]);
         dd($task);
          return response()->json(['success' => __('general.changed_successfully')]);
