@@ -208,12 +208,11 @@
 
     <script>
         $('.toggleLevel').on('click',function(e){
-            alert($(this).html());
             let level=$(this).attr('id');
-            if($(this).val()=='easy')
-              $(this).val('difficult');
+            if($(this).html()=='easy')
+              $(this).html('difficult');
             else
-             $(this).val('easy');
+             $(this).html('easy');
             
             $.ajax({
                 url: `level/toggle/${level}`, // The route with the product ID
