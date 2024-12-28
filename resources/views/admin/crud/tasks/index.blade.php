@@ -131,7 +131,7 @@
                                                                 value="{{ $task->id }}"
                                                                 id="checkbox-{{ $task->id }}">
                                                         </td>
-                                                        <td class="toggleLevel" id="{{$task->id}}">{{$task->level?'easy':'difficult' }}</td>
+                                                        <td class="toggleLevel" style="cursor: pointer" id="{{$task->id}}">{{$task->level?'easy':'difficult' }}</td>
                                                         <td>{{ $task->project->title }}</td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
 
