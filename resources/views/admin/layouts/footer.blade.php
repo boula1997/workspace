@@ -137,6 +137,9 @@
     </script> --}}
 @stack('scripts')
 
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
+
 <script>
   $(document).on('click', '.clickable-text', function(e) {
       navigator.clipboard.writeText($(this).attr('content'));
