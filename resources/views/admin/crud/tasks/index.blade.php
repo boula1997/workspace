@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+s@extends('admin.layouts.master')
 
 @section('content')
     <style>
@@ -206,30 +206,30 @@
 @push('scripts')
 
 
-    <script>
-        $('.toggleLevel').on('click',function(e){
-            
-            let level=$(this).attr('id');
-            if($(this).html()=='easy')
-              $(this).html('difficult');
-            else
-             $(this).html('easy');
-            
-            $.ajax({
-                url: `level/toggle/${level}`, // The route with the product ID
-                type: 'GET',                   // HTTP method
-                success: function(response) {
-                    // Handle success response
-                    console.log(response);
-                    // You can update your HTML here with the product data
-                },
-                error: function(xhr, status, error) {
-                    // Handle error response
-                    console.log("Error: " + error);
-                }
-            });
+<script>
+    $('.toggleLevel').on('click',function(e){
+        
+        let level=$(this).attr('id');
+        if($(this).html()=='easy')
+          $(this).html('difficult');
+        else
+         $(this).html('easy');
+        
+        $.ajax({
+            url: `level/toggle/${level}`, // The route with the product ID
+            type: 'GET',                   // HTTP method
+            success: function(response) {
+                // Handle success response
+                console.log(response);
+                // You can update your HTML here with the product data
+            },
+            error: function(xhr, status, error) {
+                // Handle error response
+                console.log("Error: " + error);
+            }
         });
-    </script>
+    });
+</script>
 
     <script>
 
@@ -374,5 +374,5 @@ $(document).ready(function () {
                 taskRow.css('background-color', '');
             }
         }
-    </>
+    </script>
 @endpush
