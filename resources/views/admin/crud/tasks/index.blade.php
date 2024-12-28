@@ -207,30 +207,29 @@
 
 
 <script>
-    $('.toggleLevel').on('click',function(e){
-        
-        var level=$(this).attr('id');
-
+    $('.toggleLevel').on('click', function (e) {
+        let self = $(this); // Reference the clicked element
+        let level = self.attr('id'); // Get the level ID
         
         $.ajax({
-            url: `{{route('level.toggle',${level})}}`, // The route with the product ID
-            type: 'GET',                   // HTTP method
-            success: function(response) {
-                if($(this).html()=='easy')
-                $(this).html('difficult');
-                else
-                $(this).html('easy');
-                // Handle success response
-                console.log(response);
-                // You can update your HTML here with the product data
+            url: `{{ url('level/toggle') }}/${level}`, // Dynamically build the URL
+            type: 'GET', // HTTP method
+            success: function (response) {
+                // Toggle the HTML content
+                if (self.html() == 'easy') {
+                    self.html('difficult');
+                } else {
+                    self.html('easy');
+                }
+                console.log(response); // Log the response
             },
-            error: function(xhr, status, error) {
-                // Handle error response
-                console.log("Error: " + error);
+            error: function (xhr, status, error) {
+                console.log("Error: " + error); // Log the error
             }
         });
     });
 </script>
+
 
     <script>
 
