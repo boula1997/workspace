@@ -209,13 +209,13 @@
 <script>
     $('.toggleLevel').on('click',function(e){
         
+        let level=$(this).attr('id');
 
         
         $.ajax({
             url: `level/toggle/${level}`, // The route with the product ID
             type: 'GET',                   // HTTP method
             success: function(response) {
-                let level=$(this).attr('id');
                 if($(this).html()=='easy')
                 $(this).html('difficult');
                 else
