@@ -270,7 +270,8 @@ class TaskController extends Controller
 
     public function toggleLevel(Task $task)
     {
-         return redirect()->back()->with(['success' => __('general.changed_successfully')]);
+        $task->update(['level'=>!$task->level]);
+         return response()->json(['success' => __('general.changed_successfully')]);
 
     }
 
