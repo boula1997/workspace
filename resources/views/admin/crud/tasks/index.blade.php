@@ -109,7 +109,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th style="width: 20%;">{{ __('general.title') }}</th>
+                                                    <th >{{ __('general.title') }}</th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
                                                     <th>{{__('general.level')}}</th>
                                                     <th>{{ __('general.project') }}</th>
@@ -135,7 +135,7 @@
                                                         <td>{{ $task->project->title }}</td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
 
-                                                        <td class="d-inline" style="width: 20%;">
+                                                        <td class="d-inline" >
                                                             <a href="{{ route('tasks.edit', $task) }}" title="edit">
                                                                 <i class="fas fa-edit  text-secondary  fa-lg"></i>
                                                             </a>
