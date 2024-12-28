@@ -209,16 +209,17 @@
 <script>
     $('.toggleLevel').on('click',function(e){
         
-        let level=$(this).attr('id');
-        if($(this).html()=='easy')
-          $(this).html('difficult');
-        else
-         $(this).html('easy');
+
         
         $.ajax({
             url: `level/toggle/${level}`, // The route with the product ID
             type: 'GET',                   // HTTP method
             success: function(response) {
+                let level=$(this).attr('id');
+                if($(this).html()=='easy')
+                $(this).html('difficult');
+                else
+                $(this).html('easy');
                 // Handle success response
                 console.log(response);
                 // You can update your HTML here with the product data
