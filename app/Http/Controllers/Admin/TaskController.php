@@ -272,7 +272,6 @@ class TaskController extends Controller
     {
         $task=Task::find($id);
         $task->update(['level'=>!$task->level]);
-        dd($task);
          return response()->json(['success' => __('general.changed_successfully')]);
 
     }
