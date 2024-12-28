@@ -209,7 +209,7 @@
 <script>
     $('.toggleLevel').on('click',function(e){
         
-        level=$(this).attr('id');
+        var level=$(this).attr('id');
 
         
         $.ajax({
