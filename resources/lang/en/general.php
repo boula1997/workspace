@@ -136,6 +136,7 @@ return [
 'created_at' => 'Created At',
 'yes' => 'Yes',
 'no' => 'No',
+'level' => 'Level',
 
 
 
