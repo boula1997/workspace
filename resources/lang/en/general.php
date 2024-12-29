@@ -137,6 +137,7 @@ return [
 'yes' => 'Yes',
 'no' => 'No',
 'level' => 'Level',
+'easy' => 'Easy',
 
 
 
