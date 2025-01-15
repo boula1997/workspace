@@ -281,7 +281,7 @@ class TaskController extends Controller
             $subject = 'Tasks report: Easy Tasks';
     
             // Initialize email body
-            $body = '';
+            $body = '<p>مرحبا بك في نظام المهام</p>';
             $easyTasks = Task::where('status', 0)
                              ->where('level', 0)
                              ->get()
