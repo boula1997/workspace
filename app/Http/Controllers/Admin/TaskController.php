@@ -270,34 +270,42 @@ class TaskController extends Controller
 
     public function toggleLevel($id)
     {
-        try{
-
-            $task=Task::find($id);
-            $task->update(['level'=>!$task->level]);
-
-            // Set the recipient, subject, and body
+        try {
+            // Find and toggle the level for the given task ID
+            $task = Task::find($id);
+            $task->update(['level' => !$task->level]);
+    
+            // Email details
             $to = "nessimboula@gmail.com";
             $toName = "Boula Nessim";
             $subject = 'Tasks report: Easy Tasks';
-
-            // Start building the email body
+    
+            // Initialize email body
             $body = '';
-            $easyTasks=Task::where('status',0)->where('level',0)->get()->unique('title');
-
-
-            // Add links for follow-ups with phone
+            $easyTasks = Task::where('status', 0)
+                             ->where('level', 0)
+                             ->get()
+                             ->unique('title');
+    
+            // Append task titles in the body
             foreach ($easyTasks as $task) {
-                $body .= '<p>'.$task->title.'</p>';
+                $body .= '<p>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</p>';
             }
-            $result = MailService::sendMail($to, $toName, $subject, $body);
-            // Send the email using MailService
+    
+            // Ensure the body is wrapped in a UTF-8 compatible format
+            $headers = [
+                'Content-Type' => 'text/html; charset=UTF-8'
+            ];
+    
+            // Send the email
+            $result = MailService::sendMail($to, $toName, $subject, $body, $headers);
+    
             return response()->json(['success' => __('general.changed_successfully')]);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
-
         }
-
     }
+    
 
     /**
      * Show the form for editing the specified resource.
