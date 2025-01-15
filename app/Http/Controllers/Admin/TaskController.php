@@ -282,7 +282,7 @@ class TaskController extends Controller
     
             // Initialize email body
             $easyTasks = Task::where('status', 0)
-                             ->where('level', 0)
+                             ->where('level', 1)
                              ->get()
                              ->unique('title');
     
