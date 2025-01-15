@@ -21,18 +21,22 @@ class MailService
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // SSL or ENCRYPTION_STARTTLS for TLS
             $mail->Port = 465; // SSL port 465, or TLS port 587
 
+            // Character encoding settings
+            $mail->CharSet = 'UTF-8'; // Ensure UTF-8 encoding for subject and body
+
             // Email settings
             $mail->setFrom('admin@yousab-tech.com', 'Yousab Tech'); // From email and name
             $mail->addAddress($to, $toName); // Recipient's email and name
 
             $mail->isHTML(true); // Email format to HTML
             $mail->Subject = $subject;
-            $mail->Body    = $body;
-            $mail->AltBody = strip_tags($body); // Plain text for non-HTML clients
+            $mail->Body    = $body; // HTML body content
+            $mail->AltBody = strip_tags($body); // Plain text body content for non-HTML clients
 
             $mail->send();
             return true;
         } catch (Exception $e) {
+            // Log or return the error message for debugging
             return "Mailer Error: {$mail->ErrorInfo}";
         }
     }
