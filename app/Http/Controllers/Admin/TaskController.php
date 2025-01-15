@@ -292,9 +292,13 @@ class TaskController extends Controller
                 $body .= '<p>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</p>';
             }
     
+            // Convert body to UTF-8
+            $body = mb_convert_encoding($body, 'UTF-8', 'auto');
+    
             // Email headers
             $headers = [
                 'Content-Type' => 'text/html; charset=UTF-8',
+                'MIME-Version' => '1.0'
             ];
     
             // Send the email
