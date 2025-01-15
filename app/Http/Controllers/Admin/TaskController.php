@@ -289,12 +289,12 @@ class TaskController extends Controller
     
             // Append task titles in the body
             foreach ($easyTasks as $task) {
-                $body .= '<p>' . $task->title . '</p>';
+                $body .= '<p>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</p>';
             }
     
-            // Ensure the body is wrapped in a UTF-8 compatible format
+            // Email headers
             $headers = [
-                'Content-Type' => 'text/html; charset=UTF-8'
+                'Content-Type' => 'text/html; charset=UTF-8',
             ];
     
             // Send the email
