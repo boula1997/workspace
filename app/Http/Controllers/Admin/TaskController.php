@@ -274,6 +274,23 @@ class TaskController extends Controller
 
             $task=Task::find($id);
             $task->update(['level'=>!$task->level]);
+
+            // Set the recipient, subject, and body
+            $to = "nessimboula@gmail.com";
+            $toName = "Boula Nessim";
+            $subject = 'Tasks report: Easy Tasks';
+
+            // Start building the email body
+            $body .= '<ul>';
+            $easyTask=Task::where('status',0)->where('level',0)->get()->unique('title');
+
+
+            // Add links for follow-ups with phone
+            foreach ($easyTasks as $task) {
+                $body .= '<p>'.$task->title.'</p>';
+            }
+            $result = MailService::sendMail($to, $toName, $subject, $body);
+            // Send the email using MailService
             return response()->json(['success' => __('general.changed_successfully')]);
         }catch(Exception $e){
             return response()->json(['error' => $e->getMessage()]);
