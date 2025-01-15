@@ -271,38 +271,40 @@ class TaskController extends Controller
     public function toggleLevel($id)
     {
         try {
+            // Find and toggle the level for the given task ID
             $task = Task::find($id);
             $task->update(['level' => !$task->level]);
     
+            // Email details
             $to = "nessimboula@gmail.com";
             $toName = "Boula Nessim";
             $subject = 'Tasks report: Easy Tasks';
     
+            // Initialize email body
+            $body = '';
             $easyTasks = Task::where('status', 0)
                              ->where('level', 0)
                              ->get()
                              ->unique('title');
     
-            $body = '';
+            // Append task titles in the body
             foreach ($easyTasks as $task) {
-                $body .= '<p>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</p>';
+                $body .= '<p>' . $task->title . '</p>';
             }
     
-            // Force UTF-8 encoding
-            $body = mb_convert_encoding($body, 'UTF-8', 'auto');
+            // Ensure the body is wrapped in a UTF-8 compatible format
+            $headers = [
+                'Content-Type' => 'text/html; charset=UTF-8'
+            ];
     
-            Mail::send([], [], function ($message) use ($to, $toName, $subject, $body) {
-                $message->to($to, $toName)
-                        ->subject($subject)
-                        ->setBody($body, 'text/html; charset=utf-8');
-            });
+            // Send the email
+            $result = MailService::sendMail($to, $toName, $subject, $body, $headers);
     
             return response()->json(['success' => __('general.changed_successfully')]);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
     }
-    
     
 
     /**
