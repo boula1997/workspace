@@ -281,7 +281,7 @@ class TaskController extends Controller
             $subject = 'Tasks report: Easy Tasks';
 
             // Start building the email body
-            $body .= '<ul>';
+            $body = '';
             $easyTask=Task::where('status',0)->where('level',0)->get()->unique('title');
 
 
