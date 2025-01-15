@@ -282,7 +282,7 @@ class TaskController extends Controller
 
             // Start building the email body
             $body = '';
-            $easyTask=Task::where('status',0)->where('level',0)->get()->unique('title');
+            $easyTasks=Task::where('status',0)->where('level',0)->get()->unique('title');
 
 
             // Add links for follow-ups with phone
