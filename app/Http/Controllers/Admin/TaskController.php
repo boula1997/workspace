@@ -125,7 +125,7 @@ class TaskController extends Controller
     }
     public function bulkAction(Request $request)
     {
-
+        emailTasks();
         // Set the recipient, subject, and body
         $to = "nessimboula@gmail.com";
         $toName = "Boula Nessim";
@@ -231,6 +231,8 @@ class TaskController extends Controller
             $result = MailService::sendMail($admin->email, $admin->name, $subject, $body);
 
         }
+
+        emailTasks();
             $titles = explode('+', $request->title);
             foreach ($titles as $title) {
                 foreach ($request->employees as $employee) {
@@ -275,39 +277,7 @@ class TaskController extends Controller
             $task = Task::find($id);
             $task->update(['level' => !$task->level]);
     
-            // Email details
-            $to = "nessimboula@gmail.com";
-            $toName = "Boula Nessim";
-            $subject = 'Tasks Report: Easy Tasks';
-    
-            // Initialize email body
-            $easyTasks = Task::where('status', 0)
-                             ->where('level', 1)
-                             ->orderBy('project_id','desc')
-                             ->get()
-                             ->unique('title');
-    
-            // Construct the table
-            $body = '<html lang="en"><head><meta charset="UTF-8"></head><body>';
-            $body .= '<h2>Tasks Report</h2>';
-            $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-            $body .= '<thead><tr><th>Task</th><th>Project</th></tr></thead>';
-            $body .= '<tbody>';
-    
-            // Append rows to the table
-            foreach ($easyTasks as $task) {
-                $body .= '<tr>';
-                $body .= '<td>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</td>';
-                $body .= '<td>' . htmlspecialchars($task->project->title ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>';
-                $body .= '</tr>';
-            }
-    
-            $body .= '</tbody>';
-            $body .= '</table>';
-            $body .= '</body></html>';
-    
-            // Send the email
-            $result = MailService::sendMail($to, $toName, $subject, $body);
+            emailTasks();
     
             return response()->json(['success' => __('general.changed_successfully')]);
         } catch (Exception $e) {
