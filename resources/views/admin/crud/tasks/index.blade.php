@@ -109,7 +109,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th style="width: 800px;">{{ __('general.title') }}</th>
+                                                    <th style="width: 1500px !important;">{{ __('general.title') }}</th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
                                                     <th>{{__('general.level')}}</th>
                                                     <th>{{ __('general.project') }}</th>
