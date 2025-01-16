@@ -275,7 +275,7 @@ class TaskController extends Controller
         try {
             // Find and toggle the level for the given task ID
             $task = Task::find($id);
-            $task->update(['level' => !$task->level]);
+            $task->where('title',$task->title)->update(['level' => !$task->level]);
     
             emailTasks();
     
