@@ -40,60 +40,64 @@ function settings()
 
 function emailTasks()
 {
-               // Email details
-               $to = "nessimboula@gmail.com";
-               $toName = "Boula Nessim";
-               $subject = 'Tasks Report: Easy Tasks';
-       
-               // Initialize email body
-               $easyTasks = Task::where('status', 0)
-                                ->where('level', 1)
-                                ->orderBy('project_id','desc')
-                                ->get()
-                                ->unique('title');
-               $difficultTasks = Task::where('status', 0)
-                                ->where('level', 0)
-                                ->orderBy('project_id','desc')
-                                ->get()
-                                ->unique('title');
-       
-               // Construct the table
-               $body = '<html lang="en"><head><meta charset="UTF-8"></head><body>';
-               $body .= '<h2>Easy Tasks Report</h2>';
-               $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-               $body .= '<thead><tr><th>Task</th><th>Project</th></tr></thead>';
-               $body .= '<tbody>';
-       
-               // Append rows to the table
-               foreach ($easyTasks as $task) {
-                   $body .= '<tr>';
-                   $body .= '<td>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</td>';
-                   $body .= '<td>' . htmlspecialchars($task->project->title ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>';
-                   $body .= '</tr>';
-               }
-       
-               $body .= '</tbody>';
-               $body .= '</table>';
+    // Email details
+    $to = "nessimboula@gmail.com";
+    $toName = "Boula Nessim";
+    $subject = 'Tasks Report';
 
-               $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-               $body .= '<thead><tr><th>Task</th><th>Project</th></tr></thead>';
-               $body .= '<tbody>';
-       
-               // Append rows to the table
-               foreach ($difficultTasks as $task) {
-                   $body .= '<tr>';
-                   $body .= '<td>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</td>';
-                   $body .= '<td>' . htmlspecialchars($task->project->title ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>';
-                   $body .= '</tr>';
-               }
-       
-               $body .= '</tbody>';
-               $body .= '</table>';
-               $body .= '</body></html>';
-       
-               // Send the email
-               $result = MailService::sendMail($to, $toName, $subject, $body);
+    // Initialize email body
+    $easyTasks = Task::where('status', 0)
+                     ->where('level', 1)
+                     ->orderBy('project_id', 'desc')
+                     ->get()
+                     ->unique('title');
+    $difficultTasks = Task::where('status', 0)
+                          ->where('level', 0)
+                          ->orderBy('project_id', 'desc')
+                          ->get()
+                          ->unique('title');
+
+    // Construct the email content
+    $body = '<html lang="en"><head><meta charset="UTF-8"><title>Tasks Report</title></head><body>';
+    $body .= '<h1>Tasks Report</h1>';
+
+    // Easy Tasks Table
+    $body .= '<h2>Easy Tasks</h2>';
+    $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
+    $body .= '<thead><tr><th>Task</th><th>Project</th></tr></thead><tbody>';
+    foreach ($easyTasks as $task) {
+        $body .= '<tr>';
+        $body .= '<td>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</td>';
+        $body .= '<td>' . htmlspecialchars($task->project->title ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>';
+        $body .= '</tr>';
+    }
+    $body .= '</tbody></table>';
+
+    // Difficult Tasks Table
+    $body .= '<h2>Difficult Tasks</h2>';
+    $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
+    $body .= '<thead><tr><th>Task</th><th>Project</th></tr></thead><tbody>';
+    foreach ($difficultTasks as $task) {
+        $body .= '<tr>';
+        $body .= '<td>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</td>';
+        $body .= '<td>' . htmlspecialchars($task->project->title ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>';
+        $body .= '</tr>';
+    }
+    $body .= '</tbody></table>';
+
+    $body .= '</body></html>';
+
+    // Send the email
+    $result = MailService::sendMail($to, $toName, $subject, $body);
+
+    // Check if the email was sent successfully
+    if ($result) {
+        echo "Email sent successfully.";
+    } else {
+        echo "Failed to send email.";
+    }
 }
+
 function page($identifier)
 {
     return Page::where('identifier', $identifier)->first();
