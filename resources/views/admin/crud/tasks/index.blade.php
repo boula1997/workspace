@@ -122,7 +122,7 @@
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
                                                         <td class="{{ request()->routeIs('tasks.all') && $task->status == 1 ? 'text-success' : '' }}"
-                                                            style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 200px;"
+                                                            style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 500px;"
                                                             onclick="toggleCheckbox({{ $task->id }})">
                                                             {{ $task->title }}
                                                         </td>
