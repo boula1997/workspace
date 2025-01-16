@@ -28,6 +28,7 @@ use App\Models\Video;
 use Illuminate\Support\Facades\File;
 use Jackiedo\Cart\Facades\Cart;
 use Spatie\Permission\Models\Role;
+use App\Services\MailService;
 
 const Message_Mail = "app@gmail.com";
 
