@@ -59,8 +59,6 @@ class HistoryController extends Controller
     public function store(HistoryRequest $request)
     {
         try {
-            $task=Task::find($request->task_id);
-            if($task->status==1)
             $this->history->create($request->all());
             return redirect()->route('historys.index')
                 ->with('success', trans('general.created_successfully'));
