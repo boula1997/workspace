@@ -9,6 +9,7 @@ use App\Http\Controllers\API\PageController;
 use App\Http\Controllers\API\PortfolioController;
 use App\Http\Controllers\API\FeeController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\API\HistoryController;
 use App\Http\Controllers\API\TaskController;
 use App\Http\Controllers\API\ProjectController;
 use Illuminate\Support\Facades\Route;
@@ -95,6 +96,8 @@ Route::group(['middleware' => ['apiLocalization','cors']], function () {
     Route::get('/contact/{id}', [ContactController::class, 'show']);
     
     Route::get('/settings', [SettingController::class, 'index']);
+    Route::get('/historys', [HistoryController::class, 'index']);
+    Route::get('/history/{id}', [HistoryController::class, 'show']);
     
     Route::get('/projects', [ProjectController::class, 'index']);
     Route::get('/project/{id}', [ProjectController::class, 'show']);

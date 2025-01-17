@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             GalleriesSeeder::class,
             PagesSeeder::class,
             PermissionTableSeeder::class,
+            HistorysSeeder::class,
             CreateAdminUserSeeder::class,
             ProjectsSeeder::class,
             TasksSeeder::class,
