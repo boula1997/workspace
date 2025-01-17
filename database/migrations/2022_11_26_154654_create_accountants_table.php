@@ -17,7 +17,7 @@ class CreateAccountantsTable extends Migration
             $table->id();
             $table->double('received')->default(0);
 
-            $table->unsignedBigInteger('employee_id')->nullable(); $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
+            $table->unsignedBigInteger('employee_id')->nullable(); $table->foreign('employee_id')->references('id')->on('admins')->onDelete('cascade');
             
             $table->double('has')->default(0);
             $table->timestamps();
