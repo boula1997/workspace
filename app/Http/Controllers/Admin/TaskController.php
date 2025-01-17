@@ -57,7 +57,7 @@ class TaskController extends Controller
             $status=[0,1];
 
             if(auth()->user()->email!="boula@gmail.com"){
-                if(auth()->user()->type=='admin')
+                if(true)
                 $tasks = $this->task
                     ->whereIn('status', $status)
                     ->whereDoesntHave('employee', function ($query) {
@@ -86,7 +86,7 @@ class TaskController extends Controller
             
             }else{
 
-                if(auth()->user()->type=='admin')
+                if(true)
                 $tasks = $this->task->whereIn('status',$status)->orderBy('status')->latest()->get() ->unique('title');
                 else
                 $tasks = $this->task
