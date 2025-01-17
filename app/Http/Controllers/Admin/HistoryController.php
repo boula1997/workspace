@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\History;
 use App\Models\Admin;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\HistoryRequest;
@@ -58,6 +59,8 @@ class HistoryController extends Controller
     public function store(HistoryRequest $request)
     {
         try {
+            $task=Task::find($request->task_id);
+            if($task->status==1)
             $this->history->create($request->all());
             return redirect()->route('historys.index')
                 ->with('success', trans('general.created_successfully'));
