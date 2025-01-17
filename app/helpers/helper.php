@@ -41,7 +41,7 @@ function settings()
 }
 
 function taskLog($action,$task_id){
-    TaskHistory::create([
+    History::create([
         'action'=>$action,
         'task_id'=>$task_id,
         'employee_id'=>auth()->user()->id,
