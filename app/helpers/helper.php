@@ -51,14 +51,14 @@ function taskLog($action,$task_id){
 
 function received($admin){
     $received=Accountant::where('employee_id',$admin->id)->sum('received');
-    if(isset($received) && (auth()->user()->email==$admin->email || 'nessimboula@gmail.com'==$admin->email))
+    if(isset($received) && (auth()->user()->email==$admin->email || 'nessimboula@gmail.com'==auth()->user()->email))
      return $received;
     else
     return 'None';
 }
 function has($admin){
     $has=Accountant::where('employee_id',$admin->id)->sum('has');
-    if(isset($has))
+    if(isset($has) && (auth()->user()->email==$admin->email || 'nessimboula@gmail.com'==auth()->user()->email))
      return $has;
     else
     return 'None';
