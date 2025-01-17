@@ -45,7 +45,8 @@ class AccountantController extends Controller
      */
     public function create()
     {
-        return view('admin.crud.accountants.create');
+        $employees=Admin::get();
+        return view('admin.crud.accountants.create','employees');
     }
 
     /**
@@ -85,8 +86,10 @@ class AccountantController extends Controller
      */
     public function edit(Accountant $accountant)
     {
+        $employees=Admin::get();
+
         //    dd($accountant->title);
-        return view('admin.crud.accountants.edit', compact('accountant'));
+        return view('admin.crud.accountants.edit', compact('accountant','employees'));
     }
     /**
      * Update the specified resource in storage.

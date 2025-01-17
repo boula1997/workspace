@@ -44,8 +44,8 @@ class HistoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        return view('admin.crud.historys.create');
+    {$employees=Admin::get();
+        return view('admin.crud.historys.create','employees');
     }
 
     /**
@@ -86,7 +86,8 @@ class HistoryController extends Controller
     public function edit(History $history)
     {
         //    dd($history->title);
-        return view('admin.crud.historys.edit', compact('history'));
+        $employees=Admin::get();
+        return view('admin.crud.historys.edit', compact('history','employees'));
     }
     /**
      * Update the specified resource in storage.
