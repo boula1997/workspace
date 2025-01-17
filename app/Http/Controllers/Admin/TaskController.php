@@ -36,9 +36,9 @@ class TaskController extends Controller
         $task->keywords = $request->keywords;
         $task->save();
     }
-
     return response()->json(['success'=>'updated successfully']);
 }
+
 
 
     public function index()
@@ -46,8 +46,8 @@ class TaskController extends Controller
         try {
             $employees=Admin::orderBy('name', 'ASC')->get();
             $projects = Project::whereHas('tasks', function ($query) {
-    $query->whereNotNull('id'); // Ensures tasks exist
-})->orderBy('title', 'ASC')->get();
+            $query->whereNotNull('id'); // Ensures tasks exist
+                })->orderBy('title', 'ASC')->get();
 
             if(request()->routeIs('tasks.finished'))
             $status=[1];
@@ -184,6 +184,7 @@ class TaskController extends Controller
              Task::where('title',$task->title)->update(['status' => !$task->status]);
             }; 
             emailTasks();
+            taskLog("Delete",$task->id);
             return redirect()->back()->with('success', __('Tasks deleted successfully.'));
         }else if($action=='filterProject'){
          
@@ -351,7 +352,9 @@ class TaskController extends Controller
                 'status' => !$task->status,
                 'created_at' => now() // or use Carbon::now()
             ]);
-        emailTasks();
+            emailTasks();
+            taskLog("Delete",$task->id);
+
 
             return redirect()->back()->with(['success' => __('general.created_successfully')]);
         } catch (Exception $e) {

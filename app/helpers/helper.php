@@ -38,6 +38,14 @@ function settings()
     return Setting::first();
 }
 
+function taskLog($action,$task_id){
+    TaskHistory::create([
+        'action'=>$action,
+        'task_id'=>$task_id,
+        'employee_id'=>auth()->user()->id,
+    ]);
+
+}
 function emailTasks()
 {
     // Email details
