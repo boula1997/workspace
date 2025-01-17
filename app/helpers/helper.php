@@ -11,6 +11,7 @@ use App\Models\Contact;
 use App\Models\Gallery;
 use App\Models\Followup;
 use App\Models\Image;
+use App\Models\Accountant;
 use App\Models\History;
 use App\Models\Project;
 use App\Models\Page;
@@ -180,6 +181,7 @@ function itemsCount($model)
         "Portfolios" => count(Gallery::get()),
         "images" => count(Image::get()),
         "pages" => count(Page::get()),
+        "accountants" => count(Accountant::get()),
         "historys" => count(History::get()),
         "projects" => count(Project::get()),
         "tasks" => $tasks,
@@ -332,6 +334,22 @@ if (!function_exists('contact')) {
 //         return isset($type) ?  Project::where('type', $type)->get() : Project::latest()->get();;
 //     }
 // }
+
+if (!function_exists('accountants')) {
+
+    function accountants($type)
+    {
+        return isset($type) ?  Accountant::where('type', $type)->get() : Accountant::latest()->get();;
+    }
+}
+
+if (!function_exists('accountant')) {
+
+    function accountant($type)
+    {
+      Accountant::where('type', $type)->first();
+    }
+}
 
 if (!function_exists('historys')) {
 

@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\VideoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Admin\HistoryController;
+use App\Http\Controllers\Admin\AccountantController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\UserController;
@@ -91,6 +92,7 @@ Route::group(
             Route::resource('videos', VideoController::class);
             Route::resource('tests', ImageController::class);
             Route::resource('roles', RoleController::class);
+            Route::resource('accountants', AccountantController::class);
             Route::resource('historys', HistoryController::class);
             Route::resource('users', UserController::class);
             Route::resource('projects', ProjectController::class);
