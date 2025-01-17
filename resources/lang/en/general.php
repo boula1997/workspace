@@ -117,6 +117,45 @@ return [
 
 "Password" => "Password",
 
+
+"accountants" => "Accountants",
+
+"historys" => "Historys",
+
+"show_all" => "Show all",
+
+"cancel" => "Cancel",
+
+"no_result" => "No result",
+
+"task" => "Task",
+
+"action" => "Action",
+
+"received" => "Received",
+
+"has" => "Has",
+
+"changed_successfully" => "Changed successfully",
+
+"updated_successfully" => "Updated successfully",
+
+"Dashboard" => "Dashboard",
+
+"Register" => "Register",
+
+"Name" => "Name",
+
+"Password" => "Password",
+
+"Email" => "Email",
+
+"Login" => "Login",
+
+"Confirm" => "Confirm",
+
+"Logout" => "Logout",
+
 'followups' => 'Follow-ups',
 'allfollowups' => 'All Follow-ups',
 'finishedFollowups' => 'Finished Follow-ups',
