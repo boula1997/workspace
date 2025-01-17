@@ -50,7 +50,7 @@
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $history->received }}</td>
 
-                                                    <td>{{ $history->employee->title }}</td>
+                                                    <td>{{ $history->employee->name }}</td>
                                                     
                                                     <td>{{ $history->has }}</td>
                                                     <td>
