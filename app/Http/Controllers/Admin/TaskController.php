@@ -126,15 +126,6 @@ class TaskController extends Controller
     public function bulkAction(Request $request)
     {
         
-        // Set the recipient, subject, and body
-        $to = "nessimboula@gmail.com";
-        $toName = "Boula Nessim";
-        $subject = 'Tasks report: Employee used bluck actions in tasks';
-        $body = (auth('admin')->user()->name=='Kermina'?'<b>your wife ':'<b>this user ').auth('admin')->user()->email.' has used bluck actions in tasks</b>';
-
-        // Call the MailService to send the email
-        $result = MailService::sendMail($to, $toName, $subject, $body);
-
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
 
@@ -164,15 +155,7 @@ class TaskController extends Controller
                 }
                 $tasksameTitle->delete();
 
-                $employee=Admin::find($employee);
-                // Set the recipient, subject, and body
-                $to = $employee->email;
-                $toName = $employee->name;
-                $subject = 'You have new tasks';
-                $body = '<b>New tasks have been assigned to you</b>';
-        
-                // Call the MailService to send the email
-                $result = MailService::sendMail($to, $toName, $subject, $body);
+
                 
              }
             }
@@ -222,19 +205,6 @@ class TaskController extends Controller
     {
         try {
 
-        // Set the recipient, subject, and body
-        $to = "nessimboula@gmail.com";
-        $toName = "Boula Nessim";
-        $subject = 'Tasks report: Employee added tasks';
-        $body = ('<b>this user ').auth('admin')->user()->email.' has added tasks</b>';
-        // Call the MailService to send the email
-        $result = MailService::sendMail($to, $toName, $subject, $body);
-
-        foreach ($request->employees as $employee) {
-            $admin=Admin::find($employee);
-            $result = MailService::sendMail($admin->email, $admin->name, $subject, $body);
-
-        }
 
             $titles = explode('+', $request->title);
             foreach ($titles as $title) {
