@@ -41,6 +41,7 @@ function settings()
 }
 
 function taskLog($action,$task_id){
+
     $task=Task::find($request->task_id);
     if($task->status==1)
     History::create([
@@ -48,6 +49,9 @@ function taskLog($action,$task_id){
         'task_id'=>$task_id,
         'employee_id'=>auth()->user()->id,
     ]);
+    else
+    History::where('task_id',$task_id)->delete();
+
 
 }
 
