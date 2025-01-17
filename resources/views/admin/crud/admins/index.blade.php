@@ -43,7 +43,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($data as $admin)
-                                        @if ($admin->email== auth()->user()->email)
+                                        @if ($admin->email =='kerminamelad688@gmail.com' && $admin->email =='nessimboula@gmail.com')
                                         <tr class="p-0 m-0">
                                             <td>{{ $loop->iteration }}</td>
                                             <td><img width="100" height="100" src="{{ $admin->image }}"
@@ -71,7 +71,7 @@
                                                 ])
                                             </td>
                                         </tr>
-                                        @elseif( $admin->email =='kerminamelad688@gmail.com' && $admin->email =='nessimboula@gmail.com')
+                                        @elseif($admin->email== auth()->user()->email)
                                         <tr class="p-0 m-0">
                                             <td>{{ $loop->iteration }}</td>
                                             <td><img width="100" height="100" src="{{ $admin->image }}"
