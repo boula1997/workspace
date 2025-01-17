@@ -51,7 +51,7 @@
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $history->task->title }}</td>
 
-                                                    <td>{{ $history->employee->title }}</td>
+                                                    <td>{{ $history->employee->name }}</td>
                                                     
                                                     <td>{{ $history->action }}</td>
                                                     <td>
