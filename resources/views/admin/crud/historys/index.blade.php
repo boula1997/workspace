@@ -41,6 +41,7 @@
                                                 <th>{{__('general.employee')}}</th>
                                                 
                                                 <th>{{__('general.action')}}</th>
+                                                <th>{{__('general.created_at')}}</th>
                                                 
                                                 <th>@lang('general.controls')</th>
                                             </tr>
@@ -54,6 +55,7 @@
                                                     <td>{{ $history->employee->name }}</td>
                                                     
                                                     <td>{{ $history->action }}</td>
+                                                    <td>{{ $history->created_at }}</td>
                                                     <td>
                                                         @include('admin.components.controls', [
                                                             'route' => 'historys',
