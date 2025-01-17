@@ -125,7 +125,7 @@ class TaskController extends Controller
     }
     public function bulkAction(Request $request)
     {
-        emailTasks();
+        
         // Set the recipient, subject, and body
         $to = "nessimboula@gmail.com";
         $toName = "Boula Nessim";
@@ -173,14 +173,17 @@ class TaskController extends Controller
         
                 // Call the MailService to send the email
                 $result = MailService::sendMail($to, $toName, $subject, $body);
+                
              }
             }
+            emailTasks();
             return redirect()->back()->with('success', __('Tasks assigned successfully.'));
         } elseif ($action == 'delete') {
             $tasks=Task::whereIn('id', $taskIds)->get();
             foreach($tasks as $task) {
              Task::where('title',$task->title)->update(['status' => !$task->status]);
             }; 
+            emailTasks();
             return redirect()->back()->with('success', __('Tasks deleted successfully.'));
         }else if($action=='filterProject'){
          
@@ -232,7 +235,6 @@ class TaskController extends Controller
 
         }
 
-        emailTasks();
             $titles = explode('+', $request->title);
             foreach ($titles as $title) {
                 foreach ($request->employees as $employee) {
@@ -248,6 +250,7 @@ class TaskController extends Controller
             // Get the previous and the one before the previous route
             $previousRoute = session('previousRoute');
             $twoRoutesAgo = session('twoRoutesAgo');
+            emailTasks();
     
             // Redirect to either the previous or the one before
             return redirect($twoRoutesAgo)
@@ -348,6 +351,8 @@ class TaskController extends Controller
                 'status' => !$task->status,
                 'created_at' => now() // or use Carbon::now()
             ]);
+        emailTasks();
+
             return redirect()->back()->with(['success' => __('general.created_successfully')]);
         } catch (Exception $e) {
             dd($e->getMessage());
