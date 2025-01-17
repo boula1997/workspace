@@ -54,14 +54,14 @@ function received($admin){
     if(isset($received) && (auth()->user()->email==$admin->email || 'nessimboula@gmail.com'==$admin->email))
      return $received;
     else
-    return 0;
+    return 'None';
 }
 function has($admin){
     $has=Accountant::where('employee_id',$admin->id)->sum('has');
     if(isset($has))
      return $has;
     else
-    return 0;
+    return 'None';
 }
 function emailTasks()
 {
