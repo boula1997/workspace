@@ -47,7 +47,7 @@ class AccountantController extends Controller
     public function create()
     {
         $employees=Admin::get();
-        return view('admin.crud.accountants.create','employees');
+        return view('admin.crud.accountants.create',compact('employees'));
     }
 
     /**

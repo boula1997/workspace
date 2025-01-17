@@ -46,7 +46,7 @@ class HistoryController extends Controller
      */
     public function create()
     {$employees=Admin::get();
-        return view('admin.crud.historys.create','employees');
+        return view('admin.crud.historys.create',compact('employees'));
     }
 
     /**
