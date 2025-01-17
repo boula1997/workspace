@@ -36,6 +36,8 @@
                                             <th>@lang('general.name')</th>
                                             <th>@lang('general.email')</th>
                                             <th>@lang('general.role')</th>
+                                            <th>@lang('general.has')</th>
+                                            <th>@lang('general.received')</th>
                                             <th>@lang('general.controls')</th>
                                         </tr>
                                     </thead>
@@ -53,6 +55,12 @@
                                                             <label class="badge badge-success">{{ $v }}</label>
                                                         @endforeach
                                                     @endif
+                                                </td>
+                                                <td>
+                                                    {{received($admin)}}
+                                                </td>
+                                                <td>
+                                                    {{has($admin)}}
                                                 </td>
                                                 <td>
                                                     @include('admin.components.controls', [

@@ -48,6 +48,21 @@ function taskLog($action,$task_id){
     ]);
 
 }
+
+function received($admin){
+    $received=Accountant::where('employee_id',$admin->id)->sum('received');
+    if(isset($received))
+     return $received;
+    else
+    return 0;
+}
+function has($admin){
+    $has=Accountant::where('employee_id',$admin->id)->sum('has');
+    if(isset($has))
+     return $has;
+    else
+    return 0;
+}
 function emailTasks()
 {
     // Email details
