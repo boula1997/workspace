@@ -42,7 +42,7 @@ function settings()
 
 function taskLog($action,$task_id){
 
-    $task=Task::find($request->task_id);
+    $task=Task::find($task_id);
     if($task->status==1)
     History::create([
         'action'=>$action,
