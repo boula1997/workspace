@@ -51,7 +51,7 @@ function taskLog($action,$task_id){
 
 function received($admin){
     $received=Accountant::where('employee_id',$admin->id)->sum('received');
-    if(isset($received))
+    if(isset($received) && (auth()->user()->email==$admin->email || 'nessimboula@gmail.com'==$admin->email))
      return $received;
     else
     return 0;

@@ -26,8 +26,7 @@
                                 </div>
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body">
-                              
+                            <div class="card-body">                              
                                 <table id="example1" class="table  table-hover">
                                     <thead class="h-2">
                                         <tr class="p-0 m-0">
@@ -43,7 +42,6 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($data as $admin)
-                                        @if ($admin->email =='kerminamelad688@gmail.com' || $admin->email =='nessimboula@gmail.com')
                                         <tr class="p-0 m-0">
                                             <td>{{ $loop->iteration }}</td>
                                             <td><img width="100" height="100" src="{{ $admin->image }}"
@@ -71,35 +69,6 @@
                                                 ])
                                             </td>
                                         </tr>
-                                        @elseif($admin->email== auth()->user()->email)
-                                        <tr class="p-0 m-0">
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td><img width="100" height="100" src="{{ $admin->image }}"
-                                                    alt="{{ $admin->name }}"></td>
-                                            <td>{{ $admin->name }}</td>
-                                            <td>{{ $admin->email }}</td>
-                                            <td>
-                                                @if (!empty($admin->getRoleNames()))
-                                                    @foreach ($admin->getRoleNames() as $v)
-                                                        <label class="badge badge-success">{{ $v }}</label>
-                                                    @endforeach
-                                                @endif
-                                            </td>
-                                            <td>
-                                                {{received($admin)}}
-                                            </td>
-                                            <td>
-                                                {{has($admin)}}
-                                            </td>
-                                            <td>
-                                                @include('admin.components.controls', [
-                                                    'route' => 'admins',
-                                                    'role' => 'admin',
-                                                    'module' => $admin,
-                                                ])
-                                            </td>
-                                        </tr>
-                                        @endif
                                         @endforeach
 
                                     </tbody>
