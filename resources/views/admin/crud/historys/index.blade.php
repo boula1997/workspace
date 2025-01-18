@@ -201,7 +201,6 @@
             // Custom filter for date range
             $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
                 const createdAt = data[5]; // `created_at` column index
-                alert(createdAt);
                 if (start && createdAt < start) return false;
                 if (end && createdAt > end) return false;
                 return true;
