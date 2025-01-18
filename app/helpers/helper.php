@@ -263,7 +263,13 @@ function getFollowupTitles($followups)
 
 
 function taskEmployees($title){
+
+    if (request()->routeIs('tasks.index'))
+    $employee_ids=Task::where('title',$title)->where('status',0)->pluck('employee_id');
+    elseif(request()->routeIs('tasks.all'))
     $employee_ids=Task::where('title',$title)->pluck('employee_id');
+    else
+    $employee_ids=Task::where('title',$title)->where('status',1)->pluck('employee_id');
     $names=Admin::whereIn('id',$employee_ids)->pluck('name');
     return json_encode($names);
 }

@@ -5,20 +5,58 @@
     <div class="content-wrapper">
         @method('PUT')
 
-                <div class="container p-3">
+        <div class="container p-3">
             @include('admin.components.alert-error')
 
             <div class="card card-custom">
                 <div class="card-header card-header-tabs-line">
-                    @include('admin.components.breadcrumb', ['module' => 'accountants', 'action' => 'edit'])
+                    @include('admin.components.breadcrumb', [
+                        'module' => 'accountants',
+                        'action' => 'edit',
+                    ])
                 </div>
                 <div class="card-body">
                     <div class="row">
-<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.received')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="number" name="received" placeholder="{{__('general.received')}}" class="form-control pl-1 min-h-40px @error('received') is-invalid @enderror" value="{{ old('received', $history->received) }}"> </div> </div> </div>
+                        <!-- Normal title input -->
+                        <div class="col-md-12">
+                            <div class="form-group"> <label>{{ __('general.received') }} <span class="text-danger"> *
+                                    </span></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend"> <span class="input-group-text"><i
+                                                class="fas fa-pen"></i></span> </div> <input type="number" name="received"
+                                        placeholder="{{ __('general.received') }}"
+                                        class="form-control pl-1 min-h-40px @error('received') is-invalid @enderror"
+                                        value="{{ old('received', $history->received) }}">
+                                </div>
+                            </div>
+                        </div>
 
-{{-- Dynamic Select Input --}} <div class="col-md-6"> <div class="mb-3"> <label for="" class="form-label">{{ __('general.employee') }}</label> <select class="form-select form-select-lg" name="employee_id" id="employee"> <option value="">{{ __('general.select') }}</option> @foreach ($employees as $employee) <option value="{{ $employee->id }}" {{ old('employee_id',$history->employee_id) == $employee->id ? 'selected' : '' }}> {{ $employee->name}} </option> @endforeach </select> </div> </div>
+                        {{-- Dynamic Select Input --}} <div class="col-md-6">
+                            <div class="mb-3"> <label for=""
+                                    class="form-label">{{ __('general.employee') }}</label> <select
+                                    class="form-select form-select-lg" name="employee_id" id="employee">
+                                    <option value="">{{ __('general.select') }}</option>
+                                    @foreach ($employees as $employee)
+                                        <option value="{{ $employee->id }}"
+                                            {{ old('employee_id', $history->employee_id) == $employee->id ? 'selected' : '' }}>
+                                            {{ $employee->name }} </option>
+                                    @endforeach
+                                </select> </div>
+                        </div>
 
-<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.has')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="number" name="has" placeholder="{{__('general.has')}}" class="form-control pl-1 min-h-40px @error('has') is-invalid @enderror" value="{{ old('has', $history->has) }}"> </div> </div> </div>
+                        <!-- Normal title input -->
+                        <div class="col-md-12">
+                            <div class="form-group"> <label>{{ __('general.has') }} <span class="text-danger"> *
+                                    </span></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend"> <span class="input-group-text"><i
+                                                class="fas fa-pen"></i></span> </div> <input type="number" name="has"
+                                        placeholder="{{ __('general.has') }}"
+                                        class="form-control pl-1 min-h-40px @error('has') is-invalid @enderror"
+                                        value="{{ old('has', $history->has) }}">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer mb-5">
                         <button type="submit"
