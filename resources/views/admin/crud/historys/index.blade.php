@@ -109,6 +109,7 @@
                                                     <th>{{__('general.employee')}}</th>
                                                     <th>{{ __('general.project') }}</th>
                                                     <th>{{ __('general.actions') }}</th>
+                                                    <th>{{ __('general.created_at') }}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -127,6 +128,7 @@
                                                         </td>
                                                         <td>{{ $history->employee->name }}</td>
                                                         <td>{{ $history->task->project->title }}</td>
+                                                        <td>{{ $history->created_at }}</td>
 
                                                         <td>
                                                             <a href="{{ route('historys.edit', $history) }}" title="edit">
@@ -185,11 +187,11 @@
 
         // Filter logic
         $('#projectFilter').on('keyup', function() {
-            table.columns(3).search(this.value).draw(); // project column
+            table.columns(4).search(this.value).draw(); // project column
         });
 
         $('#employeeFilter').on('keyup', function() {
-            table.columns(2).search(this.value).draw(); // Employee column
+            table.columns(3).search(this.value).draw(); // Employee column
         });
 
         $('#startFrom, #endTo').on('change', function() {
