@@ -65,20 +65,7 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            {{-- Dynamic Select Input --}}
-                                            <div class="col-md-4 mb-4">
-                                                <label
-                                                    class="col-form-label text-right">{{ __('general.projects') }}</label>
-                                                <select class="form-control selectpicker" id="multiSelect1"
-                                                    multiple="multiple" data-live-search="true" name="projects[]">
-                                                    <option value="">{{ __('general.select') }}</option>
-                                                    @foreach ($projects as $project)
-                                                        <option value="{{ $project->id }}"
-                                                            {{ collect(old('projects'))->contains($project->id) ? 'selected' : '' }}>
-                                                            {{ $project->title }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+
 
                                             <input type="hidden" name="route_name" value="{{ isset($type)?$type:Route::currentRouteName() }}">
 
