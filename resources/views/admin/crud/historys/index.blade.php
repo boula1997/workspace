@@ -92,8 +92,8 @@
                                                     <th>#</th>
                                                     <th style="width: 1500px !important;">{{ __('general.task') }}</th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
-                                                    <th>{{__('general.employee')}}</th>
                                                     <th>{{ __('general.project') }}</th>
+                                                    <th>{{__('general.employee')}}</th>
                                                     <th>{{ __('general.actions') }}</th>
                                                 </tr>
                                             </thead>
