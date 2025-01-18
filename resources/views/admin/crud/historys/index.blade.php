@@ -31,6 +31,21 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-3">
+                                            <input type="text" id="taskFilter" class="form-control" placeholder="@lang('general.task')">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="text" id="employeeFilter" class="form-control" placeholder="@lang('general.employee')">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="date" id="startFrom" class="form-control" placeholder="@lang('general.start_from')">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="date" id="endTo" class="form-control" placeholder="@lang('general.end_to')">
+                                        </div>
+                                    </div>
                                     
                                     <table id="example1" class="table  table-hover">
                                         <thead>
@@ -87,6 +102,59 @@
 
 
 @push('scripts')
+
+@push('scripts')
+<script>
+    $(function() {
+        const tableStateKey = "coursesTableState";
+
+        var table = $("#example1").DataTable({
+            "responsive": true,
+            "lengthChange": false,
+            "autoWidth": false,
+            "paging": true,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+            "stateSave": true,
+            "stateLoadCallback": function(settings) {
+                var savedState = localStorage.getItem(tableStateKey);
+                return savedState ? JSON.parse(savedState) : null;
+            },
+            "stateSaveCallback": function(settings, data) {
+                localStorage.setItem(tableStateKey, JSON.stringify(data));
+            }
+        });
+
+        // Append DataTable buttons to container
+        table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+        // Filter logic
+        $('#taskFilter').on('keyup', function() {
+            table.columns(1).search(this.value).draw(); // Task column
+        });
+
+        $('#employeeFilter').on('keyup', function() {
+            table.columns(2).search(this.value).draw(); // Employee column
+        });
+
+        $('#startFrom, #endTo').on('change', function() {
+            const start = $('#startFrom').val();
+            const end = $('#endTo').val();
+
+            // Custom filter for date range
+            $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                const createdAt = data[5]; // `created_at` column index
+                if (start && createdAt < start) return false;
+                if (end && createdAt > end) return false;
+                return true;
+            });
+
+            table.draw();
+            $.fn.dataTable.ext.search.pop(); // Remove custom filter to prevent conflicts
+        });
+    });
+</script>
+@endpush
+
     <script>
         $(function() {
             // Define a unique key for your DataTable state in localStorage
