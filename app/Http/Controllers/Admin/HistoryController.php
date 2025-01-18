@@ -49,7 +49,8 @@ class HistoryController extends Controller
      */
     public function create()
     {$employees=Admin::get();
-        return view('admin.crud.historys.create',compact('employees'));
+        $tasks=Task::get();
+        return view('admin.crud.historys.create',compact('employees','tasks'));
     }
 
     /**
@@ -91,7 +92,9 @@ class HistoryController extends Controller
     {
         //    dd($history->title);
         $employees=Admin::get();
-        return view('admin.crud.historys.edit', compact('history','employees'));
+        $tasks=Task::get();
+
+        return view('admin.crud.historys.edit', compact('history','employees','tasks'));
     }
     /**
      * Update the specified resource in storage.
