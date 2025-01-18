@@ -39,6 +39,7 @@
                                                 <th>{{__('general.task')}}</th>
 
                                                 <th>{{__('general.employee')}}</th>
+                                                <th>{{__('general.project')}}</th>
                                                 
                                                 <th>{{__('general.action')}}</th>
                                                 <th>{{__('general.created_at')}}</th>
@@ -53,6 +54,7 @@
                                                     <td>{{ $history->task->title }}</td>
 
                                                     <td>{{ $history->employee->name }}</td>
+                                                    <td>{{ $history->task->project->title }}</td>
                                                     
                                                     <td>{{ $history->action }}</td>
                                                     <td>{{ $history->created_at }}</td>
