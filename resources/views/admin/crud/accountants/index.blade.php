@@ -48,11 +48,11 @@
                                             @foreach ($accountants as $accountant)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $history->received }}</td>
+                                                    <td>{{ $accountant->received }}</td>
 
-                                                    <td>{{ $history->employee->name }}</td>
+                                                    <td>{{ $accountant->employee->name }}</td>
                                                     
-                                                    <td>{{ $history->has }}</td>
+                                                    <td>{{ $accountant->has }}</td>
                                                     <td>
                                                         @include('admin.components.controls', [
                                                             'route' => 'accountants',
