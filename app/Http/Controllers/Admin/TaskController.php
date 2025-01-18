@@ -66,6 +66,7 @@ class TaskController extends Controller
                     })
                     ->orderBy('status')
                     ->latest()
+                    ->take(300)
                     ->get()
                     ->unique('title');
                 else
@@ -81,14 +82,15 @@ class TaskController extends Controller
                     $query->where('email', 'boula@gmail.com');
                 })
                 ->orderBy('status') // Order by status
-                ->latest()          // Then order by latest date
+                ->latest()   
+                ->take(300)       // Then order by latest date
                 ->get()
                 ->unique('title');
             
             }else{
 
                 if(true)
-                $tasks = $this->task->whereIn('status',$status)->orderBy('status')->latest()->get() ->unique('title');
+                $tasks = $this->task->whereIn('status',$status)->orderBy('status')->latest()->take(300)->get()->unique('title');
                 else
                 $tasks = $this->task
                 ->whereIn('status', $status)
@@ -101,6 +103,7 @@ class TaskController extends Controller
                 ->orderBy('status')
                 ->latest()
                 ->get()
+                ->take(300)
                 ->unique('title');
             
             }
