@@ -63,17 +63,17 @@ function clearTasks($taskTitle)
 }
 
 
-function taskLog($action,$task_id){
+function taskLog($action,$task_title){
 
-    $task=Task::find($task_id);
+    $task=Task::where('title',$task->title)->where('employee_id',$task->employee_id)->first();
     if($task->status==1)
     History::create([
         'action'=>$action,
-        'task_id'=>$task_id,
+        'task_id'=>$task->id,
         'employee_id'=>auth()->user()->id,
     ]);
     else
-    History::where('task_id',$task_id)->delete();
+    History::where('task_id',$task->id)->delete();
 
 
 }

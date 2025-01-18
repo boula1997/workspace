@@ -197,7 +197,7 @@ class TaskController extends Controller
                 Task::where('title',$task->title)->update(['status' => !$task->status]);
                 else
                 Task::where('title',$task->title)->where('employee_id',auth()->user()->id)->update(['status' => !$task->status]);
-                taskLog("Delete",$task->id);
+                taskLog("Delete",$task->title);
                 clearTasks($task->title);
             }; 
             emailTasks();
