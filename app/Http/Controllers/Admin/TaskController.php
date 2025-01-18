@@ -186,10 +186,7 @@ class TaskController extends Controller
         }  elseif ($action == 'delete') {
             $tasks=Task::whereIn('id', $taskIds)->get();
             foreach($tasks as $task) {
-            if(auth()->user()->email=="nessimboula@gmail.com")
-             Task::where('title',$task->title)->update(['status' => !$task->status]);
-            else
-            Task::where('title',$task->title)->where('employee_id',auth()->user()->id)->update(['status' => !$task->status]);
+                Task::where('title',$task->title)->update(['status' => !$task->status]);
             }; 
             emailTasks();
             taskLog("Delete",$task->id);
