@@ -190,9 +190,9 @@ class TaskController extends Controller
             $tasks=Task::whereIn('id', $taskIds)->get();
             foreach($tasks as $task) {
                 Task::where('title',$task->title)->where('employee_id',auth()->user()->id)->update(['status' => !$task->status]);
+                taskLog("Delete",$task->id);
             }; 
             emailTasks();
-            taskLog("Delete",$task->id);
             return redirect()->back()->with('success', __('Tasks deleted successfully.'));
         }else if($action=='filterProject'){
          
@@ -353,7 +353,7 @@ class TaskController extends Controller
                 'created_at' => now() // or use Carbon::now()
             ]);
             emailTasks();
-            taskLog("Delete",$task->id);
+       
 
 
             return redirect()->back()->with(['success' => __('general.created_successfully')]);
