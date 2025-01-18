@@ -34,7 +34,7 @@
 
                                     <div class="row mb-3">
                                         <div class="col-md-3">
-                                            <input type="text" id="taskFilter" class="form-control" placeholder="@lang('general.task')">
+                                            <input type="text" id="projectFilter" class="form-control" placeholder="@lang('general.project')">
                                         </div>
                                         <div class="col-md-3">
                                             <input type="text" id="employeeFilter" class="form-control" placeholder="@lang('general.employee')">
@@ -128,8 +128,8 @@
         table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
         // Filter logic
-        $('#taskFilter').on('keyup', function() {
-            table.columns(1).search(this.value).draw(); // Task column
+        $('#projectFilter').on('keyup', function() {
+            table.columns(3).search(this.value).draw(); // project column
         });
 
         $('#employeeFilter').on('keyup', function() {
