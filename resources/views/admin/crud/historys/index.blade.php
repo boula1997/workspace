@@ -71,11 +71,10 @@
 
                                             <div class="col-md-4">
                                                 <div class="">
-                                                    <button type="submit" name="action" value="assign"
+                                                    <button type="submit" name="action" value="reassign"
                                                         class="btn btn-primary">
                                                         @lang('general.assign_employee')
                                                     </button>
-
                                                 </div>
                                                 <div class="mt-2">
                                                     <button type="submit" name="action" value="delete"

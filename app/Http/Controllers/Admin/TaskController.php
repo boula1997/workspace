@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\TaskRequest;
 use App\Models\Admin;
+use App\Models\History;
 use App\Models\Project;
 use App\Services\MailService;
 use Exception;
@@ -161,7 +162,28 @@ class TaskController extends Controller
             }
             emailTasks();
             return redirect()->back()->with('success', __('Tasks assigned successfully.'));
-        } elseif ($action == 'delete') {
+        } elseif ($action == 'reassign') {
+            foreach($tasks as $task) {
+                $taskssameTitles=Task::where('title', $task->title)->get();
+                foreach($taskssameTitles as $tasksameTitle){
+                    foreach($request->employees as $employee){
+                        History::where('employee_id', $employee->id)->where('task_id',$employee->task_id)->delete();
+                        Task::create([
+                            'title'=>$tasksameTitle->title,
+                            'employee_id'=>$employee,
+                            'project_id'=>$tasksameTitle->project_id,
+                            'keywords'=>$tasksameTitle->keywords
+                        ]);
+                }
+                $tasksameTitle->delete();
+
+
+                
+             }
+            }
+            emailTasks();
+            return redirect()->back()->with('success', __('Tasks assigned successfully.'));
+        }  elseif ($action == 'delete') {
             $tasks=Task::whereIn('id', $taskIds)->get();
             foreach($tasks as $task) {
             if(auth()->user()->email=="nessimboula@gmail.com")
