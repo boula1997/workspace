@@ -167,7 +167,7 @@ class TaskController extends Controller
                 $taskssameTitles=Task::where('title', $task->title)->get();
                 foreach($taskssameTitles as $tasksameTitle){
                     foreach($request->employees as $employee){
-                        History::where('employee_id', $employee->id)->where('task_id',$employee->task_id)->delete();
+                        History::where('employee_id', $employee)->where('task_id',$tasksameTitle->id)->delete();
                         Task::create([
                             'title'=>$tasksameTitle->title,
                             'employee_id'=>$employee,
