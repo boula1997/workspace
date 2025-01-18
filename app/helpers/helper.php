@@ -65,7 +65,7 @@ function clearTasks($taskTitle)
 
 function taskLog($action,$task_title){
 
-    $task=Task::where('title',$task->title)->where('employee_id',$task->employee_id)->first();
+    $task=Task::where('title',$task_title)->where('employee_id',auth()->user()->id)->first();
     if($task->status==1)
     History::create([
         'action'=>$action,
