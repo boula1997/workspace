@@ -10,7 +10,6 @@ use App\Models\Admin;
 use App\Models\History;
 use App\Models\Project;
 use App\Services\MailService;
-use Carbon\Carbon;
 use Exception;
 
 class TaskController extends Controller
@@ -196,17 +195,16 @@ class TaskController extends Controller
          
             if($request->route_name=="tasks.index")
             $tasks=Task::whereIn('project_id', $request->projects)->where('status',0)->orderBy('project_id','desc')->get()->unique('title');
-            else if($request->route_name=="tasks.finished"){
-                $oneMonthAgo = Carbon::now()->subMonth();
-                $tasks = Task::whereIn('project_id', $request->projects)
-                ->where('status', 1)
-                ->where('created_at', '>=', $oneMonthAgo) // Filter tasks from one month ago
-                ->orderBy('project_id', 'desc')
-                ->get()
-                ->unique('title');
-            }
+            else if($request->route_name=="tasks.finished")
+            $tasks = Task::whereIn('project_id', $request->projects)
+            ->orderBy('project_id', 'desc')
+            ->latest('created_at') // Ensure latest tasks by creation date
+            ->take(300) // Limit the results to 300
+            ->get()
+            ->unique('title');
+        
             else
-            $tasks=Task::whereIn('project_id', $request->projects)->orderBy('project_id','desc')->get()->unique('title');
+            $tasks=Task::whereIn('project_id', $request->projects)->orderBy('project_id','desc')->take(300)->get()->unique('title');
 
             $employees=Admin::orderBy('name', 'ASC')->get();
             $projects = Project::whereHas('tasks', function ($query) {
