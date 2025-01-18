@@ -108,8 +108,8 @@
                                                     <th class="d-none">{{ __('general.select') }}</th>
                                                     <th>{{__('general.employee')}}</th>
                                                     <th>{{ __('general.project') }}</th>
-                                                    <th>{{ __('general.actions') }}</th>
                                                     <th>{{ __('general.created_at') }}</th>
+                                                    <th>{{ __('general.actions') }}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
