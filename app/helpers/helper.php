@@ -72,8 +72,13 @@ function taskLog($action,$task_title){
         'task_id'=>$task->id,
         'employee_id'=>auth()->user()->id,
     ]);
-    else
-    History::where('task_id',$task->id)->delete();
+    else{
+        $tasks=Task::where('title',$task_title)->where('employee_id',auth()->user()->id)->get();
+        foreach($tasks as $task){
+            if($task->status==0)
+            History::where('task_id',$task->id)->delete();
+        }
+    }
 
 
 }
