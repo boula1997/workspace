@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\History;
 use App\Models\Admin;
+use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -33,7 +34,8 @@ class HistoryController extends Controller
         try {
             $historys = $this->history->latest()->get();
             $employees=Admin::get();
-            return view('admin.crud.historys.index', compact('historys','employees'));
+            $projects=Project::get();
+            return view('admin.crud.historys.index', compact('historys','employees','projects'));
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
