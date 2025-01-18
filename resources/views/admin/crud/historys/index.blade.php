@@ -102,8 +102,6 @@
 
 
 @push('scripts')
-
-@push('scripts')
 <script>
     $(function() {
         const tableStateKey = "coursesTableState";
@@ -153,34 +151,4 @@
         });
     });
 </script>
-@endpush
-
-    <script>
-        $(function() {
-            // Define a unique key for your DataTable state in localStorage
-            const tableStateKey = "coursesTableState";
-
-            // Initialize DataTable with stateSave and custom state management
-            var table = $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "paging": true,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                "stateSave": true, // Enable state saving
-                "stateLoadCallback": function(settings) {
-                    // Load the state from localStorage
-                    var savedState = localStorage.getItem(tableStateKey);
-                    return savedState ? JSON.parse(savedState) : null;
-                },
-                "stateSaveCallback": function(settings, data) {
-                    // Save the state to localStorage
-                    localStorage.setItem(tableStateKey, JSON.stringify(data));
-                }
-            });
-
-            // Append DataTable buttons to container
-            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        });
-    </script>
 @endpush
