@@ -123,7 +123,7 @@ function emailTasks()
 
     // Check if the email was sent successfully
     if ($result) {
-        echo "Email sent successfully.";
+     
     } else {
         echo "Failed to send email.";
     }
