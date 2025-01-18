@@ -32,7 +32,8 @@ class HistoryController extends Controller
     {
         try {
             $historys = $this->history->latest()->get();
-            return view('admin.crud.historys.index', compact('historys'));
+            $employees=Admin::get();
+            return view('admin.crud.historys.index', compact('historys','employees'));
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
