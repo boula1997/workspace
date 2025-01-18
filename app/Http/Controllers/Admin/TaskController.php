@@ -202,7 +202,6 @@ class TaskController extends Controller
             ->take(300) // Limit the results to 300
             ->get()
             ->unique('title');
-        
             else
             $tasks=Task::whereIn('project_id', $request->projects)->orderBy('project_id','desc')->take(300)->get()->unique('title');
 
