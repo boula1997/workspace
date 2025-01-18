@@ -356,19 +356,6 @@ $(document).ready(function () {
 
 
 
-
-
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "paging": false,
-                "searching": true,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        });
-
         function toggleCheckbox(taskId) {
             const checkbox = document.getElementById(`checkbox-${taskId}`);
             const taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(2)');
