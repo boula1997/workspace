@@ -40,6 +40,29 @@ function settings()
     return Setting::first();
 }
 
+
+function clearTasks($taskTitle)
+{
+    // Fetch tasks with the given title
+    $tasks = Task::where('title', $taskTitle)->get();
+
+    // Group tasks by employee_id
+    $groupedTasks = $tasks->groupBy('employee_id');
+
+    foreach ($groupedTasks as $employeeId => $employeeTasks) {
+        // Filter tasks by status
+        $status1Tasks = $employeeTasks->where('status', 1);
+        $otherStatusTasks = $employeeTasks->where('status', '!=', 1);
+
+        // If there are both status 1 tasks and other status tasks for the same employee
+        if ($status1Tasks->isNotEmpty() && $otherStatusTasks->isNotEmpty()) {
+            // Delete tasks with status 1
+            Task::whereIn('id', $status1Tasks->pluck('id'))->delete();
+        }
+    }
+}
+
+
 function taskLog($action,$task_id){
 
     $task=Task::find($task_id);

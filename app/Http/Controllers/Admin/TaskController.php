@@ -36,6 +36,8 @@ class TaskController extends Controller
     foreach($tasks as $task){
         $task->keywords = $request->keywords;
         $task->save();
+
+        clearTasks($task->title);
     }
     return response()->json(['success'=>'updated successfully']);
 }
@@ -162,6 +164,7 @@ class TaskController extends Controller
 
                 
              }
+             clearTasks($task->title);
             }
             emailTasks();
             return redirect()->back()->with('success', __('Tasks assigned successfully.'));
@@ -183,6 +186,7 @@ class TaskController extends Controller
 
                 
              }
+             clearTasks($task->title);
             }
             emailTasks();
             return redirect()->back()->with('success', __('Tasks assigned successfully.'));
@@ -191,6 +195,7 @@ class TaskController extends Controller
             foreach($tasks as $task) {
                 Task::where('title',$task->title)->where('employee_id',auth()->user()->id)->update(['status' => !$task->status]);
                 taskLog("Delete",$task->id);
+                clearTasks($task->title);
             }; 
             emailTasks();
             return redirect()->back()->with('success', __('Tasks deleted successfully.'));
