@@ -26,6 +26,8 @@ class HistoryController extends Controller
         $this->middleware('permission:history-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:history-delete', ['only' => ['destroy']]);
         $this->history = $history;
+
+        dectatorBoula();
     }
 
 

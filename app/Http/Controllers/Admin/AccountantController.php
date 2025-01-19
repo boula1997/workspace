@@ -24,6 +24,8 @@ class AccountantController extends Controller
         $this->middleware('permission:accountant-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:accountant-delete', ['only' => ['destroy']]);
         $this->accountant = $accountant;
+
+        dectatorBoula();
     }
 
 

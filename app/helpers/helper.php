@@ -83,6 +83,13 @@ function taskLog($action,$task_title){
 
 }
 
+function dectatorBoula(){
+    if(auth()->user()->email!="nessimboula@gmail.com")
+    if (in_array($request->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'])) {
+        abort(403, 'Action not allowed');
+    }
+}
+
 function received($admin){
     $received=Accountant::where('employee_id',$admin->id)->sum('received');
     if(isset($received) && (auth()->user()->email==$admin->email || 'nessimboula@gmail.com'==auth()->user()->email))
