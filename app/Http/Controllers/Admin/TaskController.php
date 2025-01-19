@@ -47,6 +47,13 @@ class TaskController extends Controller
     public function index()
     {
         try {
+
+            Task::query()->chunkById(100, function ($tasks) {
+                foreach ($tasks as $task) {
+                    $task->title = trim($task->title);
+                    $task->save();
+                }
+            });
             $employees=Admin::orderBy('name', 'ASC')->get();
             $projects = Project::whereHas('tasks', function ($query) {
             $query->whereNotNull('id'); // Ensures tasks exist
