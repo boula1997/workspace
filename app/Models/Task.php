@@ -29,9 +29,9 @@ class Task extends Model
         return $this->belongsTo(Admin::class, 'employee_id');
     }
 
-    // Accessor for the title attribute
-    public function getTitleAttribute($value)
+    // Mutator for the title attribute
+    public function setTitleAttribute($value)
     {
-        return trim($value);
+        $this->attributes['title'] = trim($value);
     }
 }
