@@ -27,7 +27,10 @@ class HistoryController extends Controller
         $this->middleware('permission:history-delete', ['only' => ['destroy']]);
         $this->history = $history;
 
-        dectatorBoula();
+        if(auth('admin')->user()->email != "nessimboula@gmail.com")
+        if (in_array($request->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'])) {
+            abort(403, 'Action not allowed');
+        }
     }
 
 

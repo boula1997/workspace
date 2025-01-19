@@ -25,7 +25,10 @@ class AccountantController extends Controller
         $this->middleware('permission:accountant-delete', ['only' => ['destroy']]);
         $this->accountant = $accountant;
 
-        dectatorBoula();
+        if(auth('admin')->user()->email != "nessimboula@gmail.com")
+        if (in_array($request->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'])) {
+            abort(403, 'Action not allowed');
+        }
     }
 
 
