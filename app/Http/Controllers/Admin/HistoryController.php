@@ -33,8 +33,7 @@ class HistoryController extends Controller
     public function index()
     {
         
-        if(auth()->user()->email!="nessimboula@gmail.com")
-        dectatorBoula();
+        
         try {
             $historys = $this->history->latest()->get();
             $employees=Admin::get();
@@ -66,6 +65,7 @@ class HistoryController extends Controller
     public function store(HistoryRequest $request)
     {
         try {
+            dectatorBoula();
             $this->history->create($request->all());
             return redirect()->route('historys.index')
                 ->with('success', trans('general.created_successfully'));
@@ -110,6 +110,7 @@ class HistoryController extends Controller
     public function update(HistoryRequest $request, History $history)
     {
         try {
+            dectatorBoula();
             $data = $request->all();
             $history->update($data);
             return redirect()->route('historys.index')
@@ -128,6 +129,7 @@ class HistoryController extends Controller
     public function destroy(History $history)
     {
         try {
+            dectatorBoula();
             $history->delete();
             return redirect()->route('historys.index')
                 ->with('success', trans('general.deleted_successfully'));

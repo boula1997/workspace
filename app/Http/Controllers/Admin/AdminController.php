@@ -27,9 +27,7 @@ class AdminController extends Controller
         $this->middleware('permission:admin-list|admin-create|admin-edit|admin-delete', ['only' => ['index', 'show']]);
         $this->middleware('permission:admin-create', ['only' => ['create', 'store']]);
         $this->middleware('permission:admin-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:admin-delete', ['only' => ['destroy']]);
-       if(auth()->user()->email!="nessimboula@gmail.com")
-        dectatorBoula();
+        $this->middleware('permission:admin-delete', ['only' => ['destroy']]);   
     }
 
 
@@ -65,6 +63,7 @@ class AdminController extends Controller
     public function store(AdminRequest $request)
     {
         try {
+            dectatorBoula();
             $input = $request->except('image','profile_avatar_remove');
             $input['password'] = Hash::make($input['password']);
             $admin = Admin::create($input);
@@ -116,6 +115,7 @@ class AdminController extends Controller
     public function update(AdminRequest $request, $id)
     {
         try {
+            dectatorBoula();
             $input = $request->except('image','profile_avatar_remove');
             if (!empty($input['password'])) {
                 $input['password'] = Hash::make($input['password']);
@@ -144,6 +144,7 @@ class AdminController extends Controller
     public function destroy($id)
     {
         try {
+            dectatorBoula();
             $admin = Admin::find($id);
             $admin->delete();
             $admin->deleteFile();

@@ -31,8 +31,7 @@ class AccountantController extends Controller
 
     public function index()
     {
-        if(auth()->user()->email!="nessimboula@gmail.com")
-        dectatorBoula();
+
         try {
             $accountants = $this->accountant->latest()->get();
             return view('admin.crud.accountants.index', compact('accountants'))
@@ -63,6 +62,7 @@ class AccountantController extends Controller
     public function store(AccountantRequest $request)
     {
         try {
+            dectatorBoula();
             $this->accountant->create($request->all());
             return redirect()->route('accountants.index')
                 ->with('success', trans('general.created_successfully'));
@@ -106,6 +106,7 @@ class AccountantController extends Controller
     public function update(AccountantRequest $request, Accountant $accountant)
     {
         try {
+            dectatorBoula();
             $data = $request->all();
             $accountant->update($data);
             return redirect()->route('accountants.index')
@@ -124,6 +125,7 @@ class AccountantController extends Controller
     public function destroy(Accountant $accountant)
     {
         try {
+            dectatorBoula();
             $accountant->delete();
             return redirect()->route('accountants.index')
                 ->with('success', trans('general.deleted_successfully'));
