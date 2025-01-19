@@ -26,7 +26,7 @@
                                                 class="fas fa-pen"></i></span> </div> <input type="number" name="received"
                                         placeholder="{{ __('general.received') }}"
                                         class="form-control pl-1 min-h-40px @error('received') is-invalid @enderror"
-                                        value="{{ old('received', $history->received) }}">
+                                        value="{{ old('received', $accountant->received) }}">
                                 </div>
                             </div>
                         </div>
@@ -38,7 +38,7 @@
                                     <option value="">{{ __('general.select') }}</option>
                                     @foreach ($employees as $employee)
                                         <option value="{{ $employee->id }}"
-                                            {{ old('employee_id', $history->employee_id) == $employee->id ? 'selected' : '' }}>
+                                            {{ old('employee_id', $accountant->employee_id) == $employee->id ? 'selected' : '' }}>
                                             {{ $employee->name }} </option>
                                     @endforeach
                                 </select> </div>
@@ -53,7 +53,7 @@
                                                 class="fas fa-pen"></i></span> </div> <input type="number" name="has"
                                         placeholder="{{ __('general.has') }}"
                                         class="form-control pl-1 min-h-40px @error('has') is-invalid @enderror"
-                                        value="{{ old('has', $history->has) }}">
+                                        value="{{ old('has', $accountant->has) }}">
                                 </div>
                             </div>
                         </div>
