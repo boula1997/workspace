@@ -85,10 +85,8 @@ function taskLog($action,$task_title){
 
 function dectatorBoula(){
     // Check if the user is authenticated before accessing their email
-    if (auth('admin')->user()->email != "nessimboula@gmail.com") {
-        if (in_array($request->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'])) {
-            abort(403, 'Action not allowed');
-        }
+    if (in_array($request->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'])) {
+        abort(403, 'Action not allowed');
     }
 }
 
