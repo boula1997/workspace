@@ -170,7 +170,7 @@
             "responsive": true,
             "lengthChange": false,
             "autoWidth": false,
-            "paging": true,
+            "paging": false,
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
             "stateSave": true,
             "stateLoadCallback": function(settings) {
