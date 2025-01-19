@@ -66,6 +66,9 @@ function clearTasks($taskTitle)
 function taskLog($action,$task_title){
 
     $task=Task::where('title',$task_title)->where('employee_id',auth()->user()->id)->first();
+    if(!isset($task)){
+        return redirect()->back()->with(['error' => __('general.you_are_not_allowed_to_do_this_assignit_to_you_first')]);
+    }
     if($task->status==1)
     History::create([
         'action'=>$action,
