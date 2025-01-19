@@ -25,13 +25,14 @@ class AccountantController extends Controller
         $this->middleware('permission:accountant-delete', ['only' => ['destroy']]);
         $this->accountant = $accountant;
 
-        if(auth()->user()->email!="nessimboula@gmail.com")
-        dectatorBoula();
+
     }
 
 
     public function index()
     {
+        if(auth()->user()->email!="nessimboula@gmail.com")
+        dectatorBoula();
         try {
             $accountants = $this->accountant->latest()->get();
             return view('admin.crud.accountants.index', compact('accountants'))
