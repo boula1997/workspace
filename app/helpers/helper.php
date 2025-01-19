@@ -91,6 +91,13 @@ function dectatorBoula(){
     }
 }
 
+function notAllowedTaskAction($taskTitle){
+    $taskIds = Task::where('title', $taskTitle)->pluck('employee_id')->toArray();  // Convert to array
+    if (!in_array(auth()->user()->id, $taskIds)) {
+        return redirect()->back()->with(['error' => __('general.you_are_not_allowed_to_do_this_assignit_to_you_first')]);
+    }
+}
+
 function received($admin){
     $received=Accountant::where('employee_id',$admin->id)->sum('received');
     if(isset($received) && (auth()->user()->email==$admin->email || 'nessimboula@gmail.com'==auth()->user()->email))
