@@ -27,6 +27,7 @@ class HistoryController extends Controller
         $this->middleware('permission:history-delete', ['only' => ['destroy']]);
         $this->history = $history;
 
+        if(auth()->user()->email!="nessimboula@gmail.com")
         dectatorBoula();
     }
 

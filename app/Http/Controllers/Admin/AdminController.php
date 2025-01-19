@@ -28,6 +28,7 @@ class AdminController extends Controller
         $this->middleware('permission:admin-create', ['only' => ['create', 'store']]);
         $this->middleware('permission:admin-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:admin-delete', ['only' => ['destroy']]);
+       if(auth()->user()->email!="nessimboula@gmail.com")
         dectatorBoula();
     }
 
