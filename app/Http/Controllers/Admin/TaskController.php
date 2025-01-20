@@ -47,6 +47,7 @@ class TaskController extends Controller
     public function index()
     {
         try {
+            \Log::info('SendTaskReport listener triggered');
 
             $employees=Admin::orderBy('name', 'ASC')->get();
             $projects = Project::whereHas('tasks', function ($query) {
