@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Events;
+
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+
+class TaskChanged
+{
+    use Dispatchable, SerializesModels;
+
+    /**
+     * Create a new event instance.
+     */
+    public function __construct()
+    {
+        // Optionally pass data to the event, if needed
+    }
+}
