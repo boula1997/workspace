@@ -21,6 +21,7 @@ class SendTaskReport
      */
     public function handle(TaskChanged $event): void
     {
+        \Log::info('SendTaskReport listener triggered');
         $this->emailTasks();
     }
 

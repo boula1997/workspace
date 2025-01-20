@@ -14,6 +14,7 @@ class TaskChanged
      */
     public function __construct()
     {
+        \Log::info('TaskChanged event fired');
         // Optionally pass data to the event, if needed
     }
 }

@@ -23,14 +23,17 @@ class Task extends Model
 
         // Fire the event when a task is created, updated, or deleted
         static::created(function ($task) {
+            \Log::info('Task created', ['id' => $task->id, 'status' => $task->status]);
             event(new TaskChanged());
         });
 
         static::updated(function ($task) {
+            \Log::info('Task updated', ['id' => $task->id, 'status' => $task->status]);
             event(new TaskChanged());
         });
 
         static::deleted(function ($task) {
+            \Log::info('Task deleted', ['id' => $task->id, 'status' => $task->status]);
             event(new TaskChanged());
         });
     }
