@@ -5,7 +5,7 @@ namespace App\Listeners;
 use App\Events\TaskChanged;
 use App\Models\Task;
 use Illuminate\Support\Facades\Mail;
-
+use App\Services\MailService;
 class SendTaskReport
 {
     /**
@@ -37,15 +37,15 @@ class SendTaskReport
 
         // Get tasks
         $tasks = Task::where('status', 0)
-                     ->orderBy('project_id', 'desc')
-                     ->get()
-                     ->unique('title');
+                    ->orderBy('project_id', 'desc')
+                    ->get()
+                    ->unique('title');
 
         // Construct the email content
         $body = '<html lang="en"><head><meta charset="UTF-8"><title>Tasks Report</title></head><body>';
         $body .= '<h1>Tasks Report</h1>';
 
-        // Tasks Table
+        // Combined Tasks Table
         $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
         $body .= '<thead><tr><th>Task</th><th>Project</th><th>Difficulty</th></tr></thead><tbody>';
 
@@ -62,10 +62,7 @@ class SendTaskReport
         $body .= '</body></html>';
 
         // Send the email
-        Mail::send([], [], function ($message) use ($to, $toName, $subject, $body) {
-            $message->to($to, $toName)
-                ->subject($subject)
-                ->setBody($body, 'text/html');
-        });
+        $result = MailService::sendMail($to, $toName, $subject, $body);
+
     }
 }
