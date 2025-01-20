@@ -167,6 +167,7 @@ class TaskController extends Controller
              }
              clearTasks($task->title);
             }
+            emailTasks();
             return redirect()->back()->with('success', __('Tasks assigned successfully.'));
         } elseif ($action == 'reassign') {
             foreach($tasks as $task) {
@@ -188,6 +189,7 @@ class TaskController extends Controller
              }
              clearTasks($task->title);
             }
+            emailTasks();
             return redirect()->back()->with('success', __('Tasks assigned successfully.'));
         }  elseif ($action == 'delete') {
             $tasks=Task::whereIn('id', $taskIds)->get();
@@ -200,6 +202,7 @@ class TaskController extends Controller
                 taskLog("Delete",$task->title);
                 clearTasks($task->title);
             }; 
+            emailTasks();
             return redirect()->back()->with('success', __('Tasks deleted successfully.'));
         }else if($action=='filterProject'){
          
@@ -258,6 +261,7 @@ class TaskController extends Controller
             // Get the previous and the one before the previous route
             $previousRoute = session('previousRoute');
             $twoRoutesAgo = session('twoRoutesAgo');
+            emailTasks();
     
             // Redirect to either the previous or the one before
             return redirect($twoRoutesAgo)
@@ -287,6 +291,7 @@ class TaskController extends Controller
             $task = Task::find($id);
             $task->where('title',$task->title)->update(['level' => !$task->level]);
     
+            emailTasks();
     
             return response()->json(['success' => __('general.changed_successfully')]);
         } catch (Exception $e) {
@@ -357,6 +362,7 @@ class TaskController extends Controller
                 'status' => !$task->status,
                 'created_at' => now() // or use Carbon::now()
             ]);
+            emailTasks();
        
 
 

@@ -19,7 +19,7 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],    
         \App\Events\TaskChanged::class => [
-            \App\Listeners\SendTaskReport::class,
+        \App\Listeners\SendTaskReport::class,
         ],
     ];
 
