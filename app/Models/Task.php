@@ -4,17 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 use App\Events\TaskChanged;
 
 class Task extends Model
 {
-    use HasFactory, Translatable;
+    use HasFactory;
 
     protected $table = 'tasks';
     protected $guarded = [];
-    public $translatedAttributes = ['title'];
     public $timestamps = true;
 
     /**
