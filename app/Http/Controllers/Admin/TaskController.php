@@ -326,7 +326,7 @@ class TaskController extends Controller
     {
         try {
 
-        foreach($request->employees as $employee){
+    foreach($request->employees as $employee){
         Task::create([
             'title'=>$request->title,
             'employee_id'=>$employee,
@@ -335,6 +335,8 @@ class TaskController extends Controller
         ]);
         }
         $task->delete();
+
+        emailTasks();
 
             
             // Get the previous and the one before the previous route
