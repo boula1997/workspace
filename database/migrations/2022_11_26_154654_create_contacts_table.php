@@ -12,7 +12,7 @@ class CreateContactsTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {dd("Not allowed");
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
             $table->string('contact')->nullable();

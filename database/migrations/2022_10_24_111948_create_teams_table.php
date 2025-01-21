@@ -12,7 +12,7 @@ class CreateTeamsTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {dd("Not allowed");
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
             $table->string('facebook');

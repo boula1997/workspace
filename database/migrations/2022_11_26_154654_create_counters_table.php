@@ -12,7 +12,7 @@ class CreateCountersTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {dd("Not allowed");
         Schema::create('counters', function (Blueprint $table) {
             $table->id();
             $table->text('count')->nullable();

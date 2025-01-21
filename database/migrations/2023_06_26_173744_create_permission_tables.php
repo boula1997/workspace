@@ -13,7 +13,7 @@ class CreatePermissionTables extends Migration
      * @return void
      */
     public function up()
-    {
+    {dd("Not allowed");
         $tableNames = config('permission.table_names');
         $columnNames = config('permission.column_names');
         $teams = config('permission.teams');

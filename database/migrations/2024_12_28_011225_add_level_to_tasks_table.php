@@ -10,7 +10,7 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
+    {dd("Not allowed");
         Schema::table('tasks', function (Blueprint $table) {
             $table->string('level')->default(0);
 

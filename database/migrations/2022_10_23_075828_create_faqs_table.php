@@ -12,7 +12,7 @@ class CreateFaqsTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {dd("Not allowed");
         Schema::create('faqs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();

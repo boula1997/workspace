@@ -12,7 +12,7 @@ class CreateAdminsTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {dd("Not allowed");
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();

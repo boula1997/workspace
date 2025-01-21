@@ -12,7 +12,7 @@ class CreateFeesTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {dd("Not allowed");
         Schema::create('fees', function (Blueprint $table) {
             $table->id();
             $table->double('amount')->nullable();

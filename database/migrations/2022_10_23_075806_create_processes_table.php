@@ -12,7 +12,7 @@ class CreateProcessesTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {dd("Not allowed");
         Schema::create('processes', function (Blueprint $table) {
             $table->id();
             $table->timestamps();

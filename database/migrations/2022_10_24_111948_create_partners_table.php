@@ -12,7 +12,7 @@ class CreatePartnersTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {dd("Not allowed");
         Schema::create('partners', function (Blueprint $table) {
             $table->id();
             $table->timestamps();

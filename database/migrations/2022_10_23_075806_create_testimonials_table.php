@@ -12,7 +12,7 @@ class CreateTestimonialsTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {dd("Not allowed");
         Schema::create('testimonials', function (Blueprint $table) {
             $table->id();
             $table->timestamps();

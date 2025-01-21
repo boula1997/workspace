@@ -12,7 +12,7 @@ class CreateMessagesTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {dd("Not allowed");
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();

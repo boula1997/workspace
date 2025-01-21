@@ -12,7 +12,7 @@ class CreateAccountantsTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {dd("Not allowed");
         Schema::create('accountants', function (Blueprint $table) {
             $table->id();
             $table->double('received')->default(0);
