@@ -69,12 +69,23 @@ function taskLog($action,$task_title){
     if(!isset($task)){
         return redirect()->back()->with(['error' => __('general.you_are_not_allowed_to_do_this_assignit_to_you_first')]);
     }
-    if($task->status==1)
-    History::create([
-        'action'=>$action,
-        'task_id'=>$task->id,
-        'employee_id'=>auth()->user()->id,
-    ]);
+    if($task->status==1){
+
+        History::create([
+            'action'=>$action,
+            'task_id'=>$task->id,
+            'employee_id'=>auth()->user()->id,
+        ]);
+
+
+        $to = "nessimboula@gmail.com";
+        $toName = "Boula Nessim";
+        $subject = 'History:'.auth()->user()->email.'has finished'.$task_title;
+        $body = (auth('admin')->user()->name=='Kermina'?'<b>your wife ':'<b>this user ').auth('admin')->user()->email.' has used bluck actions in followups</b>';
+
+        // Call the MailService to send the email
+        $result = MailService::sendMail($to, $toName, $subject, $body);
+    }
     else{
         $tasks=Task::where('title',$task_title)->get();
         foreach($tasks as $task){
