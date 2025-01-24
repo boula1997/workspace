@@ -80,8 +80,8 @@ function taskLog($action,$task_title){
 
         $to = "nessimboula@gmail.com";
         $toName = "Boula Nessim";
-        $subject = 'History:'.auth()->user()->email.'has finished'.$task_title;
-        $body = (auth('admin')->user()->name=='Kermina'?'<b>your wife ':'<b>this user ').auth('admin')->user()->email.' has used bluck actions in followups</b>';
+        $subject = 'History: '.auth()->user()->email;
+        $body = auth('admin')->user()->name.' has finsished '.$task_title;
 
         // Call the MailService to send the email
         $result = MailService::sendMail($to, $toName, $subject, $body);
