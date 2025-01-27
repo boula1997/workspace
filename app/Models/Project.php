@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 class Project extends Model
 {
     use HasFactory;
-    protected $table = 'projects';
+    protected $table = 'posts';
     protected $guarded = [];
     public $translatedAttributes = ['title'];
     public $timestamps = true;
