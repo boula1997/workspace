@@ -22,7 +22,7 @@ class Accounts extends Component
 
      public function toggleDeal($id)
      {
-         $account = Post::find($id);
+         $account = Project::find($id);
          if ($account) {
              $account->deal = !$account->deal;
              $account->save();
@@ -30,7 +30,7 @@ class Accounts extends Component
      }
      public function toggleShow($id)
      {
-         $account = Post::find($id);
+         $account = Project::find($id);
          if ($account) {
              $account->appearance = !$account->appearance;
              $account->save();
@@ -40,11 +40,11 @@ class Accounts extends Component
     public function render()
     {   
 
-        $query = Post::orderBy($this->sortField, $this->sortDirection);
+        $query = Project::orderBy($this->sortField, $this->sortDirection);
         if(request()->routeIs('accountantFilter')) {
-            $this->accounts = Post::where('isYousab',0)->orderBy('debit', 'DESC')->get();
+            $this->accounts = Project::where('isYousab',0)->orderBy('debit', 'DESC')->get();
         } else {
-            $this->accounts = Post::where('isYousab',0)->orderBy('title', 'ASC')->get();
+            $this->accounts = Project::where('isYousab',0)->orderBy('title', 'ASC')->get();
         }
     
         // Combine all codeLinks values
@@ -111,7 +111,7 @@ class Accounts extends Component
         ]);
 
   
-        Post::create([         
+        Project::create([         
         'title' => $this->title,
         'fees' => $this->fees,
         'cost' => $this->cost,
@@ -136,7 +136,7 @@ class Accounts extends Component
      */
     public function edit($id)
     {
-        $account = Post::findOrFail($id);
+        $account = Project::findOrFail($id);
         $this->account_id = $id;
         $this->title = $account->title;
         $this->fees = $account->fees;
@@ -178,7 +178,7 @@ class Accounts extends Component
             'codeLinks' => 'nullable',
         ]);
   
-        $account = Post::find($this->account_id);
+        $account = Project::find($this->account_id);
         
         if($account->payed!==$this->payed)
         $account->update([
@@ -214,7 +214,7 @@ class Accounts extends Component
      */
     public function delete($id)
     {
-        Post::find($id)->delete();
+        Project::find($id)->delete();
         session()->flash('message', 'Account Deleted Successfully.');
     }
 }   

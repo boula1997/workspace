@@ -31,7 +31,7 @@ class Servers extends Component
     public function render()
     {
         // Get a list of website clients from the Post model
-        $websites = Post::where('appearance', 1)
+        $websites = Project::where('appearance', 1)
                         ->where('status', '!=', 0)
                         ->latest()
                         ->pluck('title')

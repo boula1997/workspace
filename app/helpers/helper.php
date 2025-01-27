@@ -594,15 +594,15 @@ function statsColor($index)
 
 function websites()
 {
-    return Post::orderBy('title', 'asc')->get();
+    return Project::orderBy('title', 'asc')->get();
 }
 function websitesRoutes()
 {
-    return Post::where('routesLink','!=',null)->latest()->get();
+    return Project::where('routesLink','!=',null)->latest()->get();
 }
 function websitesActive()
 {    $string='';
-    $websites=Post::where('appearance',1)->where('status','!=',0)->latest()->get();
+    $websites=Project::where('appearance',1)->where('status','!=',0)->latest()->get();
     foreach($websites as $website){
         $string.=$website->tasks.'</br>********************************</br>';
     }
@@ -635,17 +635,17 @@ function getLastTwoSegments($path)
 }
 function activeWebsites()
 {   
-    $websites=Post::where('appearance',1)->where('status','!=',0)->latest()->get();
+    $websites=Project::where('appearance',1)->where('status','!=',0)->latest()->get();
     return $websites;
 }   
 function activeWebsitesTitle()
 {   
-    $websites=Post::where('appearance',1)->where('status','!=',0)->latest()->pluck('title');
+    $websites=Project::where('appearance',1)->where('status','!=',0)->latest()->pluck('title');
     return $websites;
 }
 function activeWebsitesContent()
 {
-    $websites = Post::where('appearance', 1)
+    $websites = Project::where('appearance', 1)
                     ->where('status', '!=', 0)
                     ->latest()
                     ->pluck('codeLinks'); // Retrieves the collection of 'codeLinks'
@@ -731,7 +731,7 @@ function DayInMonth() {
 function updated_atPost()
 {
     // dd(71);
-    $post=Post::latest('updated_at')->first();
+    $post=Project::latest('updated_at')->first();
     
     return Carbon::parse($post->updated_at)->format('H:i:s');
 }
@@ -775,7 +775,7 @@ function startAndEndTime($startTime)
 }
 function posts()
 {
-    $posts = Post::get();
+    $posts = Project::get();
 
     return $posts;
 }
@@ -795,7 +795,7 @@ if (!function_exists('taskCommitPer')) {
      */
     function taskCommitPer()
     {
-        $websites = Post::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('title');
+        $websites = Project::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('title');
         $done = Server::orderBy('project', 'ASC')->where('committed',1)->whereIn('project', $websites)->get();
         $all = Server::orderBy('project', 'ASC')->whereIn('project', $websites)->get();
         return count($done)/count($all)*100;

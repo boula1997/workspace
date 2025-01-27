@@ -21,7 +21,7 @@ class Posts extends Component
 
      public function toggleDeal($id)
      {
-         $post = Post::find($id);
+         $post = Project::find($id);
          if ($post) {
              $post->deal = !$post->deal;
              $post->save();
@@ -29,7 +29,7 @@ class Posts extends Component
      }
      public function toggleShow($id)
      {
-         $post = Post::find($id);
+         $post = Project::find($id);
          if ($post) {
              $post->appearance = !$post->appearance;
              $post->save();
@@ -39,11 +39,11 @@ class Posts extends Component
     public function render()
     {   
 
-        $query = Post::orderBy($this->sortField, $this->sortDirection);
+        $query = Project::orderBy($this->sortField, $this->sortDirection);
         if(request()->routeIs('accountantFilter')) {
-            $this->posts = Post::where('isYousab',1)->orderBy('debit', 'DESC')->get();
+            $this->posts = Project::where('isYousab',1)->orderBy('debit', 'DESC')->get();
         } else {
-            $this->posts = Post::where('isYousab',1)->orderBy('title', 'ASC')->get();
+            $this->posts = Project::where('isYousab',1)->orderBy('title', 'ASC')->get();
         }
     
         // Combine all codeLinks values
@@ -111,7 +111,7 @@ class Posts extends Component
         ]);
 
   
-        Post::create([         
+        Project::create([         
         'title' => $this->title,
         'fees' => $this->fees,
         'cost' => $this->cost,
@@ -137,7 +137,7 @@ class Posts extends Component
      */
     public function edit($id)
     {
-        $post = Post::findOrFail($id);
+        $post = Project::findOrFail($id);
         $this->post_id = $id;
         $this->title = $post->title;
         $this->fees = $post->fees;
@@ -181,7 +181,7 @@ class Posts extends Component
             'routesLink' => 'nullable',
         ]);
   
-        $post = Post::find($this->post_id);
+        $post = Project::find($this->post_id);
         
         if($post->payed!==$this->payed)
         $post->update([
@@ -218,7 +218,7 @@ class Posts extends Component
      */
     public function delete($id)
     {
-        Post::find($id)->delete();
+        Project::find($id)->delete();
         session()->flash('message', 'Post Deleted Successfully.');
     }
 }   

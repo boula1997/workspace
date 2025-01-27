@@ -933,7 +933,7 @@ if ($request->action == '28') {
 
   public function websiteToggle($id)
   {
-    $website = Post::find($id);
+    $website = Project::find($id);
     if (request()->routeIs('website.dbltoggle')) {
       if ($website->status == 0)
         $website->update(['status' => 2]);
@@ -957,7 +957,7 @@ if ($request->action == '28') {
   }
 
   public function updatePosts(Request $request){
-    $post=Post::find($request->post_id);
+    $post=Project::find($request->post_id);
     $post->update(['codeLinks'=>$request->codeLinks]);
 
     return response()->json(['success' => trans('general.created_successfully')]);
@@ -1013,7 +1013,7 @@ if ($request->action == '28') {
   {
 
            // Get a random website where status is 1 or 2
-           $post = Post::whereIn('status', [1,2,3])->where('appearance',1)->inRandomOrder()->first();
+           $post = Project::whereIn('status', [1,2,3])->where('appearance',1)->inRandomOrder()->first();
            // Handle the case where no website is found
            if ($post === null) {
                return response()->json(['success' => 'No websites found with status 1 or 2']);
@@ -1085,7 +1085,7 @@ if ($request->action == '28') {
 
     public function toggleDealPost($id)
     {
-      $post=Post::find($id);
+      $post=Project::find($id);
       if($post->deal){
         $post->update(['deal'=>0]);
         $post->update(['appearance'=>0]);
@@ -1098,7 +1098,7 @@ if ($request->action == '28') {
     }
     public function toggleShowPost($id)
     {
-      $post=Post::find($id);
+      $post=Project::find($id);
       if($post->appearance)
       $post->update(['appearance'=>0]);
       else
