@@ -26,7 +26,7 @@
                 <option value="">Select</option>
                 <option value="all">All</option>
                 @foreach (activeWebsites() as $project)
-                <option value="{{ $project->client }}">{{ $project->client }}</option>
+                <option value="{{ $project->title }}">{{ $project->title }}</option>
                 @endforeach
             </select>
             @error('project') <span class="text-danger">{{ $message }}</span>@enderror

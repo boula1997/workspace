@@ -14,7 +14,7 @@ return new class extends Migration
         //dd("Make sure you took a backup of data");
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('client');
+            $table->string('title');
             $table->integer('cost');
             $table->integer('payed');
             $table->integer('debit');

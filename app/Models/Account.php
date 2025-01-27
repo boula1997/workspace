@@ -15,6 +15,6 @@ class Account extends Model
      * @var array
      */
     protected $fillable = [
-        'client', 'fees', 'cost','payed','debit','deadline','tasks','status','codeLinks','lastTransaction','deal','appearance'
+        'title', 'fees', 'cost','payed','debit','deadline','tasks','status','codeLinks','lastTransaction','deal','appearance'
     ];
 }

@@ -99,7 +99,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="postModalLabel{{ $post->id }}">
-                                    {{ $post->client }}</h5>
+                                    {{ $post->title }}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
@@ -131,7 +131,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="referenceModalLabel{{ $refrnce->id }}">
-                                    {{ $refrnce->client }}</h5>
+                                    {{ $refrnce->title }}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
@@ -205,7 +205,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="postModalLabel{{ $website->id }}">
-                                {{ $website->client }}</h5>
+                                {{ $website->title }}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
@@ -237,7 +237,7 @@
                             @foreach (websites() as $website)
                                 <p id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
                                     class="{{ $website->status == 0 ? 'bg-secondary' : ($website->status == 1 ? 'bg-warning' : ($website->status == 2 ? 'bg-success' : 'bg-danger')) }}  hover-cursor mx-1 text-nowrap text-white">
-                                    {{ $website->client }}</p>
+                                    {{ $website->title }}</p>
 
                                 <i style="cursor: pointer;"  content="{{ $website->codeLinks }}" websiteId="{{ $website->id }}"
                                     class="clickable-text text-secondary fas fa-copy"></i>
@@ -265,7 +265,7 @@
                             <a href="{{ $website->routesLink }}">
                                 <button type="button" content="{{ $website->codeLinks }}" id="{{ $website->id }}"
                                     title="1click:yellow 2click:green 3click:red"
-                                    class="clickable-text btn {{ $website->status == 0 ? 'btn-outline-warning' : ($website->status == 1 ? 'btn-outline-warning' : 'btn-success') }}  hover-cursor mx-1 text-nowrap m-2">{{ $website->client }}</button>
+                                    class="clickable-text btn {{ $website->status == 0 ? 'btn-outline-warning' : ($website->status == 1 ? 'btn-outline-warning' : 'btn-success') }}  hover-cursor mx-1 text-nowrap m-2">{{ $website->title }}</button>
                             </a>
                             @endforeach
                         </div>
@@ -615,7 +615,7 @@
                     </div>
                     <div class="row">
                         <p class="text-warning">Productivity Solution</p>
-                        <p>Get clients need to get money ordered by piority and paste them in note app on mobile and
+                        <p>Get titles need to get money ordered by piority and paste them in note app on mobile and
                             take
                             a screen shot and set it as lockscreen wallpaper on mopile</p>
                         <p>Cutrrent </p>

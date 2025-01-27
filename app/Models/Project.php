@@ -13,7 +13,6 @@ class Project extends Model
     use HasFactory;
     protected $table = 'posts';
     protected $guarded = [];
-    public $translatedAttributes = ['title'];
     public $timestamps = true;
     
     public function fees(){ return $this->hasMany(Fee::class); }

@@ -30,7 +30,7 @@
                     <thead>
                         <tr>
                             <th>No.</th>
-                            <th width="120px" class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('client')">Name</th>
+                            <th width="120px" class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('title')">Name</th>
                             <th class="text-white text-decoration-none" style="cursor:pointer;" >Host</th>
                             <th class="text-white text-decoration-none" style="cursor:pointer;" >Password</th>
                             <th class="text-white text-decoration-none" style="cursor:pointer;" >Actions</th>
@@ -68,7 +68,7 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="exampleModalLabel{{ $credential->id }}">
-                                                        {{ $credential->client }}</h5>
+                                                        {{ $credential->title }}</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
@@ -76,7 +76,7 @@
                                                     <p>
                                                         Are you sure you want to delete this script?<br><br>
                                                         <span class=text-limit" style="--lines:3;">
-                                                            {{ $credential->client }}
+                                                            {{ $credential->title }}
                                                         </span>
                                                     </p>
                                                 </div>
@@ -102,7 +102,7 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="credentialModalLabel{{ $credential->id }}">
-                                                        {{ $credential->client }}</h5>
+                                                        {{ $credential->title }}</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>

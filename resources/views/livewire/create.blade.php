@@ -1,9 +1,9 @@
 <form>
     <div class="row">
         <div class="form-group col-md-12">
-            <label for="exampleFormControlInput5">Client:</label>
-            <input type="text" class="form-control noHide" id="exampleFormControlInput5" placeholder="Enter Client" wire:model="client">
-            @error('client') <span class="text-danger">{{ $message }}</span>@enderror
+            <label for="exampleFormControlInput5">title:</label>
+            <input type="text" class="form-control noHide" id="exampleFormControlInput5" placeholder="Enter title" wire:model="title">
+            @error('title') <span class="text-danger">{{ $message }}</span>@enderror
         </div>
     </div>
     <div class="row">

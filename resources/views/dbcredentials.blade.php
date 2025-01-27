@@ -116,7 +116,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="postModalLabel{{ $post->id }}">
-                                        {{ $post->client }}</h5>
+                                        {{ $post->title }}</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>

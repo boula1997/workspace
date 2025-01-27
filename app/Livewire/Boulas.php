@@ -7,7 +7,7 @@ use App\Models\Boula;
   
 class Boulas extends Component
 {
-    public $boulas, $client,$tasks,$fees,$cost,$payed,$debit,$deadline,$lastTransaction, $boula_id,$codeLinks;
+    public $boulas, $title,$tasks,$fees,$cost,$payed,$debit,$deadline,$lastTransaction, $boula_id,$codeLinks;
     public $updateMode = false;
    
     /**
@@ -21,7 +21,7 @@ class Boulas extends Component
         if(request()->routeIs('accountantFilter'))
         $this->boulas = Boula::OrderBy('debit','DESC')->get();
         else
-        $this->boulas = Boula::OrderBy('client','ASC')->get();
+        $this->boulas = Boula::OrderBy('title','ASC')->get();
 
                 // Combine all codeLinks values
                 $combinedCodeLinks = $this->boulas->pluck('codeLinks')->implode(' ');
@@ -43,7 +43,7 @@ class Boulas extends Component
      * @var array
      */
     private function resetInputFields(){
-        $this->client = '';
+        $this->title = '';
         $this->tasks = '';
         $this->fees = '';
         $this->cost = '';
@@ -62,7 +62,7 @@ class Boulas extends Component
     public function store()
     {
         $validatedDate = $this->validate([
-            'client' => 'required',
+            'title' => 'required',
             'tasks' => 'nullable',
             'cost' => 'numeric|required',
             'payed' => 'numeric|required',
@@ -72,7 +72,7 @@ class Boulas extends Component
 
   
         Boula::create([         
-        'client' => $this->client,
+        'title' => $this->title,
         'fees' => $this->fees,
         'cost' => $this->cost,
         'payed' => $this->payed,
@@ -97,7 +97,7 @@ class Boulas extends Component
     {
         $boula = Boula::findOrFail($id);
         $this->boula_id = $id;
-        $this->client = $boula->client;
+        $this->title = $boula->title;
         $this->fees = $boula->fees;
         $this->cost = $boula->cost;
         $this->payed = $boula->payed;
@@ -129,7 +129,7 @@ class Boulas extends Component
     public function update()
     {
         $validatedDate = $this->validate([
-            'client' => 'required',
+            'title' => 'required',
             'cost' => 'numeric|required',
             'payed' => 'numeric|required',
             'deadline' => 'date|required',
@@ -149,7 +149,7 @@ class Boulas extends Component
             ]);
 
         $boula->update([
-            'client' => $this->client,
+            'title' => $this->title,
             'fees' => $this->fees,
             'cost' => $this->cost,
             'payed' => $this->payed,

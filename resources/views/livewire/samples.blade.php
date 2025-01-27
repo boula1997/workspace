@@ -71,7 +71,7 @@
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title " id="exampleModalLabel{{ $sample->id }}">
-                                                    {{ $sample->client }}</h5>
+                                                    {{ $sample->title }}</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
@@ -79,7 +79,7 @@
                                                 <p>
                                                     Are you sure you want to delete this script?<br><br>
                                                     <span class="text-secondary text-limit" style="--lines:3;">
-                                                        {{ $sample->client }}
+                                                        {{ $sample->title }}
                                                     </span>
                                                 </p>
                                             </div>
@@ -104,7 +104,7 @@
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="sampleModalLabel{{ $sample->id }}">
-                                                    {{ $sample->client }}</h5>
+                                                    {{ $sample->title }}</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>

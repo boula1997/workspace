@@ -15,6 +15,6 @@ class Post extends Model
      * @var array
      */
     protected $fillable = [
-        'client', 'fees', 'cost','payed','debit','deadline','tasks','status','codeLinks','lastTransaction','deal','appearance','isYousab','routesLink'
+        'title', 'fees', 'cost','payed','debit','deadline','tasks','status','codeLinks','lastTransaction','deal','appearance','isYousab','routesLink'
     ];
 }

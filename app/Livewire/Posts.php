@@ -7,9 +7,9 @@ use App\Models\Post;
   
 class Posts extends Component
 {
-    public $posts, $client,$tasks,$fees,$cost,$payed,$debit,$deadline,$lastTransaction, $routesLink,$post_id,$codeLinks;
+    public $posts, $title,$tasks,$fees,$cost,$payed,$debit,$deadline,$lastTransaction, $routesLink,$post_id,$codeLinks;
     public $updateMode = false;
-    public $sortField = 'client'; 
+    public $sortField = 'title'; 
     public $sortDirection = 'asc'; // Default sort direction
 
    
@@ -43,7 +43,7 @@ class Posts extends Component
         if(request()->routeIs('accountantFilter')) {
             $this->posts = Post::where('isYousab',1)->orderBy('debit', 'DESC')->get();
         } else {
-            $this->posts = Post::where('isYousab',1)->orderBy('client', 'ASC')->get();
+            $this->posts = Post::where('isYousab',1)->orderBy('title', 'ASC')->get();
         }
     
         // Combine all codeLinks values
@@ -82,7 +82,7 @@ class Posts extends Component
      * @var array
      */
     private function resetInputFields(){
-        $this->client = '';
+        $this->title = '';
         $this->tasks = '';
         $this->fees = '';
         $this->cost = '';
@@ -102,7 +102,7 @@ class Posts extends Component
     public function store()
     {
         $validatedDate = $this->validate([
-            'client' => 'required',
+            'title' => 'required',
             'tasks' => 'nullable',
             'cost' => 'numeric|required',
             'payed' => 'numeric|required',
@@ -112,7 +112,7 @@ class Posts extends Component
 
   
         Post::create([         
-        'client' => $this->client,
+        'title' => $this->title,
         'fees' => $this->fees,
         'cost' => $this->cost,
         'payed' => $this->payed,
@@ -139,7 +139,7 @@ class Posts extends Component
     {
         $post = Post::findOrFail($id);
         $this->post_id = $id;
-        $this->client = $post->client;
+        $this->title = $post->title;
         $this->fees = $post->fees;
         $this->cost = $post->cost;
         $this->payed = $post->payed;
@@ -172,7 +172,7 @@ class Posts extends Component
     public function update()
     {
         $validatedDate = $this->validate([
-            'client' => 'required',
+            'title' => 'required',
             'cost' => 'numeric|required',
             'payed' => 'numeric|required',
             'deadline' => 'date|required',
@@ -193,7 +193,7 @@ class Posts extends Component
             ]);
 
         $post->update([
-            'client' => $this->client,
+            'title' => $this->title,
             'fees' => $this->fees,
             'cost' => $this->cost,
             'payed' => $this->payed,

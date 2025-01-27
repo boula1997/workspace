@@ -53,7 +53,7 @@
                                             <div class="modal-header">
                                                 <h5 class="modal-title "
                                                     id="exampleModalLabel{{ $issue->id }}">
-                                                    {{ $issue->client }}</h5>
+                                                    {{ $issue->title }}</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
@@ -61,7 +61,7 @@
                                                 <p >
                                                     Are you sure you want to delete this script?<br><br>
                                                     <span class="text-secondary text-limit" style="--lines:3;">
-                                                        {{ $issue->client }}
+                                                        {{ $issue->title }}
                                                     </span>
                                                 </p>
                                             </div>

@@ -35,7 +35,7 @@
                     <thead>
                         <tr>
                             <th>No.</th>
-                            <th width="200px">Client</th>
+                            <th width="200px">title</th>
                             @if (!request()->routeIs('notes'))
                                 <th>Cost</th>
                                 <th>Payed</th>
@@ -58,7 +58,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
-                                    {{ Str::limit($boula->client, 25) }}</td>
+                                    {{ Str::limit($boula->title, 25) }}</td>
                                 @if (!request()->routeIs('notes'))
                                     {{-- title="{{ getTimeAgo($boula->updated_at) }}" --}}
                                     <td>{{ $boula->cost }}</td>
@@ -93,7 +93,7 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="exampleModalLabel{{ $boula->id }}">
-                                                        {{ $boula->client }}</h5>
+                                                        {{ $boula->title }}</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
@@ -101,7 +101,7 @@
                                                     <p>
                                                         Are you sure you want to delete this script?<br><br>
                                                         <span class=text-limit" style="--lines:3;">
-                                                            {{ $boula->client }}
+                                                            {{ $boula->title }}
                                                         </span>
                                                     </p>
                                                 </div>
@@ -127,7 +127,7 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="boulaModalLabel{{ $boula->id }}">
-                                                        {{ $boula->client }}</h5>
+                                                        {{ $boula->title }}</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>

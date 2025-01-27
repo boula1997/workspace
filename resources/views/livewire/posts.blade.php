@@ -38,7 +38,7 @@
                     <thead>
                         <tr>
                             <th>No.</th>
-                            <th width="120px" class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('client')">Client</th>
+                            <th width="120px" class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('title')">title</th>
                             @if (!request()->routeIs('notes'))
                                 <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('cost')">Cost</th>
                                 <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('payed')">Payed</th>
@@ -62,7 +62,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
-                                    {{ Str::limit($post->client, 15) }}</td>
+                                    {{ Str::limit($post->title, 15) }}</td>
                                 @if (!request()->routeIs('notes'))
                                     {{-- title="{{ getTimeAgo($post->updated_at) }}" --}}
                                     <td>{{ $post->cost }}</td>
@@ -104,7 +104,7 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="exampleModalLabel{{ $post->id }}">
-                                                        {{ $post->client }}</h5>
+                                                        {{ $post->title }}</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
@@ -112,7 +112,7 @@
                                                     <p>
                                                         Are you sure you want to delete this script?<br><br>
                                                         <span class=text-limit" style="--lines:3;">
-                                                            {{ $post->client }}
+                                                            {{ $post->title }}
                                                         </span>
                                                     </p>
                                                 </div>
@@ -138,7 +138,7 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="postModalLabel{{ $post->id }}">
-                                                        {{ $post->client }}</h5>
+                                                        {{ $post->title }}</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>

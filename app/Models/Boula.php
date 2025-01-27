@@ -9,6 +9,6 @@ class Boula extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'client', 'fees', 'cost','payed','debit','deadline','tasks','status','codeLinks','lastTransaction','deal'
+        'title', 'fees', 'cost','payed','debit','deadline','tasks','status','codeLinks','lastTransaction','deal'
     ];
 }

@@ -594,7 +594,7 @@ function statsColor($index)
 
 function websites()
 {
-    return Post::orderBy('client', 'asc')->get();
+    return Post::orderBy('title', 'asc')->get();
 }
 function websitesRoutes()
 {
@@ -640,7 +640,7 @@ function activeWebsites()
 }   
 function activeWebsitesTitle()
 {   
-    $websites=Post::where('appearance',1)->where('status','!=',0)->latest()->pluck('client');
+    $websites=Post::where('appearance',1)->where('status','!=',0)->latest()->pluck('title');
     return $websites;
 }
 function activeWebsitesContent()
@@ -795,7 +795,7 @@ if (!function_exists('taskCommitPer')) {
      */
     function taskCommitPer()
     {
-        $websites = Post::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('client');
+        $websites = Post::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('title');
         $done = Server::orderBy('project', 'ASC')->where('committed',1)->whereIn('project', $websites)->get();
         $all = Server::orderBy('project', 'ASC')->whereIn('project', $websites)->get();
         return count($done)/count($all)*100;

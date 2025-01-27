@@ -8,9 +8,9 @@ use App\Models\Post;
 
 class Accounts extends Component
 {
-    public $accounts, $client,$tasks,$fees,$cost,$payed,$debit,$deadline,$lastTransaction, $account_id,$codeLinks;
+    public $accounts, $title,$tasks,$fees,$cost,$payed,$debit,$deadline,$lastTransaction, $account_id,$codeLinks;
     public $updateMode = false;
-    public $sortField = 'client'; 
+    public $sortField = 'title'; 
     public $sortDirection = 'asc'; // Default sort direction
 
    
@@ -44,7 +44,7 @@ class Accounts extends Component
         if(request()->routeIs('accountantFilter')) {
             $this->accounts = Post::where('isYousab',0)->orderBy('debit', 'DESC')->get();
         } else {
-            $this->accounts = Post::where('isYousab',0)->orderBy('client', 'ASC')->get();
+            $this->accounts = Post::where('isYousab',0)->orderBy('title', 'ASC')->get();
         }
     
         // Combine all codeLinks values
@@ -83,7 +83,7 @@ class Accounts extends Component
      * @var array
      */
     private function resetInputFields(){
-        $this->client = '';
+        $this->title = '';
         $this->tasks = '';
         $this->fees = '';
         $this->cost = '';
@@ -102,7 +102,7 @@ class Accounts extends Component
     public function store()
     {
         $validatedDate = $this->validate([
-            'client' => 'required',
+            'title' => 'required',
             'tasks' => 'nullable',
             'cost' => 'numeric|required',
             'payed' => 'numeric|required',
@@ -112,7 +112,7 @@ class Accounts extends Component
 
   
         Post::create([         
-        'client' => $this->client,
+        'title' => $this->title,
         'fees' => $this->fees,
         'cost' => $this->cost,
         'payed' => $this->payed,
@@ -138,7 +138,7 @@ class Accounts extends Component
     {
         $account = Post::findOrFail($id);
         $this->account_id = $id;
-        $this->client = $account->client;
+        $this->title = $account->title;
         $this->fees = $account->fees;
         $this->cost = $account->cost;
         $this->payed = $account->payed;
@@ -170,7 +170,7 @@ class Accounts extends Component
     public function update()
     {
         $validatedDate = $this->validate([
-            'client' => 'required',
+            'title' => 'required',
             'cost' => 'numeric|required',
             'payed' => 'numeric|required',
             'deadline' => 'date|required',
@@ -190,7 +190,7 @@ class Accounts extends Component
             ]);
 
         $account->update([
-            'client' => $this->client,
+            'title' => $this->title,
             'fees' => $this->fees,
             'cost' => $this->cost,
             'payed' => $this->payed,

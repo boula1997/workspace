@@ -943,7 +943,7 @@ if ($request->action == '28') {
                return response()->json(['success' => 'No websites found with status 1 or 2']);
            }
    
-           return response()->json(['success' => $post->client, 'status' => $post->status,'post_id'=>$post->id]);
+           return response()->json(['success' => $post->title, 'status' => $post->status,'post_id'=>$post->id]);
        }
 
   public function tasksImportant()

@@ -34,7 +34,7 @@ class Servers extends Component
         $websites = Post::where('appearance', 1)
                         ->where('status', '!=', 0)
                         ->latest()
-                        ->pluck('client')
+                        ->pluck('title')
                         ->prepend('All'); // Add 'All' to the beginning of the list
     
         // Build the query for the Server model
