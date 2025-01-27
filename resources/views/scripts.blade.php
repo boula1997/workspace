@@ -1905,10 +1905,10 @@
                 );
                 toastNow();
             });
-            $('#todo').on('click', function(e) {
+            $('#dashboard').on('click', function(e) {
                 e.preventDefault();
                 window.open(
-                    'https://yousab-tech.com/todo/public/en/dashboard/tasks'
+                    'https://yousab-tech.com/workspace/public/en/dashboard/tasks'
                 );
                 toastNow();
             });

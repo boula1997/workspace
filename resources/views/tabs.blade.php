@@ -14,7 +14,7 @@
     <div class="row">
         <button class="btn btn-outline-warning col-2 clickable-text myTab" style="cursor: pointer;"  content="{{ activeWebsitesContent() }}" id="stress">Stress</button>
         <button class="btn btn-outline-warning col-2 myTab" id="yousab">Yousab</button>
-        <button class="btn btn-outline-warning col-2 myTab" id="todo">Todo</button>
+        <button class="btn btn-outline-warning col-2 myTab" id="dashboard">Dashboard</button>
         <button class="btn btn-outline-warning col-2 myTab" id="issues">Refrences</button>
         <button class="btn btn-outline-warning col-2 myTab" id="phpMyAdmin">sql</button>
         
