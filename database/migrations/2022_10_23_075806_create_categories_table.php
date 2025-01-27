@@ -12,7 +12,7 @@ class CreateCategoriesTable extends Migration
      * @return void
      */
     public function up()
-    {dd("Not allowed");
+    {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('icon')->nullable();

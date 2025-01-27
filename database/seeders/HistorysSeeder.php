@@ -19,7 +19,7 @@ class HistorysSeeder extends Seeder
        $action=["dummydata"];
       
 
-        for ($i = 0; $i < count($historys); $i++) {
+        for ($i = 0; $i < count($employee); $i++) {
             $history = History::create([
                  'task_id'=>$task[0],
 

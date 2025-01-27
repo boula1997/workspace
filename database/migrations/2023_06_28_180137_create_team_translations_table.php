@@ -12,7 +12,7 @@ class CreateTeamTranslationsTable extends Migration
      * @return void
      */
     public function up()
-    {dd("Not allowed");
+    {
         Schema::create('team_translations', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();

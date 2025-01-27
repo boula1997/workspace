@@ -12,7 +12,7 @@ class CreatePagesTable extends Migration
      * @return void
      */
     public function up()
-    {dd("Not allowed");
+    {
         Schema::create('pages', function (Blueprint $table) {
             $table->id();
             $table->string('identifier')->nullable();

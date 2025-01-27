@@ -12,7 +12,7 @@ class CreateSettingsTable extends Migration
      * @return void
      */
     public function up()
-    {dd("Not allowed");
+    {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
             $table->string('logo')->nullable();
@@ -20,6 +20,9 @@ class CreateSettingsTable extends Migration
             $table->string('tab')->nullable();
             $table->string('image')->nullable();
             $table->text('map')->nullable();
+            $table->date('last_time');
+            $table->longText('tasks');
+            $table->timestamp('startTime');
             $table->timestamps();
         });
     }

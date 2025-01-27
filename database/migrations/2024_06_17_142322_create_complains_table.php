@@ -10,7 +10,7 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {dd("Not allowed");
+    {
         Schema::create('complains', function (Blueprint $table) {
             $table->id();
             $table->integer('repeat')->nullable();

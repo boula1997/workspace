@@ -12,12 +12,13 @@ class CreateImagesTable extends Migration
      * @return void
      */
     public function up()
-    {dd("Not allowed");
+    {
         Schema::create('images', function (Blueprint $table) {
             $table->id();
             $table->string('image')->nullable();
             $table->unsignedBigInteger('gallery_id');
             $table->foreign('gallery_id')->references('id')->on('galleries');
+            $table->text('url');
             $table->timestamps();
         });
     }

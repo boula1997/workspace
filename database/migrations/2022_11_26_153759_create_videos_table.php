@@ -12,7 +12,7 @@ class CreateVideosTable extends Migration
      * @return void
      */
     public function up()
-    {dd("Not allowed");
+    {
         Schema::create('videos', function (Blueprint $table) {
             $table->id();
             $table->text('youtube_link')->nullable();

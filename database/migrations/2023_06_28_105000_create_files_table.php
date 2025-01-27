@@ -12,7 +12,7 @@ class CreateFilesTable extends Migration
      * @return void
      */
     public function up()
-    {dd("Not allowed");
+    {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
             $table->string('url')->nullable();

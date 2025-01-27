@@ -1,0 +1,20 @@
+<form>
+    <input type="hidden" wire:model="post_id">
+    <div class="row">
+        <div class="form-group col-md-12">
+            <label for="exampleFormControlInput5">Title:</label>
+            <input type="text" class="form-control noHide" id="exampleFormControlInput5" placeholder="Enter Title" wire:model="title">
+            @error('title') <span class="text-danger">{{ $message }}</span>@enderror
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlInput27">Code Links (May Add current task links):</label>
+        <textarea name="codeLinks" id="exampleFormControlInput27" class="form-control noHide" cols="30" rows="2"
+            wire:model="codeLinks"></textarea>
+        @error('codeLinks')
+            <span class="text-danger">{{ $message }}</span>
+        @enderror
+    </div>
+    <button wire:click.prevent="update()" class="btn btn-dark">Update</button>
+    <button wire:click.prevent="cancel()" class="btn btn-danger">Cancel</button>
+</form>

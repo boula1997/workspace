@@ -24,7 +24,7 @@ class TasksSeeder extends Seeder
             $task = Task::create([
                  'title'=>$title[0],
 
-               'status'=>$status[0],
+                // 'status'=>$status[0],
                 
                  'employee_id'=>$employee[0],
                 

@@ -17,12 +17,14 @@ class ProjectsSeeder extends Seeder
         $title=["dummydata"];
         $status=[1]; 
         $cost=[500]; 
+        $script=["script"]; 
 
         for ($i = 0; $i < count($title); $i++) {
             $project = Project::create([
                 'title'=>$title[0],
                 'cost'=>$cost[0],
                 'status'=>$status[0],
+                'script'=>$script[0],
             ]);
         }
     }

@@ -4,6 +4,8 @@ use App\Models\Admin;
 use App\Models\Category;
 use App\Models\Complain;
 use App\Models\Faq;
+use App\Models\Post;
+use App\Models\Issue;
 use App\Models\Message;
 use App\Models\Counter;
 use App\Models\Newsletter;
@@ -27,12 +29,23 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Vaccancy;
 use App\Models\Video;
+use App\Models\Sample;
 use Illuminate\Support\Facades\File;
 use Jackiedo\Cart\Facades\Cart;
 use Spatie\Permission\Models\Role;
 use App\Services\MailService;
+use App\Http\Controllers\ActionController;
+use App\Http\Controllers\LocalActionController;
+use App\Livewire\Posts;
+use Illuminate\Support\Facades\Route;
+use Livewire\Livewire;
+use App\Http\Controllers\SqlQueryController;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
-const Message_Mail = "app@gmail.com";
+
 
 const Newsletter_Mail = "app@gmail.com";
 function settings()
@@ -439,10 +452,352 @@ if (!function_exists('history')) {
     }
 }
 
-// if (!function_exists('project')) {
+function get_size($file_path)
+{
+    return Storage::size($file_path);
+}
 
-//     function project($type)
-//     {
-//       Project::where('type', $type)->first();
-//     }
-// }
+
+function todayDate()
+{
+    $today = new DateTime();
+    $today->setTimezone(new DateTimeZone('Africa/Cairo'));
+    $today = $today->format('Y-m-d');
+    return $today;
+}
+function tomorrow()
+{
+    $tomorrow = new DateTime();
+    $tomorrow->setTimezone(new DateTimeZone('Africa/Cairo'));
+    $tomorrow = $tomorrow->modify('+1 day')->format('Y-m-d');
+    return $tomorrow;
+}
+
+function setting()
+{
+    $setting = Setting::latest()->first();
+    return $setting;
+}
+function settingFirst()
+{
+    $setting = Setting::first();
+    return $setting;
+}
+function formatStartTime($startTime)
+{
+    Carbon::parse($startTime)->format('Y-m-d\TH:i:s');
+    return $startTime;
+}
+
+function getTimeAgo($carbonObject)
+{
+    $carbonObject = Carbon::parse($carbonObject);
+    return str_ireplace(
+        [' seconds', ' second', ' minutes', ' minute', ' hours', ' hour', ' days', ' day', ' weeks', ' week'],
+        [' seconds', ' second', ' minutes', ' minute', ' hours', ' hour', ' days', ' day', ' weeks', ' week'],
+        $carbonObject->diffForHumans()
+    );
+}
+
+function diffDays($monthYearDate = null, $date2 = null) {
+    // If $monthYearDate is null, use the current month and year
+    if ($monthYearDate === null) {
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth()->endOfDay();
+    } else {
+        // Parse the month and year from the input date
+        list($year, $month) = explode('-', $monthYearDate);
+        
+        // Get the first and last day of the given month
+        $startOfMonth = Carbon::create($year, $month, 1)->startOfDay();
+        $endOfMonth = Carbon::create($year, $month, 1)->endOfMonth()->endOfDay();
+    }
+
+
+
+    // Calculate the difference in days
+    $diffInDays = $endOfMonth->diffInDays($startOfMonth);
+
+        // If $date2 is null, use the end of the current month as the end date
+        if ($monthYearDate === null || isCurrentMonth($monthYearDate)) {
+            $date2 = Carbon::now();
+            $diffInDays = $date2->diffInDays($startOfMonth);
+        }
+
+    return $diffInDays;
+}
+
+
+function calculateAge($birthdate)
+{
+    // Convert the birthdate string to a Carbon instance
+    $birthdate = Carbon::parse($birthdate);
+
+    // Get the current date
+    $currentDate = Carbon::now();
+
+    // Calculate the difference in years, months, and days
+    $diff = $currentDate->diff($birthdate);
+
+    // Calculate the age in years and months
+    $ageYears = $diff->y;
+    $ageMonths = $diff->m;
+
+    // Adjust the age if the current day is before the birth day
+    if ($currentDate->day < $birthdate->day) {
+        $ageMonths++;
+    }
+
+    // Return the age in years and months
+    return [
+        'years' => $ageYears,
+        'months' => $ageMonths
+    ];
+}
+
+
+
+function isCurrentMonth($monthYearDate) {
+    // Parse the month and year from the input date
+    list($year, $month) = explode('-', $monthYearDate);
+    
+    // Get the current month and year
+    $currentMonth = date('m');
+    $currentYear = date('Y');
+
+    // Check if the input month and year match the current month and year
+    if ($year == $currentYear && $month == $currentMonth) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function flags()
+{
+    $flags = DB::select("SELECT distinct flag as 'flag' from paths");
+    return $flags;
+}
+
+function statsColor($index)
+{
+
+    $setting = Setting::latest()->get();
+    if (isset($setting[$index + 1])) {
+        $diff = abs(strtotime($setting[$index]->last_time) - strtotime($setting[$index + 1]->last_time));
+        $years = floor($diff / (365 * 60 * 60 * 24));
+        $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+        $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+        return  $days > 3 ? 'text-success' : 'text-danger';
+    }
+}
+
+function websites()
+{
+    return Post::orderBy('client', 'asc')->get();
+}
+function websitesRoutes()
+{
+    return Post::where('routesLink','!=',null)->latest()->get();
+}
+function websitesActive()
+{    $string='';
+    $websites=Post::where('appearance',1)->where('status','!=',0)->latest()->get();
+    foreach($websites as $website){
+        $string.=$website->tasks.'</br>********************************</br>';
+    }
+    return $string;
+}
+
+function pathsArr($path) {
+    // Check if the path contains an asterisk (*)
+    if (strpos($path, '*') === false) {
+        dd($path);  // Return 0 if no asterisk is found
+    }
+
+    // Replace backslashes with forward slashes and then split by asterisk
+    return explode('*', $path);
+}
+
+function getLastTwoSegments($path)
+{
+    // Normalize slashes to forward slashes
+    $path = str_replace('\\', '/', $path);
+
+    // Split the path into segments
+    $segments = explode('/', $path);
+
+    // Get the last two segments
+    $lastTwoSegments = array_slice($segments, -2);
+
+    // Join them with a slash
+    return implode('/', $lastTwoSegments);
+}
+function activeWebsites()
+{   
+    $websites=Post::where('appearance',1)->where('status','!=',0)->latest()->get();
+    return $websites;
+}   
+function activeWebsitesTitle()
+{   
+    $websites=Post::where('appearance',1)->where('status','!=',0)->latest()->pluck('client');
+    return $websites;
+}
+function activeWebsitesContent()
+{
+    $websites = Post::where('appearance', 1)
+                    ->where('status', '!=', 0)
+                    ->latest()
+                    ->pluck('codeLinks'); // Retrieves the collection of 'codeLinks'
+
+    // Merge all non-null values and concatenate into a single string
+    $mergedWebsites = $websites->filter()->implode("\n");
+
+    // Debugging: Check the content of $mergedWebsites
+    // dd($mergedWebsites); // or log it using Log::info($mergedWebsites);
+
+    // Replace specific words in the merged string
+    $mergedWebsites = str_replace('ssh', 'flag', $mergedWebsites);
+    $mergedWebsites = str_replace('run dev', 'flag', $mergedWebsites);
+    $mergedWebsites = str_replace('start', 'flag', $mergedWebsites);
+    $mergedWebsites = str_replace('dashboard', 'flag', $mergedWebsites);
+    $mergedWebsites = str_replace('git', 'flag', $mergedWebsites);
+
+    return $mergedWebsites; // Return the modified merged string
+}
+
+
+
+function References()
+{
+    return Issue::latest()->get();
+}
+
+
+function accountant()
+{
+    $payed = DB::select('select sum(cost) as cost, sum(payed) as payed, sum(debit) as debit, sum(fees) as fees from posts');
+    return $payed[0];
+}
+function accountantBoula()
+{
+    $payed = DB::select('select sum(cost) as cost, sum(payed) as payed, sum(debit) as debit, sum(fees) as fees from boulas');
+    return $payed[0];
+}
+
+function workMonths(){
+    // Assuming $startDate is the specific date from which you want to count months
+    // I started 2024-01-01 but I enterd it 2024-02-01 to make it count month after it finsish not when start
+    $startDate = Carbon::parse('2024-01-01');
+    $endDate = Carbon::now(); // or any other end date you prefer
+    // Calculate the difference in months
+    $numberOfMonths = $endDate->diffInMonths($startDate);
+
+    // Calculate the fraction of the current month
+    $startOfNextMonth = $endDate->copy()->startOfMonth()->addMonth();
+    $daysInCurrentMonth = $startOfNextMonth->diffInDays($endDate);
+    $daysInMonth = $startOfNextMonth->diffInDays($startOfNextMonth->copy()->endOfMonth());
+    $fractionOfMonth = $daysInCurrentMonth / $daysInMonth;
+
+    // Combine whole months and fraction of the current month
+    $exactNumberOfMonths = $numberOfMonths;
+    return $exactNumberOfMonths+fractionOfDayInMonth();
+}
+
+function fractionOfDayInMonth() {
+    $currentDate = Carbon::now();
+    $daysInMonth = $currentDate->daysInMonth;
+    $currentDay = $currentDate->day;
+
+    return $currentDay / $daysInMonth;
+}
+function DayInMonth() {
+    // Set the timezone to Africa/Cairo
+    date_default_timezone_set('Africa/Cairo');
+
+    // Get the current date
+    $currentDate = Carbon::now();
+
+    // Get the number of days in the current month
+    $daysInMonth = $currentDate->daysInMonth;
+
+    // Get the current day of the month
+    $currentDay = $currentDate->day;
+
+    return $currentDay;
+}
+
+
+function updated_atPost()
+{
+    // dd(71);
+    $post=Post::latest('updated_at')->first();
+    
+    return Carbon::parse($post->updated_at)->format('H:i:s');
+}
+function updated_atBoula()
+{
+    // dd(71);
+    $boula=Boula::latest('updated_at')->first();
+    return Carbon::parse($boula->updated_at)->format('H:i:s') ;
+}
+function updated_atSample()
+{
+    // dd(71);
+    $sample=Sample::latest('updated_at')->first();
+    return Carbon::parse($sample->updated_at)->format('H:i:s') ;
+}
+
+
+function countDaysSince($startDate)
+{
+    $startDate = Carbon::parse($startDate);
+    $currentDate = Carbon::now();
+
+    return $currentDate->diffInDays($startDate);
+}
+
+function getHourFromDateTime($dateTime)
+{
+    $date = Carbon::parse($dateTime);
+    return $date->hour;
+}
+
+function getDateFromDateTime($dateTime) {
+    $date = Carbon::parse($dateTime);
+    return $date->toDateString();
+}
+function startAndEndTime($startTime)
+{
+    $startTimeCarbon = \Carbon\Carbon::parse($startTime);
+    $endTimeCarbon = $startTimeCarbon->copy()->addHours(8);
+    return [$startTimeCarbon->hour, $endTimeCarbon->hour];
+}
+function posts()
+{
+    $posts = Post::get();
+
+    return $posts;
+}
+function codes()
+{
+    $codes = Sample::first();
+
+    return $codes;
+}
+
+if (!function_exists('taskCommitPer')) {
+    /**
+     * Check if a given datetime is in the past.
+     *
+     * @param string $datetime
+     * @return bool
+     */
+    function taskCommitPer()
+    {
+        $websites = Post::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('client');
+        $done = Server::orderBy('project', 'ASC')->where('committed',1)->whereIn('project', $websites)->get();
+        $all = Server::orderBy('project', 'ASC')->whereIn('project', $websites)->get();
+        return count($done)/count($all)*100;
+
+}}

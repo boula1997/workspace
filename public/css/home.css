@@ -1,0 +1,183 @@
+    
+    html{
+        overflow-x:hidden !important;
+    }
+    body{
+        overflow-x:hidden !important;
+    }
+    .bg-white {
+        background-color: #000000 !important;
+    }
+
+    .hover-cursor {
+        cursor: pointer !important;
+    }
+
+    .bg-warning {
+        background-color: #D69A00 !important;
+        color: #000000 !important;
+
+    }
+
+    .d-flex p {
+        color: black;
+    }
+
+    .bg-success {
+        background-color: #00482B !important;
+        color: #ffffffc8;
+    }
+
+    .bg-secondary {
+        color: #000000 !important;
+    }
+
+    .text-success {
+        color: #00c167 !important;
+    }
+
+    p,
+    h1 {
+        color: whitesmoke !important;
+    }
+
+
+
+
+    .highlighted {
+        background-color: yellow;
+        /* Change the background color as needed */
+        color: black;
+    }
+
+
+
+    .resultContent {
+        white-space: pre-wrap;
+        /* This will wrap long lines */
+        overflow-x: auto;
+        /* This will add a horizontal scrollbar if needed */
+        word-wrap: break-word;
+        /* This will allow long words to break and wrap */
+    }
+
+    .text-limit {
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: var(--lines) !important;
+        line-clamp: var(--lines) !important;
+        -webkit-box-orient: vertical !important;
+    }
+
+    .whats {
+        position: fixed;
+        top: 5%;
+        left: 1%;
+        z-index: 200;
+        display: inline-block;
+        border: none !important;
+        outline: none !important;
+        background-color: #FFC107;
+        cursor: pointer;
+        padding: 18px 0.5px;
+        border-radius: 50%;
+        -webkit-transition: all 0.5s;
+        -o-transition: all 0.5s;
+        transition: all 0.5s;
+        -webkit-box-shadow: 2px 2px 5px #b0afaf, -2px -2px 5px #b0afaf;
+        box-shadow: 2px 2px 5px #b0afaf, -2px -2px 5px #b0afaf;
+    }
+
+    .whats:hover {
+        -webkit-box-shadow: 2px 2px 5px #7a7979, -2px -2px 5px #7a7979;
+        box-shadow: 2px 2px 5px #7a7979, -2px -2px 5px #7a7979;
+    }
+
+    .whats i {
+        font-size: 45px;
+        color: #fff;
+    }
+
+    .pointer-cursor {
+        cursor: pointer;
+    }
+
+    .clickable-text {
+        cursor: pointer;
+    }
+
+
+    ::placeholder {
+        color: #fff !important;
+    }
+
+    :focus {
+        background-color: black;
+        color: #fff !important;
+    }
+
+
+
+    ::placeholder {
+        color: #fff !important;
+    }
+
+    :focus {
+        background-color: black !important;
+        color: #fff !important;
+    }
+
+    body {
+        background-color: black;
+    }
+
+    ::placeholder {
+        color: #fff !important;
+    }
+
+    :focus {
+        background-color: black;
+        color: #fff !important;
+    }
+
+    input {
+        background-color: black !important;
+        color: #fff !important;
+    }
+
+    :focus {
+        background-color: black !important;
+        color: #fff !important;
+    }
+
+    textarea {
+        background-color: black !important;
+        color: #fff !important;
+    }
+
+    select {
+        background-color: black !important;
+        color: #fff !important;
+    }
+
+    .card {
+        background-color: black !important;
+        color: rgb(255, 255, 255) !important;
+
+    }
+
+    .modal-header {
+        background-color: black !important;
+        color: #fff !important;
+    }
+
+    .modal-body {
+        background-color: black !important;
+        color: #fff !important;
+    }
+
+    .modal-footer {
+        background-color: black !important;
+        color: #fff !important;
+    }

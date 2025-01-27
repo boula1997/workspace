@@ -19,7 +19,7 @@ class AccountantsSeeder extends Seeder
         $has=[500];
       
 
-        for ($i = 0; $i < count($accountants); $i++) {
+        for ($i = 0; $i < count($received); $i++) {
             $accountant = Accountant::create([
                  'received'=>$received[0],
 

@@ -12,7 +12,7 @@ class CreateHistorysTable extends Migration
      * @return void
      */
     public function up()
-    {dd("Not allowed");
+    {
         Schema::create('historys', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('task_id')->nullable(); $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');

@@ -18,6 +18,7 @@ class FollowupsSeeder extends Seeder
         $status=[1]; 
        $employee=[1];
        $difficulty=[1];
+       $hasPhone=[1];
       
 
         for ($i = 0; $i < count($title); $i++) {

@@ -12,7 +12,7 @@ class CreateSettingTranslationsTable extends Migration
      * @return void
      */
     public function up()
-    {dd("Not allowed");
+    {
         Schema::create('setting_translations', function (Blueprint $table) {
             $table->id();
             $table->text('address')->nullable();
