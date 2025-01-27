@@ -301,7 +301,7 @@ function services()
 function rest($project)
 {
     $totalFee=0;
-    foreach($project->fees as $fee){
+    foreach($project->feeses as $fee){
         if($fee->amount>0)
         $totalFee+=$fee->amount;
     }

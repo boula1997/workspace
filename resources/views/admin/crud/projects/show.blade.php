@@ -69,7 +69,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($project->fees as $fee)
+                                    @foreach ($project->feeses as $fee)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $fee->amount }}</td>
