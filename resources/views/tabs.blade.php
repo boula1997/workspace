@@ -8,7 +8,6 @@
         <button class="btn btn-outline-warning col-2" id="seo">SEO</button>
         <button class="btn btn-outline-warning col-2" id="routes">Routes</button>
         <button class="btn btn-outline-warning col-2" id="meet">Meet</button>
-        <button class="btn btn-outline-warning col-2" id="dashboard">Dashboard</button>
         
     </div>
     
@@ -25,6 +24,7 @@
         <button class="btn btn-outline-warning col-2" id="updatedTables">updatedTables</button>
         <button class="btn btn-outline-warning col-2" id="DBCredentials">DB Credentials</button>
         <button class="btn btn-outline-warning col-2" id="close">colse</button>
+        <button class="btn btn-outline-warning col-2" id="dashboard">Dashboard</button>
     </div>
     
     {{-- <button class="btn btn-outline-warning col-2 myTab" id="motahda">Motahda</button>
