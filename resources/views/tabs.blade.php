@@ -8,13 +8,13 @@
         <button class="btn btn-outline-warning col-2" id="seo">SEO</button>
         <button class="btn btn-outline-warning col-2" id="routes">Routes</button>
         <button class="btn btn-outline-warning col-2" id="meet">Meet</button>
+        <button class="btn btn-outline-warning col-2" id="dashboard">Dashboard</button>
         
     </div>
     
     <div class="row">
         <button class="btn btn-outline-warning col-2 clickable-text myTab" style="cursor: pointer;"  content="{{ activeWebsitesContent() }}" id="stress">Stress</button>
         <button class="btn btn-outline-warning col-2 myTab" id="yousab">Yousab</button>
-        <button class="btn btn-outline-warning col-2 myTab" id="dashboard">Dashboard</button>
         <button class="btn btn-outline-warning col-2 myTab" id="issues">Refrences</button>
         <button class="btn btn-outline-warning col-2 myTab" id="phpMyAdmin">sql</button>
         
