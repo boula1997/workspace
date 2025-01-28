@@ -318,7 +318,7 @@
                                     <option value="19">flags manager</option>
                                     <option value="16">get multible scripts</option>
                                     <option value="16">get multible modules</option>
-                                    <option class="myTab" value="21">Get Stats</option>
+                                    <option class="{{boula()?'':'myTab'}}" value="21">Get Stats</option>
                                     <option value="4">Get files with size bigger than</option>
                                     <option value="18">Image Workspace</option>
                                     <option value="3">Open multible modules</option>
