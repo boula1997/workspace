@@ -3,7 +3,7 @@
 namespace App\Livewire;
   
 use Livewire\Component;
-use App\Models\Post;
+use App\Models\Project;
   
 class Posts extends Component
 {
