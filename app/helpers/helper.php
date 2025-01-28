@@ -594,7 +594,7 @@ function statsColor($index)
 
 function websites()
 {
-    return Project::orderBy('title', 'asc')->get();
+    return Project::where('appearance',1)->orderBy('title', 'asc')->get();
 }
 function websitesRoutes()
 {
