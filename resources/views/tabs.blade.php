@@ -17,6 +17,10 @@
         <button class="btn btn-outline-warning col-2 {{boula()?'':'myTab'}}" id="issues">Refrences</button>
         <button class="btn btn-outline-warning col-2 {{boula()?'':'myTab'}}" id="phpMyAdmin">sql</button>
         <button class="btn btn-outline-warning col-2 {{boula()?'':'myTab'}}" id="backup">Backup</button>
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button class="btn btn-outline-warning col-2" type="submit">Logout</button>
+        </form>
         
     </div>
     <div class="row d-flex justify-content-center">
