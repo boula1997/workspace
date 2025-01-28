@@ -2016,7 +2016,7 @@
                 navigator.clipboard.writeText(
                     'mysqldump -u yousabte_workspace -p --complete-insert yousabte_workspace > yousabte_workspace_export.sql"\n' +
                     '\n' +
-                    'kD[asKgc%ydC\n' +
+                    'kD[asKgc%ydC'
                 );
                 toastNow();
             });
