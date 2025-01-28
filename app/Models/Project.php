@@ -17,7 +17,7 @@ class Project extends Model
 
 
     public function getPayedAttribute(){
-      return $this->cost-rest($project);
+      return $this->cost-rest($this);
     }
     
     public function feeses(){ return $this->hasMany(Fee::class); }
