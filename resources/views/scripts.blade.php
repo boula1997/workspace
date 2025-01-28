@@ -2014,9 +2014,9 @@
             $('#backup').on('click', function(e) {
                 e.preventDefault();
                 navigator.clipboard.writeText(
-                    'mysqldump -u root -p --no-create-info --complete-insert --ignore-table=automation.migrations automation > "E:/xampp/htdocs/automation/exported_databases/automation.sql"\n' +
+                    'mysqldump -u yousabte_workspace -p --complete-insert yousabte_workspace > yousabte_workspace_export.sql"\n' +
                     '\n' +
-                    'cd /d E:/xampp/htdocs/automation\n' +
+                    'kD[asKgc%ydC\n' +
                     'git add .\n' +
                     'git commit -m "commit" \n' +
                     'git pull origin main \n' +
