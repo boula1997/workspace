@@ -197,17 +197,7 @@ table.dataTable {
   border: 1px solid #444444;
 }
 
-/* Table Header */
-table.dataTable thead {
-  background-color: black !important;
-  color: #ffffff !important;
-}
 
-table.dataTable thead th {
-  border-bottom: 1px solid #444444;
-  text-align: left;
-  padding: 10px;
-}
 
 /* Table Body */
 table.dataTable tbody tr {
@@ -292,4 +282,16 @@ table.dataTable tbody td {
   padding: 10px;
   color: #ffffff;
   background: black;
+}
+
+/* Table Header */
+table.dataTable thead {
+  background-color: black !important;
+  color: #ffffff !important;
+}
+
+table.dataTable thead th {
+  border-bottom: 1px solid #444444;
+  text-align: left;
+  padding: 10px;
 }
