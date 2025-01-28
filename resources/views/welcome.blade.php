@@ -90,39 +90,40 @@
      
             @include('tabs')
 
-
-        <div class="allModals">
-            @foreach (posts() as $post)
-                <div class="modal fade" id="postModal{{ $post->id }}" tabindex="-1"
-                    aria-labelledby="postModalLabel{{ $post->id }}" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="postModalLabel{{ $post->id }}">
-                                    {{ $post->title }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <form id="postForm" method="post">
-                                @csrf
-                                <div class="modal-body">
-                                    <div>
-                                        <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                        <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="10">{{ isset($post->codeLinks) ? $post->codeLinks : '' }}</textarea>
+        @if (boula())            
+            <div class="allModals">
+                @foreach (posts() as $post)
+                    <div class="modal fade" id="postModal{{ $post->id }}" tabindex="-1"
+                        aria-labelledby="postModalLabel{{ $post->id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="postModalLabel{{ $post->id }}">
+                                        {{ $post->title }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <form id="postForm" method="post">
+                                    @csrf
+                                    <div class="modal-body">
+                                        <div>
+                                            <input type="hidden" name="post_id" value="{{ $post->id }}">
+                                            <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="10">{{ isset($post->codeLinks) ? $post->codeLinks : '' }}</textarea>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-success">Update</button>
-                                </div>
-                            </form>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success">Update</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
 
-        </div>
+            </div>
+        @endif
         <div class="allReferences">
             @foreach (References() as $refrnce)
                 <div class="modal fade" id="referenceModal{{ $refrnce->id }}" tabindex="-1"
