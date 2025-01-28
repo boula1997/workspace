@@ -442,7 +442,7 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 }
 
 .dark-mode .lockscreen-item {
-  background-color: #091D3E;
+  background-color: #000000;
 }
 
 .dark-mode .lockscreen-logo a {
@@ -450,7 +450,7 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 }
 
 .dark-mode .lockscreen-credentials .btn {
-  background-color: #091D3E;
+  background-color: #000000;
 }
 
 .dark-mode .lockscreen-image {
@@ -576,7 +576,7 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 
 .dark-mode .login-card-body,
 .dark-mode .register-card-body {
-  background-color: #091D3E;
+  background-color: #000000;
   border-color: #6c757d;
   color: #fff;
 }
@@ -643,7 +643,7 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 }
 
 .dark-mode .invoice {
-  background-color: #091D3E;
+  background-color: #000000;
 }
 
 .profile-user-img {
