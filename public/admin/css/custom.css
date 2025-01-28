@@ -285,7 +285,7 @@ table.dataTable tbody td {
 }
 
 /* Table Header */
-table.dataTable thead {
+table.dataTable thead tr {
   background-color: black !important;
   color: #ffffff !important;
 }
