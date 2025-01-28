@@ -284,14 +284,12 @@ table.dataTable tbody td {
   background: black;
 }
 
-/* Table Header */
-table.dataTable thead tr {
-  background-color: black !important;
-  color: #ffffff !important;
-}
+
 
 table.dataTable thead th {
   border-bottom: 1px solid #444444;
   text-align: left;
   padding: 10px;
+  background-color: black !important;
+  color: #ffffff !important;
 }
