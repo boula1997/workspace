@@ -16,6 +16,7 @@
         <button class="btn btn-outline-warning col-2 {{boula()?'':'myTab'}}" id="yousab">Yousab</button>
         <button class="btn btn-outline-warning col-2 {{boula()?'':'myTab'}}" id="issues">Refrences</button>
         <button class="btn btn-outline-warning col-2 {{boula()?'':'myTab'}}" id="phpMyAdmin">sql</button>
+        <button class="btn btn-outline-warning col-2 {{boula()?'':'myTab'}}" id="backup">Backup</button>
         
     </div>
     <div class="row d-flex justify-content-center">

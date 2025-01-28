@@ -2011,6 +2011,24 @@
 
 
             });
+            $('#backup').on('click', function(e) {
+                e.preventDefault();
+                navigator.clipboard.writeText(
+                    'mysqldump -u root -p --no-create-info --complete-insert --ignore-table=automation.migrations automation > "E:/xampp/htdocs/automation/exported_databases/automation.sql"\n' +
+                    '\n' +
+                    'cd /d E:/xampp/htdocs/automation\n' +
+                    'git add .\n' +
+                    'git commit -m "commit" \n' +
+                    'git pull origin main \n' +
+                    'git push origin main \n' +
+                    'exit \n' +
+                    'cls'
+                );
+
+                toastNow();
+
+
+            });
 
 
             $('#updateDB').on('click', function(e) {
