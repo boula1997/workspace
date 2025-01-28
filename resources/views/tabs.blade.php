@@ -12,10 +12,10 @@
     </div>
     
     <div class="row">
-        <button class="btn btn-outline-warning col-2 clickable-text myTab" style="cursor: pointer;"  content="{{ activeWebsitesContent() }}" id="stress">Stress</button>
-        <button class="btn btn-outline-warning col-2 myTab" id="yousab">Yousab</button>
-        <button class="btn btn-outline-warning col-2 myTab" id="issues">Refrences</button>
-        <button class="btn btn-outline-warning col-2 myTab" id="phpMyAdmin">sql</button>
+        <button class="btn btn-outline-warning col-2 clickable-text {{boula()?'':'myTab'}}" style="cursor: pointer;"  content="{{ activeWebsitesContent() }}" id="stress">Stress</button>
+        <button class="btn btn-outline-warning col-2 {{boula()?'':'myTab'}}" id="yousab">Yousab</button>
+        <button class="btn btn-outline-warning col-2 {{boula()?'':'myTab'}}" id="issues">Refrences</button>
+        <button class="btn btn-outline-warning col-2 {{boula()?'':'myTab'}}" id="phpMyAdmin">sql</button>
         
     </div>
     <div class="row d-flex justify-content-center">
@@ -27,14 +27,14 @@
         <button class="btn btn-outline-warning col-2" id="dashboard">Dashboard</button>
     </div>
     
-    {{-- <button class="btn btn-outline-warning col-2 myTab" id="motahda">Motahda</button>
-    <button class="btn btn-outline-warning col-1 myTab" id="second">Second</button> --}}
-    {{-- <button class="btn btn-outline-warning col-1 myTab" id="temblates">Temblates</button> --}}
-    {{-- <button class="btn btn-outline-warning col-1 myTab" id="notes">Notes</button> --}}
-    {{-- <button class="btn btn-outline-warning col-1 myTab" id="servers">Tasks</button> --}}
-    {{-- <button class="btn btn-outline-warning col-1 myTab" id="googleads">GoogleAds</button> --}}
-    {{-- <button class="btn btn-outline-warning col-1 myTab" id="tasks">Tasks</button> --}}
-    {{-- <button class="btn btn-outline-warning col-1 myTab" id="autor">autor</button> --}}
+    {{-- <button class="btn btn-outline-warning col-2 {{boula()?'':'myTab'}}" id="motahda">Motahda</button>
+    <button class="btn btn-outline-warning col-1 {{boula()?'':'myTab'}}" id="second">Second</button> --}}
+    {{-- <button class="btn btn-outline-warning col-1 {{boula()?'':'myTab'}}" id="temblates">Temblates</button> --}}
+    {{-- <button class="btn btn-outline-warning col-1 {{boula()?'':'myTab'}}" id="notes">Notes</button> --}}
+    {{-- <button class="btn btn-outline-warning col-1 {{boula()?'':'myTab'}}" id="servers">Tasks</button> --}}
+    {{-- <button class="btn btn-outline-warning col-1 {{boula()?'':'myTab'}}" id="googleads">GoogleAds</button> --}}
+    {{-- <button class="btn btn-outline-warning col-1 {{boula()?'':'myTab'}}" id="tasks">Tasks</button> --}}
+    {{-- <button class="btn btn-outline-warning col-1 {{boula()?'':'myTab'}}" id="autor">autor</button> --}}
 </div>
 
 

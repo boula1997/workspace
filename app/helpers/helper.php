@@ -112,7 +112,7 @@ function taskLog($action,$task_title){
 
 function dectatorBoula(){
     // Check if the user is authenticated before accessing their email
-    if(auth()->user()->email!=="nessimboula@gmail.com")
+    if(!boula())
     if (in_array(request()->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'])) {
         abort(403, 'Action not allowed');
     }
@@ -127,14 +127,14 @@ function notAllowedTaskAction($taskTitle){
 
 function received($admin){
     $received=Accountant::where('employee_id',$admin->id)->sum('received');
-    if(isset($received) && (auth()->user()->email==$admin->email || 'nessimboula@gmail.com'==auth()->user()->email))
+    if(isset($received) && (auth()->user()->email==$admin->email || boula()))
      return $received;
     else
     return 'None';
 }
 function has($admin){
     $has=Accountant::where('employee_id',$admin->id)->sum('has');
-    if(isset($has) && (auth()->user()->email==$admin->email || 'nessimboula@gmail.com'==auth()->user()->email))
+    if(isset($has) && (auth()->user()->email==$admin->email || boula()))
      return $has;
     else
     return 'None';
@@ -801,3 +801,11 @@ if (!function_exists('taskCommitPer')) {
         return count($done)/count($all)*100;
 
 }}
+
+
+function boula()
+{
+    if(auth()->user()->email=="nessimboula@gmail.com")
+    return true;
+    return false;
+}
