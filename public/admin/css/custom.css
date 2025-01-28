@@ -199,8 +199,8 @@ table.dataTable {
 
 /* Table Header */
 table.dataTable thead {
-  background-color: #333333 !important;
-  color: #ffffff;
+  background-color: black !important;
+  color: #ffffff !important;
 }
 
 table.dataTable thead th {
@@ -286,4 +286,10 @@ table.dataTable tbody td {
   color: #ffffff;
   padding: 10px;
   border-radius: 4px;
+}
+
+table.dataTable tbody td {
+  padding: 10px;
+  color: #ffffff;
+  background: black;
 }
