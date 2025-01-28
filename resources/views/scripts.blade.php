@@ -2018,10 +2018,7 @@
                     '\n' +
                     'kD[asKgc%ydC\n' +
                 );
-
                 toastNow();
-
-
             });
 
 
