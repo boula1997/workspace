@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('payed');
             $table->integer('debit');
             $table->boolean('isYousab')->default(1);
-            $table->boolean('status')->default(1);
+            $table->boolean('status')->default(0);
             $table->boolean('appearance')->default(1);
             $table->boolean('deal')->default(0);
             $table->date('deadline')->nullable();
