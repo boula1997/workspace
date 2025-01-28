@@ -2017,12 +2017,6 @@
                     'mysqldump -u yousabte_workspace -p --complete-insert yousabte_workspace > yousabte_workspace_export.sql"\n' +
                     '\n' +
                     'kD[asKgc%ydC\n' +
-                    'git add .\n' +
-                    'git commit -m "commit" \n' +
-                    'git pull origin main \n' +
-                    'git push origin main \n' +
-                    'exit \n' +
-                    'cls'
                 );
 
                 toastNow();
