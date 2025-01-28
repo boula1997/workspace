@@ -14,6 +14,11 @@ class Project extends Model
     protected $table = 'projects';
     protected $guarded = [];
     public $timestamps = true;
+
+
+    public function getPayedAttribute(){
+      return $this->cost-rest($project);
+    }
     
     public function feeses(){ return $this->hasMany(Fee::class); }
     public function tasks(){ return $this->hasMany(Task::class); }
