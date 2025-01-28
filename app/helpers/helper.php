@@ -676,7 +676,7 @@ function References()
 
 function accountant()
 {
-    $payed = DB::select('select sum(cost) as cost, sum(payed) as payed, sum(debit) as debit, sum(fees) as fees from posts');
+    $payed = DB::select('select sum(cost) as cost, sum(payed) as payed, sum(debit) as debit, sum(fees) as fees from projects');
     return $payed[0];
 }
 function accountantBoula()
