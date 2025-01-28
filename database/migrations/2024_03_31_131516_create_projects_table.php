@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         //dd("Make sure you took a backup of data");
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->integer('cost');
             $table->integer('payed');
             $table->integer('debit');
             $table->boolean('isYousab')->default(1);
-            $table->boolean('status')->default(0);
-            $table->boolean('appearance')->default(0);
+            $table->boolean('status')->default(1);
+            $table->boolean('appearance')->default(1);
             $table->boolean('deal')->default(0);
             $table->date('deadline')->nullable();
             $table->date('lastTransaction')->nullable();
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('projects');
     }
 };
