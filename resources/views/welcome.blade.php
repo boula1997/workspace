@@ -124,6 +124,8 @@
 
             </div>
         @endif
+
+        @if (boula())            
         <div class="allReferences">
             @foreach (References() as $refrnce)
                 <div class="modal fade" id="referenceModal{{ $refrnce->id }}" tabindex="-1"
@@ -156,6 +158,7 @@
             @endforeach
 
         </div>
+        @endif
 
         <div id="formBody" class="mt-5">
             <div class="text-white text-center">{{ startAndEndTime(settingFirst()->startTime)[0] }} -
