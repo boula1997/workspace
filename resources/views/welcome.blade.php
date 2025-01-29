@@ -240,7 +240,7 @@
                         <div class="website-container d-flex flex-wrap">
                             @foreach (websites() as $website)
                                 <p id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
-                                    class="{{$website->deal?( $website->status == 0 ? 'bg-secondary' : ($website->status == 1 ? 'bg-warning' : ($website->status == 2 ? 'bg-warning' : 'bg-danger'))):'bg-danger' }}  hover-cursor mx-1 text-nowrap text-white">
+                                    class="{{$website->deal?( $website->status == 0 ? 'bg-secondary' : ($website->status == 1 ? 'bg-warning' : ($website->status == 2 ? 'bg-warning' : 'bg-danger'))):'bg-danger' }}  hover-cursor mx-1 text-nowrap text-dark">
                                     {{ $website->title }}</p>
 
                                 <i style="cursor: pointer;"  content="{{ $website->codeLinks }}" websiteId="{{ $website->id }}"
