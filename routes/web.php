@@ -30,8 +30,7 @@ if (true) { Route::get('routes', function () { $routeCollection = Route::getRout
 Route::group(['middleware' => ['auth:admin']], function () {
     Route::group(
         [
-            'prefix' => LaravelLocalization::setLocale(),
-            'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']
+
         ],
         function () {
     
