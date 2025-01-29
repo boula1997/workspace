@@ -429,7 +429,7 @@ class ActionController extends Controller
         $string = '';
         $string2 = '';
         $datatype = '';
-        $count = DB::connection('dynamic')->table($tableName)->count();
+        $count = DB::connection('dynamic')->table($table->TABLE_NAME)->count();
         foreach ($results as $result) {
           if ($result->TABLE_NAME == $table->TABLE_NAME) {
 
