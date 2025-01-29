@@ -364,8 +364,10 @@ $(document).ready(function () {
 
             if (checkbox.checked) {
                 taskRow.css('background-color', 'yellow');
+                taskRow.css('color', 'black');
             } else {
                 taskRow.css('background-color', '');
+                taskRow.css('color', '');
             }
         }
     </script>
