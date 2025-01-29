@@ -1096,7 +1096,8 @@
                                               table="{{ $table->TABLE_NAME }}" 
                                               class="toggleRelation fw-bold clickable-text-db" 
                                               title="{{ str_replace('_id', '', $array2[$loop->index]) }}">
-                                            {{ $table->TABLE_NAME }}
+                                            {{ $table->TABLE_NAME }} 
+                                            <span id="{{ $table->TABLE_NAME }}">({{$counts[$loop->index]}})</span>
                                         </span>
             
                                         <!-- Column Names under Table -->

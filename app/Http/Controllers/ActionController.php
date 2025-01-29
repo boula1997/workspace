@@ -424,10 +424,12 @@ class ActionController extends Controller
       $array2 = [];
       $letters = [];
       $dataTypes=[];
+      $counts=[];
       foreach ($tables as $table) {
         $string = '';
         $string2 = '';
         $datatype = '';
+        $count = DB::connection('dynamic')->table($tableName)->count();
         foreach ($results as $result) {
           if ($result->TABLE_NAME == $table->TABLE_NAME) {
 
@@ -441,6 +443,7 @@ class ActionController extends Controller
         array_push($array2, $string2);
         array_push($dataTypes, $datatype);
         array_push($letters, $table->TABLE_NAME[0]);
+        array_push($counts, $count);
       }
 
       $dbname = $request->dbname;
@@ -451,7 +454,7 @@ class ActionController extends Controller
 
 
 
-      return view('welcome', compact('results', 'tables', 'action', 'replaced', 'module', 'array', 'dbname', 'letters', 'array2','dataTypes','queries','credential'));
+      return view('welcome', compact('results', 'tables', 'action', 'replaced', 'module', 'array', 'dbname', 'letters', 'array2','dataTypes','queries','credential','counts'));
     }
 
     if ($request->action == '13') {

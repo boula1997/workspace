@@ -2110,6 +2110,8 @@
 
                         if (status) {
                             data.queryData.forEach(boula => {
+                            
+                                alert($('#table').closest('.count'));
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
                                     `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id}'>show ${boula.id}</button>`
@@ -2246,7 +2248,6 @@
                     datatype: 'JSON',
                     success: function(data) {
                         console.log(data);
-                        //  let keys=Object.keys(data.data[0]);
                         data.data.forEach(boula => {
                             console.log('boula', boula);
                             $('#jsonResult').append(
@@ -2290,6 +2291,7 @@
                     $('#jsonResult').empty();
                     let db = $("#dbname").attr('dbname');
                     let table = $(this).attr('table');
+                    let count = $(this).closest('.count');
                     let url = "{{ route('db.data', [':db', ':table', ':query']) }}"
                     url = url.replace(':db', db);
                     url = url.replace(':table', table);
@@ -2300,7 +2302,9 @@
                         url: url,
                         datatype: 'JSON',
                         success: function(data) {
-                            console.log(data);
+                            $('#'+table).text('('+data.data.length+')');
+                            
+
                             //  let keys=Object.keys(data.data[0]);
                             data.data.forEach(boula => {
                                 console.log('boula', boula);

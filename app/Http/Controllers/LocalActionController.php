@@ -391,6 +391,8 @@ class LocalActionController extends Controller
 
     if ($request->action == '12') {
       $action = 'desc database';
+      
+
       $queries=Query::latest()->get()->unique('title');
       $results = DB::select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
       $tables = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' and TABLE_NAME NOT IN ('jobs','password_resets','password_reset_tokens','personal_access_tokens','role_has_permissions','failed_jobs','files','model_has_permissions','model_has_roles') order by TABLE_NAME;");
@@ -398,10 +400,15 @@ class LocalActionController extends Controller
       $array2 = [];
       $letters = [];
       $dataTypes=[];
+      $counts=[];
       foreach ($tables as $table) {
         $string = '';
         $string2 = '';
         $datatype = '';
+        DB::select('use '.$request->dbname.';');
+        $count=DB::select('SELECT COUNT(*) AS count FROM '.$table->TABLE_NAME.';');
+        // Access the count as an integer
+        $rowCount = $count[0]->count;
         foreach ($results as $result) {
           if ($result->TABLE_NAME == $table->TABLE_NAME) {
 
@@ -415,7 +422,11 @@ class LocalActionController extends Controller
         array_push($array2, $string2);
         array_push($dataTypes, $datatype);
         array_push($letters, $table->TABLE_NAME[0]);
+        array_push($counts, $rowCount);
       }
+
+
+      DB::select('use '.env('DB_DATABASE').';');
 
       $dbname = $request->dbname;
 
@@ -426,7 +437,7 @@ class LocalActionController extends Controller
 
       $credential=DBCredential::where('db_name',isset($dbname)?$dbname:'yousabte_automation')->first();
 
-      return view('welcome', compact('results', 'tables', 'action', 'replaced', 'module', 'array', 'dbname', 'letters', 'array2','dataTypes','queries','credential'));
+      return view('welcome', compact('results', 'tables', 'action', 'replaced', 'module', 'array', 'dbname', 'letters', 'array2','dataTypes','queries','credential','counts'));
     }
 
     if ($request->action == '13') {
