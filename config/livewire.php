@@ -158,5 +158,6 @@ return [
 
     'pagination_theme' => 'tailwind',
 
+    'asset_url' => env('LIVEWIRE_ASSET_URL', 'https://yousab-tech.com/workspace/public/livewire/livewire.js'),
 
 ];
