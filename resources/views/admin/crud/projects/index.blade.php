@@ -60,9 +60,9 @@
                                                 
                                                 <th>{{__('general.deal')}}</th>
                                                 
-                                                <th>{{__('general.deadline')}}</th>
+                                                {{-- <th>{{__('general.deadline')}}</th>
                                                 
-                                                <th>{{__('general.lastTransaction')}}</th>
+                                                <th>{{__('general.lastTransaction')}}</th> --}}
                                                 
                                                 <th>{{__('general.fees')}}</th>
                                                 <th>@lang('general.controls')</th>
@@ -88,9 +88,9 @@
                                                     
                                                     <td>{{$project->deal?__('general.yes'):__('general.no') }}</td>
                                                     
-                                                    <td>{{ $project->deadline }}</td>
+                                                    {{-- <td>{{ $project->deadline }}</td>
                                                     
-                                                    <td>{{ $project->lastTransaction }}</td>
+                                                    <td>{{ $project->lastTransaction }}</td> --}}
                                                     
                                                     <td>{{ $project->fees }}</td>
                                                     <td>
