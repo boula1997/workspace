@@ -736,8 +736,9 @@ if ($request->action == '28') {
     FROM (
         SELECT '" . $db . "' AS db, " . $table . ".* 
         FROM " . $db . "." . $table . "
-    ) AS q 
-    LIMIT 1000;
+        ORDER BY updated_at DESC
+        LIMIT 1000
+    ) AS q;
 ");
 
 
