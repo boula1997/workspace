@@ -236,7 +236,7 @@
                 @csrf
                 <div class="row">
                     <div class="mt-2" id="allWebsites">
-                        <p>Choose websites you will work on today Red:Late Green:Finance Yellow:Working on</p>
+                        <p>Choose websites you will work on today <span class="text-danger">Red</span>:Late <span class="text-success">Green</span>:Finance <span class="text-warning">Yellow</span>:Working on</p>
                         <div class="website-container d-flex flex-wrap">
                             @foreach (websites() as $website)
                                 <p id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
