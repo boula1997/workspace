@@ -156,7 +156,7 @@
     </a> --}}
 @livewireScripts
 @include('scripts')
-<script src="{{ asset('livewire/livewire.js') }}"></script>
+<script src="https://yousab-tech.com/workspace/public/livewire/livewire.js"></script>
 
 </body>
 
