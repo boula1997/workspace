@@ -154,7 +154,7 @@
 
         </div>
     </a> --}}
-@livewireScripts
+{{-- @livewireScripts --}}
 @include('scripts')
 <script src="https://yousab-tech.com/workspace/public/livewire/livewire.js"></script>
 
