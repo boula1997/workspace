@@ -45,9 +45,26 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th>{{__('general.title')}}</th>
+
                                                 <th>{{__('general.cost')}}</th>
-                                                <th>{{__('general.rest')}}</th>
+                                                
+                                                <th>{{__('general.payed')}}</th>
+                                                
+                                                <th>{{__('general.debit')}}</th>
+                                                
+                                                <th>{{__('general.isYousab')}}</th>
+                                                
                                                 <th>{{__('general.status')}}</th>
+                                                
+                                                <th>{{__('general.appearance')}}</th>
+                                                
+                                                <th>{{__('general.deal')}}</th>
+                                                
+                                                <th>{{__('general.deadline')}}</th>
+                                                
+                                                <th>{{__('general.lastTransaction')}}</th>
+                                                
+                                                <th>{{__('general.fees')}}</th>
                                                 <th>@lang('general.controls')</th>
                                             </tr>
                                         </thead>
@@ -56,9 +73,26 @@
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $project->title }}</td>
-                                                    <td class="cost">{{ $project->cost }}</td>
-                                                    <td class="rest">{{ rest($project) }}</td> <!-- Add class 'rest' to this cell -->
-                                                    <td>{{ $project->status ? __('general.yes') : __('general.no') }}</td>
+
+                                                    <td>{{ $project->cost }}</td>
+                                                    
+                                                    <td>{{ $project->payed }}</td>
+                                                    
+                                                    <td>{{ $project->debit }}</td>
+                                                    
+                                                    <td>{{$project->isYousab?__('general.yes'):__('general.no') }}</td>
+                                                    
+                                                    <td>{{$project->status?__('general.yes'):__('general.no') }}</td>
+                                                    
+                                                    <td>{{$project->appearance?__('general.yes'):__('general.no') }}</td>
+                                                    
+                                                    <td>{{$project->deal?__('general.yes'):__('general.no') }}</td>
+                                                    
+                                                    <td>{{ $project->deadline }}</td>
+                                                    
+                                                    <td>{{ $project->lastTransaction }}</td>
+                                                    
+                                                    <td>{{ $project->fees }}</td>
                                                     <td>
                                                         @include('admin.components.controls', [
                                                             'route' => 'projects',
