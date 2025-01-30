@@ -785,7 +785,7 @@ if ($request->action == '28') {
    */
   public function show($db, $table, $query)
   {
-
+     dd(500);
     $credential=DBCredential::where('db_name',$db)->first();
     $dbHost = '127.0.0.1';
     $dbName = isset($credential->db_name)?$credential->db_name:'automation';
@@ -804,7 +804,7 @@ if ($request->action == '28') {
           ],
       ]);
 
-          // Use the dynamic connection
+    // Use the dynamic connection
     DB::purge('dynamic');
     DB::reconnect('dynamic');
     $result = DB::connection('dynamic')->statement('use ' . $db . '');

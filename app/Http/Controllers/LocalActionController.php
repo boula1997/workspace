@@ -724,6 +724,8 @@ if ($request->action == '28') {
    */
   public function show($db, $table, $query)
   {
+    dd(500);
+    
     $result = DB::statement('use ' . $db . '');
 
     if ($query !== "null" && $query !== "")
