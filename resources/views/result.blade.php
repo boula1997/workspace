@@ -1214,7 +1214,7 @@
             
                 const yesterdayDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-                localStorage.setItem('minutes', encodeURIComponent(yesterdayDateTime));
+                localStorage.setItem('minutes', yesterdayDateTime);
             
                 const baseURL = `{{ url('/run-query') }}`;
                 const queryParams = `?dbname={{ $credential->db_name }}&username={{ $credential->db_username }}&password={{ $credential->db_password }}&interval=${encodeURIComponent(yesterdayDateTime)}`;
