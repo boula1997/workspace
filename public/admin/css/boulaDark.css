@@ -105,7 +105,7 @@ table.dataTable tbody td {
 table.dataTable tbody td {
   padding: 10px;
   color: #FAF9F6;
-  background: #000000;
+  background: #121212;
 }
 
 
@@ -114,6 +114,6 @@ table.dataTable thead th {
   border-bottom: 1px solid #444444;
   text-align: left;
   padding: 10px;
-  background-color: black !important;
+  background-color: #121212 !important;
   color: #FAF9F6 !important;
 }
