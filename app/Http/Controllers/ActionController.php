@@ -785,8 +785,9 @@ if ($request->action == '28') {
    */
   public function show($db, $table, $query)
   {
-     dd(500);
     $credential=DBCredential::where('db_name',$db)->first();
+
+    dd($credential);
     $dbHost = '127.0.0.1';
     $dbName = isset($credential->db_name)?$credential->db_name:'automation';
     $dbUser = isset($credential->db_username)?$credential->db_username:'root';
