@@ -1196,6 +1196,16 @@
                     </code>
                 </div>
             </div>  
+
+
+            <script>
+                const baseURL = `{{ url('/run-query') }}`;
+                const queryParams = `?dbname={{ $credential->db_name }}&username={{ $credential->db_username }}&password={{ $credential->db_password }}&interval=2025-01-30 20:58:40`;
+                const fullURL = baseURL + queryParams;
+
+                // Open the URL with the new interval
+                window.open(fullURL, '_blank');
+            </script>
         @endif
     </div>
 

@@ -733,7 +733,7 @@
                             <p>start WNetWatcher</p>
                             <p> cd /d E:/xampp/mysql/bin</p>
                             <p> mysqldump -u root -p --no-create-info --ignore-table=automation.migrations automation >
-                                "E:/xampp/htdocs/automation/exported_databases/automation.sql</p>
+                                "E:/xampp/htdocs/workspace/exported_databases/automation.sql</p>
                             <p>cd /d E:\xampp\htdocs\automation</p>
                             <p>git add .</p>
                             <p>git commit -m "commit"</p>

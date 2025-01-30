@@ -1963,7 +1963,7 @@
             $('#autor').on('click', function(e) {
                 e.preventDefault();
 
-                window.open('https://yousab-tech.com/automation/public');
+                window.open('https://yousab-tech.com/workspace/public');
                 toastNow();
 
             });
