@@ -1,5 +1,5 @@
 <!-- Preloader -->
-    <div class="preloader flex-column justify-content-center align-items-center">
+    <div class="preloader flex-column justify-content-center align-items-center bg-dark">
         <a href="{{ route('dashboard') }}">
             <img class="animation__shake" src="{{ settings()->logo}}" alt="AdminLTELogo">
         </a>
