@@ -787,7 +787,6 @@ if ($request->action == '28') {
   {
     $credential=DBCredential::where('db_name',$db)->first();
 
-    dd($credential);
     $dbHost = '127.0.0.1';
     $dbName = isset($credential->db_name)?$credential->db_name:'automation';
     $dbUser = isset($credential->db_username)?$credential->db_username:'root';
@@ -815,7 +814,7 @@ if ($request->action == '28') {
     else
       $queyData = null;
     //  determin database and column name
-    $data = DB::select("  
+    $data = DB::connection('dynamic')->select("  
     SELECT * 
     FROM (
         SELECT '" . $db . "' AS db, " . $table . ".* 
