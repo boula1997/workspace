@@ -59,12 +59,7 @@
   var langc=$('html').attr('dir')=='rtl'?'<h5>تخصيص الاعدادات</h5><hr class="mb-2"/>':'<h5>Customize AdminLTE</h5><hr class="mb-2"/>';
   $container.append().append(`<span>${langc}</span>`)
 
-  //boula
-  if (localStorage.getItem('darkmode')==true) {
-    $('body').addClass('dark-mode');
-  } else {
-    $('body').removeClass('dark-mode');
-  }
+
 
 
   //boula
