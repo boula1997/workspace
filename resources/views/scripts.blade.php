@@ -1610,6 +1610,7 @@
 
 
 
+
     <script>
         $(document).on('submit', '#postForm', function(e) {
             e.preventDefault();
@@ -2790,4 +2791,11 @@
                     }
 
                     // Run the replace function
-                    replaceStrings();
+                    replaceStrings();});
+
+     </script>
+
+     @stack('js')
+
+
+
