@@ -35,7 +35,7 @@
     <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/css/custom.css') }}">
-    @if (boula())
+    @if (boula() || auth()->user()->email=="Kerminamelad688@gmail.com")
     <link rel="stylesheet" href="{{ asset('admin/css/boulaDark.css') }}">
     @endif
     {{-- <link rel="stylesheet" href="{{ asset('css/style.bundle.css') }}"> --}}
