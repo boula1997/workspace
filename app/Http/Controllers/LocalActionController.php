@@ -731,7 +731,7 @@ if ($request->action == '28') {
     else
       $queyData = null;
     //  determin database and column name
-    $data = DB::select("
+    $data = DB::select("  
     SELECT * 
     FROM (
         SELECT '" . $db . "' AS db, " . $table . ".* 

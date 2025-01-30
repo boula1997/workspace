@@ -814,13 +814,14 @@ if ($request->action == '28') {
     else
       $queyData = null;
     //  determin database and column name
-    $data = DB::connection('dynamic')->select("
+    $data = DB::select("  
     SELECT * 
     FROM (
         SELECT '" . $db . "' AS db, " . $table . ".* 
         FROM " . $db . "." . $table . "
-    ) AS q 
-    LIMIT 1000;
+        ORDER BY updated_at DESC
+        LIMIT 1000
+    ) AS q;
 ");
 
 
