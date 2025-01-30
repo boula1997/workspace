@@ -127,7 +127,7 @@
 
 .daterangepicker .calendar-table .next span, .daterangepicker .calendar-table .prev span {
   color: #fff;
-  border: solid black;
+  border: solid #121212
   border-width: 0 2px 2px 0;
   border-radius: 0;
   display: inline-block;
@@ -192,7 +192,7 @@
 .daterangepicker td.in-range {
   background-color: #ebf4f8;
   border-color: transparent;
-  color: #000;
+  color: #121212;
   border-radius: 0;
 }
 

@@ -365,7 +365,7 @@ svg:not(:root).svg-inline--fa {
 
 .svg-inline--fa mask .fa-primary,
 .svg-inline--fa mask .fa-secondary {
-  fill: black; }
+  fill: #121212 }
 
 .fad.fa-inverse {
   color: #fff; }

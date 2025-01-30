@@ -10,13 +10,13 @@
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1;
-  color: #000;
+  color: #121212;
   text-shadow: 0 1px 0 #fff;
   opacity: .5;
 }
 
 .close:hover, .mailbox-attachment-close:hover {
-  color: #000;
+  color: #121212;
   text-decoration: none;
 }
 
@@ -442,7 +442,7 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 }
 
 .dark-mode .lockscreen-item {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .dark-mode .lockscreen-logo a {
@@ -450,7 +450,7 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 }
 
 .dark-mode .lockscreen-credentials .btn {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .dark-mode .lockscreen-image {
@@ -576,7 +576,7 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 
 .dark-mode .login-card-body,
 .dark-mode .register-card-body {
-  background-color: #000000;
+  background-color: #121212;
   border-color: #6c757d;
   color: #fff;
 }
@@ -643,7 +643,7 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 }
 
 .dark-mode .invoice {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .profile-user-img {

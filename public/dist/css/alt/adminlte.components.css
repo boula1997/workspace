@@ -629,7 +629,7 @@ body.text-sm .input-group-text {
 }
 
 .custom-switch.custom-switch-off-dark .custom-control-input ~ .custom-control-label::before {
-  background-color: #000000;
+  background-color: #121212;
   border-color: #060708;
 }
 
@@ -638,11 +638,11 @@ body.text-sm .input-group-text {
 }
 
 .custom-switch.custom-switch-off-dark .custom-control-input ~ .custom-control-label::after {
-  background-color: black;
+  background-color: #121212
 }
 
 .custom-switch.custom-switch-on-dark .custom-control-input:checked ~ .custom-control-label::before {
-  background-color: #000000;
+  background-color: #121212;
   border-color: #060708;
 }
 
@@ -682,7 +682,7 @@ body.text-sm .input-group-text {
 
 .custom-switch.custom-switch-off-navy .custom-control-input ~ .custom-control-label::before {
   background-color: #001f3f;
-  border-color: black;
+  border-color: #121212
 }
 
 .custom-switch.custom-switch-off-navy .custom-control-input:focus ~ .custom-control-label::before {
@@ -690,12 +690,12 @@ body.text-sm .input-group-text {
 }
 
 .custom-switch.custom-switch-off-navy .custom-control-input ~ .custom-control-label::after {
-  background-color: black;
+  background-color: #121212
 }
 
 .custom-switch.custom-switch-on-navy .custom-control-input:checked ~ .custom-control-label::before {
   background-color: #001f3f;
-  border-color: black;
+  border-color: #121212
 }
 
 .custom-switch.custom-switch-on-navy .custom-control-input:checked:focus ~ .custom-control-label::before {
@@ -1123,7 +1123,7 @@ body.text-sm .input-group-text {
 }
 
 .custom-switch.custom-switch-off-gray-dark .custom-control-input ~ .custom-control-label::before {
-  background-color: #000000;
+  background-color: #121212;
   border-color: #060708;
 }
 
@@ -1132,11 +1132,11 @@ body.text-sm .input-group-text {
 }
 
 .custom-switch.custom-switch-off-gray-dark .custom-control-input ~ .custom-control-label::after {
-  background-color: black;
+  background-color: #121212
 }
 
 .custom-switch.custom-switch-on-gray-dark .custom-control-input:checked ~ .custom-control-label::before {
-  background-color: #000000;
+  background-color: #121212;
   border-color: #060708;
 }
 
@@ -1445,7 +1445,7 @@ body.text-sm .input-group-text {
 }
 
 .custom-range.custom-range-dark::-webkit-slider-thumb {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .custom-range.custom-range-dark::-webkit-slider-thumb:active {
@@ -1453,7 +1453,7 @@ body.text-sm .input-group-text {
 }
 
 .custom-range.custom-range-dark::-moz-range-thumb {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .custom-range.custom-range-dark::-moz-range-thumb:active {
@@ -1461,7 +1461,7 @@ body.text-sm .input-group-text {
 }
 
 .custom-range.custom-range-dark::-ms-thumb {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .custom-range.custom-range-dark::-ms-thumb:active {
@@ -2205,7 +2205,7 @@ body.text-sm .input-group-text {
 }
 
 .custom-range.custom-range-gray-dark::-webkit-slider-thumb {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .custom-range.custom-range-gray-dark::-webkit-slider-thumb:active {
@@ -2213,7 +2213,7 @@ body.text-sm .input-group-text {
 }
 
 .custom-range.custom-range-gray-dark::-moz-range-thumb {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .custom-range.custom-range-gray-dark::-moz-range-thumb:active {
@@ -2221,7 +2221,7 @@ body.text-sm .input-group-text {
 }
 
 .custom-range.custom-range-gray-dark::-ms-thumb {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .custom-range.custom-range-gray-dark::-ms-thumb:active {
@@ -2411,8 +2411,8 @@ body.text-sm .input-group-text {
 }
 
 .custom-control-input-dark:checked ~ .custom-control-label::before {
-  border-color: #000000;
-  background-color: #000000;
+  border-color: #121212;
+  background-color: #121212;
 }
 
 .custom-control-input-dark.custom-control-input-outline:checked[type="checkbox"] ~ .custom-control-label::after {
@@ -2905,8 +2905,8 @@ body.text-sm .input-group-text {
 }
 
 .custom-control-input-gray-dark:checked ~ .custom-control-label::before {
-  border-color: #000000;
-  background-color: #000000;
+  border-color: #121212;
+  background-color: #121212;
 }
 
 .custom-control-input-gray-dark.custom-control-input-outline:checked[type="checkbox"] ~ .custom-control-label::after {
@@ -2968,7 +2968,7 @@ body.text-sm .input-group-text {
 .dark-mode .custom-file-label::after,
 .dark-mode .custom-control-label::before,
 .dark-mode .input-group-text {
-  background-color: #000000;
+  background-color: #121212;
   color: #fff;
 }
 
@@ -2979,7 +2979,7 @@ body.text-sm .input-group-text {
 }
 
 .dark-mode select {
-  background-color: #000000;
+  background-color: #121212;
   color: #fff;
   border-color: #6c757d;
 }
@@ -3304,7 +3304,7 @@ body.text-sm .input-group-text {
 }
 
 .dark-mode .custom-range.custom-range-dark::-webkit-slider-thumb {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .dark-mode .custom-range.custom-range-dark::-webkit-slider-thumb:active {
@@ -3312,7 +3312,7 @@ body.text-sm .input-group-text {
 }
 
 .dark-mode .custom-range.custom-range-dark::-moz-range-thumb {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .dark-mode .custom-range.custom-range-dark::-moz-range-thumb:active {
@@ -3320,7 +3320,7 @@ body.text-sm .input-group-text {
 }
 
 .dark-mode .custom-range.custom-range-dark::-ms-thumb {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .dark-mode .custom-range.custom-range-dark::-ms-thumb:active {
@@ -4064,7 +4064,7 @@ body.text-sm .input-group-text {
 }
 
 .dark-mode .custom-range.custom-range-gray-dark::-webkit-slider-thumb {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .dark-mode .custom-range.custom-range-gray-dark::-webkit-slider-thumb:active {
@@ -4072,7 +4072,7 @@ body.text-sm .input-group-text {
 }
 
 .dark-mode .custom-range.custom-range-gray-dark::-moz-range-thumb {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .dark-mode .custom-range.custom-range-gray-dark::-moz-range-thumb:active {
@@ -4080,7 +4080,7 @@ body.text-sm .input-group-text {
 }
 
 .dark-mode .custom-range.custom-range-gray-dark::-ms-thumb {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .dark-mode .custom-range.custom-range-gray-dark::-ms-thumb:active {
@@ -4270,7 +4270,7 @@ body.text-sm .input-group-text {
 }
 
 .dark-mode .custom-switch.custom-switch-off-dark .custom-control-input ~ .custom-control-label::before {
-  background-color: #000000;
+  background-color: #121212;
   border-color: #060708;
 }
 
@@ -4279,11 +4279,11 @@ body.text-sm .input-group-text {
 }
 
 .dark-mode .custom-switch.custom-switch-off-dark .custom-control-input ~ .custom-control-label::after {
-  background-color: black;
+  background-color: #121212
 }
 
 .dark-mode .custom-switch.custom-switch-on-dark .custom-control-input:checked ~ .custom-control-label::before {
-  background-color: #000000;
+  background-color: #121212;
   border-color: #060708;
 }
 
@@ -4323,7 +4323,7 @@ body.text-sm .input-group-text {
 
 .dark-mode .custom-switch.custom-switch-off-navy .custom-control-input ~ .custom-control-label::before {
   background-color: #002c59;
-  border-color: black;
+  border-color: #121212
 }
 
 .dark-mode .custom-switch.custom-switch-off-navy .custom-control-input:focus ~ .custom-control-label::before {
@@ -4331,12 +4331,12 @@ body.text-sm .input-group-text {
 }
 
 .dark-mode .custom-switch.custom-switch-off-navy .custom-control-input ~ .custom-control-label::after {
-  background-color: black;
+  background-color: #121212
 }
 
 .dark-mode .custom-switch.custom-switch-on-navy .custom-control-input:checked ~ .custom-control-label::before {
   background-color: #002c59;
-  border-color: black;
+  border-color: #121212
 }
 
 .dark-mode .custom-switch.custom-switch-on-navy .custom-control-input:checked:focus ~ .custom-control-label::before {
@@ -4764,7 +4764,7 @@ body.text-sm .input-group-text {
 }
 
 .dark-mode .custom-switch.custom-switch-off-gray-dark .custom-control-input ~ .custom-control-label::before {
-  background-color: #000000;
+  background-color: #121212;
   border-color: #060708;
 }
 
@@ -4773,11 +4773,11 @@ body.text-sm .input-group-text {
 }
 
 .dark-mode .custom-switch.custom-switch-off-gray-dark .custom-control-input ~ .custom-control-label::after {
-  background-color: black;
+  background-color: #121212
 }
 
 .dark-mode .custom-switch.custom-switch-on-gray-dark .custom-control-input:checked ~ .custom-control-label::before {
-  background-color: #000000;
+  background-color: #121212;
   border-color: #060708;
 }
 
@@ -4972,8 +4972,8 @@ body.text-sm .input-group-text {
 }
 
 .dark-mode .custom-control-input-dark:checked ~ .custom-control-label::before {
-  border-color: #000000;
-  background-color: #000000;
+  border-color: #121212;
+  background-color: #121212;
 }
 
 .dark-mode .custom-control-input-dark.custom-control-input-outline:checked[type="checkbox"] ~ .custom-control-label::after {
@@ -5466,8 +5466,8 @@ body.text-sm .input-group-text {
 }
 
 .dark-mode .custom-control-input-gray-dark:checked ~ .custom-control-label::before {
-  border-color: #000000;
-  background-color: #000000;
+  border-color: #121212;
+  background-color: #121212;
 }
 
 .dark-mode .custom-control-input-gray-dark.custom-control-input-outline:checked[type="checkbox"] ~ .custom-control-label::after {
@@ -6044,7 +6044,7 @@ body.text-sm .input-group-text {
 }
 
 .card-dark:not(.card-outline) > .card-header {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .card-dark:not(.card-outline) > .card-header,
@@ -6057,7 +6057,7 @@ body.text-sm .input-group-text {
 }
 
 .card-dark.card-outline {
-  border-top: 3px solid #000000;
+  border-top: 3px solid #121212;
 }
 
 .card-dark.card-outline-tabs > .card-header a:hover {
@@ -6065,7 +6065,7 @@ body.text-sm .input-group-text {
 }
 
 .card-dark.card-outline-tabs > .card-header a.active {
-  border-top: 3px solid #000000;
+  border-top: 3px solid #121212;
 }
 
 .bg-dark > .card-header .btn-tool,
@@ -7393,7 +7393,7 @@ body.text-sm .input-group-text {
 }
 
 .card-gray-dark:not(.card-outline) > .card-header {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .card-gray-dark:not(.card-outline) > .card-header,
@@ -7406,7 +7406,7 @@ body.text-sm .input-group-text {
 }
 
 .card-gray-dark.card-outline {
-  border-top: 3px solid #000000;
+  border-top: 3px solid #121212;
 }
 
 .card-gray-dark.card-outline-tabs > .card-header a:hover {
@@ -7414,7 +7414,7 @@ body.text-sm .input-group-text {
 }
 
 .card-gray-dark.card-outline-tabs > .card-header a.active {
-  border-top: 3px solid #000000;
+  border-top: 3px solid #121212;
 }
 
 .bg-gray-dark > .card-header .btn-tool,
@@ -7864,7 +7864,7 @@ html.maximized-card {
 }
 
 .todo-list .dark {
-  border-left-color: #000000;
+  border-left-color: #121212;
 }
 
 .todo-list .lightblue {
@@ -7940,7 +7940,7 @@ html.maximized-card {
 }
 
 .todo-list .gray-dark {
-  border-left-color: #000000;
+  border-left-color: #121212;
 }
 
 .todo-list .handle {
@@ -8455,7 +8455,7 @@ html.maximized-card {
 }
 
 .dark-mode .card-dark:not(.card-outline) > .card-header {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .dark-mode .card-dark:not(.card-outline) > .card-header,
@@ -8468,7 +8468,7 @@ html.maximized-card {
 }
 
 .dark-mode .card-dark.card-outline {
-  border-top: 3px solid #000000;
+  border-top: 3px solid #121212;
 }
 
 .dark-mode .card-dark.card-outline-tabs > .card-header a:hover {
@@ -8476,7 +8476,7 @@ html.maximized-card {
 }
 
 .dark-mode .card-dark.card-outline-tabs > .card-header a.active {
-  border-top: 3px solid #000000;
+  border-top: 3px solid #121212;
 }
 
 .dark-mode .bg-dark > .card-header .btn-tool,
@@ -9804,7 +9804,7 @@ html.maximized-card {
 }
 
 .dark-mode .card-gray-dark:not(.card-outline) > .card-header {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .dark-mode .card-gray-dark:not(.card-outline) > .card-header,
@@ -9817,7 +9817,7 @@ html.maximized-card {
 }
 
 .dark-mode .card-gray-dark.card-outline {
-  border-top: 3px solid #000000;
+  border-top: 3px solid #121212;
 }
 
 .dark-mode .card-gray-dark.card-outline-tabs > .card-header a:hover {
@@ -9825,7 +9825,7 @@ html.maximized-card {
 }
 
 .dark-mode .card-gray-dark.card-outline-tabs > .card-header a.active {
-  border-top: 3px solid #000000;
+  border-top: 3px solid #121212;
 }
 
 .dark-mode .bg-gray-dark > .card-header .btn-tool,
@@ -9875,7 +9875,7 @@ html.maximized-card {
 }
 
 .dark-mode .card {
-  background-color: #000000;
+  background-color: #121212;
   color: #fff;
 }
 
@@ -9948,7 +9948,7 @@ html.maximized-card {
 }
 
 .dark-mode .todo-list .dark {
-  border-left-color: #000000;
+  border-left-color: #121212;
 }
 
 .dark-mode .todo-list .lightblue {
@@ -10024,7 +10024,7 @@ html.maximized-card {
 }
 
 .dark-mode .todo-list .gray-dark {
-  border-left-color: #000000;
+  border-left-color: #121212;
 }
 
 .modal-dialog .overlay {
@@ -10051,12 +10051,12 @@ html.maximized-card {
 
 .modal-content.bg-warning .modal-header,
 .modal-content.bg-warning .modal-footer {
-  border-color: #000000;
+  border-color: #121212;
 }
 
 .modal-content.bg-primary .close, .modal-content.bg-secondary .close, .modal-content.bg-info .close, .modal-content.bg-danger .close, .modal-content.bg-success .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .modal-header,
@@ -10065,7 +10065,7 @@ html.maximized-card {
 }
 
 .dark-mode .modal-content {
-  background-color: #000000;
+  background-color: #121212;
 }
 
 .dark-mode .modal-content.bg-warning .modal-header,
@@ -10074,7 +10074,7 @@ html.maximized-card {
 }
 
 .dark-mode .modal-content.bg-warning .close {
-  color: #000000 !important;
+  color: #121212 !important;
   text-shadow: 0 1px 0 #495057 !important;
 }
 
@@ -10147,7 +10147,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-primary .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-primary .toast-header {
@@ -10161,7 +10161,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-secondary .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-secondary .toast-header {
@@ -10175,7 +10175,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-success .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-success .toast-header {
@@ -10189,7 +10189,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-info .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-info .toast-header {
@@ -10212,7 +10212,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-danger .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-danger .toast-header {
@@ -10235,7 +10235,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-dark .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-dark .toast-header {
@@ -10258,7 +10258,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-navy .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-navy .toast-header {
@@ -10308,7 +10308,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-blue .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-blue .toast-header {
@@ -10322,7 +10322,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-indigo .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-indigo .toast-header {
@@ -10336,7 +10336,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-purple .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-purple .toast-header {
@@ -10350,7 +10350,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-pink .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-pink .toast-header {
@@ -10364,7 +10364,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-red .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-red .toast-header {
@@ -10396,7 +10396,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-green .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-green .toast-header {
@@ -10410,7 +10410,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-teal .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-teal .toast-header {
@@ -10424,7 +10424,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-cyan .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-cyan .toast-header {
@@ -10447,7 +10447,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-gray .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-gray .toast-header {
@@ -10461,7 +10461,7 @@ html.maximized-card {
 
 .dark-mode .toast.bg-gray-dark .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .dark-mode .toast.bg-gray-dark .toast-header {
@@ -10475,7 +10475,7 @@ html.maximized-card {
 
 .toast.bg-primary .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-primary .toast-header {
@@ -10489,7 +10489,7 @@ html.maximized-card {
 
 .toast.bg-secondary .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-secondary .toast-header {
@@ -10503,7 +10503,7 @@ html.maximized-card {
 
 .toast.bg-success .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-success .toast-header {
@@ -10517,7 +10517,7 @@ html.maximized-card {
 
 .toast.bg-info .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-info .toast-header {
@@ -10540,7 +10540,7 @@ html.maximized-card {
 
 .toast.bg-danger .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-danger .toast-header {
@@ -10563,7 +10563,7 @@ html.maximized-card {
 
 .toast.bg-dark .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-dark .toast-header {
@@ -10577,7 +10577,7 @@ html.maximized-card {
 
 .toast.bg-lightblue .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-lightblue .toast-header {
@@ -10591,7 +10591,7 @@ html.maximized-card {
 
 .toast.bg-navy .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-navy .toast-header {
@@ -10605,7 +10605,7 @@ html.maximized-card {
 
 .toast.bg-olive .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-olive .toast-header {
@@ -10628,7 +10628,7 @@ html.maximized-card {
 
 .toast.bg-fuchsia .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-fuchsia .toast-header {
@@ -10642,7 +10642,7 @@ html.maximized-card {
 
 .toast.bg-maroon .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-maroon .toast-header {
@@ -10656,7 +10656,7 @@ html.maximized-card {
 
 .toast.bg-blue .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-blue .toast-header {
@@ -10670,7 +10670,7 @@ html.maximized-card {
 
 .toast.bg-indigo .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-indigo .toast-header {
@@ -10684,7 +10684,7 @@ html.maximized-card {
 
 .toast.bg-purple .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-purple .toast-header {
@@ -10698,7 +10698,7 @@ html.maximized-card {
 
 .toast.bg-pink .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-pink .toast-header {
@@ -10712,7 +10712,7 @@ html.maximized-card {
 
 .toast.bg-red .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-red .toast-header {
@@ -10744,7 +10744,7 @@ html.maximized-card {
 
 .toast.bg-green .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-green .toast-header {
@@ -10758,7 +10758,7 @@ html.maximized-card {
 
 .toast.bg-teal .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-teal .toast-header {
@@ -10772,7 +10772,7 @@ html.maximized-card {
 
 .toast.bg-cyan .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-cyan .toast-header {
@@ -10795,7 +10795,7 @@ html.maximized-card {
 
 .toast.bg-gray .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-gray .toast-header {
@@ -10809,7 +10809,7 @@ html.maximized-card {
 
 .toast.bg-gray-dark .close {
   color: #fff;
-  text-shadow: 0 1px 0 #000;
+  text-shadow: 0 1px 0 #121212;
 }
 
 .toast.bg-gray-dark .toast-header {
@@ -11212,8 +11212,8 @@ html.maximized-card {
 
 .dark-mode .btn-dark {
   color: #fff;
-  background-color: #000000;
-  border-color: #000000;
+  background-color: #121212;
+  border-color: #121212;
   box-shadow: none;
 }
 
@@ -11232,8 +11232,8 @@ html.maximized-card {
 
 .dark-mode .btn-dark.disabled, .dark-mode .btn-dark:disabled {
   color: #fff;
-  background-color: #000000;
-  border-color: #000000;
+  background-color: #121212;
+  border-color: #121212;
 }
 
 .dark-mode .btn-dark:not(:disabled):not(.disabled):active, .dark-mode .btn-dark:not(:disabled):not(.disabled).active,
@@ -11473,14 +11473,14 @@ html.maximized-card {
 }
 
 .dark-mode .btn-outline-dark {
-  color: #000000;
-  border-color: #000000;
+  color: #121212;
+  border-color: #121212;
 }
 
 .dark-mode .btn-outline-dark:hover {
   color: #fff;
-  background-color: #000000;
-  border-color: #000000;
+  background-color: #121212;
+  border-color: #121212;
 }
 
 .dark-mode .btn-outline-dark:focus, .dark-mode .btn-outline-dark.focus {
@@ -11488,15 +11488,15 @@ html.maximized-card {
 }
 
 .dark-mode .btn-outline-dark.disabled, .dark-mode .btn-outline-dark:disabled {
-  color: #000000;
+  color: #121212;
   background-color: transparent;
 }
 
 .dark-mode .btn-outline-dark:not(:disabled):not(.disabled):active, .dark-mode .btn-outline-dark:not(:disabled):not(.disabled).active,
 .show > .dark-mode .btn-outline-dark.dropdown-toggle {
   color: #fff;
-  background-color: #000000;
-  border-color: #000000;
+  background-color: #121212;
+  border-color: #121212;
 }
 
 .dark-mode .btn-outline-dark:not(:disabled):not(.disabled):active:focus, .dark-mode .btn-outline-dark:not(:disabled):not(.disabled).active:focus,
@@ -11567,7 +11567,7 @@ html.maximized-card {
 }
 
 .alert .close {
-  color: #000;
+  color: #121212;
   opacity: .2;
 }
 
@@ -11722,7 +11722,7 @@ html.maximized-card {
 
 .alert-dark {
   color: #fff;
-  background-color: #000000;
+  background-color: #121212;
   border-color: #292d32;
 }
 
@@ -11882,7 +11882,7 @@ html.maximized-card {
 
 .dark-mode .alert-dark {
   color: #fff;
-  background-color: #000000;
+  background-color: #121212;
   border-color: #292d32;
 }
 
@@ -12054,13 +12054,13 @@ html.maximized-card {
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1;
-  color: #000;
+  color: #121212;
   text-shadow: 0 1px 0 #fff;
   opacity: .5;
 }
 
 .close:hover {
-  color: #000;
+  color: #121212;
   text-decoration: none;
 }
 

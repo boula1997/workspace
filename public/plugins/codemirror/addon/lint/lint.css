@@ -5,9 +5,9 @@
 
 .CodeMirror-lint-tooltip {
   background-color: #ffd;
-  border: 1px solid black;
+  border: 1px solid #121212
   border-radius: 4px 4px 4px 4px;
-  color: black;
+  color: #121212
   font-family: monospace;
   font-size: 10pt;
   overflow: hidden;

@@ -1380,7 +1380,7 @@ ul {
 }
 
 .bg-blue {
-  background: #000000;
+  background: #121212;
 }
 
 .bg-red {
@@ -1937,7 +1937,7 @@ ul {
     # Nav bar 
 ----------------------------------------------*/
 .navbar-top {
-  background: #000000;
+  background: #121212;
   padding: 15px 0;
 }
 
@@ -8150,7 +8150,7 @@ ul {
   font-weight: 600;
   font-size: 22px;
   line-height: 28px;
-  color: #000;
+  color: #121212;
   margin-bottom: 24px;
   -webkit-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
@@ -8174,7 +8174,7 @@ ul {
   font-weight: 600;
   font-size: 22px;
   line-height: 28px;
-  color: #000;
+  color: #121212;
   background: transparent;
   padding: 0 0 20px 0;
   position: relative;

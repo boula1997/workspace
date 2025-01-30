@@ -6,7 +6,7 @@
         overflow-x:hidden !important;
     }
     .bg-white {
-        background-color: #000000 !important;
+        background-color: #121212 !important;
     }
 
     .hover-cursor {
@@ -15,12 +15,12 @@
 
     .bg-warning {
         background-color: #D69A00 !important;
-        color: #000000 !important;
+        color: #121212 !important;
 
     }
 
     .d-flex p {
-        color: black;
+        color: #121212
     }
 
     .bg-success {
@@ -29,7 +29,7 @@
     }
 
     .bg-secondary {
-        color: #000000 !important;
+        color: #121212 !important;
     }
 
     .text-success {
@@ -47,7 +47,7 @@
     .highlighted {
         background-color: yellow;
         /* Change the background color as needed */
-        color: black;
+        color: #121212
     }
 
 
@@ -113,7 +113,7 @@
     }
 
     :focus {
-        background-color: black;
+        background-color: #121212;
         color: #fff !important;
     }
 
@@ -124,12 +124,12 @@
     }
 
     :focus {
-        background-color: black !important;
+        background-color: #121212  !important;
         color: #fff !important;
     }
 
     body {
-        background-color: black;
+        background-color: #121212;
     }
 
     ::placeholder {
@@ -137,47 +137,47 @@
     }
 
     :focus {
-        background-color: black;
+        background-color: #121212;
         color: #fff !important;
     }
 
     input {
-        background-color: black !important;
+        background-color: #121212  !important;
         color: #fff !important;
     }
 
     :focus {
-        background-color: black !important;
+        background-color: #121212  !important;
         color: #fff !important;
     }
 
     textarea {
-        background-color: black !important;
+        background-color: #121212  !important;
         color: #fff !important;
     }
 
     select {
-        background-color: black !important;
+        background-color: #121212  !important;
         color: #fff !important;
     }
 
     .card {
-        background-color: black !important;
+        background-color: #121212  !important;
         color: rgb(255, 255, 255) !important;
 
     }
 
     .modal-header {
-        background-color: black !important;
+        background-color: #121212  !important;
         color: #fff !important;
     }
 
     .modal-body {
-        background-color: black !important;
+        background-color: #121212  !important;
         color: #fff !important;
     }
 
     .modal-footer {
-        background-color: black !important;
+        background-color: #121212  !important;
         color: #fff !important;
     }

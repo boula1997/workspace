@@ -7,12 +7,12 @@
 .cm-s-idea span.cm-number { color: #0000FF; }
 .cm-s-idea span.cm-keyword { line-height: 1em; font-weight: bold; color: #000080; }
 .cm-s-idea span.cm-atom { font-weight: bold; color: #000080; }
-.cm-s-idea span.cm-def { color: #000000; }
-.cm-s-idea span.cm-variable { color: black; }
-.cm-s-idea span.cm-variable-2 { color: black; }
-.cm-s-idea span.cm-variable-3, .cm-s-idea span.cm-type { color: black; }
-.cm-s-idea span.cm-property { color: black; }
-.cm-s-idea span.cm-operator { color: black; }
+.cm-s-idea span.cm-def { color: #121212; }
+.cm-s-idea span.cm-variable { color: #121212 }
+.cm-s-idea span.cm-variable-2 { color: #121212 }
+.cm-s-idea span.cm-variable-3, .cm-s-idea span.cm-type { color: #121212 }
+.cm-s-idea span.cm-property { color: #121212 }
+.cm-s-idea span.cm-operator { color: #121212 }
 .cm-s-idea span.cm-comment { color: #808080; }
 .cm-s-idea span.cm-string { color: #008000; }
 .cm-s-idea span.cm-string-2 { color: #008000; }
@@ -28,7 +28,7 @@
 .cm-s-idea  { font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;}
 
 
-.cm-s-idea .CodeMirror-matchingbracket { outline:1px solid grey; color:black !important; }
+.cm-s-idea .CodeMirror-matchingbracket { outline:1px solid grey; color:#121212  !important; }
 
 .CodeMirror-hints.idea {
   font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;

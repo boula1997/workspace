@@ -1,9 +1,9 @@
 .cm-s-ssms span.cm-keyword { color: blue; }
 .cm-s-ssms span.cm-comment { color: darkgreen; }
 .cm-s-ssms span.cm-string { color: red; }
-.cm-s-ssms span.cm-def { color: black; }
-.cm-s-ssms span.cm-variable { color: black; }
-.cm-s-ssms span.cm-variable-2 { color: black; }
+.cm-s-ssms span.cm-def { color: #121212 }
+.cm-s-ssms span.cm-variable { color: #121212 }
+.cm-s-ssms span.cm-variable-2 { color: #121212 }
 .cm-s-ssms span.cm-atom { color: darkgray; }
 .cm-s-ssms .CodeMirror-linenumber { color: teal; }
 .cm-s-ssms .CodeMirror-activeline-background { background: #ffffff; }

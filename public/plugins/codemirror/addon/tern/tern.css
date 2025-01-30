@@ -80,7 +80,7 @@
   margin-top: -3px;
 }
 
-.CodeMirror-Tern-fname { color: black; }
+.CodeMirror-Tern-fname { color: #121212 }
 .CodeMirror-Tern-farg { color: #70a; }
 .CodeMirror-Tern-farg-current { text-decoration: underline; }
 .CodeMirror-Tern-type { color: #07c; }
