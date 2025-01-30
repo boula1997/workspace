@@ -3,18 +3,29 @@
 @section('content')
 
 <style>
-    /* Custom Styles for Login Page */
+    /* Custom Styles for Dark Mode Login Page */
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+
+    .form-label{
+        color: #e0e0e0;
+
+    }
+
     .card-header {
-        background: linear-gradient(135deg, #007bff, #0056b3);
+        background: linear-gradient(135deg, #1f1f1f, #333333);
     }
 
     .container {
-        background-color: #f7f9fc;
+        background-color: #121212;
     }
 
     .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
+        background-color: #3a86ff;
+        border-color: #3a86ff;
+        color: #ffffff;
         transition: background-color 0.3s ease;
     }
 
@@ -26,16 +37,59 @@
     .img-fluid {
         object-fit: contain;
     }
+
+    .form-control {
+        background-color: #1e1e1e;
+        border: 1px solid #333333;
+        color: #e0e0e0;
+    }
+
+    .form-control:focus {
+        background-color: #252525;
+        border-color: #3a86ff;
+        color: #ffffff;
+        box-shadow: 0 0 5px rgba(58, 134, 255, 0.5);
+    }
+
+    .form-check-label {
+        color: #e0e0e0;
+    }
+
+    .card {
+        background-color: #1f1f1f;
+        border: none;
+    }
+
+    .invalid-feedback {
+        color: #ff6b6b;
+    }
+
+    a.text-primary {
+        color: #3a86ff;
+        text-decoration: none;
+    }
+
+    a.text-primary:hover {
+        text-decoration: underline;
+    }
+
+    .toggle-password {
+        color: #757575;
+    }
+
+    .toggle-password:hover {
+        color: #ffffff;
+    }
 </style>
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="row w-100">
-        <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center bg-light">
+        <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center">
             <img src="{{ asset(settings()->logo) }}" alt="Website Logo" class="img-fluid p-5" style="max-height: 300px;">
         </div>
         <div class="col-lg-6 col-md-8 col-12 d-flex justify-content-center">
-            <div class="card shadow-sm border-0 rounded-lg w-100">
-                <div class="card-header bg-primary text-white text-center rounded-top">
+            <div class="card shadow-lg border-0 rounded-lg w-100">
+                <div class="card-header text-white text-center rounded-top">
                     <h3 class="mb-0">{{ $title ?? '' }} {{ __('Login') }}</h3>
                 </div>
                 <div class="card-body p-4">
