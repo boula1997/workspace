@@ -144,7 +144,7 @@
   if (localStorage.getItem('darkmode')==true) {
   $('body').addClass('dark-mode');
 } else {
-  $('body').removeClass('dark-mode');
+  // $('body').removeClass('dark-mode');
 }
   if (userEmail === "nessimboula@gmail.com") {
     $('body').addClass('dark-mode');
