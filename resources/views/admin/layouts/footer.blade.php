@@ -140,16 +140,16 @@
 @stack('scripts')
 <script>
   var userEmail = @json(auth()->user()->email ?? '');
+  //boula
+  if (localStorage.getItem('darkmode')==true) {
+  $('body').addClass('dark-mode');
+} else {
+  $('body').removeClass('dark-mode');
+}
   if (userEmail === "nessimboula@gmail.com") {
     $('body').addClass('dark-mode');
   }
 
-    //boula
-    if (localStorage.getItem('darkmode')==true) {
-    $('body').addClass('dark-mode');
-  } else {
-    $('body').removeClass('dark-mode');
-  }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>
