@@ -10,12 +10,7 @@
 <!-- /.control-sidebar -->
 <!-- ./wrapper -->
 
-<script>
-        var userEmail = @json(auth()->user()->email ?? '');
-  if (userEmail === "nessimboula@gmail.com") {
-    localStorage.setItem('darkmode', 'true');
-  }
-</script>
+
 
 <script src="{{ asset('bootstrap-5.3.1-dist\js\bootstrap.js') }}"></script>
 <!-- jQuery -->
@@ -143,35 +138,43 @@
     });
     </script> --}}
 @stack('scripts')
-
+<script>
+  var userEmail = @json(auth()->user()->email ?? '');
+  if (userEmail === "nessimboula@gmail.com") {
+    $('body').addClass('dark-mode');
+  }
+</script>
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init();</script>
+<script>
+    eruda.init();
+</script>
+
 
 <script>
-  $(document).on('click', '.clickable-text', function(e) {
-      navigator.clipboard.writeText($(this).attr('content'));
+    $(document).on('click', '.clickable-text', function(e) {
+        navigator.clipboard.writeText($(this).attr('content'));
 
-      toastr.options = {
-          "closeButton": true,
-          "debug": false,
-          "newestOnTop": false,
-          "progressBar": true,
-          "positionClass": "{{app()->getLocale() == 'ar' ? 'toast-top-right' : 'toast-top-left'}}",
-          "preventDuplicates": false,
-          "onclick": null,
-          "showDuration": "300",
-          "hideDuration": "1000",
-          "timeOut": "5000",
-          "extendedTimeOut": "1000",
-          "showEasing": "swing",
-          "hideEasing": "linear",
-          "showMethod": "fadeIn",
-          "hideMethod": "fadeOut"
-      };
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "{{ app()->getLocale() == 'ar' ? 'toast-top-right' : 'toast-top-left' }}",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
 
-      toastr.success("Copied successfully!");
+        toastr.success("Copied successfully!");
 
-  });
+    });
 </script>
 
 <script>
