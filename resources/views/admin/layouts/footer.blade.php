@@ -10,6 +10,13 @@
 <!-- /.control-sidebar -->
 <!-- ./wrapper -->
 
+<script>
+        var userEmail = @json(auth()->user()->email ?? '');
+  if (userEmail === "nessimboula@gmail.com") {
+    localStorage.setItem('darkmode', 'true');
+  }
+</script>
+
 <script src="{{ asset('bootstrap-5.3.1-dist\js\bootstrap.js') }}"></script>
 <!-- jQuery -->
 <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
@@ -169,6 +176,9 @@
 
 <script>
     $(document).ready(function() {
+
+
+
         // alert(500);
         // Simulate a click on the checkbox once the page is loaded
         console.log('you are right');

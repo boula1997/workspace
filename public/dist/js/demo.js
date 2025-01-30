@@ -65,6 +65,8 @@
   } else {
     $('body').removeClass('dark-mode');
   }
+
+
   //boula
   
   var $dark_mode_checkbox = $('<input />', {
