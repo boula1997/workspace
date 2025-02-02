@@ -1196,7 +1196,7 @@
                     </code>
                 </div>
             </div>  
-            @if (!App::environment('local')) 
+            @if (App::environment('local')) 
             @push('js')               
             <script>
                // Get current date and time
@@ -1218,13 +1218,40 @@
                localStorage.setItem('minutes', yesterdayDateTime);
            
                const baseURL = `{{ url('/run-query') }}`;
-               const queryParams = `?dbname={{ $credential->db_name }}&username={{ $credential->db_username }}&password={{ $credential->db_password }}&interval=${encodeURIComponent(yesterdayDateTime)}`;
+               const queryParams = `?dbname={{ $dbname }}&username=root&password=&interval=${encodeURIComponent(yesterdayDateTime)}`;
                const fullURL = baseURL + queryParams;
            
                // Open the URL with the new interval
                window.open(fullURL, '_blank');
            </script>
-           
+
+           @else
+           <script>
+            // Get current date and time
+            const now = new Date();
+        
+            // Set to yesterday
+            now.setDate(now.getDate() - 1);
+        
+            // Format date and time as YYYY-MM-DD HH:MM:SS
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+        
+            const yesterdayDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+            localStorage.setItem('minutes', yesterdayDateTime);
+        
+            const baseURL = `{{ url('/run-query') }}`;
+            const queryParams = `?dbname={{ $credential->db_name }}&username={{ $credential->db_username }}&password={{ $credential->db_password }}&interval=${encodeURIComponent(yesterdayDateTime)}`;
+            const fullURL = baseURL + queryParams;
+        
+            // Open the URL with the new interval
+            window.open(fullURL, '_blank');
+        </script>
             @endpush
             @endif
         @endif
