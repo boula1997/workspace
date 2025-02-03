@@ -12,23 +12,23 @@ return new class extends Migration
     public function up(): void
     {
         //dd("Make sure you took a backup of data");
-        Schema::create('projects', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->integer('cost');
-            $table->integer('payed');
-            $table->integer('debit');
-            $table->boolean('isYousab')->default(1);
-            $table->boolean('status')->default(0);
-            $table->boolean('appearance')->default(1);
-            $table->boolean('deal')->default(0);
-            $table->date('deadline')->nullable();
-            $table->date('lastTransaction')->nullable();
-            $table->integer('fees');
-            $table->longText('tasks')->nullable();
-            $table->longText('codeLinks')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('projects', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('title');
+        //     $table->integer('cost');
+        //     $table->integer('payed');
+        //     $table->integer('debit');
+        //     $table->boolean('isYousab')->default(1);
+        //     $table->boolean('status')->default(0);
+        //     $table->boolean('appearance')->default(1);
+        //     $table->boolean('deal')->default(0);
+        //     $table->date('deadline')->nullable();
+        //     $table->date('lastTransaction')->nullable();
+        //     $table->integer('fees');
+        //     $table->longText('tasks')->nullable();
+        //     $table->longText('codeLinks')->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**
