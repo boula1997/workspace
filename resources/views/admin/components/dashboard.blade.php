@@ -22,32 +22,7 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-        <!-- Navbar Search -->
-        <li class="nav-item">
-            <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-                <i class=" px-1 fas fa-search"></i>
-            </a>
-            <div class="navbar-search-block">
-                <form class="form-inline">
-                    <div class="input-group input-group-sm">
-                        <input
-                            class="form-control @error('') invalid @enderror form-control @error('') invalid @enderror-navbar"
-                            type="search" placeholder="@lang('general.search')" aria-label="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-navbar" type="submit">
-                                <i class=" px-1 fas fa-search"></i>
-                            </button>
-                            <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                                <i class=" px-1 fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
 
-
-
-        </li>
 
         @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
             <li class="{{ app()->getLocale() == $localeCode ? 'd-none' : '' }}">
@@ -204,16 +179,6 @@
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
             </div>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                <i class=" px-1 fas fa-expand-arrows-alt"></i>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-                <i class=" px-1 fas fa-th-large"></i>
-            </a>
         </li>
         <li class="nav-item">
             <form action="{{route('date.filter')}}" method="post">
