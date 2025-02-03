@@ -13,7 +13,7 @@ class DateFilterScope implements Scope
         $endDate = settings()->end_date;
 
         if ($startDate && $endDate) {
-            $builder->whereBetween('date', [$startDate, $endDate]);
+            $builder->whereBetween('created_at', [$startDate, $endDate]);
         }
     }
 }
