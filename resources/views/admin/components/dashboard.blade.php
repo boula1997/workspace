@@ -216,28 +216,33 @@
             </a>
         </li>
         <li class="nav-item">
-            <form action="">
-                {{-- Date input --}} <div class="col-md-6">
-                    <div class="form-group"> <label for="dateInput">{{ __('general.start_date') }} <span
-                                class="text-danger"> *</span></label>
-                        <div class="input-group">
-                            <div class="input-group-prepend"> <span class="input-group-text"><i
-                                        class="fas fa-calendar-alt"></i></span> </div> <input type="date"
-                                id="dateInput" class="form-control"
-                                value="{{ old('start_date', settings()->start_date) }}" name="start_date">
+            <form action="{{route('date.filter')}}" method="post">
+                @csrf
+                <div class="d-flex">
+
+                    {{-- Date input --}} <div class="col-md-5">
+                        <div class="form-group"> 
+                            <div class="input-group">
+                                <div class="input-group-prepend"> <span class="input-group-text"><i
+                                            class="fas fa-calendar-alt"></i></span> </div> <input type="date"
+                                    id="dateInput" class="form-control"
+                                    value="{{ old('start_date', settings()->start_date) }}" name="start_date">
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                {{-- Date input --}} <div class="col-md-6">
-                    <div class="form-group"> <label for="dateInput">{{ __('general.end_date') }} <span
-                                class="text-danger"> *</span></label>
-                        <div class="input-group">
-                            <div class="input-group-prepend"> <span class="input-group-text"><i
-                                        class="fas fa-calendar-alt"></i></span> </div> <input type="date"
-                                id="dateInput" class="form-control"
-                                value="{{ old('end_date', settings()->end_date) }}" name="end_date">
+    
+                    {{-- Date input --}}<div class="col-md-5">
+                        <div class="form-group"> 
+                            <div class="input-group">
+                                <div class="input-group-prepend"> <span class="input-group-text"><i
+                                            class="fas fa-calendar-alt"></i></span> </div> <input type="date"
+                                    id="dateInput" class="form-control"
+                                    value="{{ old('end_date', settings()->end_date) }}" name="end_date">
+                            </div>
                         </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-warning">Filter</button>
                     </div>
                 </div>
             </form>

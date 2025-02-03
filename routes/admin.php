@@ -128,6 +128,7 @@ Route::group(
             Route::post('/followups/changEmployees', [App\Http\Controllers\Admin\FollowupController::class, 'followupChangeEmployee'])->name('followups.changeEmployee');
 
             Route::post('/followups/bulk-action', [FollowupController::class, 'bulkAction'])->name('followups.bulkAction');
+            Route::post('/date/system/filter', 'App\Http\Controllers\Admin\SettingController@filterDate')->name('date.filter');
            
             Route::post('/followups/finish/delete', [App\Http\Controllers\Admin\FollowupController::class, 'followupsDelete'])->name('followups.finish');
             Route::resource('newsletters', NewsletterController::class);

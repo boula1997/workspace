@@ -64,4 +64,17 @@ class SettingController extends Controller
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
         }
     }
+    public function filterDate(Request $request)
+    {
+        try {
+            $setting = $this->setting->first();
+            $setting->start_date=$request->start_date;
+            $setting->end_date=$request->end_date;
+            $setting->save();
+            return redirect()->back()->with('success', trans('general.update_successfully'));
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return redirect()->back()->with(['error' => __('general.something_wrong')]);
+        }
+    }
 }
