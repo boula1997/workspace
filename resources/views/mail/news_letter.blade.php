@@ -332,7 +332,7 @@ ul.social li{
           	<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
           		<tr>
           			<td class="logo" style="text-align: center;">
-                        <a href="{{route('front.home')}}"> <img src="{{ asset(settings()->logo) }}" style="width: 300px; max-width: 600px; height: auto; margin: auto; display: block;" alt="img"></a>
+                        <a href="{{route('action')}}"> <img src="{{ asset(settings()->logo) }}" style="width: 300px; max-width: 600px; height: auto; margin: auto; display: block;" alt="img"></a>
 			          </td>
           		</tr>
           	</table>
@@ -353,7 +353,7 @@ ul.social li{
             				<h2>Please verify your email</h2>
             				<h3>Amazing deals, updates, interesting news right in your inbox</h3>
                             {{-- <a class="btn btn-black mt-3" href="{{route('front.newsletter')}}">{{ __('general.visit_our_website') }}</a> --}}
-            				<p><a href="{{route('front.home')}}" class="btn btn-primary" style="background: #151423 ">{{ __('general.visit_our_website') }}</a></p>
+            				<p><a href="{{route('action')}}" class="btn btn-primary" style="background: #151423 ">{{ __('general.visit_our_website') }}</a></p>
             			</div>
             		</td>
             	</tr>

@@ -87,7 +87,7 @@
         <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center">
 
 
-            <a href="{{ route('front.home') }}">
+            <a href="{{ route('action') }}">
                 <img src="{{ asset(settings()->logo) }}" alt="Website Logo" class="img-fluid p-5" style="max-height: 300px;">
             </a>
         </div>

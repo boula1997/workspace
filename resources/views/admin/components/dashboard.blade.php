@@ -1,6 +1,6 @@
 <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center bg-dark">
-        <a href="{{ route('front.home') }}">
+        <a href="{{ route('action') }}">
             <img class="animation__shake" src="{{ settings()->logo}}" alt="AdminLTELogo">
         </a>
     </div>
@@ -13,7 +13,7 @@
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class=" px-1 fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            {{-- <a href="{{ route('front.home') }}" class="nav-link">@lang('general.home')</a> --}}
+            {{-- <a href="{{ route('action') }}" class="nav-link">@lang('general.home')</a> --}}
         </li>
         <li class="nav-item d-none d-sm-inline-block">
             <a href="{{ route('dashboard') }}" class="nav-link">@lang('general.home')</a>
@@ -228,7 +228,7 @@
         <div class="d-flex justify-content-center">
 
 
-            <a href="{{ route('front.home') }}">
+            <a href="{{ route('action') }}">
                 <img class="logo-side pt-3" style="height: 100px" src="{{ settings()->white_logo }}" alt="">
             </a>
 

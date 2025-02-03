@@ -38,7 +38,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
         function () {
     
     
-            Route::get('/', [HomeController::class, 'index'])->name('front.home');
+            Route::get('/', [HomeController::class, 'index'])->name('action');
             Route::get('/faq-page', 'App/Http/Controllers/FaqController@index')->name('front.faq');
             // Route::get('/message', 'App/Http/Controllers/MessageController@index')->name('front.message');
             Route::get('/message', [MessageController::class,'index'])->name('front.message');
@@ -86,7 +86,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
     Route::get('/', function () {
         $action="";
         return view('welcome',compact('action'));
-    })->name('dashboard');
+    })->name('action');
     Route::get('/accountant', function () {
         $action="";
         return view('accountant');

@@ -56,7 +56,6 @@ Route::group(
     ],
     function () {
 
-        Route::get('/', [HomeController::class, 'index'])->name('front.home');
 
 
         Route::group(['prefix' => 'dashboard'], function () {
