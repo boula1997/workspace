@@ -50,7 +50,7 @@ class TaskController extends Controller
         try {
 
             $employees=Admin::orderBy('name', 'ASC')->get();
-            $projects = Project::whereHas('tasks', function ($query) {
+            $projects = Project::withoutGlobalScope(DateFilterScope::class)->whereHas('tasks', function ($query) {
             $query->whereNotNull('id'); // Ensures tasks exist
                 })->orderBy('title', 'ASC')->get();
 
@@ -128,7 +128,7 @@ class TaskController extends Controller
     public function create()
     {
         $employees=Admin::orderBy('name', 'ASC')->get();
-        $projects=Project::withoutGlobalScope(DateFilterScope::class)->where('status','>',0)->latest()->get();
+        $projects=Project::withoutGlobalScope(DateFilterScope::class)->withoutGlobalScope(DateFilterScope::class)->where('status','>',0)->latest()->get();
         return view('admin.crud.tasks.create',compact('employees','projects'));
     }
     public function bulkAction(Request $request)
@@ -220,7 +220,7 @@ class TaskController extends Controller
             $tasks=Task::whereIn('project_id', $request->projects)->orderBy('project_id','desc')->take(300)->get()->unique('title');
 
             $employees=Admin::orderBy('name', 'ASC')->get();
-            $projects = Project::whereHas('tasks', function ($query) {
+            $projects = Project::withoutGlobalScope(DateFilterScope::class)->whereHas('tasks', function ($query) {
                $query->whereNotNull('id'); // Ensures tasks exist
             })->orderBy('title', 'ASC')->get();
             $type=$request->route_name;

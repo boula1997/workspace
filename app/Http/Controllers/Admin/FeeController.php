@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\FeeRequest;
 use App\Models\Admin;
 use App\Models\Project;
+use App\Scopes\DateFilterScope;
 use Exception;
 
 class FeeController extends Controller
@@ -48,7 +49,7 @@ class FeeController extends Controller
      */
     public function create()
     {
-        $projects=Project::where('status',1)->get();
+        $projects=Project::withoutGlobalScope(DateFilterScope::class)->where('status',1)->get();
         return view('admin.crud.fees.create',compact('projects'));
     }
 
@@ -61,7 +62,7 @@ class FeeController extends Controller
     public function store(FeeRequest $request)
     {
         try {
-            $project=Project::find($request->project_id);
+            $project=Project::withoutGlobalScope(DateFilterScope::class)->find($request->project_id);
             $latestFee = $project->feeses()->latest()->first();
             // if(($latestFee ? $latestFee->rest : $project->cost)-$request->amount<0)
             // return redirect()->back()->with(['error' => __('amount exceeded the cost')]);
@@ -105,7 +106,7 @@ class FeeController extends Controller
      */
     public function edit(Fee $fee)
     {
-        $projects=Project::latest()->get();
+        $projects=Project::withoutGlobalScope(DateFilterScope::class)->latest()->get();
         return view('admin.crud.fees.edit', compact('fee','projects'));
     }
     /**
