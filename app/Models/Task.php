@@ -16,10 +16,7 @@ class Task extends Model
     public $timestamps = true;
 
 
-    protected static function booted()
-    {
-        static::addGlobalScope(new DateFilterScope);
-    }
+
     /**
      * Define the project relationship.
      */
@@ -42,5 +39,10 @@ class Task extends Model
     public function setTitleAttribute($value)
     {
         $this->attributes['title'] = trim($value);
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new DateFilterScope);
     }
 }
