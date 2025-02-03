@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use App\Scopes\DateFilterScope;
+
 
 class Project extends Model
 {
@@ -15,6 +17,10 @@ class Project extends Model
     protected $guarded = [];
     public $timestamps = true;
 
+    protected static function booted()
+    {
+        static::addGlobalScope(new DateFilterScope);
+    }
 
     public function getPayedAttribute(){
       return $this->cost-rest($this);
