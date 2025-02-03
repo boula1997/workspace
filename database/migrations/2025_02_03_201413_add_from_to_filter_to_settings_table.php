@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('settings', function (Blueprint $table) {
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->date('start_date')->default(now()->toDateString());
+            $table->date('end_date')->default(now()->toDateString());
         });
     }
 

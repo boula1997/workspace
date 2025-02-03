@@ -1,9 +1,9 @@
 <!-- Preloader -->
-    <div class="preloader flex-column justify-content-center align-items-center bg-dark">
-        <a href="{{ route('action') }}">
-            <img class="animation__shake" src="{{ settings()->logo}}" alt="AdminLTELogo">
-        </a>
-    </div>
+<div class="preloader flex-column justify-content-center align-items-center bg-dark">
+    <a href="{{ route('action') }}">
+        <img class="animation__shake" src="{{ settings()->logo }}" alt="AdminLTELogo">
+    </a>
+</div>
 
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -215,6 +215,33 @@
                 <i class=" px-1 fas fa-th-large"></i>
             </a>
         </li>
+        <li class="nav-item">
+            <form action="">
+                {{-- Date input --}} <div class="col-md-6">
+                    <div class="form-group"> <label for="dateInput">{{ __('general.start_date') }} <span
+                                class="text-danger"> *</span></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend"> <span class="input-group-text"><i
+                                        class="fas fa-calendar-alt"></i></span> </div> <input type="date"
+                                id="dateInput" class="form-control"
+                                value="{{ old('start_date', settings()->start_date) }}" name="start_date">
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Date input --}} <div class="col-md-6">
+                    <div class="form-group"> <label for="dateInput">{{ __('general.end_date') }} <span
+                                class="text-danger"> *</span></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend"> <span class="input-group-text"><i
+                                        class="fas fa-calendar-alt"></i></span> </div> <input type="date"
+                                id="dateInput" class="form-control"
+                                value="{{ old('end_date', settings()->end_date) }}" name="end_date">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </li>
     </ul>
 </nav>
 <!-- /.navbar -->
@@ -229,7 +256,8 @@
 
 
             <a href="{{ route('action') }}">
-                <img class="logo-side pt-3" style="height: 100px" src="{{ settings()->white_logo }}" alt="">
+                <img class="logo-side pt-3" style="height: 100px" src="{{ settings()->white_logo }}"
+                    alt="">
             </a>
 
 
@@ -638,44 +666,44 @@
                 @endcan
 
                 @can('accountant-list')
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class=" px-1 far fa-address-card"></i>
-                        <p>
-                            @lang('general.accountants') <i class=" px-1 fas fa-angle-left right"></i>
-                            <span class="badge badge-info right">{{ itemsCount('accountants') }}</span>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('accountants.index') }}" class="nav-link">
-                                <i class=" px-1 far fa-circle nav-icon"></i>
-                                <p>@lang('general.show')</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            @endcan
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class=" px-1 far fa-address-card"></i>
+                            <p>
+                                @lang('general.accountants') <i class=" px-1 fas fa-angle-left right"></i>
+                                <span class="badge badge-info right">{{ itemsCount('accountants') }}</span>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('accountants.index') }}" class="nav-link">
+                                    <i class=" px-1 far fa-circle nav-icon"></i>
+                                    <p>@lang('general.show')</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
 
                 @can('history-list')
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class=" px-1 far fa-address-card"></i>
-                        <p>
-                            @lang('general.historys') <i class=" px-1 fas fa-angle-left right"></i>
-                            <span class="badge badge-info right">{{ itemsCount('historys') }}</span>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('historys.index') }}" class="nav-link">
-                                <i class=" px-1 far fa-circle nav-icon"></i>
-                                <p>@lang('general.show')</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            @endcan
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class=" px-1 far fa-address-card"></i>
+                            <p>
+                                @lang('general.historys') <i class=" px-1 fas fa-angle-left right"></i>
+                                <span class="badge badge-info right">{{ itemsCount('historys') }}</span>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('historys.index') }}" class="nav-link">
+                                    <i class=" px-1 far fa-circle nav-icon"></i>
+                                    <p>@lang('general.show')</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
 
                 @can('fee-list')
                     <li class="nav-item">
@@ -797,69 +825,69 @@
                     </li>
                 @endcan
                 @can('followup-list')
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class=" px-1 far fa-address-card"></i>
-                        <p>
-                            @lang('general.allfollowups') <i class=" px-1 fas fa-angle-left right"></i>
-                            <span class="badge badge-info right">{{ itemsCount('allfollowups') }}</span>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('followups.all') }}" class="nav-link">
-                                <i class=" px-1 far fa-circle nav-icon"></i>
-                                <p>@lang('general.show')</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            @endcan
-            @can('followup-list')
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class=" px-1 far fa-address-card"></i>
-                        <p>
-                            @lang('general.followups') <i class=" px-1 fas fa-angle-left right"></i>
-                            <span class="badge badge-info right">{{ itemsCount('followups') }}</span>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('followups.index') }}" class="nav-link">
-                                <i class=" px-1 far fa-circle nav-icon"></i>
-                                <p>@lang('general.show')</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            @endcan
-            @can('followup-list')
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class=" px-1 far fa-address-card"></i>
-                        <p>
-                            @lang('general.finishedFollowups') <i class=" px-1 fas fa-angle-left right"></i>
-                            <span class="badge badge-info right">{{ itemsCount('finishedFollowups') }}</span>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('followups.finished') }}" class="nav-link">
-                                <i class=" px-1 far fa-circle nav-icon"></i>
-                                <p>@lang('general.show')</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            @endcan
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class=" px-1 far fa-address-card"></i>
+                            <p>
+                                @lang('general.allfollowups') <i class=" px-1 fas fa-angle-left right"></i>
+                                <span class="badge badge-info right">{{ itemsCount('allfollowups') }}</span>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('followups.all') }}" class="nav-link">
+                                    <i class=" px-1 far fa-circle nav-icon"></i>
+                                    <p>@lang('general.show')</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
+                @can('followup-list')
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class=" px-1 far fa-address-card"></i>
+                            <p>
+                                @lang('general.followups') <i class=" px-1 fas fa-angle-left right"></i>
+                                <span class="badge badge-info right">{{ itemsCount('followups') }}</span>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('followups.index') }}" class="nav-link">
+                                    <i class=" px-1 far fa-circle nav-icon"></i>
+                                    <p>@lang('general.show')</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
+                @can('followup-list')
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class=" px-1 far fa-address-card"></i>
+                            <p>
+                                @lang('general.finishedFollowups') <i class=" px-1 fas fa-angle-left right"></i>
+                                <span class="badge badge-info right">{{ itemsCount('finishedFollowups') }}</span>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('followups.finished') }}" class="nav-link">
+                                    <i class=" px-1 far fa-circle nav-icon"></i>
+                                    <p>@lang('general.show')</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
                 @can('newsletter-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class=" px-1 fas fa-envelope-open-text"></i>
                             <p>
                                 @lang('general.newsletters') <i class=" px-1 fas fa-angle-left right"></i>
-                <span class="badge badge-info right">{{ itemsCount('newsletters') }}</span>
+                                <span class="badge badge-info right">{{ itemsCount('newsletters') }}</span>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
