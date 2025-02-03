@@ -11,9 +11,9 @@
                 <div class="card-body">
                     <div class="row">
 
-<!-- select input show --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{ __('general.task') }}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $history->task->name }} </p> </div> </div> </div>
+<!-- select input show --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{ __('general.task') }}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ isset($history->task->name) ? $history->task->name:'None' }} </p> </div> </div> </div>
 
-<!-- select input show --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{ __('general.employee') }}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $history->employee->name }} </p> </div> </div> </div>
+<!-- select input show --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{ __('general.employee') }}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ isset($history->employee->name) ? $history->employee->name:'None' }} </p> </div> </div> </div>
 
 <!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.action')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $history->action }}</p> </div> </div> </div>
                     </div>

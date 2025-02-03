@@ -119,14 +119,14 @@
                                                         <td class="{{ request()->routeIs('tasks.all') && $history->status == 1 ? 'text-success' : '' }}"
                                                             style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 500px;"
                                                             onclick="toggleCheckbox({{ $history->task_id }})">
-                                                            {{ $history->task->title }}
+                                                            {{ isset($history->task->title) ? $history->task->title:'None' }}
                                                         </td>
                                                         <td class="d-none">
                                                             <input type="checkbox" name="tasks[]"
                                                                 value="{{ $history->task_id }}"
                                                                 id="checkbox-{{ $history->task_id }}">
                                                         </td>
-                                                        <td>{{ $history->employee->name }}</td>
+                                                        <td>{{ isset($history->employee->name) ? $history->employee->name:'None' }}</td>
                                                         <td>{{ $history->task->project->title }}</td>
                                                         <td>{{ $history->created_at }}</td>
 

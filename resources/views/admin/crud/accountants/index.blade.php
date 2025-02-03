@@ -50,7 +50,7 @@
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $accountant->received }}</td>
 
-                                                    <td>{{ $accountant->employee->name }}</td>
+                                                    <td>{{ isset($accountant->employee->name) ? $accountant->employee->name:'None' }}</td>
                                                     
                                                     <td>{{ $accountant->has }}</td>
                                                     <td>

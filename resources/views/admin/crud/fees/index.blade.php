@@ -44,12 +44,12 @@
                                             @foreach ($fees as $fee)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $fee->project->cost }}</td>
+                                                    <td>{{ isset($fee->project->cost) ? $fee->project->cost:'None' }}</td>
                                                     <td class="amount {{ $fee->amount > 0 ? 'text-success' : 'text-danger' }}">
                                                         {{ $fee->amount > 0 ? '+' : '' }}{{ $fee->amount }}
                                                     </td>
                                                     
-                                                    <td>{{ $fee->project->title }}</td>
+                                                    <td>{{ isset($fee->project->title) ? $fee->project->title:'None' }}</td>
                                                     <td>{{ $fee->note }}</td>
                                                     <td>{{ $fee->created_at }}</td>
                                                     <td>
