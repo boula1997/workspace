@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use App\Scopes\DateFilterScope;
 
 class Followup extends Model
 {
@@ -16,6 +17,10 @@ class Followup extends Model
     public $translatedAttributes = ['title'];
     public $timestamps = true;
 
+    protected static function booted()
+    {
+        static::addGlobalScope(new DateFilterScope);
+    }
 
     // public function project(){
     //     return $this->belongsTo(Project::class,'project_id');

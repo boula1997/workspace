@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Events\TaskChanged;
+use App\Scopes\DateFilterScope;
 
 class Task extends Model
 {
@@ -14,30 +15,11 @@ class Task extends Model
     protected $guarded = [];
     public $timestamps = true;
 
-    /**
-     * The "booted" method of the model.
-     */
+
     protected static function booted()
     {
-        parent::booted();
-
-        // Fire the event when a task is created, updated, or deleted
-        static::created(function ($task) {
-            \Log::info('Task created', ['id' => $task->id, 'status' => $task->status]);
-            event(new TaskChanged());
-        });
-
-        static::updated(function ($task) {
-            \Log::info('Task updated', ['id' => $task->id, 'status' => $task->status]);
-            event(new TaskChanged());
-        });
-
-        static::deleted(function ($task) {
-            \Log::info('Task deleted', ['id' => $task->id, 'status' => $task->status]);
-            event(new TaskChanged());
-        });
+        static::addGlobalScope(new DateFilterScope);
     }
-
     /**
      * Define the project relationship.
      */

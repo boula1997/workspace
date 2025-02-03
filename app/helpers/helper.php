@@ -45,6 +45,8 @@ use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
+use App\Scopes\DateFilterScope;
+
 
 
 const Newsletter_Mail = "app@gmail.com";
@@ -150,7 +152,7 @@ function emailTasks()
         $subject = 'Tasks Report';
     
         // Get tasks
-        $tasks = Task::where('status', 0)
+        $tasks = Task::withoutGlobalScope(DateFilterScope::class)->where('status', 0)
                      ->orderBy('project_id', 'desc')
                      ->get()
                      ->unique('title');
