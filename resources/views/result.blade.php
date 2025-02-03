@@ -1199,7 +1199,7 @@
             @if (App::environment('local')) 
             @push('js')               
             <script>
-               // Get current date and time
+               // Get current date and time 
                const now = new Date();
            
                // Set to yesterday

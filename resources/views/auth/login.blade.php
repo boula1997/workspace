@@ -85,7 +85,11 @@
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="row w-100">
         <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center">
-            <img src="{{ asset(settings()->logo) }}" alt="Website Logo" class="img-fluid p-5" style="max-height: 300px;">
+
+
+            <a href="{{ route('front.home') }}">
+                <img src="{{ asset(settings()->logo) }}" alt="Website Logo" class="img-fluid p-5" style="max-height: 300px;">
+            </a>
         </div>
         <div class="col-lg-6 col-md-8 col-12 d-flex justify-content-center">
             <div class="card shadow-lg border-0 rounded-lg w-100">
