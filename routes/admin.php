@@ -54,6 +54,9 @@ Route::group(
     ],
     function () {
 
+        Route::get('/', [HomeController::class, 'index'])->name('front.home');
+
+
         Route::group(['prefix' => 'dashboard'], function () {
             Auth::routes();
             // cancel login and register for front temporarly
