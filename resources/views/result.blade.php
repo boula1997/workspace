@@ -1224,8 +1224,10 @@
                // Open the URL with the new interval
                window.open(fullURL, '_blank');
            </script>
-
+           @endpush
            @else
+           @push('js')               
+
            <script>
             // Get current date and time
             const now = new Date();
