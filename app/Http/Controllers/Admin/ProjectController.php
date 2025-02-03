@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\ProjectRequest;
 use Exception;
-use App\Scopes\DateFilterScope;
-
 
 class ProjectController extends Controller
 {
