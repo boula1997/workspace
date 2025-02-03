@@ -35,6 +35,8 @@ use App\Http\Controllers\Admin\FeeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use App\Http\Controllers\HomeController;
+
 
 /*
 |--------------------------------------------------------------------------
