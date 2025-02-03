@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\ProjectRequest;
 use Exception;
+use App\Scopes\DateFilterScope;
+
 
 class ProjectController extends Controller
 {
@@ -29,7 +31,7 @@ class ProjectController extends Controller
     public function index()
     {
         try {
-            $projects = $this->project->latest()->get();
+            $projects = $this->project->withoutGlobalScope(DateFilterScope::class)->latest()->get();
             return view('admin.crud.projects.index', compact('projects'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);
         } catch (Exception $e) {
