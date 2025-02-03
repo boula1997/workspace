@@ -31,7 +31,7 @@ class ProjectController extends Controller
     public function index()
     {
         try {
-            $projects = $this->project->withoutGlobalScope(DateFilterScope::class)->latest()->get();
+            $projects = $this->project->latest()->get();
             return view('admin.crud.projects.index', compact('projects'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);
         } catch (Exception $e) {
