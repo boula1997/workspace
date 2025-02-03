@@ -226,7 +226,13 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="d-flex justify-content-center">
-            <img class="logo-side pt-3" style="height: 100px" src="{{ settings()->white_logo }}" alt="">
+
+
+            <a href="{{ route('front.home') }}">
+                <img class="logo-side pt-3" style="height: 100px" src="{{ settings()->white_logo }}" alt="">
+            </a>
+
+
         </div>
         {{-- <div class="">
             <!-- Sidebar user panel (optional) -->
