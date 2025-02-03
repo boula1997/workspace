@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('settings', function (Blueprint $table) {
-            $table->date('from');
-            $table->date('to');
+            $table->date('start_date');
+            $table->date('end_date');
         });
     }
 
@@ -23,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('settings', function (Blueprint $table) {
-            $table->dropColumn('from');
-            $table->dropColumn('to');
+            $table->dropColumn('start_date');
+            $table->dropColumn('end_date');
         });
     }
 };
