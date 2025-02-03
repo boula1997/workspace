@@ -11,6 +11,7 @@ use App\Models\History;
 use App\Models\Project;
 use App\Services\MailService;
 use Exception;
+use App\Scopes\DateFilterScope;
 
 class TaskController extends Controller
 {
@@ -127,7 +128,7 @@ class TaskController extends Controller
     public function create()
     {
         $employees=Admin::orderBy('name', 'ASC')->get();
-        $projects=Project::where('status','>',0)->latest()->get();
+        $projects=Project::withoutGlobalScope(DateFilterScope::class)->where('status','>',0)->latest()->get();
         return view('admin.crud.tasks.create',compact('employees','projects'));
     }
     public function bulkAction(Request $request)
@@ -311,7 +312,7 @@ class TaskController extends Controller
     {
         //    dd($task->title);
         $employees=Admin::orderBy('name', 'ASC')->get();
-        $projects=Project::where('status','>',0)->get();
+        $projects=Project::withoutGlobalScope(DateFilterScope::class)->where('status','>',0)->get();
         $selectedEmployees=Task::where('title',$task->title)->pluck('employee_id')->toArray();
         return view('admin.crud.tasks.edit', compact('task','employees','projects','selectedEmployees'));
     }
