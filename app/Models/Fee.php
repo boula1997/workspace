@@ -8,7 +8,6 @@ use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
-use App\Scopes\DateFilterScope;
 class Fee extends Model
 {
     use HasFactory;
@@ -19,10 +18,7 @@ class Fee extends Model
 
 
 
-    protected static function booted()
-    {
-        static::addGlobalScope(new DateFilterScope);
-    }
+
 
 
 
