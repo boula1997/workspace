@@ -62,7 +62,7 @@
     </script>
 
     <script>
-        $('#columnInput').on('change',function(){
+        $('#columnInput').on('change', function() {
             $('.columnName').text($(this).val());
         })
     </script>
@@ -129,39 +129,47 @@
     </script>
 
 
-<script>
-    $(document).ready(function(){
-        // Initially hide the element
-        $('#selectTables').hide();
-    
-        // Toggle visibility on button click
-        $('#selectsButton').on('click', function(){
-            // Get the value from the input
-            var timeValue = $('#timeInput').val();
-    
-            // Update the SQL query with the input value
-            $('#selectTables .toggleRelation').each(function(){
-                var updatedQuery = "SELECT * FROM " + $(this).attr('table') + " WHERE (created_at >= NOW() - INTERVAL " + timeValue + " MINUTE) OR (updated_at >= NOW() - INTERVAL " + timeValue + " MINUTE) \\G;";
-                $(this).text(updatedQuery);  // Update the text inside the span
-                $(this).attr('content', updatedQuery);  // Update the content attribute if necessary
+    <script>
+        $(document).ready(function() {
+            // Initially hide the element
+            $('#selectTables').hide();
+
+            // Toggle visibility on button click
+            $('#selectsButton').on('click', function() {
+                // Get the value from the input
+                var timeValue = $('#timeInput').val();
+
+                // Update the SQL query with the input value
+                $('#selectTables .toggleRelation').each(function() {
+                    var updatedQuery = "SELECT * FROM " + $(this).attr('table') +
+                        " WHERE (created_at >= NOW() - INTERVAL " + timeValue +
+                        " MINUTE) OR (updated_at >= NOW() - INTERVAL " + timeValue +
+                        " MINUTE) \\G;";
+                    $(this).text(updatedQuery); // Update the text inside the span
+                    $(this).attr('content',
+                    updatedQuery); // Update the content attribute if necessary
+                });
+
+                // Toggle visibility
+                $('#selectTables').toggle();
             });
-    
-            // Toggle visibility
-            $('#selectTables').toggle();
-        });
-        $('#timeInput').on('input', function(){
-            // Get the value from the input
-            var timeValue = $('#timeInput').val();
-    
-            // Update the SQL query with the input value
-            $('#selectTables .toggleRelation').each(function(){
-                var updatedQuery = "SELECT * FROM " + $(this).attr('table') + " WHERE (created_at >= NOW() - INTERVAL " + timeValue + " MINUTE) OR (updated_at >= NOW() - INTERVAL " + timeValue + " MINUTE) \\G;";
-                $(this).text(updatedQuery);  // Update the text inside the span
-                $(this).attr('content', updatedQuery);  // Update the content attribute if necessary
+            $('#timeInput').on('input', function() {
+                // Get the value from the input
+                var timeValue = $('#timeInput').val();
+
+                // Update the SQL query with the input value
+                $('#selectTables .toggleRelation').each(function() {
+                    var updatedQuery = "SELECT * FROM " + $(this).attr('table') +
+                        " WHERE (created_at >= NOW() - INTERVAL " + timeValue +
+                        " MINUTE) OR (updated_at >= NOW() - INTERVAL " + timeValue +
+                        " MINUTE) \\G;";
+                    $(this).text(updatedQuery); // Update the text inside the span
+                    $(this).attr('content',
+                    updatedQuery); // Update the content attribute if necessary
+                });
+
             });
-    
         });
-    });
     </script>
 
     {{-- <script>
@@ -617,7 +625,7 @@
     </script>
     <script>
         $('#startTimeCheck').hide();
-        
+
         $(document).ready(function() {
             var startTime = parseInt($('#startTime').attr('startTime'));
             var startTimeDate = $('#startTimeDate').attr('startTimeDate');
@@ -1582,28 +1590,28 @@
 
 
 
-<script>
-    $(document).on('submit', '#sampleForm', function(e) {
-        e.preventDefault();
-        var formData = $(this).serialize();
-        $.ajax({
-            type: 'post',
-            url: "{{ route('samples.script') }}",
-            data: formData,
-            dataType: 'json',
-            success: function(response) {
-                if (response.success) {
-                    toastNow();
-                } else {
-                    $('#successMsg').text('');
-                    $.each(response.errors, function(key, value) {
-                        $('#' + key + 'Error').text(value);
-                    });
+    <script>
+        $(document).on('submit', '#sampleForm', function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                type: 'post',
+                url: "{{ route('samples.script') }}",
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        toastNow();
+                    } else {
+                        $('#successMsg').text('');
+                        $.each(response.errors, function(key, value) {
+                            $('#' + key + 'Error').text(value);
+                        });
+                    }
                 }
-            }
+            });
         });
-    });
-</script>
+    </script>
 
 
 
@@ -1902,17 +1910,16 @@
             $('#routes').on('click', function(e) {
                 e.preventDefault();
                 window.open(
-                    'http://127.0.0.1:8000/routes'
+                    '/routes'
                 );
                 toastNow();
             });
             $('#dashboard').on('click', function(e) {
                 e.preventDefault();
-                window.open(
-                    'https://yousab-tech.com/workspace/public/en/dashboard/tasks'
-                );
+                window.location.href = '/dashboard/tasks';
                 toastNow();
             });
+
             $('#temblates').on('click', function(e) {
                 e.preventDefault();
 
@@ -2111,7 +2118,7 @@
 
                         if (status) {
                             data.queryData.forEach(boula => {
-                            
+
                                 alert($('#table').closest('.count'));
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
@@ -2303,8 +2310,8 @@
                         url: url,
                         datatype: 'JSON',
                         success: function(data) {
-                            $('#'+table).text('('+data.data.length+')');
-                            
+                            $('#' + table).text('(' + data.data.length + ')');
+
 
                             //  let keys=Object.keys(data.data[0]);
                             data.data.forEach(boula => {
@@ -2767,35 +2774,32 @@
 
     <script>
         $(document).ready(function() {
-                    // Function to replace "reresources" with "resources" and "rerc" with "src"
-                    function replaceStrings() {
-                        // Replace in attribute values (e.g., src, href, data-* attributes)
-                        $('*[rerc], *[reresources]').each(function() {
-                            $.each(this.attributes, function() {
-                                if (this.specified) {
-                                    this.value = this.value.replace(/reresources/g, 'resources')
-                                        .replace(
-                                            /rerc/g, 'src');
-                                }
-                            });
-                        });
+            // Function to replace "reresources" with "resources" and "rerc" with "src"
+            function replaceStrings() {
+                // Replace in attribute values (e.g., src, href, data-* attributes)
+                $('*[rerc], *[reresources]').each(function() {
+                    $.each(this.attributes, function() {
+                        if (this.specified) {
+                            this.value = this.value.replace(/reresources/g, 'resources')
+                                .replace(
+                                    /rerc/g, 'src');
+                        }
+                    });
+                });
 
-                        // Replace in all text nodes
-                        $('*').contents().filter(function() {
-                            return this.nodeType === Node.TEXT_NODE;
-                        }).each(function() {
-                            this.nodeValue = this.nodeValue.replace(/reresources/g, 'resources').replace(
-                                /rerc/g,
-                                'src');
-                        });
-                    }
+                // Replace in all text nodes
+                $('*').contents().filter(function() {
+                    return this.nodeType === Node.TEXT_NODE;
+                }).each(function() {
+                    this.nodeValue = this.nodeValue.replace(/reresources/g, 'resources').replace(
+                        /rerc/g,
+                        'src');
+                });
+            }
 
-                    // Run the replace function
-                    replaceStrings();});
+            // Run the replace function
+            replaceStrings();
+        });
+    </script>
 
-     </script>
-
-     @stack('js')
-
-
-
+    @stack('js')
