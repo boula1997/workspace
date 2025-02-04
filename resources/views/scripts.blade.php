@@ -2802,7 +2802,6 @@
         });
     </script>
 
- @if (boula())    
  <audio id="alarmSound" src="{{ asset('alarm.mp3') }}"></audio>
  <script>
      function checkTime() {
@@ -2811,7 +2810,7 @@
          const seconds = now.getSeconds();
          
          // Play sound exactly at the start of each hour (e.g., 1:00:00, 2:00:00)
-         if (minutes === 0 && seconds === 0) {
+         if (true) {
              document.getElementById("alarmSound").play();
          }
      }
@@ -2819,7 +2818,8 @@
      // Check every second
      setInterval(checkTime, 1000);
  </script>
- @endif
+ {{-- @if (boula())    
+ @endif --}}
 
 
     @stack('js')
