@@ -14,6 +14,7 @@ return [
     */
     'vaccancies'=>'العمل المتاح',
     'complains'=>'الشكاوي',
+    'piority'  => 'الاولوية',
     'home'  => 'الرئيسية',
     'about'  => 'من نحن',
     'title'  => 'العنوان',

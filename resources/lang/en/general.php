@@ -15,6 +15,7 @@ return [
     'vaccancies'=>'Vaccancy',
     'complains'=>'Complain',
     'home'  => 'Home',
+    'piority'  => 'Piority',
     'about'  => 'About',
     'title'  => 'Title',
     'ar'  => 'Arabic',
