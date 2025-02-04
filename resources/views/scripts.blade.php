@@ -2825,7 +2825,7 @@
             const minutes = now.getMinutes();
             const seconds = now.getSeconds();
 
-            if (minutes !== 0 && seconds !== 0) {
+            if (minutes === 0 && seconds === 0) {
                 alarm.volume = 1; // Set to normal volume
                 alarm.play().catch(error => console.error("Playback failed:", error));
             }
