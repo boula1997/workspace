@@ -194,6 +194,38 @@ if (localStorage.getItem('darkmode')==true || userEmail === "nessimboula@gmail.c
             $('.targetCheckbox').click();
     });
 </script>
+
+
+@if (boula()) 
+<audio id="alarmSound" src="{{ asset('alarm.mp3') }}"></audio>
+
+<script>
+   document.addEventListener("DOMContentLoaded", function() {
+       let alarm = document.getElementById("alarmSound");
+
+       // Try playing a silent sound to enable autoplay later
+       alarm.volume = 0;
+       alarm.play().then(() => {
+           console.log("Audio permission granted.");
+       }).catch(error => {
+           console.error("Autoplay blocked:", error);
+       });
+
+       function checkTime() {
+           const now = new Date();
+           const minutes = now.getMinutes();
+           const seconds = now.getSeconds();
+
+           if (minutes === 0 && seconds === 0) {
+               alarm.volume = 1; // Set to normal volume
+               alarm.play().catch(error => console.error("Playback failed:", error));
+           }
+       }
+
+       setInterval(checkTime, 1000); // Check time every second
+   });
+</script>   
+@endif
 </body>
 
 </html>
