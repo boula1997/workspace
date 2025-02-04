@@ -1910,13 +1910,13 @@
             $('#routes').on('click', function(e) {
                 e.preventDefault();
                 window.open(
-                    '/routes'
+                    'http://127.0.0.1:8000/routes'
                 );
                 toastNow();
             });
             $('#dashboard').on('click', function(e) {
                 e.preventDefault();
-                window.location.href = '/dashboard/tasks';
+                window.location.href = 'https://yousab-tech.com/workspace/public/en/dashboard/tasks';
                 toastNow();
             });
 
