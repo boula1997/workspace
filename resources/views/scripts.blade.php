@@ -2802,22 +2802,35 @@
         });
     </script>
 
- <audio id="alarmSound" src="{{ asset('alarm.mp3') }}"></audio>
- <script>
-     function checkTime() {
-         const now = new Date();
-         const minutes = now.getMinutes();
-         const seconds = now.getSeconds();
-         
-         // Play sound exactly at the start of each hour (e.g., 1:00:00, 2:00:00)
-         if (true) {
-             document.getElementById("alarmSound").play();
-         }
-     }
- 
-     // Check every second
-     setInterval(checkTime, 1000);
- </script>
+<audio id="alarmSound" src="{{ asset('alarm.mp3') }}" loop></audio>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let alarm = document.getElementById("alarmSound");
+
+        // Try to play a silent sound first (tricks the browser into allowing playback later)
+        alarm.volume = 0; // Set to silent
+        alarm.play().then(() => {
+            console.log("Audio permission granted.");
+        }).catch(error => {
+            console.error("Autoplay failed:", error);
+        });
+
+        function checkTime() {
+            const now = new Date();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            if (true) {
+                alarm.volume = 1; // Set volume to normal
+                alarm.play().catch(error => console.error("Playback failed:", error));
+            }
+        }
+
+        setInterval(checkTime, 1000);
+    });
+</script>
+
  {{-- @if (boula())    
  @endif --}}
 
