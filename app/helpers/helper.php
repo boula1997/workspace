@@ -807,7 +807,7 @@ if (!function_exists('taskCommitPer')) {
 
 function boula()
 {
-    if(auth()->user()->email=="nessimboula@gmail.com")
+    if(auth()->user()->email=="nessimboula@gmail.com" || App::environment('local'))
     return true;
     return false;
 }
