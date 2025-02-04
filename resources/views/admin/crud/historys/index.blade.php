@@ -235,6 +235,29 @@
         });
     });
 </script>
+<script>
+    $('.togglePiority').on('click', function (e) {
+        let self = $(this); // Reference to the clicked element
+        let level = self.attr('id'); // Get the level ID
+        
+        $.ajax({
+            url: `{{ route('piority.toggle', '') }}/${level}`, // Generate the correct route
+            type: 'GET', // HTTP method
+            success: function (response) {
+                // Toggle the HTML content based on current value
+                if (self.html() == 'Important') {
+                    self.html('Normal');
+                } else {
+                    self.html('Important');
+                }
+                console.log(response); // Log the success response
+            },
+            error: function (xhr, status, error) {
+                console.log("Error: " + error); // Log the error
+            }
+        });
+    });
+</script>
 
 
 

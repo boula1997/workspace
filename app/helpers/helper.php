@@ -143,50 +143,76 @@ function has($admin){
 }
 function emailTasks()
 {
-
-    $admins=Admin::get();
-    foreach($admins as $admin){
+    $admins = Admin::get();
+    foreach ($admins as $admin) {
         // Email details
         $to = $admin->email;
         $toName = "Boula Nessim";
         $subject = 'Tasks Report';
-    
-        // Get tasks
-        $tasks = Task::withoutGlobalScope(DateFilterScope::class)->where('status', 0)
+
+        // Get important tasks (High Priority)
+        $importantTasks = Task::withoutGlobalScope(DateFilterScope::class)
+                              ->where('status', 0)
+                              ->where('piority', 1) // High priority tasks
+                              ->orderBy('project_id', 'desc')
+                              ->get()
+                              ->unique('title');
+
+        // Get all tasks
+        $tasks = Task::withoutGlobalScope(DateFilterScope::class)
+                     ->where('status', 0)
                      ->orderBy('project_id', 'desc')
                      ->get()
                      ->unique('title');
-    
+
         // Construct the email content
         $body = '<html lang="en"><head><meta charset="UTF-8"><title>Tasks Report</title></head><body>';
         $body .= '<h1>Tasks Report</h1>';
-    
-        // Combined Tasks Table
+
+        // **Important Tasks Table (Placed at the Top)**
+        if ($importantTasks->isNotEmpty()) {
+            $body .= '<h2 style="color:red;">⚠️ Important Tasks</h2>';
+            $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
+            $body .= '<thead><tr><th>Task</th><th>Project</th><th>Priority</th></tr></thead><tbody>';
+
+            foreach ($importantTasks as $task) {
+                $body .= '<tr>';
+                $body .= '<td>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</td>';
+                $body .= '<td>' . htmlspecialchars($task->project->title ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>';
+                $body .= '<td style="color:red; font-weight:bold;">High</td>';
+                $body .= '</tr>';
+            }
+
+            $body .= '</tbody></table><br>'; // Add space after the table
+        }
+
+        // **All Tasks Table**
+        $body .= '<h2>All Tasks</h2>';
         $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-        $body .= '<thead><tr><Id>Task</Id><th>Task</th><th>Project</th><th>Difficulty</th></tr></thead><tbody>';
-    
+        $body .= '<thead><tr><th>Task</th><th>Project</th><th>Difficulty</th></tr></thead><tbody>';
+
         foreach ($tasks as $task) {
             $difficulty = $task->level == 1 ? 'Easy' : 'Difficult';
             $body .= '<tr>';
-            $body .= '<td>' . $task->id . '</td>';
             $body .= '<td>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</td>';
             $body .= '<td>' . htmlspecialchars($task->project->title ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>';
             $body .= '<td>' . $difficulty . '</td>';
             $body .= '</tr>';
         }
-    
+
         $body .= '</tbody></table>';
         $body .= '</body></html>';
-    
+
         // Send the email
         $result = MailService::sendMail($to, $toName, $subject, $body);
-    
+
         // Check if the email was sent successfully
         if (!$result) {
             echo "Failed to send email.";
         }
     }
 }
+
 
 
 function page($identifier)

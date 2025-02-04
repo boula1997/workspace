@@ -112,6 +112,7 @@
                                                     <th style="width: 1500px !important;">{{ __('general.title') }}</th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
                                                     <th>{{__('general.level')}}</th>
+                                                    <th>{{__('general.piority')}}</th>
                                                     <th>{{ __('general.project') }}</th>
                                                     <th>{{ __('general.employees') }}</th>
                                                     <th>{{ __('general.actions') }}</th>
@@ -132,6 +133,7 @@
                                                                 id="checkbox-{{ $task->id }}">
                                                         </td>
                                                         <td class="toggleLevel" style="cursor: pointer" id="{{$task->id}}">{{$task->level?'easy':'difficult' }}</td>
+                                                        <td class="togglePiority" style="cursor: pointer" id="{{$task->id}}">{{$task->pority?'Important':'Normal' }}</td>
                                                         <td>{{ isset($task->project->title) ? $task->project->title:'None' }}</td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
 

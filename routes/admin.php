@@ -110,6 +110,7 @@ Route::group(
 
             
             Route::get('level/toggle/{id}', [App\Http\Controllers\Admin\TaskController::class, 'toggleLevel'])->name('level.toggle');
+            Route::get('piority/toggle/{id}', [App\Http\Controllers\Admin\TaskController::class, 'togglePiority'])->name('piority.toggle');
 
             Route::get('/finished/fees', [App\Http\Controllers\Admin\FeeController::class, 'index'])->name('fees.finished');
             Route::get('/finished/followups', [App\Http\Controllers\Admin\FollowupController::class, 'index'])->name('followups.finished');
