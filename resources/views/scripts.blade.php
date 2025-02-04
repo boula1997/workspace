@@ -2802,18 +2802,22 @@
         });
     </script>
 
-<audio id="alarmSound" src="{{ asset('alarm.mp3') }}" loop></audio>
+
+
+
+ @if (boula()) 
+ <audio id="alarmSound" src="{{ asset('alarm.mp3') }}"></audio>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         let alarm = document.getElementById("alarmSound");
 
-        // Try to play a silent sound first (tricks the browser into allowing playback later)
-        alarm.volume = 0; // Set to silent
+        // Try playing a silent sound to enable autoplay later
+        alarm.volume = 0;
         alarm.play().then(() => {
             console.log("Audio permission granted.");
         }).catch(error => {
-            console.error("Autoplay failed:", error);
+            console.error("Autoplay blocked:", error);
         });
 
         function checkTime() {
@@ -2821,18 +2825,16 @@
             const minutes = now.getMinutes();
             const seconds = now.getSeconds();
 
-            if (true) {
-                alarm.volume = 1; // Set volume to normal
+            if ( seconds === 0) {
+                alarm.volume = 1; // Set to normal volume
                 alarm.play().catch(error => console.error("Playback failed:", error));
             }
         }
 
-        setInterval(checkTime, 1000);
+        setInterval(checkTime, 1000); // Check time every second
     });
-</script>
-
- {{-- @if (boula())    
- @endif --}}
+</script>   
+ @endif
 
 
     @stack('js')
