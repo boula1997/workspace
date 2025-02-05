@@ -389,7 +389,7 @@ $(document).ready(function () {
                 "responsive": true,
                 columnDefs: [
             {
-                targets: [4, 5], // Columns to hide on mobile
+                targets: [4, 5,6,7], // Columns to hide on mobile
                 responsivePriority: 2, // Lower priority means it gets hidden first
                 visible: false, // Force hide
             },
