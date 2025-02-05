@@ -113,11 +113,11 @@
                                             <thead>
                                                 <tr>
                                                     <th>Id</th>
-                                                    <th style="width: 1500px !important;"><span style="width: 400px !important;">
+                                                    <th style="width: 300px !important;">
                                                         {{ __('general.title') }}
-                                                        </span></th>
+                                                       </th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
-                                                    <th style="width: 400px !important;">{{__('general.level')}}</th>
+                                                    <th>{{__('general.level')}}</th>
                                                     <th>{{__('general.piority')}}</th>
                                                     <th>{{ __('general.project') }}</th>
                                                     <th>{{ __('general.employees') }}</th>
