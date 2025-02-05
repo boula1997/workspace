@@ -10,17 +10,7 @@
         }
     </style>
 
-<style>
-    @media (max-width: 768px) {
 
-
-        table.table th:nth-child(2), /* Task column header */
-        table.table td:nth-child(2) /* Task column data */ {
-            width: 300px; /* Adjust width as needed (50% of table width) */
-        }
-
-    }
-</style>
 
 
     <!-- Content Wrapper. Contains task content -->
@@ -123,7 +113,9 @@
                                             <thead>
                                                 <tr>
                                                     <th>Id</th>
-                                                    <th style="width: 1500px !important;">{{ __('general.title') }}</th>
+                                                    <th style="width: 1500px !important;"><span style="width: 300px !important;">
+                                                        {{ __('general.title') }}
+                                                        </span></th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
                                                     <th>{{__('general.level')}}</th>
                                                     <th>{{__('general.piority')}}</th>
