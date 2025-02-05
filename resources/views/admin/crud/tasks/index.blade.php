@@ -112,8 +112,8 @@
                                                     <th style="width: 70%;">{{ __('general.title') }}</th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
                                                     <th>{{ __('general.employees') }}</th>
-                                                    <th>{{__('general.level')}}</th>
-                                                    <th>{{__('general.piority')}}</th>
+                                                    <th>{{ __('general.level') }}</th>
+                                                    <th>{{ __('general.piority') }}</th>
                                                     <th>{{ __('general.project') }}</th>
                                                     <th>{{ __('general.actions') }}</th>
                                                 </tr>
@@ -126,7 +126,6 @@
                                                             style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word;"
                                                             onclick="toggleCheckbox({{ $task->id }})">
                                                             <span style="display: block;">
-                                        
                                                                 {{ $task->title }}
                                                             </span>
                                                         </td>
@@ -136,13 +135,16 @@
                                                                 id="checkbox-{{ $task->id }}">
                                                         </td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
-                                                        <td class="toggleLevel" style="cursor: pointer" id="{{$task->id}}">{{$task->level?'mobile':'pc' }}</td>
-                                                        <td class="togglePiority" style="cursor: pointer" id="{{$task->id}}">{{$task->pority?'Important':'Normal' }}</td>
-                                                        <td>{{ isset($task->project->title) ? $task->project->title:'None' }}</td>
-                                        
+                                                        <td class="toggleLevel" style="cursor: pointer" id="{{$task->id}}">
+                                                            {{ $task->level ? 'mobile' : 'pc' }}
+                                                        </td>
+                                                        <td class="togglePiority" style="cursor: pointer" id="{{$task->id}}">
+                                                            {{ $task->pority ? 'Important' : 'Normal' }}
+                                                        </td>
+                                                        <td>{{ isset($task->project->title) ? $task->project->title : 'None' }}</td>
                                                         <td>
                                                             <a href="{{ route('tasks.edit', $task) }}" title="edit">
-                                                                <i class="fas fa-edit  text-secondary  fa-lg"></i>
+                                                                <i class="fas fa-edit text-secondary fa-lg"></i>
                                                             </a>
                                         
                                                             <button class="btn btn-outline-secondary btn-sm mx-1"
@@ -153,14 +155,12 @@
                                                                 <i class="fas fa-key fa-lg"></i>
                                                             </button>
                                         
-                                                            <button
-                                                                class="btn btn-outline-secondary btn-sm copy-keywords clickable-text"
+                                                            <button class="btn btn-outline-secondary btn-sm copy-keywords clickable-text"
                                                                 content="{{ $task->keywords }}" type="button"
                                                                 data-keywords="{{ $task->keywords }}"
                                                                 title="@lang('general.copy_keywords')">
                                                                 <i class="fas fa-copy"></i>
                                                             </button>
-                                        
                                                         </td>
                                                     </tr>
                                                 @endforeach
