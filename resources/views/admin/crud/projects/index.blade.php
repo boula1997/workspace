@@ -133,7 +133,7 @@
         var table = $("#example1").DataTable({
             "responsive": true,
             "lengthChange": false,
-            "autoWidth": true,
+            "autoWidth": false,
             "paging": false,
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
             "stateSave": true, // Enable state saving
