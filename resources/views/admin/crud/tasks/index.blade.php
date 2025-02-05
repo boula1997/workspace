@@ -109,7 +109,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Id</th>
-                                                    <th style="width: 1500px !important;">{{ __('general.title') }}</th>
+                                                    <th style="width: 50%;">{{ __('general.title') }}</th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
                                                     <th>{{ __('general.employees') }}</th>
                                                     <th>{{__('general.level')}}</th>
@@ -123,10 +123,10 @@
                                                     <tr>
                                                         <td>{{ $task->id }}</td>
                                                         <td class="{{ request()->routeIs('tasks.all') && $task->status == 1 ? 'text-success' : '' }}"
-                                                            style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 500px;"
+                                                            style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word;"
                                                             onclick="toggleCheckbox({{ $task->id }})">
-                                                            <span style="width:500px !important">
-
+                                                            <span style="display: block;">
+                                        
                                                                 {{ $task->title }}
                                                             </span>
                                                         </td>
@@ -139,12 +139,12 @@
                                                         <td class="toggleLevel" style="cursor: pointer" id="{{$task->id}}">{{$task->level?'mobile':'pc' }}</td>
                                                         <td class="togglePiority" style="cursor: pointer" id="{{$task->id}}">{{$task->pority?'Important':'Normal' }}</td>
                                                         <td>{{ isset($task->project->title) ? $task->project->title:'None' }}</td>
-
+                                        
                                                         <td>
                                                             <a href="{{ route('tasks.edit', $task) }}" title="edit">
                                                                 <i class="fas fa-edit  text-secondary  fa-lg"></i>
                                                             </a>
-
+                                        
                                                             <button class="btn btn-outline-secondary btn-sm mx-1"
                                                                 data-toggle="modal" data-target="#keywordsModal"
                                                                 data-task-id="{{ $task->id }}"
@@ -152,7 +152,7 @@
                                                                 data-task-title="{{ $task->title }}" type="button">
                                                                 <i class="fas fa-key fa-lg"></i>
                                                             </button>
-
+                                        
                                                             <button
                                                                 class="btn btn-outline-secondary btn-sm copy-keywords clickable-text"
                                                                 content="{{ $task->keywords }}" type="button"
@@ -160,12 +160,13 @@
                                                                 title="@lang('general.copy_keywords')">
                                                                 <i class="fas fa-copy"></i>
                                                             </button>
-
+                                        
                                                         </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
+                                        
                                     </form>
                                 </div>
                             </div>
