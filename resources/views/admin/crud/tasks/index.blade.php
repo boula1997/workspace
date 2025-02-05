@@ -113,7 +113,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Id</th>
-                                                    <th style="width: 1500px !important;"><span style="width: 300px !important;">
+                                                    <th style="width: 1500px !important;"><span style="width: 400px !important;">
                                                         {{ __('general.title') }}
                                                         </span></th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
