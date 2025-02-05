@@ -385,19 +385,21 @@ $(document).ready(function () {
 
 
         $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                columns: [
-                { width: "50%" }, // First column
+    $("#example1").DataTable({
+        responsive: true,
+        columns: [
+            { width: "50%" }, // Adjusts the width for the first column
+            null,             // No specific width for the second column
+            null              // No specific width for the third column
+        ],
+        lengthChange: false,
+        autoWidth: false,
+        paging: false,
+        searching: true,
+        buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+});
 
-    ],
-                "lengthChange": false,
-                "autoWidth": false,
-                "paging": false,
-                "searching": true,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        });
 
         function toggleCheckbox(taskId) {
             const checkbox = document.getElementById(`checkbox-${taskId}`);
