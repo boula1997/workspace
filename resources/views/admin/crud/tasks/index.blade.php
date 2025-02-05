@@ -19,7 +19,7 @@
 
         table.table th:nth-child(2), /* Task column header */
         table.table td:nth-child(2) /* Task column data */ {
-            width: 50%; /* Adjust width as needed (50% of table width) */
+            width: 300px; /* Adjust width as needed (50% of table width) */
         }
 
         table.table th,
