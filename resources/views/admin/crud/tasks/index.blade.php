@@ -387,17 +387,10 @@ $(document).ready(function () {
         $(function() {
             $("#example1").DataTable({
                 "responsive": true,
-                columnDefs: [
-                    {
-                        targets: [0,3,4, 5,6,7], // Columns to hide on mobile
-                        responsivePriority: 1, // Lower priority means it gets hidden first
-                        visible: false, // Force hide
-                    },
-                    {
-                        targets: [0, 1], // Columns that must always be visible
-                        responsivePriority: 1, // Higher priority means it stays visible
-                    }
-                ],
+                columns: [
+                { width: "50%" }, // First column
+
+    ]
                 "lengthChange": false,
                 "autoWidth": false,
                 "paging": false,
@@ -409,12 +402,6 @@ $(document).ready(function () {
         function toggleCheckbox(taskId) {
             const checkbox = document.getElementById(`checkbox-${taskId}`);
             const taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(2)');
-
-
-            if (!taskRow.length) {
-                const taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(1)');       
-            }
-            
 
             checkbox.checked = !checkbox.checked;
 
