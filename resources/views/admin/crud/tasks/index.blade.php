@@ -10,6 +10,26 @@
         }
     </style>
 
+<style>
+    @media (max-width: 768px) {
+        /* Adjust table layout for mobile screens */
+        table.table {
+            table-layout: fixed; /* Ensures fixed column widths */
+        }
+
+        table.table th:nth-child(2), /* Task column header */
+        table.table td:nth-child(2) /* Task column data */ {
+            width: 50%; /* Adjust width as needed (50% of table width) */
+        }
+
+        table.table th,
+        table.table td {
+            white-space: normal; /* Allows line breaks */
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+    }
+</style>
 
 
     <!-- Content Wrapper. Contains task content -->
