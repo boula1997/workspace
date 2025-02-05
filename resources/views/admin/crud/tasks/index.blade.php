@@ -117,7 +117,7 @@
                                                         {{ __('general.title') }}
                                                         </span></th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
-                                                    <th>{{__('general.level')}}</th>
+                                                    <th style="width: 400px !important;">{{__('general.level')}}</th>
                                                     <th>{{__('general.piority')}}</th>
                                                     <th>{{ __('general.project') }}</th>
                                                     <th>{{ __('general.employees') }}</th>
