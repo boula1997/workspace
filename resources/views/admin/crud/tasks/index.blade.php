@@ -390,7 +390,7 @@ $(document).ready(function () {
                 columns: [
                 { width: "50%" }, // First column
 
-    ]
+    ],
                 "lengthChange": false,
                 "autoWidth": false,
                 "paging": false,
