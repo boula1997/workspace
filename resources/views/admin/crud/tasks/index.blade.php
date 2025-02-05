@@ -408,7 +408,14 @@ $(document).ready(function () {
 
         function toggleCheckbox(taskId) {
             const checkbox = document.getElementById(`checkbox-${taskId}`);
-            const taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(2)');
+// Try to find the taskRow in td:nth-child(2)
+let taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(2)`);
+
+// Fallback to td:nth-child(1) if not found
+if (!taskRow.length) {
+    taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(1)`);
+}
+
 
             checkbox.checked = !checkbox.checked;
 
