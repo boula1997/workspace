@@ -12,22 +12,13 @@
 
 <style>
     @media (max-width: 768px) {
-        /* Adjust table layout for mobile screens */
-        table.table {
-            table-layout: fixed; /* Ensures fixed column widths */
-        }
+
 
         table.table th:nth-child(2), /* Task column header */
         table.table td:nth-child(2) /* Task column data */ {
             width: 300px; /* Adjust width as needed (50% of table width) */
         }
 
-        table.table th,
-        table.table td {
-            white-space: normal; /* Allows line breaks */
-            word-wrap: break-word;
-            word-break: break-word;
-        }
     }
 </style>
 
