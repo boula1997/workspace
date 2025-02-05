@@ -128,7 +128,7 @@
                                                 @foreach ($tasks as $task)
                                                     <tr>
                                                         <td>{{ $task->id }}</td>
-                                                        <td class="{{ request()->routeIs('tasks.all') && $task->status == 1 ? 'text-success' : '' }}"
+                                                        <td class="{{ request()->routeIs('tasks.all') && $task->status == 1 ? 'text-success' : '' }} identified"
                                                             style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 500px;"
                                                             onclick="toggleCheckbox({{ $task->id }})">
                                                             {{ $task->title }}
@@ -385,25 +385,30 @@ $(document).ready(function () {
 
 
         $(function() {
-    $("#example1").DataTable({
-        responsive: true,
-        columns: [
-            { width: "50%" }, // Adjusts the width for the first column
-            null,             // No specific width for the second column
-            null              // No specific width for the third column
-        ],
-        lengthChange: false,
-        autoWidth: false,
-        paging: false,
-        searching: true,
-        buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-});
-
+            $("#example1").DataTable({
+                "responsive": true,
+                columnDefs: [
+                    {
+                        targets: [3,4, 5,6,7], // Columns to hide on mobile
+                        responsivePriority: 1, // Lower priority means it gets hidden first
+                        visible: false, // Force hide
+                    },
+                    {
+                        targets: [0, 1], // Columns that must always be visible
+                        responsivePriority: 1, // Higher priority means it stays visible
+                    }
+                ],
+                "lengthChange": false,
+                "autoWidth": false,
+                "paging": false,
+                "searching": true,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        });
 
         function toggleCheckbox(taskId) {
             const checkbox = document.getElementById(`checkbox-${taskId}`);
-            const taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(2)');
+            const taskRow = $(`#checkbox-${taskId}`).closest('tr').find('.identified');
 
             checkbox.checked = !checkbox.checked;
 
