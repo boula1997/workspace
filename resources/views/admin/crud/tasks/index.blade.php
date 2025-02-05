@@ -394,7 +394,7 @@ $(document).ready(function () {
                 visible: false, // Force hide
             },
             {
-                targets: [0, 3, 4], // Columns that must always be visible
+                targets: [0, 1], // Columns that must always be visible
                 responsivePriority: 1, // Higher priority means it stays visible
             }
         ],
