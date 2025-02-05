@@ -410,10 +410,10 @@ $(document).ready(function () {
             const checkbox = document.getElementById(`checkbox-${taskId}`);
             const taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(2)');
 
-            let taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(2)');
+
             if (!taskRow.length) {
-    taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(1)');
-}
+                const taskRow = $(`#checkbox-${taskId}`).closest('tr').find('td:nth-child(1)');       
+            }
             
 
             checkbox.checked = !checkbox.checked;
