@@ -387,6 +387,17 @@ $(document).ready(function () {
         $(function() {
             $("#example1").DataTable({
                 "responsive": true,
+                columnDefs: [
+            {
+                targets: [1, 2], // Columns to hide on mobile
+                responsivePriority: 2, // Lower priority means it gets hidden first
+                visible: false, // Force hide
+            },
+            {
+                targets: [0, 3, 4], // Columns that must always be visible
+                responsivePriority: 1, // Higher priority means it stays visible
+            }
+        ],
                 "lengthChange": false,
                 "autoWidth": false,
                 "paging": false,
