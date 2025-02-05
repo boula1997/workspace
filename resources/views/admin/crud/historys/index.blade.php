@@ -222,10 +222,10 @@
             type: 'GET', // HTTP method
             success: function (response) {
                 // Toggle the HTML content based on current value
-                if (self.html() == 'easy') {
-                    self.html('difficult');
+                if (self.html() == 'mobile') {
+                    self.html('pc');
                 } else {
-                    self.html('easy');
+                    self.html('mobile');
                 }
                 console.log(response); // Log the success response
             },

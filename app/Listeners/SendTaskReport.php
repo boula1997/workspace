@@ -50,7 +50,7 @@ class SendTaskReport
     //     $body .= '<thead><tr><th>Task</th><th>Project</th><th>Difficulty</th></tr></thead><tbody>';
 
     //     foreach ($tasks as $task) {
-    //         $difficulty = $task->level == 1 ? 'Easy' : 'Difficult';
+    //         $difficulty = $task->level == 1 ? 'Mobile' : 'PC';
     //         $body .= '<tr>';
     //         $body .= '<td>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</td>';
     //         $body .= '<td>' . htmlspecialchars($task->project->title ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>';

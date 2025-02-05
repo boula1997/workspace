@@ -178,6 +178,8 @@ return [
 'no' => 'No',
 'level' => 'Level',
 'easy' => 'Easy',
+'mobile' => 'Mobile',
+'pc' => 'PC',
 
 
 

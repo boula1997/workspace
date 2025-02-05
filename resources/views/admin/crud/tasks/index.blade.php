@@ -132,7 +132,7 @@
                                                                 value="{{ $task->id }}"
                                                                 id="checkbox-{{ $task->id }}">
                                                         </td>
-                                                        <td class="toggleLevel" style="cursor: pointer" id="{{$task->id}}">{{$task->level?'easy':'difficult' }}</td>
+                                                        <td class="toggleLevel" style="cursor: pointer" id="{{$task->id}}">{{$task->level?'mobile':'pc' }}</td>
                                                         <td class="togglePiority" style="cursor: pointer" id="{{$task->id}}">{{$task->pority?'Important':'Normal' }}</td>
                                                         <td>{{ isset($task->project->title) ? $task->project->title:'None' }}</td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
@@ -218,10 +218,10 @@
             type: 'GET', // HTTP method
             success: function (response) {
                 // Toggle the HTML content based on current value
-                if (self.html() == 'easy') {
-                    self.html('difficult');
+                if (self.html() == 'mobile') {
+                    self.html('pc');
                 } else {
-                    self.html('easy');
+                    self.html('mobile');
                 }
                 console.log(response); // Log the success response
             },
