@@ -9,6 +9,28 @@
             display: none !important;
         }
     </style>
+
+<style>
+    @media (max-width: 768px) {
+        /* Adjust table layout for mobile screens */
+        table.table {
+            table-layout: fixed; /* Ensures fixed column widths */
+        }
+
+        table.table th:nth-child(2), /* Task column header */
+        table.table td:nth-child(2) /* Task column data */ {
+            width: 50%; /* Adjust width as needed (50% of table width) */
+        }
+
+        table.table th,
+        table.table td {
+            white-space: normal; /* Allows line breaks */
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+    }
+</style>
+
     <!-- Content Wrapper. Contains task content -->
     <div class="content-wrapper">
         <!-- Main content -->
@@ -109,12 +131,12 @@
                                             <thead>
                                                 <tr>
                                                     <th>Id</th>
-                                                    <th style="width: 70%;">{{ __('general.title') }}</th>
+                                                    <th style="width: 1500px !important;">{{ __('general.title') }}</th>
                                                     <th class="d-none">{{ __('general.select') }}</th>
-                                                    <th>{{ __('general.employees') }}</th>
-                                                    <th>{{ __('general.level') }}</th>
-                                                    <th>{{ __('general.piority') }}</th>
+                                                    <th>{{__('general.level')}}</th>
+                                                    <th>{{__('general.piority')}}</th>
                                                     <th>{{ __('general.project') }}</th>
+                                                    <th>{{ __('general.employees') }}</th>
                                                     <th>{{ __('general.actions') }}</th>
                                                 </tr>
                                             </thead>
@@ -123,30 +145,25 @@
                                                     <tr>
                                                         <td>{{ $task->id }}</td>
                                                         <td class="{{ request()->routeIs('tasks.all') && $task->status == 1 ? 'text-success' : '' }}"
-                                                            style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word;"
+                                                            style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 500px;"
                                                             onclick="toggleCheckbox({{ $task->id }})">
-                                                            <span style="display: block;">
-                                                                {{ $task->title }}
-                                                            </span>
+                                                            {{ $task->title }}
                                                         </td>
                                                         <td class="d-none">
                                                             <input type="checkbox" name="tasks[]"
                                                                 value="{{ $task->id }}"
                                                                 id="checkbox-{{ $task->id }}">
                                                         </td>
+                                                        <td class="toggleLevel" style="cursor: pointer" id="{{$task->id}}">{{$task->level?'mobile':'pc' }}</td>
+                                                        <td class="togglePiority" style="cursor: pointer" id="{{$task->id}}">{{$task->pority?'Important':'Normal' }}</td>
+                                                        <td>{{ isset($task->project->title) ? $task->project->title:'None' }}</td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
-                                                        <td class="toggleLevel" style="cursor: pointer" id="{{$task->id}}">
-                                                            {{ $task->level ? 'mobile' : 'pc' }}
-                                                        </td>
-                                                        <td class="togglePiority" style="cursor: pointer" id="{{$task->id}}">
-                                                            {{ $task->pority ? 'Important' : 'Normal' }}
-                                                        </td>
-                                                        <td>{{ isset($task->project->title) ? $task->project->title : 'None' }}</td>
+
                                                         <td>
                                                             <a href="{{ route('tasks.edit', $task) }}" title="edit">
-                                                                <i class="fas fa-edit text-secondary fa-lg"></i>
+                                                                <i class="fas fa-edit  text-secondary  fa-lg"></i>
                                                             </a>
-                                        
+
                                                             <button class="btn btn-outline-secondary btn-sm mx-1"
                                                                 data-toggle="modal" data-target="#keywordsModal"
                                                                 data-task-id="{{ $task->id }}"
@@ -154,19 +171,20 @@
                                                                 data-task-title="{{ $task->title }}" type="button">
                                                                 <i class="fas fa-key fa-lg"></i>
                                                             </button>
-                                        
-                                                            <button class="btn btn-outline-secondary btn-sm copy-keywords clickable-text"
+
+                                                            <button
+                                                                class="btn btn-outline-secondary btn-sm copy-keywords clickable-text"
                                                                 content="{{ $task->keywords }}" type="button"
                                                                 data-keywords="{{ $task->keywords }}"
                                                                 title="@lang('general.copy_keywords')">
                                                                 <i class="fas fa-copy"></i>
                                                             </button>
+
                                                         </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
-                                        
                                     </form>
                                 </div>
                             </div>
