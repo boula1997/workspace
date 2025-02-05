@@ -578,10 +578,10 @@
                             </ul>
                             <hr>
                         <p class="text-warning">Use this script to have a console for websites on mobile. Just put it in the website footer:</p>
-<pre class="text-white">
-&lt;script src="https://cdn.jsdelivr.net/npm/eruda"&gt;&lt;/script&gt;
-&lt;script&gt;eruda.init();&lt;/script&gt;
-</pre>
+                        <pre class="text-white">
+                        &lt;script src="https://cdn.jsdelivr.net/npm/eruda"&gt;&lt;/script&gt;
+                        &lt;script&gt;eruda.init();&lt;/script&gt;
+                        </pre>
                          
                             <p class="text-warning">windows+prntscrren - ctrl+v in whatsapp methodology</p>
                             <hr>
@@ -602,6 +602,29 @@
 
                             <p>Ready to do magic {{ ':)' }}</p>
                         </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-md-6">
+                     <h1>Alarm device every hour</h1>
+                     <p>
+                        Step 1: Create a Batch Script  hourly_alarm.bat
+                        @echo off
+                        echo Alarm at the start of the hour!
+                        powershell -c (New-Object Media.SoundPlayer "C:\Windows\Media\Alarm01.wav").PlaySync()
+
+                        Step 2: Use Task Scheduler
+                        Press Win + S, type Task Scheduler, and open it.
+                        In Task Scheduler:
+                        Select Create Basic Task from the right pane.
+                        Name the task, e.g., "Hourly Alarm".
+                        Choose Daily as the trigger.
+                        Set the start time to the next hour and select Repeat task every 1 hour for the duration of 1 day.
+                        In the Action step, select Start a program and browse to your hourly_alarm.bat script.
+                        Save the task.
+
+                        Now, your alarm will play at the start of every hour. You can disable the task in Task Scheduler if you no longer need it.
+                     </p>
+                    </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
