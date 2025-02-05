@@ -2310,7 +2310,7 @@
                         url: url,
                         datatype: 'JSON',
                         success: function(data) {
-                            $('#' + table).text('(' + data.data.length + ')');
+                            $('#' + table).text('(' + data.count + ')');
 
 
                             //  let keys=Object.keys(data.data[0]);

@@ -745,7 +745,9 @@ if ($request->action == '28') {
 
 
 
-    return response()->json(['success' => trans('general.sent_successfully'), 'data' => $data, 'queryData' => $queyData]);
+
+
+    return response()->json(['success' => trans('general.sent_successfully'), 'data' => $data, 'queryData' => $queyData,'count' => $count]);
   }
 
   public function filterStats(Request $request)

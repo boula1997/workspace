@@ -823,11 +823,19 @@ if ($request->action == '28') {
         LIMIT 1000
     ) AS q;
 ");
+$totalCount = DB::connection('dynamic')->select("  
+SELECT count(*) as count 
+FROM (
+    SELECT '" . $db . "' AS db, " . $table . ".* 
+    FROM " . $db . "." . $table . "
+    ORDER BY updated_at DESC
+) AS q;
+");
 
 
+$count=$totalCount[0]->count;
 
-
-    return response()->json(['success' => trans('general.sent_successfully'), 'data' => $data, 'queryData' => $queyData]);
+    return response()->json(['success' => trans('general.sent_successfully'), 'data' => $data, 'queryData' => $queyData,'count' => $count]);
   }
 
   public function filterStats(Request $request)
