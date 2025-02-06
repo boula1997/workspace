@@ -116,13 +116,13 @@
                                                     <th style="width: 10% !important;">
                                                         {{ __('general.title') }}
                                                        </th>
-                                                    <th class="d-none">{{ __('general.select') }}</th>
-                                                    <th>{{__('general.level')}}</th>
-                                                    <th>{{__('general.piority')}}</th>
-                                                    <th>{{ __('general.project') }}</th>
-                                                    <th>{{ __('general.employees') }}</th>
-                                                    <th>{{ __('general.actions') }}</th>
-                                                </tr>
+                                                       <th>{{__('general.level')}}</th>
+                                                       <th>{{__('general.piority')}}</th>
+                                                       <th>{{ __('general.project') }}</th>
+                                                       <th>{{ __('general.employees') }}</th>
+                                                       <th>{{ __('general.actions') }}</th>
+                                                       <th class="d-none">{{ __('general.select') }}</th>
+                                                    </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($tasks as $task)
@@ -133,38 +133,38 @@
                                                             onclick="toggleCheckbox({{ $task->id }})">
                                                             {{ $task->title }}
                                                         </td>
-                                                        <td class="d-none">
-                                                            <input type="checkbox" name="tasks[]"
-                                                                value="{{ $task->id }}"
-                                                                id="checkbox-{{ $task->id }}">
-                                                        </td>
                                                         <td class="toggleLevel" style="cursor: pointer" id="{{$task->id}}">{{$task->level?'mobile':'pc' }}</td>
                                                         <td class="togglePiority" style="cursor: pointer" id="{{$task->id}}">{{$task->pority?'Important':'Normal' }}</td>
                                                         <td>{{ isset($task->project->title) ? $task->project->title:'None' }}</td>
                                                         <td>{{ taskEmployees($task->title) }}</td>
-
+                                                        
                                                         <td>
                                                             <a href="{{ route('tasks.edit', $task) }}" title="edit">
                                                                 <i class="fas fa-edit  text-secondary  fa-lg"></i>
                                                             </a>
-
+                                                            
                                                             <button class="btn btn-outline-secondary btn-sm mx-1"
-                                                                data-toggle="modal" data-target="#keywordsModal"
-                                                                data-task-id="{{ $task->id }}"
-                                                                data-keywords="{{ $task->keywords }}"
-                                                                data-task-title="{{ $task->title }}" type="button">
-                                                                <i class="fas fa-key fa-lg"></i>
-                                                            </button>
-
-                                                            <button
-                                                                class="btn btn-outline-secondary btn-sm copy-keywords clickable-text"
-                                                                content="{{ $task->keywords }}" type="button"
-                                                                data-keywords="{{ $task->keywords }}"
-                                                                title="@lang('general.copy_keywords')">
-                                                                <i class="fas fa-copy"></i>
-                                                            </button>
-
-                                                        </td>
+                                                            data-toggle="modal" data-target="#keywordsModal"
+                                                            data-task-id="{{ $task->id }}"
+                                                            data-keywords="{{ $task->keywords }}"
+                                                            data-task-title="{{ $task->title }}" type="button">
+                                                            <i class="fas fa-key fa-lg"></i>
+                                                        </button>
+                                                        
+                                                        <button
+                                                        class="btn btn-outline-secondary btn-sm copy-keywords clickable-text"
+                                                        content="{{ $task->keywords }}" type="button"
+                                                        data-keywords="{{ $task->keywords }}"
+                                                        title="@lang('general.copy_keywords')">
+                                                        <i class="fas fa-copy"></i>
+                                                    </button>
+                                                    
+                                                </td>
+                                                <td class="d-none">
+                                                    <input type="checkbox" name="tasks[]"
+                                                        value="{{ $task->id }}"
+                                                        id="checkbox-{{ $task->id }}">
+                                                </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -387,17 +387,6 @@ $(document).ready(function () {
         $(function() {
             $("#example1").DataTable({
                 "responsive": true,
-                columnDefs: [
-                    {
-                        targets: [0,3,4, 5,6,7], // Columns to hide on mobile
-                        responsivePriority: 1, // Lower priority means it gets hidden first
-                        visible: false, // Force hide
-                    },
-                    {
-                        targets: [0, 1], // Columns that must always be visible
-                        responsivePriority: 1, // Higher priority means it stays visible
-                    }
-                ],
                 "lengthChange": false,
                 "autoWidth": false,
                 "paging": false,
