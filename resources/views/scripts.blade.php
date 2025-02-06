@@ -2830,6 +2830,31 @@
             setInterval(checkTime, 1000); // Check every second
         });
     </script>
+
+<script>
+    var targetDate = "{{ settings()->date }}"; // Ensure this is in 'YYYY-MM-DD' format
+
+    $(document).ready(function () {
+    function getRemainingDays(targetDate) {
+        var target = new Date(targetDate);
+        var today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time to avoid time differences
+
+        var timeDiff = target.getTime() - today.getTime();
+        var daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+        return daysRemaining >= 0 ? daysRemaining : 0; // Ensure no negative values
+    }
+
+    var remainingDays = getRemainingDays(targetDate);
+    console.log("Remaining days: " + remainingDays);
+    alert(remainingDays);
+    $("#remaining-days").text(remainingDays + " days remaining"); // Example usage
+});
+
+</script>
+
+
 @endif
 
 
