@@ -2832,7 +2832,7 @@
     </script>
 
 <script>
-    var targetDate = "{{ settings()->date }}"; // Ensure this is in 'YYYY-MM-DD' format
+    var targetDate = "{{ settings()->home4g }}"; // Ensure this is in 'YYYY-MM-DD' format
 
     $(document).ready(function () {
     function getRemainingDays(targetDate) {
