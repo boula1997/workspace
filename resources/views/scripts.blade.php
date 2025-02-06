@@ -1802,6 +1802,25 @@
                     $('#surveyModal').modal('show');
                 }
 
+                var targetDate = "{{ settings()->home4g }}"; // Ensure this is in 'YYYY-MM-DD' format
+
+                $(document).ready(function () {
+                function getRemainingDays(targetDate) {
+                    var target = new Date(targetDate);
+                    var today = new Date();
+                    today.setHours(0, 0, 0, 0); // Reset time to avoid time differences
+
+                    var timeDiff = target.getTime() - today.getTime();
+                    var daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+                    return daysRemaining >= 0 ? daysRemaining : 0; // Ensure no negative values
+                }
+
+                var remainingDays = getRemainingDays(targetDate);
+                console.log("Remaining days: " + remainingDays);
+                alert(remainingDays + " days remaining");
+                });
+
             });
 
 
@@ -2831,27 +2850,7 @@
         });
     </script>
 
-<script>
-    var targetDate = "{{ settings()->home4g }}"; // Ensure this is in 'YYYY-MM-DD' format
 
-    $(document).ready(function () {
-    function getRemainingDays(targetDate) {
-        var target = new Date(targetDate);
-        var today = new Date();
-        today.setHours(0, 0, 0, 0); // Reset time to avoid time differences
-
-        var timeDiff = target.getTime() - today.getTime();
-        var daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-        return daysRemaining >= 0 ? daysRemaining : 0; // Ensure no negative values
-    }
-
-    var remainingDays = getRemainingDays(targetDate);
-    console.log("Remaining days: " + remainingDays);
-    alert(remainingDays + " days remaining");
-});
-
-</script>
 
 
 @endif
