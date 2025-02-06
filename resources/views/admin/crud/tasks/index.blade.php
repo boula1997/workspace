@@ -117,7 +117,7 @@
                                                         {{ __('general.title') }}
                                                        </th>
                                                        <th>{{__('general.level')}}</th>
-                                                       <th>{{__('general.piority')}}</th>
+                                                          <th>{{__('general.piority')}}</th>
                                                        <th>{{ __('general.project') }}</th>
                                                        <th>{{ __('general.employees') }}</th>
                                                        <th>{{ __('general.actions') }}</th>

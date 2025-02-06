@@ -108,6 +108,7 @@
             <div class="card card-custom">
                 <div class="card-body">
                     <div class="row">
+{{-- Date input --}} <div class="col-md-6"> <div class="form-group"> <label for="dateInput">{{ __('general.home4g') }} <span class="text-danger"> *</span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span> </div> <input type="date" id="dateInput" class="form-control" value="{{ old('home4g', $setting->home4g) }}" name="home4g"> </div> </div> </div>
                         <div class="col-md-6">
                             @include('admin.components.image', [
                                 'label' => __('general.logo'),
