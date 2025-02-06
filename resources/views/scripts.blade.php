@@ -2848,7 +2848,7 @@
 
     var remainingDays = getRemainingDays(targetDate);
     console.log("Remaining days: " + remainingDays);
-    alert(remainingDays);
+    alert(targetDate);
     $("#remaining-days").text(remainingDays + " days remaining"); // Example usage
 });
 
