@@ -112,10 +112,10 @@
                                         <table id="example1" class="table table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th>Id</th>
-                                                    <th style="width: 10% !important;">
+                                                    <th>
                                                         {{ __('general.title') }}
                                                        </th>
+                                                    <th>Id</th>
                                                        <th>{{__('general.level')}}</th>
                                                           <th>{{__('general.piority')}}</th>
                                                        <th>{{ __('general.project') }}</th>
@@ -127,12 +127,13 @@
                                             <tbody>
                                                 @foreach ($tasks as $task)
                                                     <tr>
-                                                        <td>{{ $task->id }}</td>
                                                         <td class="{{ request()->routeIs('tasks.all') && $task->status == 1 ? 'text-success' : '' }} identified"
                                                             style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 500px;"
                                                             onclick="toggleCheckbox({{ $task->id }})">
                                                             {{ $task->title }}
                                                         </td>
+                                                        <td>{{ $task->id }}</td>
+
                                                         <td class="toggleLevel" style="cursor: pointer" id="{{$task->id}}">{{$task->level?'mobile':'pc' }}</td>
                                                         <td class="togglePiority" style="cursor: pointer" id="{{$task->id}}">{{$task->pority?'Important':'Normal' }}</td>
                                                         <td>{{ isset($task->project->title) ? $task->project->title:'None' }}</td>
@@ -387,6 +388,17 @@ $(document).ready(function () {
         $(function() {
             $("#example1").DataTable({
                 "responsive": true,
+                columnDefs: [
+                    {
+                        targets: [3,4, 5,6,7], // Columns to hide on mobile
+                        responsivePriority: 1, // Lower priority means it gets hidden first
+                        visible: false, // Force hide
+                    },
+                    {
+                        targets: [0, 1], // Columns that must always be visible
+                        responsivePriority: 1, // Higher priority means it stays visible
+                    }
+                ],
                 "lengthChange": false,
                 "autoWidth": false,
                 "paging": false,
