@@ -386,26 +386,43 @@ $(document).ready(function () {
 
 
         $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                columnDefs: [
-                    {
-                        targets: [3,4, 5,6], // Columns to hide on mobile
-                        responsivePriority: 1, // Lower priority means it gets hidden first
-                        visible: false, // Force hide
-                    },
-                    {
-                        targets: [0, 1], // Columns that must always be visible
-                        responsivePriority: 1, // Higher priority means it stays visible
-                    }
-                ],
-                "lengthChange": false,
-                "autoWidth": false,
-                "paging": false,
-                "searching": true,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        });
+    function isMobileDevice() {
+        return /Android|iPhone|iPad|iPod|Windows Phone|webOS|BlackBerry/i.test(navigator.userAgent) || 
+               window.matchMedia("(max-width: 768px)").matches;
+    }
+
+    function initDataTable() {
+        var isMobile = isMobileDevice(); // Stronger mobile detection
+
+        $("#example1").DataTable({
+            "responsive": true,
+            "lengthChange": false,
+            "autoWidth": false,
+            "paging": false,
+            "searching": true,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+            "columnDefs": [
+                {
+                    targets: [3, 4, 5, 6], 
+                    visible: isMobile // Hide only on mobile
+                },
+                {
+                    targets: [0, 1], 
+                    responsivePriority: 1 
+                }
+            ]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    }
+
+    initDataTable();
+
+    // Reinitialize on resize (optional)
+    $(window).on('resize', function() {
+        $("#example1").DataTable().destroy();
+        initDataTable();
+    });
+});
+
 
         function toggleCheckbox(taskId) {
             const checkbox = document.getElementById(`checkbox-${taskId}`);
