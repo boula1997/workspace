@@ -605,7 +605,7 @@
                     </div>
                     <div class="row">
                     <div class="col-md-6">
-                     <h1>Alarm device every hour</h1>
+                     <h1>Alarm device every hour (you can import task from file here and also there the bat file here)</h1>
                      <p>
                         Step 1: Create a Batch Script  hourly_alarm.bat
                         @echo off
