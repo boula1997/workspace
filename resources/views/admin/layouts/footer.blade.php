@@ -196,7 +196,7 @@ if (localStorage.getItem('darkmode')==true || userEmail === "nessimboula@gmail.c
 </script>
 
 
-@if (boula())
+@if (boula() || App::environment('local'))
     <audio id="alarmSound" src="{{ asset('alarm.mp3') }}" preload="auto"></audio>
 
     <script>
@@ -213,8 +213,11 @@ if (localStorage.getItem('darkmode')==true || userEmail === "nessimboula@gmail.c
                 // Play alarm only at the start of an hour and prevent multiple triggers
                 if (minutes === 0 && seconds === 0 && lastPlayedHour !== currentHour) {
                     lastPlayedHour = currentHour; // Update last played hour
+                    localStorage.setItem('lastPlayedHour',lastPlayedHour);
                     alarm.volume = 1; 
                     alarm.play().catch(error => console.error("Playback failed:", error));
+                    localStorage.setItem("failed", error);
+
                 }
             }
 
