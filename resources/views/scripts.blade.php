@@ -2824,35 +2824,34 @@
 
 
 
-@if (boula())
+@if (boula() || App::environment('local'))
     <audio id="alarmSound" src="{{ asset('alarm.mp3') }}" preload="auto"></audio>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            let alarm = document.getElementById("alarmSound");
-            let lastPlayedHour = null; // Store last played hour to prevent re-triggering
-            
-            function checkTime() {
-                const now = new Date();
-                const currentHour = now.getHours();
-                const minutes = now.getMinutes();
-                const seconds = now.getSeconds();
+      document.addEventListener("DOMContentLoaded", function () {
+          let alarm = document.getElementById("alarmSound");
+          let lastPlayedHour = null; // Store last played hour to prevent re-triggering
+          
+          function checkTime() {
+              const now = new Date();
+              const currentHour = now.getHours();
+              const minutes = now.getMinutes();
+              const seconds = now.getSeconds();
 
-                // Play alarm only at the start of an hour and prevent multiple triggers
-                if (minutes === 0 && seconds === 0 && lastPlayedHour !== currentHour) {
-                    lastPlayedHour = currentHour; // Update last played hour
-                    alarm.volume = 1; 
-                    alarm.play().catch(error => console.error("Playback failed:", error));
-                }
-            }
+              // Play alarm only at the start of an hour and prevent multiple triggers
+              if (minutes === 0 && seconds === 0 && lastPlayedHour !== currentHour) {
+                  lastPlayedHour = currentHour; // Update last played hour
+                  localStorage.setItem('lastPlayedHourAdmin',lastPlayedHour);
+                  alarm.volume = 1; 
+                  alarm.play().catch(error => console.error("Playback failed:", error));
+                  localStorage.setItem("failed", error);
 
-            setInterval(checkTime, 1000); // Check every second
-        });
-    </script>
+              }
+          }
 
-
-
-
+          setInterval(checkTime, 1000); // Check every second
+      });
+  </script>
 @endif
 
 
