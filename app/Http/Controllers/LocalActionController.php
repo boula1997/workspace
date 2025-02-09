@@ -279,7 +279,7 @@ class LocalActionController extends Controller
     if ($request->action == '8' || $request->action == '10') {
       $action = $request->action == '8' ? "Search all attributes at once" : "search project modules";
       $results = DB::select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
-      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' and TABLE_NAME NOT IN ('jobs','password_resets','password_reset_tokens','permissions','personal_access_tokens','role_has_permissions','roles','failed_jobs','files','model_has_permissions','model_has_roles','users','admins','pages','contacts','messages','newsletters','settings') order by TABLE_NAME;");
+      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' order by TABLE_NAME;");
       $dbname = $request->dbname;
       $string = '';
       $string2 = '';
@@ -303,7 +303,7 @@ class LocalActionController extends Controller
       $string = str_replace(' ', '', $string);
       $string2 = str_replace(' ', '', $string2);;
       $string3 = '';
-      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' and TABLE_NAME NOT IN ('jobs','password_resets','password_reset_tokens','permissions','personal_access_tokens','role_has_permissions','roles','failed_jobs','files','model_has_permissions','model_has_roles','users','admins','pages','contacts','messages','newsletters','settings') order by TABLE_NAME;");
+      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' order by TABLE_NAME;");
       foreach ($modules as $key => $value) {
         if (!str_contains($value->TABLE_NAME, 'translations')) {
 
@@ -375,7 +375,7 @@ class LocalActionController extends Controller
     if ($request->action == '11') {
       $action = "Open Shared Module Files";
       $string3 = '';
-      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' and TABLE_NAME NOT IN ('jobs','password_resets','password_reset_tokens','permissions','personal_access_tokens','role_has_permissions','roles','failed_jobs','files','model_has_permissions','model_has_roles','users','admins','pages','contacts','messages','newsletters','settings') order by TABLE_NAME;");
+      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' order by TABLE_NAME;");
       foreach ($modules as $key => $value) {
         if (!str_contains($value->TABLE_NAME, 'translations')) {
 
@@ -395,7 +395,7 @@ class LocalActionController extends Controller
 
       $queries=Query::latest()->get()->unique('title');
       $results = DB::select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
-      $tables = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' and TABLE_NAME NOT IN ('jobs','password_resets','password_reset_tokens','personal_access_tokens','role_has_permissions','failed_jobs','files','model_has_permissions','model_has_roles') order by TABLE_NAME;");
+      $tables = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' order by TABLE_NAME;");
       $array = [];
       $array2 = [];
       $letters = [];
