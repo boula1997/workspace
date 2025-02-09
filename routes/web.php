@@ -151,6 +151,8 @@ Route::group(['middleware' => ['auth:admin']], function () {
     
         Route::post('/update/reference/tasks', 'App\Http\Controllers\LocalActionController@updateReferences')->name('references.tasks');
         Route::post('/update/welcome/tasks', 'App\Http\Controllers\LocalActionController@updateTasks')->name('updateTasks');
+
+        Route::post('/get-table-columns', [LocalActionController::class, 'getTableColumns'])->name('getTableColumns');
         
         
         Route::post('/update/boula/tasks', 'App\Http\Controllers\LocalActionController@updateBoulas')->name('boulas.tasks');

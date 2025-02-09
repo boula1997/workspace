@@ -919,6 +919,47 @@ $count=$totalCount[0]->count;
 
   }
 
+
+  public function getTableColumns(Request $request)
+  {
+      $dbname = $request->input('dbname');
+      $tablename = $request->input('tablename'); // Comma-separated string, e.g., "services,products"
+  
+      if (!$dbname || !$tablename) {
+          return response()->json(['error' => 'Database name and table name(s) are required'], 400);
+      }
+  
+      try {
+          $tableNames = explode(',', $tablename); // Split the comma-separated table names
+          $uniqueColumns = [];
+  
+          foreach ($tableNames as $table) {
+              $columns = DB::select("SELECT COLUMN_NAME, DATA_TYPE 
+                                     FROM INFORMATION_SCHEMA.COLUMNS 
+                                     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?", [$dbname, trim($table)]);
+  
+              foreach ($columns as $column) {
+                  // Add column name and data type if it's not already present
+                  $uniqueColumns[$column->COLUMN_NAME] = $column->DATA_TYPE;
+              }
+          }
+  
+          // Prepare response strings
+          $columnNames = array_keys($uniqueColumns); // Unique column names
+          $dataTypes = array_values($uniqueColumns); // Corresponding data types
+  
+          return response()->json([
+              'columns' => implode(',', $columnNames),
+              'dataTypes' => implode(',', $dataTypes),
+          ]);
+      } catch (\Exception $e) {
+          return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
+      }
+  }
+  
+  
+  
+
   public function updateReferences(Request $request){
     $issue=Issue::find($request->issue_id);
     $issue->update(['codeLinks'=>$request->codeLinks]);

@@ -521,7 +521,7 @@ class ActionController extends Controller
         foreach ($array as $item) {
           $sql[] = "script LIKE '%" . $item . "%'";
         }
-        $results = DB::connection('dynamic')->select("select * from projects where " . implode(" AND ", $sql) . "order by id asc;");
+        $results = DB::select("select * from projects where " . implode(" AND ", $sql) . "order by id asc;");
         return view('welcome', compact('results', 'action', 'array','flag'));
       } else {
         $action = "get multible scripts";
@@ -533,14 +533,14 @@ class ActionController extends Controller
           foreach ($array as $item) {
             $sql[] = "script  LIKE '%" . $item . "%'";
           }
-          $results = DB::connection('dynamic')->select("select * from issues where " . implode(" AND ", $sql) . "order by id desc;");
+          $results = DB::select("select * from issues where " . implode(" AND ", $sql) . "order by id desc;");
         }
         else{
           foreach ($array as $item) {
             $sql[] = "script LIKE '%" . $item . "%'";
           }
 
-          $results = DB::connection('dynamic')->select("select * from scripts where " . implode(" AND ", $sql) . "order by id desc;");
+          $results = DB::select("select * from scripts where " . implode(" AND ", $sql) . "order by id desc;");
         }
         return view('welcome', compact('results', 'action', 'array','searchRefrences'));
       }
@@ -559,7 +559,7 @@ class ActionController extends Controller
 
     if ($request->action == '19') {
       $action = "flags manager";
-      $flags = DB::connection('dynamic')->select("SELECT distinct flag as 'flag' from paths");
+      $flags = DB::select("SELECT distinct flag as 'flag' from paths");
 
       return view('welcome', compact('action', 'flags','flag'));
     }

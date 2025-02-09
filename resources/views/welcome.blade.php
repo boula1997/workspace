@@ -464,11 +464,11 @@
                                     name="size" placeholder="Insert file size">
                             </div>
                             <div class="form-group mt-2">
-                                <input type="text" class="form-control   text-white" name="dbname"
+                                <input id="dbname" type="text" class="form-control   text-white" name="dbname"
                                     placeholder="Insert database name">
                             </div>
                             <div class="form-group mt-2">
-                                <input type="text" class="form-control   text-white" name="tablename"
+                                <input id="tablename" type="text" class="form-control   text-white" name="tablename"
                                     placeholder="Insert table name">
                             </div>
 
@@ -495,7 +495,7 @@
                                     placeholder="Insert replaceWord">
                             </div>
                             <div class="form-group mt-2">
-                                <input value="{{ old('attribute') }}" type="text"
+                                <input value="{{ old('attribute') }}" id="attributes" type="text"
                                     class="form-control   text-white" name="attribute" placeholder="item1,item2,...">
                             </div>
                             <div class="form-group">
@@ -516,7 +516,7 @@
                                     name="module" placeholder="Insert module">
                             </div>
                             <div class="form-group mt-2">
-                                <input type="text" value="{{ old('type') }}" class="form-control   text-white"
+                                <input type="text" id="attrtypes" value="{{ old('type') }}" class="form-control   text-white"
                                     name="type"
                                     placeholder="all,input,inputtrans,textarea,textareatrans,select,multiselect,radio,file,multifile,image,multimage">
                             </div>

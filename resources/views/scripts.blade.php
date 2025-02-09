@@ -2824,6 +2824,41 @@
     </script>
 
 
+<script>
+    $(document).on('change', '#tablename', function() {
+        let dbname = $('#dbname').val();
+        let tablename = $('#tablename').val();
+
+        if (dbname && tablename) {
+            $.ajax({
+                url: '{{route("getTableColumns")}}', // Adjust this route according to your setup
+                method: 'POST',
+                data: {
+                    dbname: dbname,
+                    tablename: tablename,
+                    _token: '{{ csrf_token() }}' // Include CSRF token for security
+                },
+                success: function(response) {
+                    if (response.columns && response.dataTypes) {
+                        $('#attributes').val(response.columns);
+                        $('#attrtypes').val(response.dataTypes);
+                        // console.log('Columns:', response.columns);
+                        // console.log('Data Types:', response.dataTypes);
+                        // // You can handle these strings as needed
+                    }
+                },
+                error: function(xhr) {
+                    console.error('An error occurred:', xhr.responseJSON?.error);
+                }
+            });
+        } else {
+            console.error('Database name and table name must be provided');
+        }
+    });
+</script>
+
+
+
 
 
 @if (boula() || App::environment('local'))
