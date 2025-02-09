@@ -469,7 +469,7 @@
                             </div>
                             <div class="form-group mt-2">
                                 <input id="tablename" type="text" class="form-control   text-white" name="tablename"
-                                    placeholder="Insert table name">
+                                    placeholder="ex: tablename1,tablename2">
                             </div>
 
                             <div class="form-group mt-2">

@@ -214,6 +214,8 @@ Route::group(['middleware' => ['auth:admin']], function () {
             Route::post('/update/sample/script', 'App\Http\Controllers\ActionController@updateSamples')->name('samples.script');
         Route::post('/update/post/tasks', 'App\Http\Controllers\ActionController@updatePosts')->name('posts.tasks');
         Route::post('/update/welcome/tasks', 'App\Http\Controllers\ActionController@updateTasks')->name('updateTasks');
+
+        Route::post('/get-table-columns', [ActionController::class, 'getTableColumns'])->name('getTableColumns');
     
         Route::post('/update/reference/tasks', 'App\Http\Controllers\ActionController@updateReferences')->name('references.tasks');
         

@@ -817,7 +817,7 @@
 
                 $('input[name="attribute"').show().attr('placeholder', 'Add attributes');
                 $('input[name="dbname"').show().attr('placeholder', 'Insert database name');
-                $('input[name="tablename"').show().attr('placeholder', 'Insert table name');
+                $('input[name="tablename"').show().attr('placeholder', 'ex: tablename1,tablename2');
 
                 $('input[name="module"').show().attr('placeholder', 'need to create module name');
                 $('input[name="type"').show().attr('placeholder', 'Select attributes types');
@@ -1135,7 +1135,7 @@
                     'auto attributes') {
                     $('input[name="attribute"').show().attr('placeholder', 'add attributes');
                     $('input[name="dbname"').show().attr('placeholder', 'insert database name');
-                    $('input[name="tablename"').show().attr('placeholder', 'Insert table name');
+                    $('input[name="tablename"').show().attr('placeholder', 'ex: tablename1,tablename2');
 
                     $('input[name="module"').show().attr('placeholder', 'need to create module');
                     $('input[name="type"').show().attr('placeholder', 'add attributes types');
