@@ -464,7 +464,7 @@
                                     name="size" placeholder="Insert file size">
                             </div>
                             <div class="form-group mt-2">
-                                <input id="dbname" type="text" class="form-control   text-white" name="dbname"
+                                <input id="db_name" type="text" class="form-control   text-white" name="dbname"
                                     placeholder="Insert database name">
                             </div>
                             <div class="form-group mt-2">

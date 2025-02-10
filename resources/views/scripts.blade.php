@@ -2126,6 +2126,7 @@
                 let table = $(this).attr('table');
                 let url = "{{ route('db.data', [':db', ':table', ':query']) }}";
                 let status = false;
+
                 if ($(this).hasClass('exec'))
                     status = true;
 
@@ -2326,6 +2327,7 @@
                     url = url.replace(':table', table);
                     url = url.replace(':query', localStorage.getItem('query'));
                     localStorage.setItem('url', url);
+
                     $.ajax({
                         type: "Get",
                         url: url,
@@ -2826,7 +2828,7 @@
 
 <script>
     $(document).on('change', '#tablename', function() {
-        let dbname = $('#dbname').val();
+        let dbname = $('#db_name').val();
         let tablename = $('#tablename').val();
 
         if (dbname && tablename) {
