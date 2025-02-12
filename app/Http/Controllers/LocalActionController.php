@@ -726,26 +726,33 @@ if ($request->action == '28') {
   {
       $result = DB::statement('use ' . $db . '');
   
-      if ($query !== "null" && $query !== "")
+      if ($query !== "null" && $query !== "") {
           $queyData = DB::select($query);
-      else
+      } else {
           $queyData = null;
+      }
   
       // Retrieve table columns and their data types
-      $columns = DB::select("  
+      $columns = DB::select("
           SELECT COLUMN_NAME, DATA_TYPE
           FROM INFORMATION_SCHEMA.COLUMNS
           WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
       ", [$db, $table]);
   
-      // Construct the INSERT INTO string
-      $attributes = collect($columns)->pluck('COLUMN_NAME')->implode(',');
-      $datatypes = collect($columns)->pluck('DATA_TYPE')->implode(',');
+      // Exclude specific columns
+      $excludedColumns = ['created_at', 'updated_at', 'id'];
+      $filteredColumns = collect($columns)->filter(function ($column) use ($excludedColumns) {
+          return !in_array($column->COLUMN_NAME, $excludedColumns);
+      });
   
-      $insertString = "INSERT INTO ($attributes) VALUES ($datatypes);";
+      // Construct the INSERT INTO string
+      $attributes = $filteredColumns->pluck('COLUMN_NAME')->implode(',');
+      $datatypes = $filteredColumns->pluck('DATA_TYPE')->implode(',');
+  
+      $insertString = "INSERT INTO $table ($attributes) VALUES ($datatypes);";
   
       // Fetch table data and count
-      $data = DB::select("  
+      $data = DB::select("
           SELECT * 
           FROM (
               SELECT '" . $db . "' AS db, " . $table . ".* 
@@ -755,7 +762,7 @@ if ($request->action == '28') {
           ) AS q;
       ");
   
-      $totalCount = DB::select("  
+      $totalCount = DB::select("
           SELECT count(*) as count 
           FROM (
               SELECT '" . $db . "' AS db, " . $table . ".* 
@@ -774,6 +781,7 @@ if ($request->action == '28') {
           'insertString' => $insertString,
       ]);
   }
+  
   
   
 

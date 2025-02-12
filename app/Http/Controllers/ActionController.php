@@ -816,18 +816,24 @@ if ($request->action == '28') {
           $queyData = null;
       }
   
-      // Fetch column names and data types
+      // Fetch column names and data types, excluding specific columns
       $columns = DB::connection('dynamic')->select("
           SELECT COLUMN_NAME, DATA_TYPE
           FROM INFORMATION_SCHEMA.COLUMNS
           WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
       ", [$db, $table]);
   
-      // Construct the INSERT INTO string
-      $attributes = collect($columns)->pluck('COLUMN_NAME')->implode(',');
-      $datatypes = collect($columns)->pluck('DATA_TYPE')->implode(',');
+      // Exclude specific columns
+      $excludedColumns = ['created_at', 'updated_at', 'id'];
+      $filteredColumns = collect($columns)->filter(function ($column) use ($excludedColumns) {
+          return !in_array($column->COLUMN_NAME, $excludedColumns);
+      });
   
-      $insertString = "INSERT INTO ($attributes) VALUES ($datatypes);";
+      // Construct the INSERT INTO string
+      $attributes = $filteredColumns->pluck('COLUMN_NAME')->implode(',');
+      $datatypes = $filteredColumns->pluck('DATA_TYPE')->implode(',');
+  
+      $insertString = "INSERT INTO $table ($attributes) VALUES ($datatypes);";
   
       // Retrieve data and count
       $data = DB::connection('dynamic')->select("
@@ -859,6 +865,7 @@ if ($request->action == '28') {
           'insertString' => $insertString,
       ]);
   }
+  
   
 
   public function filterStats(Request $request)
