@@ -1092,7 +1092,7 @@
                                     @if ($table->TABLE_NAME[0] == $letter)
                                         <!-- Table Name -->
                                         <span id="table" style="cursor: pointer;" 
-                                              content="SELECT * FROM {{ $table->TABLE_NAME }} order by updated_at desc limit 1 \G;" 
+                                              content="{{$table->TABLE_NAME}}" 
                                               table="{{ $table->TABLE_NAME }}" 
                                               class="toggleRelation fw-bold clickable-text-db" 
                                               title="{{ str_replace('_id', '', $array2[$loop->index]) }}">
@@ -1108,7 +1108,7 @@
                                             <span  
                                             class="clickable-text-db" 
                                             style="cursor: pointer;" 
-                                            content="SELECT {{ $item }} FROM {{ $table->TABLE_NAME }} order by updated_at desc limit 1;">
+                                            content="{{ $item }}">
                                             {{ $item }}
                                         </span> 
                                         <span class="text-info">{{ explode(' ', $dataTypes[$i])[$loop->index] }}</span>
