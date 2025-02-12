@@ -785,14 +785,15 @@ if ($request->action == '28') {
    */
   public function show($db, $table, $query)
   {
-    $credential=DBCredential::where('db_name',$db)->first();
-
-    $dbHost = '127.0.0.1';
-    $dbName = isset($credential->db_name)?$credential->db_name:'automation';
-    $dbUser = isset($credential->db_username)?$credential->db_username:'root';
-    $dbPass = isset($credential->db_password)?$credential->db_password:'';
-        // Temporarily configure the database connection
-        config([
+      $credential = DBCredential::where('db_name', $db)->first();
+  
+      $dbHost = '127.0.0.1';
+      $dbName = isset($credential->db_name) ? $credential->db_name : 'automation';
+      $dbUser = isset($credential->db_username) ? $credential->db_username : 'root';
+      $dbPass = isset($credential->db_password) ? $credential->db_password : '';
+  
+      // Temporarily configure the database connection
+      config([
           'database.connections.dynamic' => [
               'driver' => 'mysql',
               'host' => $dbHost,
@@ -803,40 +804,62 @@ if ($request->action == '28') {
               'collation' => 'utf8mb4_unicode_ci',
           ],
       ]);
-
-    // Use the dynamic connection
-    DB::purge('dynamic');
-    DB::reconnect('dynamic');
-    $result = DB::connection('dynamic')->statement('use ' . $db . '');
-
-    if ($query !== "null" && $query !== "")
-      $queyData = DB::connection('dynamic')->select($query);
-    else
-      $queyData = null;
-    //  determin database and column name
-    $data = DB::connection('dynamic')->select("  
-    SELECT * 
-    FROM (
-        SELECT '" . $db . "' AS db, " . $table . ".* 
-        FROM " . $db . "." . $table . "
-        ORDER BY updated_at DESC
-        LIMIT 1000
-    ) AS q;
-");
-$totalCount = DB::connection('dynamic')->select("  
-SELECT count(*) as count 
-FROM (
-    SELECT '" . $db . "' AS db, " . $table . ".* 
-    FROM " . $db . "." . $table . "
-    ORDER BY updated_at DESC
-) AS q;
-");
-
-
-$count=$totalCount[0]->count;
-
-    return response()->json(['success' => trans('general.sent_successfully'), 'data' => $data, 'queryData' => $queyData,'count' => $count]);
+  
+      // Use the dynamic connection
+      DB::purge('dynamic');
+      DB::reconnect('dynamic');
+      $result = DB::connection('dynamic')->statement('use ' . $db . '');
+  
+      if ($query !== "null" && $query !== "") {
+          $queyData = DB::connection('dynamic')->select($query);
+      } else {
+          $queyData = null;
+      }
+  
+      // Fetch column names and data types
+      $columns = DB::connection('dynamic')->select("
+          SELECT COLUMN_NAME, DATA_TYPE
+          FROM INFORMATION_SCHEMA.COLUMNS
+          WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+      ", [$db, $table]);
+  
+      // Construct the INSERT INTO string
+      $attributes = collect($columns)->pluck('COLUMN_NAME')->implode(',');
+      $datatypes = collect($columns)->pluck('DATA_TYPE')->implode(',');
+  
+      $insertString = "INSERT INTO ($attributes) VALUES ($datatypes);";
+  
+      // Retrieve data and count
+      $data = DB::connection('dynamic')->select("
+          SELECT * 
+          FROM (
+              SELECT '" . $db . "' AS db, " . $table . ".* 
+              FROM " . $db . "." . $table . "
+              ORDER BY updated_at DESC
+              LIMIT 1000
+          ) AS q;
+      ");
+  
+      $totalCount = DB::connection('dynamic')->select("
+          SELECT count(*) as count 
+          FROM (
+              SELECT '" . $db . "' AS db, " . $table . ".* 
+              FROM " . $db . "." . $table . "
+              ORDER BY updated_at DESC
+          ) AS q;
+      ");
+  
+      $count = $totalCount[0]->count;
+  
+      return response()->json([
+          'success' => trans('general.sent_successfully'),
+          'data' => $data,
+          'queryData' => $queyData,
+          'count' => $count,
+          'insertString' => $insertString,
+      ]);
   }
+  
 
   public function filterStats(Request $request)
   {

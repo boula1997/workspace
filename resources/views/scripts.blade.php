@@ -2334,6 +2334,7 @@
                         datatype: 'JSON',
                         success: function(data) {
                             $('#' + table).text('(' + data.count + ')');
+                            $('#queryCommand').text(data.insertString);
 
 
                             //  let keys=Object.keys(data.data[0]);

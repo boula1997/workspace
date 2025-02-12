@@ -724,41 +724,58 @@ if ($request->action == '28') {
    */
   public function show($db, $table, $query)
   {
-    
-    $result = DB::statement('use ' . $db . '');
-
-    if ($query !== "null" && $query !== "")
-      $queyData = DB::select($query);
-    else
-      $queyData = null;
-    //  determin database and column name
-    $data = DB::select("  
-    SELECT * 
-    FROM (
-        SELECT '" . $db . "' AS db, " . $table . ".* 
-        FROM " . $db . "." . $table . "
-        ORDER BY updated_at DESC
-        LIMIT 1000
-    ) AS q;
-");
-
-
-
-$totalCount = DB::select("  
-SELECT count(*) as count 
-FROM (
-    SELECT '" . $db . "' AS db, " . $table . ".* 
-    FROM " . $db . "." . $table . "
-    ORDER BY updated_at DESC
-) AS q;
-");
-
-
-$count=$totalCount[0]->count;
-
-
-    return response()->json(['success' => trans('general.sent_successfully'), 'data' => $data, 'queryData' => $queyData,'count' => $count]);
+      $result = DB::statement('use ' . $db . '');
+  
+      if ($query !== "null" && $query !== "")
+          $queyData = DB::select($query);
+      else
+          $queyData = null;
+  
+      // Retrieve table columns and their data types
+      $columns = DB::select("  
+          SELECT COLUMN_NAME, DATA_TYPE
+          FROM INFORMATION_SCHEMA.COLUMNS
+          WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+      ", [$db, $table]);
+  
+      // Construct the INSERT INTO string
+      $attributes = collect($columns)->pluck('COLUMN_NAME')->implode(',');
+      $datatypes = collect($columns)->pluck('DATA_TYPE')->implode(',');
+  
+      $insertString = "INSERT INTO ($attributes) VALUES ($datatypes);";
+  
+      // Fetch table data and count
+      $data = DB::select("  
+          SELECT * 
+          FROM (
+              SELECT '" . $db . "' AS db, " . $table . ".* 
+              FROM " . $db . "." . $table . "
+              ORDER BY updated_at DESC
+              LIMIT 1000
+          ) AS q;
+      ");
+  
+      $totalCount = DB::select("  
+          SELECT count(*) as count 
+          FROM (
+              SELECT '" . $db . "' AS db, " . $table . ".* 
+              FROM " . $db . "." . $table . "
+              ORDER BY updated_at DESC
+          ) AS q;
+      ");
+  
+      $count = $totalCount[0]->count;
+  
+      return response()->json([
+          'success' => trans('general.sent_successfully'),
+          'data' => $data,
+          'queryData' => $queyData,
+          'count' => $count,
+          'insertString' => $insertString,
+      ]);
   }
+  
+  
 
   public function filterStats(Request $request)
   {
