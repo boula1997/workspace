@@ -130,6 +130,8 @@ Route::group(['middleware' => ['auth:admin']], function () {
         $action="";
         return view('accountantBoula');
     })->name('secondFilter');
+
+    Route::get('/update-counter', [TaskController::class, 'updateCounter'])->name('counter.update');
     if (App::environment('local')) {
         Route::resource('actions', LocalActionController::class);
         
@@ -158,7 +160,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
         Route::post('/update/boula/tasks', 'App\Http\Controllers\LocalActionController@updateBoulas')->name('boulas.tasks');
         Route::post('/issues', 'App\Http\Controllers\LocalActionController@issueUpdate')->name('issues.update');
 
-        Route::get('/update-counter', [TaskController::class, 'updateCounter'])->name('counter.update');
+
 
         Route::post('/servers', 'App\Http\Controllers\LocalActionController@serverUpdate')->name('servers.update');
         
