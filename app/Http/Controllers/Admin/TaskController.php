@@ -313,6 +313,24 @@ class TaskController extends Controller
         }
     }
     
+
+    public function updateCounter(Request $request)
+    {
+        $taskId = $request->query('task_id'); // Retrieve query parameter
+        $remainingTime = $request->query('remaining_time'); // Retrieve query parameter
+    
+        // Update the task in the database (example)
+        $task = Task::find($taskId);
+        if ($task) {
+            $task->remaining_time = $remainingTime;
+            $task->save();
+    
+            return response()->json(['status' => 'success', 'message' => 'Task counter updated']);
+        }
+    
+        return response()->json(['status' => 'error', 'message' => 'Task not found'], 404);
+    }
+    
     
 
     /**

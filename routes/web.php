@@ -157,7 +157,9 @@ Route::group(['middleware' => ['auth:admin']], function () {
         
         Route::post('/update/boula/tasks', 'App\Http\Controllers\LocalActionController@updateBoulas')->name('boulas.tasks');
         Route::post('/issues', 'App\Http\Controllers\LocalActionController@issueUpdate')->name('issues.update');
-        
+
+        Route::get('/update-counter', [TaskController::class, 'updateCounter']);
+
         Route::post('/servers', 'App\Http\Controllers\LocalActionController@serverUpdate')->name('servers.update');
         
         Route::delete('/delete/scripts/{id}', 'App\Http\Controllers\LocalActionController@destroy')->name('delete.scripts');

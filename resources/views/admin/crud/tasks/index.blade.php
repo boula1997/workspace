@@ -224,70 +224,96 @@
     @push('scripts')
     
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const counters = document.querySelectorAll(".counter");
-            const alarmSound = document.getElementById("alarmSound");
-    
-            counters.forEach(counter => {
-                const taskId = counter.getAttribute("data-task-id");
-                let storedTime = localStorage.getItem(`counter-${taskId}`);
-                let startTime = localStorage.getItem(`counter-start-${taskId}`);
-    
-                if (storedTime !== null && startTime !== null) {
-                    let elapsed = Math.floor((Date.now() - parseInt(startTime)) / 1000);
-                    let remainingTime = Math.max(0, parseInt(storedTime) - elapsed);
-    
-                    counter.textContent = formatTime(remainingTime);
-                    if (remainingTime > 0) {
-                        startCountdown(taskId, counter, remainingTime);
-                    } else {
-                        localStorage.removeItem(`counter-${taskId}`);
-                        localStorage.removeItem(`counter-start-${taskId}`);
-                    }
-                }
-    
-                counter.addEventListener("click", function () {
-                    let minutes = parseInt(counter.getAttribute("data-counter"));
-                    let seconds = minutes * 60;
-    
-                    localStorage.setItem(`counter-${taskId}`, seconds);
-                    localStorage.setItem(`counter-start-${taskId}`, Date.now());
-                    
-                    startCountdown(taskId, counter, seconds);
-                });
-            });
-    
-            function startCountdown(taskId, counter, seconds) {
-                clearInterval(counter.dataset.intervalId);
-                
-                let interval = setInterval(() => {
-                    if (seconds <= 0) {
-                        clearInterval(interval);
-                        localStorage.removeItem(`counter-${taskId}`);
-                        localStorage.removeItem(`counter-start-${taskId}`);
-                        counter.textContent = "00:00";
-    
-                        // 🔊 Play alert sound when countdown reaches 0
-                        alarmSound.play();
-                        
-                        return;
-                    }
-    
-                    seconds--;
-                    counter.textContent = formatTime(seconds);
-                    localStorage.setItem(`counter-${taskId}`, seconds);
-                    localStorage.setItem(`counter-start-${taskId}`, Date.now());
-                }, 1000);
-    
-                counter.dataset.intervalId = interval;
+document.addEventListener("DOMContentLoaded", function () {
+    const counters = document.querySelectorAll(".counter");
+    const alarmSound = document.getElementById("alarmSound");
+
+    counters.forEach(counter => {
+        const taskId = counter.getAttribute("data-task-id");
+        let storedTime = localStorage.getItem(`counter-${taskId}`);
+        let startTime = localStorage.getItem(`counter-start-${taskId}`);
+
+        if (storedTime !== null && startTime !== null) {
+            let elapsed = Math.floor((Date.now() - parseInt(startTime)) / 1000);
+            let remainingTime = Math.max(0, parseInt(storedTime) - elapsed);
+
+            counter.textContent = formatTime(remainingTime);
+            if (remainingTime > 0) {
+                startCountdown(taskId, counter, remainingTime);
+            } else {
+                localStorage.removeItem(`counter-${taskId}`);
+                localStorage.removeItem(`counter-start-${taskId}`);
             }
-    
-            function formatTime(seconds) {
-                let min = Math.floor(seconds / 60);
-                let sec = seconds % 60;
-                return `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
-            }
+        }
+
+        counter.addEventListener("click", function () {
+            let minutes = parseInt(counter.getAttribute("data-counter"));
+            let seconds = minutes * 60;
+
+            localStorage.setItem(`counter-${taskId}`, seconds);
+            localStorage.setItem(`counter-start-${taskId}`, Date.now());
+
+            startCountdown(taskId, counter, seconds);
         });
+    });
+
+    function startCountdown(taskId, counter, seconds) {
+        clearInterval(counter.dataset.intervalId);
+
+        let interval = setInterval(() => {
+            if (seconds <= 0) {
+                clearInterval(interval);
+                localStorage.removeItem(`counter-${taskId}`);
+                localStorage.removeItem(`counter-start-${taskId}`);
+                counter.textContent = "00:00";
+
+                // 🔊 Play alert sound when countdown reaches 0
+                alarmSound.play();
+
+                return;
+            }
+
+            seconds--;
+            counter.textContent = formatTime(seconds);
+            localStorage.setItem(`counter-${taskId}`, seconds);
+            localStorage.setItem(`counter-start-${taskId}`, Date.now());
+        }, 1000);
+
+        // Send a GET request every minute
+        let ajaxInterval = setInterval(() => {
+            sendAjaxUpdate(taskId, seconds);
+        }, 60000);
+
+        counter.dataset.intervalId = interval;
+        counter.dataset.ajaxIntervalId = ajaxInterval;
+    }
+
+    function formatTime(seconds) {
+        let min = Math.floor(seconds / 60);
+        let sec = seconds % 60;
+        return `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+    }
+
+    function sendAjaxUpdate(taskId, remainingTime) {
+        const url = `/update-counter?task_id=${taskId}&remaining_time=${remainingTime}`;
+
+        fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(`Task ${taskId} updated successfully:`, data);
+            })
+            .catch(error => {
+                console.error(`Error updating task ${taskId}:`, error);
+            });
+    }
+});
+
+
     </script>
     
     @endpush
