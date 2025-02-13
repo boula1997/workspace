@@ -131,7 +131,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
         return view('accountantBoula');
     })->name('secondFilter');
 
-    Route::get('/update-counter', [TaskController::class, 'updateCounter'])->name('counter.update');
+
     if (App::environment('local')) {
         Route::resource('actions', LocalActionController::class);
         
