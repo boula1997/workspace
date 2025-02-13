@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function sendAjaxUpdate(taskId, remainingTime) {
-        const url = `{{ route('counter.update') }}?task_id=${taskId}&remaining_time=${remainingTime}`;
+        const url = `{{ route('counter.update') }}?task_id=${taskId}&counter=${remainingTime}`;
 
         fetch(url, {
             method: "GET",
