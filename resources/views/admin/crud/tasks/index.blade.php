@@ -282,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Send a GET request every minute
         let ajaxInterval = setInterval(() => {
             sendAjaxUpdate(taskId, seconds);
-        }, 60000);
+        }, 5000);
 
         counter.dataset.intervalId = interval;
         counter.dataset.ajaxIntervalId = ajaxInterval;
