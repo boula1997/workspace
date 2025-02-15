@@ -237,9 +237,15 @@
                 userInteracted = true;
             });
     
+            // Function to safely play a sound
             function playSound(sound) {
                 if (userInteracted) {
-                    sound.play().catch(error => console.error("Audio play failed:", error));
+                    sound
+                        .play()
+                        .then(() => console.log("Audio played successfully"))
+                        .catch(error => console.error("Audio play failed:", error));
+                } else {
+                    console.log("User interaction required for audio playback.");
                 }
             }
     
@@ -273,18 +279,17 @@
             });
     
             function startCountdown(taskId, counter, seconds) {
-                clearInterval(counter.dataset.intervalId);
+                clearExistingIntervals(counter);
     
                 let interval = setInterval(() => {
                     if (seconds <= 0) {
-                        clearInterval(interval);
+                        clearExistingIntervals(counter);
+                        counter.textContent = "00:00";
                         localStorage.removeItem(`counter-${taskId}`);
                         localStorage.removeItem(`counter-start-${taskId}`);
-                        counter.textContent = "00:00";
     
-                        // Play alarm sound if user has interacted
+                        // Play alarm sound
                         playSound(alarmSound);
-    
                         return;
                     }
     
@@ -299,8 +304,18 @@
                     sendAjaxUpdate(taskId, seconds);
                 }, 60000);
     
+                // Store interval IDs to clear later
                 counter.dataset.intervalId = interval;
                 counter.dataset.ajaxIntervalId = ajaxInterval;
+            }
+    
+            function clearExistingIntervals(counter) {
+                if (counter.dataset.intervalId) {
+                    clearInterval(counter.dataset.intervalId);
+                }
+                if (counter.dataset.ajaxIntervalId) {
+                    clearInterval(counter.dataset.ajaxIntervalId);
+                }
             }
     
             function formatTime(seconds) {
@@ -310,7 +325,7 @@
             }
     
             function sendAjaxUpdate(taskId, remainingTime) {
-                const url = `{{ route('counter.update') }}?task_id=${taskId}&counter=${remainingTime / 60}`;
+                const url = `{{ route('counter.update') }}?task_id=${taskId}&counter=${Math.floor(remainingTime / 60)}`;
     
                 fetch(url, {
                     method: "GET",
@@ -331,6 +346,7 @@
         });
     </script>
     @endpush
+    
     
 
     @push('scripts')
