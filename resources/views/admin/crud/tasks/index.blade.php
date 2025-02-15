@@ -294,28 +294,30 @@
                 let sec = seconds % 60;
                 return `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
             }
-    
-            function sendAjaxUpdate(taskId, remainingTime) {
-                successSound.play(); // Play success sound
 
-                // const url = `{{ route('counter.update') }}?task_id=${taskId}&counter=${remainingTime / 60}`;
+            successSound.play(); // Play success sound
+
     
-                // fetch(url, {
-                //     method: "GET",
-                //     headers: {
-                //         "Content-Type": "application/json",
-                //     },
-                // })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(`Task ${taskId} updated successfully:`, data);
-                        successSound.play(); // Play success sound
-                    })
-                    .catch(error => {
-                        console.error(`Error updating task ${taskId}:`, error);
-                        errorSound.play(); // Play error sound
-                    });
-            }
+            // function sendAjaxUpdate(taskId, remainingTime) {
+
+            //     const url = `{{ route('counter.update') }}?task_id=${taskId}&counter=${remainingTime / 60}`;
+    
+            //     fetch(url, {
+            //         method: "GET",
+            //         headers: {
+            //             "Content-Type": "application/json",
+            //         },
+            //     })
+            //         .then(response => response.json())
+            //         .then(data => {
+            //             console.log(`Task ${taskId} updated successfully:`, data);
+            //             successSound.play(); // Play success sound
+            //         })
+            //         .catch(error => {
+            //             console.error(`Error updating task ${taskId}:`, error);
+            //             errorSound.play(); // Play error sound
+            //         });
+            // }
         });
     </script>
     
