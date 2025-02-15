@@ -1117,6 +1117,7 @@
                     'add module' || localStorage.getItem('selectAction') ==
                     'get multible modules') {
                     $('#projectContent').attr('checked', true);
+                    $(this).attr('placeholder', 'ex:keyword1,keyword2,keyword3');
                 } else {
 
                     $('#projectContent').attr('checked', false);
@@ -1469,6 +1470,7 @@
                         if ($(this).val() == '16') {
                             if ($(this).text() == 'get multible scripts') {
                                 $(this).attr('selected', true);
+                                $(this).attr('placeholder', 'ex:keyword1,keyword2,keyword3');
                             }
                         }
                     });
