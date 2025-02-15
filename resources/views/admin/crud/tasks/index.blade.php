@@ -218,11 +218,10 @@
     @endsection
 
 
-    <audio id="alarmSound" src="{{asset("alarm.mp3")}}"></audio>
-    <audio id="successSound" src="{{asset("alarm.mp3")}}"></audio>
-    <audio id="errorSound" src="{{asset("alarm.mp3")}}"></audio>
+    <audio id="alarmSound" src="{{asset("work.mp3")}}"></audio>
+    <audio id="successSound" src="{{asset("work.mp3")}}"></audio>
+    <audio id="errorSound" src="{{asset("work.mp3")}}"></audio>
     @push('scripts')
-    
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const counters = document.querySelectorAll(".counter");
