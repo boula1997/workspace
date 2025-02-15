@@ -2873,7 +2873,7 @@
 
 
 @if (boula() || App::environment('local'))
-    <audio id="alarmSound" src="{{ asset('alarm.mp3') }}" preload="auto"></audio>
+    {{-- <audio id="alarmSound" src="{{ asset('alarm.mp3') }}" preload="auto"></audio> --}}
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
