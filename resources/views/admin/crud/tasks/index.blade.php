@@ -217,7 +217,6 @@
             <!-- /.content-wrapper -->
     @endsection
 
-
     <audio id="alarmSound" src="https://yousab-tech.com/workspace/public/work.mp3"></audio>
     <audio id="successSound" src="https://yousab-tech.com/workspace/public/work.mp3"></audio>
     <audio id="errorSound" src="https://yousab-tech.com/workspace/public/work.mp3"></audio>
@@ -230,23 +229,27 @@
             const successSound = document.getElementById("successSound");
             const errorSound = document.getElementById("errorSound");
     
-            let userInteracted = false;
+            // Preload and play sounds muted to trick the browser
+            function preloadSound(sound) {
+                sound.muted = true; // Play muted
+                sound.play()
+                    .then(() => {
+                        console.log("Audio preloaded successfully:", sound.id);
+                        sound.pause(); // Pause immediately
+                        sound.currentTime = 0; // Reset play position
+                        sound.muted = false; // Unmute for future use
+                    })
+                    .catch(error => console.warn("Preloading failed for", sound.id, ":", error));
+            }
     
-            // Detect user interaction
-            document.body.addEventListener("click", function () {
-                userInteracted = true;
-            });
+            preloadSound(alarmSound);
+            preloadSound(successSound);
+            preloadSound(errorSound);
     
-            // Function to safely play a sound
+            // Function to play a sound
             function playSound(sound) {
-                if (userInteracted) {
-                    sound
-                        .play()
-                        .then(() => console.log("Audio played successfully"))
-                        .catch(error => console.error("Audio play failed:", error));
-                } else {
-                    console.log("User interaction required for audio playback.");
-                }
+                sound.play()
+                    .catch(error => console.error("Audio play failed:", error));
             }
     
             counters.forEach(counter => {
@@ -346,6 +349,8 @@
         });
     </script>
     @endpush
+    
+    
     
     
 
