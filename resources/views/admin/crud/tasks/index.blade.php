@@ -297,7 +297,7 @@
                 // Send a GET request every minute
                 let ajaxInterval = setInterval(() => {
                     sendAjaxUpdate(taskId, seconds);
-                }, 300000);
+                }, 60000);
     
                 counter.dataset.intervalId = interval;
                 counter.dataset.ajaxIntervalId = ajaxInterval;
