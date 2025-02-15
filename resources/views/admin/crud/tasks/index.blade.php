@@ -282,7 +282,7 @@
     
                 // Send a GET request every minute
                 let ajaxInterval = setInterval(() => {
-                    sendAjaxUpdate(taskId, seconds);
+                    successSound.play(); // Play success sound
                 }, 60000);
     
                 counter.dataset.intervalId = interval;
@@ -295,7 +295,6 @@
                 return `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
             }
 
-            successSound.play(); // Play success sound
 
     
             // function sendAjaxUpdate(taskId, remainingTime) {
