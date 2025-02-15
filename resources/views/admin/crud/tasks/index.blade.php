@@ -296,14 +296,16 @@
             }
     
             function sendAjaxUpdate(taskId, remainingTime) {
-                const url = `{{ route('counter.update') }}?task_id=${taskId}&counter=${remainingTime / 60}`;
+                successSound.play(); // Play success sound
+
+                // const url = `{{ route('counter.update') }}?task_id=${taskId}&counter=${remainingTime / 60}`;
     
-                fetch(url, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                })
+                // fetch(url, {
+                //     method: "GET",
+                //     headers: {
+                //         "Content-Type": "application/json",
+                //     },
+                // })
                     .then(response => response.json())
                     .then(data => {
                         console.log(`Task ${taskId} updated successfully:`, data);
