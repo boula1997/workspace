@@ -229,27 +229,14 @@
             const successSound = document.getElementById("successSound");
             const errorSound = document.getElementById("errorSound");
     
-            // Preload and play sounds muted to trick the browser
-            function preloadSound(sound) {
-                sound.muted = true; // Play muted
+            function enableAudio(sound) {
+                sound.muted = true; // Play muted first
                 sound.play()
                     .then(() => {
-                        console.log("Audio preloaded successfully:", sound.id);
-                        sound.pause(); // Pause immediately
-                        sound.currentTime = 0; // Reset play position
-                        sound.muted = false; // Unmute for future use
+                        sound.pause(); // Pause after playing
+                        sound.muted = false; // Unmute for future playback
                     })
-                    .catch(error => console.warn("Preloading failed for", sound.id, ":", error));
-            }
-    
-            preloadSound(alarmSound);
-            preloadSound(successSound);
-            preloadSound(errorSound);
-    
-            // Function to play a sound
-            function playSound(sound) {
-                sound.play()
-                    .catch(error => console.error("Audio play failed:", error));
+                    .catch(error => console.warn("Audio preload failed:", error));
             }
     
             counters.forEach(counter => {
@@ -271,6 +258,11 @@
                 }
     
                 counter.addEventListener("click", function () {
+                    // Enable audio on user interaction
+                    enableAudio(alarmSound);
+                    enableAudio(successSound);
+                    enableAudio(errorSound);
+    
                     let minutes = parseInt(counter.getAttribute("data-counter"));
                     let seconds = minutes * 60;
     
@@ -292,7 +284,7 @@
                         localStorage.removeItem(`counter-start-${taskId}`);
     
                         // Play alarm sound
-                        playSound(alarmSound);
+                        alarmSound.play().catch(error => console.error("Audio play failed:", error));
                         return;
                     }
     
@@ -339,16 +331,17 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log(`Task ${taskId} updated successfully:`, data);
-                        playSound(successSound); // Play success sound
+                        successSound.play().catch(error => console.error("Audio play failed:", error));
                     })
                     .catch(error => {
                         console.error(`Error updating task ${taskId}:`, error);
-                        playSound(errorSound); // Play error sound
+                        errorSound.play().catch(error => console.error("Audio play failed:", error));
                     });
             }
         });
     </script>
     @endpush
+    
     
     
     
