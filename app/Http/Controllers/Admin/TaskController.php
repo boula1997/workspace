@@ -323,7 +323,7 @@ class TaskController extends Controller
         $task = Task::find($taskId);
         if ($task) {
             $task->counter = $remainingTime;
-            $task->save();
+            // $task->save();
     
             return response()->json(['status' => 'success', 'message' => 'Task counter updated']);
         }
