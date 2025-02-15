@@ -218,9 +218,10 @@
     @endsection
 
 
-    <audio id="alarmSound" src="{{asset("work.mp3")}}"></audio>
-    <audio id="successSound" src="{{asset("work.mp3")}}"></audio>
-    <audio id="errorSound" src="{{asset("work.mp3")}}"></audio>
+    <audio id="alarmSound" src="{{asset('work.mp3')}}"></audio>
+    <audio id="successSound" src="{{asset('work.mp3')}}"></audio>
+    <audio id="errorSound" src="{{asset('work.mp3')}}"></audio>
+    
     @push('scripts')
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -228,6 +229,19 @@
             const alarmSound = document.getElementById("alarmSound");
             const successSound = document.getElementById("successSound");
             const errorSound = document.getElementById("errorSound");
+    
+            let userInteracted = false;
+    
+            // Detect user interaction
+            document.body.addEventListener("click", function () {
+                userInteracted = true;
+            });
+    
+            function playSound(sound) {
+                if (userInteracted) {
+                    sound.play().catch(error => console.error("Audio play failed:", error));
+                }
+            }
     
             counters.forEach(counter => {
                 const taskId = counter.getAttribute("data-task-id");
@@ -268,8 +282,8 @@
                         localStorage.removeItem(`counter-start-${taskId}`);
                         counter.textContent = "00:00";
     
-                        // 🔊 Play alert sound when countdown reaches 0
-                        alarmSound.play();
+                        // Play alarm sound if user has interacted
+                        playSound(alarmSound);
     
                         return;
                     }
@@ -296,7 +310,6 @@
             }
     
             function sendAjaxUpdate(taskId, remainingTime) {
-
                 const url = `{{ route('counter.update') }}?task_id=${taskId}&counter=${remainingTime / 60}`;
     
                 fetch(url, {
@@ -308,17 +321,17 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log(`Task ${taskId} updated successfully:`, data);
-                        successSound.play(); // Play success sound
+                        playSound(successSound); // Play success sound
                     })
                     .catch(error => {
                         console.error(`Error updating task ${taskId}:`, error);
-                        errorSound.play(); // Play error sound
+                        playSound(errorSound); // Play error sound
                     });
             }
         });
     </script>
-    
     @endpush
+    
 
     @push('scripts')
 
