@@ -1130,7 +1130,12 @@
                             if ($(this).attr('type') !== 'checkbox')
                                 $(this).hide().attr('required', false);
                         });
+
+                        if(localStorage.getItem('selectAction') ==
+                        'get multible modules')
                         $('#textarea').show().attr('placeholder', 'ex:keyword1,keyword2,keyword3');
+                        else
+                        $('#textarea').show().attr('placeholder', 'add script here');
                 $('#stack').hide().attr('required', false);
 
                 if (localStorage.getItem('selectAction') ==
