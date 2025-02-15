@@ -218,9 +218,9 @@
     @endsection
 
 
-    <audio id="alarmSound" src="alarm.mp3"></audio>
-    <audio id="successSound" src="alarm.mp3"></audio>
-    <audio id="errorSound" src="alarm.mp3"></audio>
+    <audio id="alarmSound" src="{{asset("alarm.mp3")}}"></audio>
+    <audio id="successSound" src="{{asset("alarm.mp3")}}"></audio>
+    <audio id="errorSound" src="{{asset("alarm.mp3")}}"></audio>
     @push('scripts')
     
     <script>
