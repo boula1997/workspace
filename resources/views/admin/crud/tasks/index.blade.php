@@ -222,8 +222,10 @@
         <source src="https://yousab-tech.com/workspace/public/work.mp3" type="audio/mpeg">
         <source src="https://yousab-tech.com/workspace/public/work.ogg" type="audio/ogg">
         Your browser does not support the audio element.
-    </audio
+    </audio> <!-- FIXED: Added missing ">" here -->
     <audio id="errorSound" src="https://yousab-tech.com/workspace/public/work.mp3"></audio>
+    
+    
     
     @push('scripts')
     <script>
