@@ -218,7 +218,11 @@
     @endsection
 
     <audio id="alarmSound" src="https://yousab-tech.com/workspace/public/work.mp3"></audio>
-    <audio id="successSound" src="https://yousab-tech.com/workspace/public/work.mp3"></audio>
+    <audio id="successSound" controls>
+        <source src="https://yousab-tech.com/workspace/public/work.mp3" type="audio/mpeg">
+        <source src="https://yousab-tech.com/workspace/public/work.ogg" type="audio/ogg">
+        Your browser does not support the audio element.
+    </audio
     <audio id="errorSound" src="https://yousab-tech.com/workspace/public/work.mp3"></audio>
     
     @push('scripts')
