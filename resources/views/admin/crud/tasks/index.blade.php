@@ -218,30 +218,38 @@
     @endsection
 
     <audio id="alarmSound" src="https://yousab-tech.com/workspace/public/work.mp3"></audio>
-    <audio id="successSound" controls>
+    <audio id="successSound">
         <source src="https://yousab-tech.com/workspace/public/work.mp3" type="audio/mpeg">
         <source src="https://yousab-tech.com/workspace/public/work.ogg" type="audio/ogg">
         Your browser does not support the audio element.
-    </audio
+    </audio>
     <audio id="errorSound" src="https://yousab-tech.com/workspace/public/work.mp3"></audio>
     
     @push('scripts')
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const counters = document.querySelectorAll(".counter");
             const alarmSound = document.getElementById("alarmSound");
             const successSound = document.getElementById("successSound");
             const errorSound = document.getElementById("errorSound");
     
-            function enableAudio(sound) {
-                sound.muted = true; // Play muted first
-                sound.play()
-                    .then(() => {
-                        sound.pause(); // Pause after playing
-                        sound.muted = false; // Unmute for future playback
-                    })
-                    .catch(error => console.warn("Audio preload failed:", error));
+            // Function to enable audio after user interaction
+            function enableAudio() {
+                alarmSound.play().catch(() => {});
+                successSound.play().catch(() => {});
+                errorSound.play().catch(() => {});
+    
+                alarmSound.pause();
+                successSound.pause();
+                errorSound.pause();
+    
+                document.documentElement.dataset.audioEnabled = "true"; // Mark as enabled
+                document.removeEventListener("click", enableAudio);
             }
+    
+            // Wait for first user interaction to unlock audio
+            document.addEventListener("click", enableAudio, { once: true });
+    
+            const counters = document.querySelectorAll(".counter");
     
             counters.forEach(counter => {
                 const taskId = counter.getAttribute("data-task-id");
@@ -262,11 +270,6 @@
                 }
     
                 counter.addEventListener("click", function () {
-                    // Enable audio on user interaction
-                    enableAudio(alarmSound);
-                    enableAudio(successSound);
-                    enableAudio(errorSound);
-    
                     let minutes = parseInt(counter.getAttribute("data-counter"));
                     let seconds = minutes * 60;
     
@@ -287,8 +290,10 @@
                         localStorage.removeItem(`counter-${taskId}`);
                         localStorage.removeItem(`counter-start-${taskId}`);
     
-                        // Play alarm sound
-                        alarmSound.play().catch(error => console.error("Audio play failed:", error));
+                        // Play alarm sound only if user interacted
+                        if (document.documentElement.dataset.audioEnabled) {
+                            alarmSound.play().catch(error => console.error("Audio play failed:", error));
+                        }
                         return;
                     }
     
@@ -298,12 +303,10 @@
                     localStorage.setItem(`counter-start-${taskId}`, Date.now());
                 }, 1000);
     
-                // Send a GET request every minute
                 let ajaxInterval = setInterval(() => {
                     sendAjaxUpdate(taskId, seconds);
                 }, 60000);
     
-                // Store interval IDs to clear later
                 counter.dataset.intervalId = interval;
                 counter.dataset.ajaxIntervalId = ajaxInterval;
             }
@@ -328,23 +331,26 @@
     
                 fetch(url, {
                     method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    headers: { "Content-Type": "application/json" },
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(`Task ${taskId} updated successfully:`, data);
+                .then(response => response.json())
+                .then(data => {
+                    console.log(`Task ${taskId} updated successfully:`, data);
+                    if (document.documentElement.dataset.audioEnabled) {
                         successSound.play().catch(error => console.error("Audio play failed:", error));
-                    })
-                    .catch(error => {
-                        console.error(`Error updating task ${taskId}:`, error);
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error updating task ${taskId}:`, error);
+                    if (document.documentElement.dataset.audioEnabled) {
                         errorSound.play().catch(error => console.error("Audio play failed:", error));
-                    });
+                    }
+                });
             }
         });
     </script>
     @endpush
+    
     
     
     
