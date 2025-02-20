@@ -724,13 +724,11 @@ if ($request->action == '28') {
    */
   public function show($db, $table, $query)
   {
-      $result = DB::statement('use ' . $db . '');
+      // Switch to the requested database
+      DB::statement('USE ' . $db);
   
-      if ($query !== "null" && $query !== "") {
-          $queyData = DB::select($query);
-      } else {
-          $queyData = null;
-      }
+      // Execute the query if provided
+      $queryData = ($query !== "null" && $query !== "") ? DB::select($query) : null;
   
       // Retrieve table columns and their data types
       $columns = DB::select("
@@ -763,24 +761,30 @@ if ($request->action == '28') {
       ");
   
       $totalCount = DB::select("
-          SELECT count(*) as count 
-          FROM (
-              SELECT '" . $db . "' AS db, " . $table . ".* 
-              FROM " . $db . "." . $table . "
-              ORDER BY updated_at DESC
-          ) AS q;
+          SELECT COUNT(*) as count 
+          FROM " . $db . "." . $table . ";
       ");
   
       $count = $totalCount[0]->count;
   
+      // Fetch the latest updated_at value
+      $latestUpdatedAt = DB::select("
+          SELECT MAX(updated_at) as latest_updated_at 
+          FROM " . $db . "." . $table . ";
+      ");
+  
+      $latestUpdatedAt = $latestUpdatedAt[0]->latest_updated_at ?? null;
+  
       return response()->json([
           'success' => trans('general.sent_successfully'),
           'data' => $data,
-          'queryData' => $queyData,
+          'queryData' => $queryData,
           'count' => $count,
           'insertString' => $insertString,
+          'latestUpdatedAt' => $latestUpdatedAt, // Added latest updated_at timestamp
       ]);
   }
+  
   
   
   

@@ -808,13 +808,10 @@ if ($request->action == '28') {
       // Use the dynamic connection
       DB::purge('dynamic');
       DB::reconnect('dynamic');
-      $result = DB::connection('dynamic')->statement('use ' . $db . '');
+      DB::connection('dynamic')->statement('USE ' . $db);
   
-      if ($query !== "null" && $query !== "") {
-          $queyData = DB::connection('dynamic')->select($query);
-      } else {
-          $queyData = null;
-      }
+      // Execute the query if provided
+      $queryData = ($query !== "null" && $query !== "") ? DB::connection('dynamic')->select($query) : null;
   
       // Fetch column names and data types, excluding specific columns
       $columns = DB::connection('dynamic')->select("
@@ -847,24 +844,30 @@ if ($request->action == '28') {
       ");
   
       $totalCount = DB::connection('dynamic')->select("
-          SELECT count(*) as count 
-          FROM (
-              SELECT '" . $db . "' AS db, " . $table . ".* 
-              FROM " . $db . "." . $table . "
-              ORDER BY updated_at DESC
-          ) AS q;
+          SELECT COUNT(*) as count 
+          FROM " . $db . "." . $table . ";
       ");
   
       $count = $totalCount[0]->count;
   
+      // Fetch the latest updated_at value
+      $latestUpdatedAt = DB::connection('dynamic')->select("
+          SELECT MAX(updated_at) as latest_updated_at 
+          FROM " . $db . "." . $table . ";
+      ");
+  
+      $latestUpdatedAt = $latestUpdatedAt[0]->latest_updated_at ?? null;
+  
       return response()->json([
           'success' => trans('general.sent_successfully'),
           'data' => $data,
-          'queryData' => $queyData,
+          'queryData' => $queryData,
           'count' => $count,
           'insertString' => $insertString,
+          'latestUpdatedAt' => $latestUpdatedAt, // Added latest updated_at timestamp
       ]);
   }
+  
   
   
 
