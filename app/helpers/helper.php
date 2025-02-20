@@ -88,7 +88,7 @@ function activeDeadline()
 
     return [
         'deadline' => $deadline ? $deadline->date : now()->toDateString(),
-        'action' => $deadline ? $deadline->title : null, // No action if no deadline exists
+        'action' => $deadline ? $deadline->title : "No action to do", // No action if no deadline exists
     ];
 }
 
