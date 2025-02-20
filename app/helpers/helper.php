@@ -78,6 +78,20 @@ function clearTasks($taskTitle)
 }
 
 
+function activeDeadline()
+{
+    // Get the closest deadline that is today or in the future
+    $deadline = Deadline::where('date', '>=', now()->toDateString())
+                        ->orderBy('date', 'asc')
+                        ->first();
+
+
+    return [
+        'deadline' => $deadline->date,
+        'action' => $deadline->title,
+    ];
+}
+
 function taskLog($action,$task_title){
 
     $task=Task::where('title',$task_title)->where('employee_id',auth()->user()->id)->first();

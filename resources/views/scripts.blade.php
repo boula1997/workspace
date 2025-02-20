@@ -1812,8 +1812,9 @@
                     $('#surveyModal').modal('show');
                 }
 
-                var targetDate = "{{ settings()->home4g }}"; // Ensure this is in 'YYYY-MM-DD' format
-
+                var targetDate = "{{ activeDeadline()['date'] }}"; // Ensure this is in 'YYYY-MM-DD' format
+                var targetTitile = "{{ activeDeadline()['title'] }}"; // Ensure this is in 'YYYY-MM-DD' format
+                
                 $(document).ready(function () {
                 function getRemainingDays(targetDate) {
                     var target = new Date(targetDate);
@@ -1827,8 +1828,8 @@
                 }
 
                 var remainingDays = getRemainingDays(targetDate);
-                console.log("Remaining days: " + remainingDays);
-                alert(remainingDays + " days remaining");
+                console.log("Remaining days: " +targetTitile+ remainingDays);
+                alert(remainingDays + " days remaining" + 'to '+targetTitile);
                 });
 
             });
