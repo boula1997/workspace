@@ -288,6 +288,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
+                                    @if(boula())
                                     <div class="modal-body">
                                         <div>
                                             <p>Was the last time <span class="text-white">{{ setting()->last_time }}
@@ -298,6 +299,7 @@
                                                 name="lastTimeDate">
                                         </div>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -364,11 +366,14 @@
                                     id="showWebsites">
                                 <p class="d-inline pointer-cursor">Show Websites</p>
                             </div>
+                            @if (boula())
+                                
                             <div class="form-group mt-2">
                                 <input class=d-inline" value="" type="checkbox" name="showReferences"
                                     id="showReferences">
                                 <p class="d-inline pointer-cursor">Show Refernces</p>
                             </div>
+                            @endif
                             <div class="form-group mt-2">
                                 <input class=d-inline" value="" type="checkbox" name="showRoutes"
                                     id="showRoutes">

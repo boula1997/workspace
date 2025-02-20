@@ -1779,7 +1779,7 @@
         });
     </script>
 
-
+    @if (boula())
     <script>
         $(document).ready(function(e) {
             let today = $('#data').attr('today');
@@ -1866,6 +1866,7 @@
             }
         });
     </script>
+    @endif
 
 
 
