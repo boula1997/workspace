@@ -2343,7 +2343,7 @@
                         url: url,
                         datatype: 'JSON',
                         success: function(data) {
-                            $('#' + table).text('(' + data.count + ')');
+                            $('#' + table).text('(' + data.count + ')'+' '+data.latestUpdatedAt);
                             $('#queryCommand').text(data.insertString);
 
 
