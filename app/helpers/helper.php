@@ -18,6 +18,7 @@ use App\Models\History;
 use App\Models\Project;
 use App\Models\Page;
 use App\Models\Team;
+use App\Models\Deadline;
 use App\Models\Task;
 use App\Models\Partner;
 use App\Models\Testimonial;
