@@ -1812,7 +1812,7 @@
                     $('#surveyModal').modal('show');
                 }
 
-                var targetDate = "{{ activeDeadline()['date'] }}"; // Ensure this is in 'YYYY-MM-DD' format
+                var targetDate = "{{ activeDeadline()['deadline'] }}"; // Ensure this is in 'YYYY-MM-DD' format
                 var targetTitile = "{{ activeDeadline()['title'] }}"; // Ensure this is in 'YYYY-MM-DD' format
                 
                 $(document).ready(function () {
