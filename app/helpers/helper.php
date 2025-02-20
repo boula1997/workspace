@@ -86,12 +86,12 @@ function activeDeadline()
                         ->orderBy('date', 'asc')
                         ->first();
 
-
     return [
-        'deadline' => $deadline->date,
-        'action' => $deadline->title,
+        'deadline' => $deadline ? $deadline->date : now()->toDateString(),
+        'action' => $deadline ? $deadline->title : null, // No action if no deadline exists
     ];
 }
+
 
 function taskLog($action,$task_title){
 
