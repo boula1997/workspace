@@ -2704,7 +2704,6 @@
     <script>
         $(document).on('click', '.clickable-text', function(e) {
             navigator.clipboard.writeText($(this).attr('content'));
-            toastNow();
 
         });
     </script>
