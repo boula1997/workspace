@@ -132,7 +132,7 @@
 
                                                                 <td class="clickable-text {{ request()->routeIs('tasks.all') && $task->status == 1 ? 'text-success' : '' }} identified"
                                                                     style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 500px;"
-                                                                    onclick="toggleCheckbox({{ $task->id }})">
+                                                                    onclick="toggleCheckbox({{ $task->id }})" content="{{ $task->title }}">
                                                                     {{ $task->title }}
                                                                 </td>
 
