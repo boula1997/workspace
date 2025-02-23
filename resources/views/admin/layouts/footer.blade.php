@@ -224,6 +224,13 @@ if (localStorage.getItem('darkmode')==true || userEmail === "nessimboula@gmail.c
           setInterval(checkTime, 1000); // Check every second
       });
   </script>
+
+
+<script>
+  $(document).on('click', '.clickable-text', function(e) {
+      navigator.clipboard.writeText($(this).attr('content'));
+  });
+</script>
 @endif
 
 </body>
