@@ -40,9 +40,9 @@ class Task extends Model
     {
         $this->attributes['title'] = trim($value);
     }
-    public function getCounterAttribute($value)
+    public function getCountAttribute($value)
     {
-        $this->status !=0 ?0:$this->counter;
+        $this->status !=0 ?0:$this->count;
     }
 
     protected static function booted()
