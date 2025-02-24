@@ -316,11 +316,17 @@ class TaskController extends Controller
 
     public function updateCounter(Request $request)
     {
+
+
+
         $taskId = $request->query('task_id'); // Retrieve query parameter
         $remainingTime = $request->query('counter'); // Retrieve query parameter
     
         // Update the task in the database (example)
         $task = Task::find($taskId);
+        if($task->counter==0)
+        return response()->json(['status' => 'error', 'message' => 'Task is finished'], 404);
+
         if ($task) {
             $task->counter = $remainingTime;
             // $task->save();
