@@ -336,8 +336,10 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        console.log(`Task ${taskId} updated successfully:`, data);
-                        successSound.play().catch(error => console.error("Audio play failed:", error));
+                        if(data.success){
+                            console.log(`Task ${taskId} updated successfully:`, data);
+                            successSound.play().catch(error => console.error("Audio play failed:", error));
+                        }
                     })
                     .catch(error => {
                         console.error(`Error updating task ${taskId}:`, error);
