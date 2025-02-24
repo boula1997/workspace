@@ -339,6 +339,9 @@
                         if(data.status=='success'){
                             console.log(`Task ${taskId} updated successfully:`, data);
                             successSound.play().catch(error => console.error("Audio play failed:", error));
+                        }else{
+                            localStorage.removeItem(`counter-${taskId}`);
+                            localStorage.removeItem(`counter-start-${taskId}`);
                         }
                     })
                     .catch(error => {
