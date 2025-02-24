@@ -336,7 +336,7 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        if(data.success){
+                        if(data.status=='success'){
                             console.log(`Task ${taskId} updated successfully:`, data);
                             successSound.play().catch(error => console.error("Audio play failed:", error));
                         }
