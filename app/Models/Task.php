@@ -42,8 +42,9 @@ class Task extends Model
     }
     public function getCounterAttribute($value)
     {
-        $this->status !=0 ?0:$this->counter;
+        return $this->status != 0 ? 0 : $value;
     }
+    
 
     protected static function booted()
     {
