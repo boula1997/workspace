@@ -137,7 +137,7 @@
                                                                 </td>
 
                                                                 <td class="toggleLevel" style="cursor: pointer" id="{{$task->id}}">{{$task->level?'mobile':'pc' }}</td>
-                                                                <td class="counter" data-task-id="{{ $task->id }}" data-task-status="{{ $task->status }}" data-counter="{{ $task->counter }}" style="cursor: pointer;">
+                                                                <td class="counter" data-task-id="{{ $task->id }}" data-counter="{{ $task->counter }}" style="cursor: pointer;">
                                                                     {{ $task->counter }}
                                                                 </td>
                                                                 <td class="togglePiority" style="cursor: pointer" id="{{$task->id}}">{{$task->pority?'Important':'Normal' }}</td>
@@ -151,7 +151,7 @@
                                                                     
                                                                     <button class="btn btn-outline-secondary btn-sm mx-1"
                                                                     data-toggle="modal" data-target="#keywordsModal"
-                                                                    data-task-id="{{ $task->id }}"  data-task-status="{{ $task->status }}"
+                                                                    data-task-id="{{ $task->id }}"
                                                                     data-keywords="{{ $task->keywords }}"
                                                                     data-task-title="{{ $task->title }}" type="button">
                                                                     <i class="fas fa-key fa-lg"></i>
@@ -247,7 +247,6 @@
     
             counters.forEach(counter => {
                 const taskId = counter.getAttribute("data-task-id");
-                const taskStatus = counter.getAttribute("data-task-status");
                 let storedTime = localStorage.getItem(`counter-${taskId}`);
                 let startTime = localStorage.getItem(`counter-start-${taskId}`);
     
@@ -257,7 +256,7 @@
     
                     counter.textContent = formatTime(remainingTime);
                     if (remainingTime > 0) {
-                        startCountdown(taskId, counter, remainingTime,taskStatus);
+                        startCountdown(taskId, counter, remainingTime);
                     } else {
                         localStorage.removeItem(`counter-${taskId}`);
                         localStorage.removeItem(`counter-start-${taskId}`);
@@ -276,11 +275,11 @@
                     localStorage.setItem(`counter-${taskId}`, seconds);
                     localStorage.setItem(`counter-start-${taskId}`, Date.now());
     
-                    startCountdown(taskId, counter, seconds,taskStatus);
+                    startCountdown(taskId, counter, seconds);
                 });
             });
     
-            function startCountdown(taskId, counter, seconds,taskStatus) {
+            function startCountdown(taskId, counter, seconds) {
                 clearExistingIntervals(counter);
     
                 let interval = setInterval(() => {
@@ -303,7 +302,7 @@
     
                 // Send a GET request every minute
                 let ajaxInterval = setInterval(() => {
-                    sendAjaxUpdate(taskId, seconds,taskStatus);
+                    sendAjaxUpdate(taskId, seconds);
                 }, 60000);
     
                 // Store interval IDs to clear later
@@ -337,10 +336,8 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        if(taskStatus!=0){
-                            console.log(`Task ${taskId} updated successfully:`, data);
-                            successSound.play().catch(error => console.error("Audio play failed:", error));
-                        }
+                        console.log(`Task ${taskId} updated successfully:`, data);
+                        successSound.play().catch(error => console.error("Audio play failed:", error));
                     })
                     .catch(error => {
                         console.error(`Error updating task ${taskId}:`, error);
