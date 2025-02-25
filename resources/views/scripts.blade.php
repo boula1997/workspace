@@ -1830,6 +1830,7 @@
                 var remainingDays = getRemainingDays(targetDate);
                 console.log("Remaining days: " +targetTitile+ remainingDays);
                 alert(remainingDays + " days remaining" + 'to '+targetTitile);
+                alert("Check important tasks email!");
                 });
 
             });
