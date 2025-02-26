@@ -140,7 +140,7 @@
                                                                 <td class="counter" data-task-id="{{ $task->id }}" data-counter="{{ $task->counter }}" style="cursor: pointer;">
                                                                     {{ $task->counter }}
                                                                 </td>
-                                                                <td class="togglePiority" style="cursor: pointer" id="{{$task->id}}">{{$task->pority?'Important':'Normal' }}</td>
+                                                                <td class="togglePiority" style="cursor: pointer" id="{{$task->id}}">{{$task->piority?'Important':'Normal' }}</td>
                                                                 <td>{{ isset($task->project->title) ? $task->project->title:'None' }}</td>
                                                                 <td>{{ taskEmployees($task->title) }}</td>
                                                                 
