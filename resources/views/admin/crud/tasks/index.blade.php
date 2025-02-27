@@ -329,6 +329,10 @@
             }
     
             function sendAjaxUpdate(taskId, remainingTime) {
+
+                if(Math.floor(remainingTime / 60)==1){
+                    alarmSound2.play().catch(error => console.error("Audio play failed:", error));
+                }
                 const url = `{{ route('counter.update') }}?task_id=${taskId}&counter=${Math.floor(remainingTime / 60)}`;
     
                 fetch(url, {
