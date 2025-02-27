@@ -33,6 +33,10 @@
         <button class="btn btn-outline-warning col-2" id="{{boula()?'close':''}}">colse</button>
         <button class="btn btn-outline-warning col-2" id="{{boula()?'dashboard':''}}">Dashboard</button>
     </div>
+    <div class="row d-flex justify-content-center">
+        <button class="btn btn-outline-warning col-2" id="{{boula()?'local':''}}">Local</button>
+        <button class="btn btn-outline-warning col-2" id="{{boula()?'server':''}}">Server</button>
+    </div>
     
     {{-- <button class="btn btn-outline-warning col-2" id="{{boula()?'motahda':''}}">Motahda</button>
     <button class="btn btn-outline-warning col-1" id="{{boula()?'second':''}}">Second</button> --}}
