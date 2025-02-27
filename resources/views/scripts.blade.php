@@ -1948,14 +1948,14 @@
             });
             $('#dashboard').on('click', function(e) {
                 e.preventDefault();
-                window.location.href = 'http://localhost/workspace/public/en/dashboard';
+                window.location.href = 'https://yousab-tech.com/workspace/public/en/dashboard';
                 toastNow();
             });
 
 
             $('#local').on('click', function(e) {
                 e.preventDefault();
-                window.location.href = 'https://yousab-tech.com/workspace/public/en/';
+                window.location.href = 'http://localhost/workspace/public/en/';
                 toastNow();
             });     
 
