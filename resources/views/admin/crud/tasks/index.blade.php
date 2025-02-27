@@ -293,10 +293,11 @@
                         localStorage.removeItem(`counter-start-${taskId}`);
     
                         // Play alarm sound
-                        alarmSound.play().catch(error => console.error("Audio play failed:", error));
+                        alarmSound2.play().catch(error => console.error("Audio play failed:", error));
+
                         return;
                     }
-                    alarmSound2.play().catch(error => console.error("Audio play failed:", error));
+                    alarmSound.play().catch(error => console.error("Audio play failed:", error));
                     seconds--;
                     counter.textContent = formatTime(seconds);
                     localStorage.setItem(`counter-${taskId}`, seconds);
