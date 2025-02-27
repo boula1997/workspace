@@ -218,6 +218,7 @@
     @endsection
 
     <audio id="alarmSound" src="https://yousab-tech.com/workspace/public/work.mp3"></audio>
+    <audio id="alarmSound2" src="https://yousab-tech.com/workspace/public/hurry.mp3"></audio>
     <audio id="successSound" controls>
         <source src="https://yousab-tech.com/workspace/public/work.mp3" type="audio/mpeg">
         <source src="https://yousab-tech.com/workspace/public/work.ogg" type="audio/ogg">
@@ -232,6 +233,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             const counters = document.querySelectorAll(".counter");
             const alarmSound = document.getElementById("alarmSound");
+            const alarmSound2 = document.getElementById("alarmSound2");
             const successSound = document.getElementById("successSound");
             const errorSound = document.getElementById("errorSound");
     
@@ -266,6 +268,7 @@
                 counter.addEventListener("click", function () {
                     // Enable audio on user interaction
                     enableAudio(alarmSound);
+                    enableAudio(alarmSound2);
                     enableAudio(successSound);
                     enableAudio(errorSound);
     
@@ -293,7 +296,7 @@
                         alarmSound.play().catch(error => console.error("Audio play failed:", error));
                         return;
                     }
-    
+                    alarmSound2.play().catch(error => console.error("Audio play failed:", error));
                     seconds--;
                     counter.textContent = formatTime(seconds);
                     localStorage.setItem(`counter-${taskId}`, seconds);
