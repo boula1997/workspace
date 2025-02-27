@@ -1961,7 +1961,7 @@
 
             $('#server').on('click', function(e) {
                 e.preventDefault();
-                window.location.href = 'ht  tps://yousab-tech.com/workspace/public/en/dashboard/tasks';
+                window.location.href = 'https://yousab-tech.com/workspace/public/en/dashboard/tasks';
                 toastNow();
             });
 
