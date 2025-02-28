@@ -526,7 +526,7 @@
                                     placeholder="all,input,inputtrans,textarea,textareatrans,select,multiselect,radio,file,multifile,image,multimage">
                             </div>
                             <div class="form-group mt-2">
-                                <textarea class="form-control   text-white" name="script" id="textarea" cols="30" rows="20"></textarea>
+                                <textarea class="form-control   text-white" name="script" id="textarea" placeholder="ex: keyword1, keyword2, keyword3" cols="30" rows="20"></textarea>
                                 {{-- <input type="text" class="form-control   text-white" name="script" placeholder="Insert script"> --}}
                             </div>
 

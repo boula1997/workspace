@@ -147,7 +147,7 @@
                         " MINUTE) \\G;";
                     $(this).text(updatedQuery); // Update the text inside the span
                     $(this).attr('content',
-                    updatedQuery); // Update the content attribute if necessary
+                        updatedQuery); // Update the content attribute if necessary
                 });
 
                 // Toggle visibility
@@ -165,7 +165,7 @@
                         " MINUTE) \\G;";
                     $(this).text(updatedQuery); // Update the text inside the span
                     $(this).attr('content',
-                    updatedQuery); // Update the content attribute if necessary
+                        updatedQuery); // Update the content attribute if necessary
                 });
 
             });
@@ -1117,8 +1117,7 @@
                     'add module' || localStorage.getItem('selectAction') ==
                     'get multible scripts') {
                     $('#projectContent').attr('checked', true);
-                    alert(400);
-                   $('#textarea').show().attr('placeholder', 'ex:keyword1,keyword2,keyword3');
+                    $('#textarea').show().attr('placeholder', 'ex: keyword1, keyword2, keyword3');
 
                 } else {
 
@@ -1132,11 +1131,11 @@
                                 $(this).hide().attr('required', false);
                         });
 
-                        if(localStorage.getItem('selectAction') ==
-                        'get multible modules')
-                        $('#textarea').show().attr('placeholder', 'ex:keyword1,keyword2,keyword3');
-                        else
-                        $('#textarea').show().attr('placeholder', 'add script here');
+                if (localStorage.getItem('selectAction') ==
+                    'get multible modules')
+                    $('#textarea').show().attr('placeholder', 'ex:keyword1,keyword2,keyword3');
+                else
+                    $('#textarea').show().attr('placeholder', 'add script here');
                 $('#stack').hide().attr('required', false);
 
                 if (localStorage.getItem('selectAction') ==
@@ -1477,7 +1476,8 @@
                         if ($(this).val() == '16') {
                             if ($(this).text() == 'get multible scripts') {
                                 $(this).attr('selected', true);
-                                $('#textarea').show().attr('placeholder', 'ex:keyword1,keyword2,keyword3');
+                                $('#textarea').show().attr('placeholder',
+                                    'ex:keyword1,keyword2,keyword3');
                             }
                         }
                     });
@@ -1781,93 +1781,95 @@
     </script>
 
     @if (boula())
-    <script>
-        $(document).ready(function(e) {
-            let today = $('#data').attr('today');
-            let tomorrow = $('#data').attr('tomorrow');
+        <script>
+            $(document).ready(function(e) {
+                let today = $('#data').attr('today');
+                let tomorrow = $('#data').attr('tomorrow');
 
-            // Prevent modal from closing when clicking "Yes" or "No" buttons
-            $('#yes, #no').on('click', function(e) {
-                e.preventDefault();
-
-
-                // Custom logic for Yes button
-                if ($(this).attr('id') === 'yes') {
-                    $('input[name="showSurvey"]').removeAttr('checked');
-                    localStorage.setItem('tomorrow', tomorrow);
-                    $('#showSurvey').click();
-                    // Close the modal
-                    $('#surveyModal').modal('hide');
-                }
-
-                // Custom logic for No button
-                if ($(this).attr('id') === 'no') {
-                    e.stopPropagation();
-                    $('input[name="showSurvey"]').removeAttr('checked');
-                    localStorage.setItem('tomorrow', tomorrow);
-                    $('input[name="lastTimeDate"]').show().attr('placeholder',
-                        'Enter lastTimeDate');
-                    $('#showSurvey').click();
-
-                    // Keep the modal open
-                    $('#surveyModal').modal('show');
-                }
-
-                var targetDate = "{{ activeDeadline()['deadline'] }}"; // Ensure this is in 'YYYY-MM-DD' format
-                var targetTitile = "{{ activeDeadline()['action'] }}"; // Ensure this is in 'YYYY-MM-DD' format
-                
-                $(document).ready(function () {
-                function getRemainingDays(targetDate) {
-                    var target = new Date(targetDate);
-                    var today = new Date();
-                    today.setHours(0, 0, 0, 0); // Reset time to avoid time differences
-
-                    var timeDiff = target.getTime() - today.getTime();
-                    var daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-                    return daysRemaining >= 0 ? daysRemaining : 0; // Ensure no negative values
-                }
-
-                });
-
-            });
+                // Prevent modal from closing when clicking "Yes" or "No" buttons
+                $('#yes, #no').on('click', function(e) {
+                    e.preventDefault();
 
 
-
-
-
-            $('#lastTimeDate').on('change', function(e) {
-                e.preventDefault();
-                $('#surveyModal').modal('hide');
-                // localStorage.setItem('last_time', $(this).val());
-                let url = "{{ route('last.update', [':date']) }}"
-                url = url.replace(':date', $(this).val());
-                $.ajax({
-                    type: "Get",
-                    url: url,
-                    datatype: 'JSON',
-                    success: function(data) {
-                        toastNow();
-                    },
-                    error: function(reject) {
-                        console.log(reject);
+                    // Custom logic for Yes button
+                    if ($(this).attr('id') === 'yes') {
+                        $('input[name="showSurvey"]').removeAttr('checked');
+                        localStorage.setItem('tomorrow', tomorrow);
+                        $('#showSurvey').click();
+                        // Close the modal
+                        $('#surveyModal').modal('hide');
                     }
+
+                    // Custom logic for No button
+                    if ($(this).attr('id') === 'no') {
+                        e.stopPropagation();
+                        $('input[name="showSurvey"]').removeAttr('checked');
+                        localStorage.setItem('tomorrow', tomorrow);
+                        $('input[name="lastTimeDate"]').show().attr('placeholder',
+                            'Enter lastTimeDate');
+                        $('#showSurvey').click();
+
+                        // Keep the modal open
+                        $('#surveyModal').modal('show');
+                    }
+
+                    var targetDate =
+                    "{{ activeDeadline()['deadline'] }}"; // Ensure this is in 'YYYY-MM-DD' format
+                    var targetTitile =
+                    "{{ activeDeadline()['action'] }}"; // Ensure this is in 'YYYY-MM-DD' format
+
+                    $(document).ready(function() {
+                        function getRemainingDays(targetDate) {
+                            var target = new Date(targetDate);
+                            var today = new Date();
+                            today.setHours(0, 0, 0, 0); // Reset time to avoid time differences
+
+                            var timeDiff = target.getTime() - today.getTime();
+                            var daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+                            return daysRemaining >= 0 ? daysRemaining : 0; // Ensure no negative values
+                        }
+
+                    });
+
                 });
 
+
+
+
+
+                $('#lastTimeDate').on('change', function(e) {
+                    e.preventDefault();
+                    $('#surveyModal').modal('hide');
+                    // localStorage.setItem('last_time', $(this).val());
+                    let url = "{{ route('last.update', [':date']) }}"
+                    url = url.replace(':date', $(this).val());
+                    $.ajax({
+                        type: "Get",
+                        url: url,
+                        datatype: 'JSON',
+                        success: function(data) {
+                            toastNow();
+                        },
+                        error: function(reject) {
+                            console.log(reject);
+                        }
+                    });
+
+                });
+
+                // $('#time').text(localStorage.getItem('last_time'));
+                //    alert(localStorage.getItem('tomorrow'))
+                if (today >= localStorage.getItem('tomorrow') || localStorage.getItem('tomorrow') == null) {
+                    var remainingDays = getRemainingDays(targetDate);
+                    console.log("Remaining days: " + targetTitile + remainingDays);
+                    alert(remainingDays + " days remaining" + 'to ' + targetTitile);
+                    alert("Check important tasks email!");
+                    $('#surveyModal').modal('show');
+
+                }
             });
-
-            // $('#time').text(localStorage.getItem('last_time'));
-            //    alert(localStorage.getItem('tomorrow'))
-            if (today >= localStorage.getItem('tomorrow') || localStorage.getItem('tomorrow') == null) {
-                var remainingDays = getRemainingDays(targetDate);
-                console.log("Remaining days: " +targetTitile+ remainingDays);
-                alert(remainingDays + " days remaining" + 'to '+targetTitile);
-                alert("Check important tasks email!");
-                $('#surveyModal').modal('show');
-
-            }
-        });
-    </script>
+        </script>
     @endif
 
 
@@ -1958,7 +1960,7 @@
                 e.preventDefault();
                 window.location.href = 'http://localhost/workspace/public/en/';
                 toastNow();
-            });     
+            });
 
             $('#server').on('click', function(e) {
                 e.preventDefault();
@@ -2358,7 +2360,8 @@
                         url: url,
                         datatype: 'JSON',
                         success: function(data) {
-                            $('#' + table).text('(' + data.count + ')'+' '+data.latestUpdatedAt);
+                            $('#' + table).text('(' + data.count + ')' + ' ' + data
+                                .latestUpdatedAt);
                             $('#queryCommand').text(data.insertString);
 
 
@@ -2852,72 +2855,72 @@
     </script>
 
 
-<script>
-    $(document).on('change', '#tablename', function() {
-        let dbname = $('#db_name').val();
-        let tablename = $('#tablename').val();
-
-        if (dbname && tablename) {
-            $.ajax({
-                url: '{{route("getTableColumns")}}', // Adjust this route according to your setup
-                method: 'POST',
-                data: {
-                    dbname: dbname,
-                    tablename: tablename,
-                    _token: '{{ csrf_token() }}' // Include CSRF token for security
-                },
-                success: function(response) {
-                    if (response.columns && response.dataTypes) {
-                        $('#attributes').val(response.columns);
-                        $('#attrtypes').val(response.dataTypes);
-                        // console.log('Columns:', response.columns);
-                        // console.log('Data Types:', response.dataTypes);
-                        // // You can handle these strings as needed
-                    }
-                },
-                error: function(xhr) {
-                    console.error('An error occurred:', xhr.responseJSON?.error);
-                }
-            });
-        } else {
-            console.error('Database name and table name must be provided');
-        }
-    });
-</script>
-
-
-
-
-
-@if (boula() || App::environment('local'))
-    {{-- <audio id="alarmSound" src="{{ asset('alarm.mp3') }}" preload="auto"></audio> --}}
-
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-          let alarm = document.getElementById("alarmSound");
-          let lastPlayedHour = null; // Store last played hour to prevent re-triggering
-          
-          function checkTime() {
-              const now = new Date();
-              const currentHour = now.getHours();
-              const minutes = now.getMinutes();
-              const seconds = now.getSeconds();
+        $(document).on('change', '#tablename', function() {
+            let dbname = $('#db_name').val();
+            let tablename = $('#tablename').val();
 
-              // Play alarm only at the start of an hour and prevent multiple triggers
-              if (minutes === 0 && seconds === 0 && lastPlayedHour !== currentHour) {
-                  lastPlayedHour = currentHour; // Update last played hour
-                  localStorage.setItem('lastPlayedHourAdmin',lastPlayedHour);
-                  alarm.volume = 1; 
-                  alarm.play().catch(error => console.error("Playback failed:", error));
-                  localStorage.setItem("failed", error);
+            if (dbname && tablename) {
+                $.ajax({
+                    url: '{{ route('getTableColumns') }}', // Adjust this route according to your setup
+                    method: 'POST',
+                    data: {
+                        dbname: dbname,
+                        tablename: tablename,
+                        _token: '{{ csrf_token() }}' // Include CSRF token for security
+                    },
+                    success: function(response) {
+                        if (response.columns && response.dataTypes) {
+                            $('#attributes').val(response.columns);
+                            $('#attrtypes').val(response.dataTypes);
+                            // console.log('Columns:', response.columns);
+                            // console.log('Data Types:', response.dataTypes);
+                            // // You can handle these strings as needed
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('An error occurred:', xhr.responseJSON?.error);
+                    }
+                });
+            } else {
+                console.error('Database name and table name must be provided');
+            }
+        });
+    </script>
 
-              }
-          }
 
-          setInterval(checkTime, 1000); // Check every second
-      });
-  </script>
-@endif
+
+
+
+    @if (boula() || App::environment('local'))
+        {{-- <audio id="alarmSound" src="{{ asset('alarm.mp3') }}" preload="auto"></audio> --}}
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                let alarm = document.getElementById("alarmSound");
+                let lastPlayedHour = null; // Store last played hour to prevent re-triggering
+
+                function checkTime() {
+                    const now = new Date();
+                    const currentHour = now.getHours();
+                    const minutes = now.getMinutes();
+                    const seconds = now.getSeconds();
+
+                    // Play alarm only at the start of an hour and prevent multiple triggers
+                    if (minutes === 0 && seconds === 0 && lastPlayedHour !== currentHour) {
+                        lastPlayedHour = currentHour; // Update last played hour
+                        localStorage.setItem('lastPlayedHourAdmin', lastPlayedHour);
+                        alarm.volume = 1;
+                        alarm.play().catch(error => console.error("Playback failed:", error));
+                        localStorage.setItem("failed", error);
+
+                    }
+                }
+
+                setInterval(checkTime, 1000); // Check every second
+            });
+        </script>
+    @endif
 
 
 
