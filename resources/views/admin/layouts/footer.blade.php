@@ -10,7 +10,7 @@
 <!-- /.control-sidebar -->
 <!-- ./wrapper -->
 
-
+@include('navIcon')
 
 <script src="{{ asset('bootstrap-5.3.1-dist\js\bootstrap.js') }}"></script>
 <!-- jQuery -->
