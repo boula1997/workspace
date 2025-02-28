@@ -850,4 +850,6 @@
 
 @include('scripts')
 
+@include('navIcon')
+
 </html>
