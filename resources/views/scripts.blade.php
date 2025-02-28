@@ -1814,9 +1814,9 @@
                     }
 
                     var targetDate =
-                    "{{ activeDeadline()['deadline'] }}"; // Ensure this is in 'YYYY-MM-DD' format
+                        "{{ activeDeadline()['deadline'] }}"; // Ensure this is in 'YYYY-MM-DD' format
                     var targetTitile =
-                    "{{ activeDeadline()['action'] }}"; // Ensure this is in 'YYYY-MM-DD' format
+                        "{{ activeDeadline()['action'] }}"; // Ensure this is in 'YYYY-MM-DD' format
 
                     $(document).ready(function() {
                         function getRemainingDays(targetDate) {
@@ -2356,17 +2356,16 @@
                     localStorage.setItem('url', url);
 
                     $.ajax({
-                        type: "Get",
+                        type: "GET",
                         url: url,
                         datatype: 'JSON',
                         success: function(data) {
                             $('#' + table).text('(' + data.count + ')' + ' ' + data
                                 .latestUpdatedAt);
-                                alert(500);
-                            $('#queryCommand').text(data.insertString);
+                            alert(500);
+                            $('#queryCommand').val(data
+                            .insertString); // FIXED: Use `.val()` for textarea
 
-
-                            //  let keys=Object.keys(data.data[0]);
                             data.data.forEach(boula => {
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
@@ -2376,26 +2375,27 @@
                                         'openedQueryId'))
                                     $('#jsonResult').append(
                                         `<div class="col-md-3" id="id${boula.id}">`
-                                    );
+                                        );
                                 else
                                     $('#jsonResult').append(
                                         `<div class="col-md-3 d-none" id="id${boula.id}">`
-                                    );
+                                        );
+
                                 Object.entries(boula).forEach(element => {
                                     $(`#id${boula.id}`).append(
                                         $("<p>").text(JSON
                                             .stringify(element)
-                                        ) // Set text content to avoid HTML parsing
+                                            ) // Ensure safe text rendering
                                     );
                                 });
                                 $('#jsonResult').append("<hr>");
                             });
-
                         },
                         error: function(reject) {
                             console.log(reject);
                         }
                     });
+
                 });
             });
 
