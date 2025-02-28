@@ -364,26 +364,26 @@ class TaskController extends Controller
     {
         try {
 
-    foreach($request->employees as $employee){
-        Task::create([
-            'title'=>$request->title,
-            'employee_id'=>$employee,
-            'project_id'=>$task->project_id,
-            'keywords'=>$task->keywords
-        ]);
-        }
-        $task->delete();
+            foreach($request->employees as $employee){
+                Task::create([
+                    'title'=>$request->title,
+                    'employee_id'=>$employee,
+                    'project_id'=>$task->project_id,
+                    'keywords'=>$task->keywords
+                ]);
+                }
+                $task->delete();
 
-        emailTasks();
+                emailTasks();
 
+                    
+                    // Get the previous and the one before the previous route
+                    $previousRoute = session('previousRoute');
+                    $twoRoutesAgo = session('twoRoutesAgo');
             
-            // Get the previous and the one before the previous route
-            $previousRoute = session('previousRoute');
-            $twoRoutesAgo = session('twoRoutesAgo');
-    
-            // Redirect to either the previous or the one before
-            return redirect($twoRoutesAgo)
-                ->with(['success' => __('general.updated_successfully')]);
+                    // Redirect to either the previous or the one before
+                    return redirect($twoRoutesAgo)
+                        ->with(['success' => __('general.updated_successfully')]);
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
