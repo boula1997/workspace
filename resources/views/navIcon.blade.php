@@ -34,13 +34,13 @@
 
 @if (App::environment('local'))
     <!-- Start button WhatsApp -->
-    <a id="whats" class="whats" href="https://yousab-tech.com/workspace/public/en/" target="_blank">
+    <a id="whats" class="whats" href="https://yousab-tech.com/workspace/public/en/">
         <img src="https://cdn3.iconfinder.com/data/icons/social-media-logos-flat-colorful/2048/5302_-_Whatsapp-512.png"
             alt="WhatsApp">
     </a>
 @else
     <!-- Start button WhatsApp -->
-    <a id="whats" class="whats" href="http://localhost/workspace/public/en/" target="_blank">
+    <a id="whats" class="whats" href="http://localhost/workspace/public/en/">
         <img src="https://cdn3.iconfinder.com/data/icons/social-media-logos-flat-colorful/2048/5302_-_Whatsapp-512.png"
             alt="WhatsApp">
     </a>
