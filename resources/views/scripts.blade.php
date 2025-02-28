@@ -1135,7 +1135,7 @@
                     'get multible modules')
                     $('#textarea').show().attr('placeholder', 'ex:keyword1,keyword2,keyword3');
                 else
-                    $('#textarea').show().attr('placeholder', 'add script here');
+                    $('#textarea').show().attr('placeholder', 'ex: keyword1, keyword2, keyword3');
                 $('#stack').hide().attr('required', false);
 
                 if (localStorage.getItem('selectAction') ==
