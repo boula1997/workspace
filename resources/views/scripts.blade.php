@@ -2362,6 +2362,7 @@
                         success: function(data) {
                             $('#' + table).text('(' + data.count + ')' + ' ' + data
                                 .latestUpdatedAt);
+                                alert(500);
                             $('#queryCommand').text(data.insertString);
 
 
