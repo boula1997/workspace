@@ -2362,7 +2362,6 @@
                         success: function(data) {
                             $('#' + table).text('(' + data.count + ')' + ' ' + data
                                 .latestUpdatedAt);
-                            alert(500);
                             $('#queryCommand').val(data
                             .insertString); // FIXED: Use `.val()` for textarea
 
