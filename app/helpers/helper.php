@@ -713,7 +713,7 @@ function activeWebsitesContent()
 
 function References()
 {
-    return Issue::latest()->get();
+    return Issue::orderBy('title', 'desc')->get();
 }
 
 
