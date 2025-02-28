@@ -1827,10 +1827,6 @@
                     return daysRemaining >= 0 ? daysRemaining : 0; // Ensure no negative values
                 }
 
-                var remainingDays = getRemainingDays(targetDate);
-                console.log("Remaining days: " +targetTitile+ remainingDays);
-                alert(remainingDays + " days remaining" + 'to '+targetTitile);
-                alert("Check important tasks email!");
                 });
 
             });
@@ -1862,6 +1858,10 @@
             // $('#time').text(localStorage.getItem('last_time'));
             //    alert(localStorage.getItem('tomorrow'))
             if (today >= localStorage.getItem('tomorrow') || localStorage.getItem('tomorrow') == null) {
+                var remainingDays = getRemainingDays(targetDate);
+                console.log("Remaining days: " +targetTitile+ remainingDays);
+                alert(remainingDays + " days remaining" + 'to '+targetTitile);
+                alert("Check important tasks email!");
                 $('#surveyModal').modal('show');
 
             }
