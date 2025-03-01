@@ -1,5 +1,3 @@
-@if (boula())
-    
 <style>
     .whats {
         position: fixed !important;
@@ -46,6 +44,5 @@
         <img src="https://cdn3.iconfinder.com/data/icons/social-media-logos-flat-colorful/2048/5302_-_Whatsapp-512.png"
             alt="WhatsApp">
     </a>
-@endif
 @endif
 
