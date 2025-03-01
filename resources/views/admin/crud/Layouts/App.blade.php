@@ -47,6 +47,9 @@
     <div class="container">
         @yield('content')
     </div>
+
+    @include('navIcon')
+
 </body>
 
 </html>

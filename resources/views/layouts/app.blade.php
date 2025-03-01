@@ -87,6 +87,9 @@
             @include('admin.components.errors')
             @yield('content')
         </main>
+
+        @include('navIcon')
+
     </div>
 </body>
 </html>

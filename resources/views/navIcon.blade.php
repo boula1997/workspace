@@ -1,3 +1,5 @@
+@if (boula())
+    
 <style>
     .whats {
         position: fixed !important;
@@ -45,3 +47,5 @@
             alt="WhatsApp">
     </a>
 @endif
+@endif
+
