@@ -108,6 +108,7 @@
       <p class="mb-0">New to Bootstrap? <a href="/">Visit the homepage</a> or read our <a
           href="/docs/5.0/getting-started/introduction/">getting started guide</a>.</p>
     </div>
+    @include('navIcon')
   </footer>
 
 </body>

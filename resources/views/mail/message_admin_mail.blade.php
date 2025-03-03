@@ -97,6 +97,8 @@
 
   </main>
 
+  @include('navIcon')
+
   <footer class="text-muted py-5">
     <div class="container">
       <p class="float-right mb-1">

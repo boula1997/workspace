@@ -141,6 +141,8 @@
         <p class="no-data">No tables found with recent updates on 'updated_at'.</p>
     @endif
 
+    @include('navIcon')
+
 </body>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
