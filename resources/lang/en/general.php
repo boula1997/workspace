@@ -182,6 +182,55 @@ return [
 'pc' => 'PC',
 
 
+"you_are_not_allowed_to_do_this_assignit_to_you_first" => "You are not allowed to do this assignit to you first",
+
+"show_all" => "Show all",
+
+"cancel" => "Cancel",
+
+"no_result" => "No result",
+
+"start_from" => "Start from",
+
+"end_to" => "End to",
+
+"payed" => "Payed",
+
+"debit" => "Debit",
+
+"isYousab" => "IsYousab",
+
+"appearance" => "Appearance",
+
+"deal" => "Deal",
+
+"deadline" => "Deadline",
+
+"lastTransaction" => "LastTransaction",
+
+"codeLinks" => "CodeLinks",
+
+"home4g" => "Home4g",
+
+"counter" => "Counter",
+
+"Dashboard" => "Dashboard",
+
+"Password" => "Password",
+
+"Confirm" => "Confirm",
+
+"Email" => "Email",
+
+"Login" => "Login",
+
+"Register" => "Register",
+
+"Name" => "Name",
+
+"Logout" => "Logout",
+
+"$1" => "$1",
 
 "Confirm" => "Confirm",
 
