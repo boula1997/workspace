@@ -1865,6 +1865,7 @@
                     console.log("Remaining days: " + targetTitile + remainingDays);
                     alert(remainingDays + " days remaining" + 'to ' + targetTitile);
                     alert("Check important tasks email!");
+                    alert("Move Tasks dashboard page to new desktop to avoid closing it and enjoy speack tasks features");
                     $('#surveyModal').modal('show');
 
                 }
