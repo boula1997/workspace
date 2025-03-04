@@ -395,6 +395,7 @@
                 let countdownInterval = null; // Interval to update countdown
 
 
+
                 function setFemaleVoice() {
                     let voices = speechSynthesis.getVoices();
 
@@ -404,12 +405,32 @@
                         return;
                     }
 
-                    femaleVoice = voices.find(voice => voice.name.includes('Google') && voice.name.includes('Female')) ||
-                        voices.find(voice => voice.lang.includes('en') && voice.name.toLowerCase().includes('female')) ||
+                    // Try to find an Arabic female voice
+                    femaleVoice = voices.find(voice =>
+                            voice.lang.startsWith('ar') && voice.name.toLowerCase().includes('female')
+                        ) ||
+                        // Try to find any Arabic Google voice
+                        voices.find(voice =>
+                            voice.lang.startsWith('ar') && voice.name.includes('Google')
+                        ) ||
+                        // Try to find any Arabic voice
+                        voices.find(voice => voice.lang.startsWith('ar')) ||
+                        // If no Arabic voices, fall back to English female voice
+                        voices.find(voice =>
+                            voice.lang.startsWith('en') && voice.name.toLowerCase().includes('female')
+                        ) ||
+                        // Last fallback: any voice available
                         voices[0];
 
-                    console.log('Female voice set:', femaleVoice ? femaleVoice.name : 'Not found');
+                    console.log('Selected Voice:', femaleVoice ? femaleVoice.name : 'Not found');
                 }
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    console.log('DOM fully loaded and parsed.');
+                    setTimeout(setFemaleVoice, 200); // Slight delay to ensure voices load
+                });
+
+
 
 
                 function updateButtonCountdown() {
