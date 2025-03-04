@@ -391,6 +391,9 @@
             let titleIndex = 0;
             let readInterval = null;
             let repeatCount = 0;
+            let stopTimeout = null; 
+        let countdownInterval = null; // Interval to update countdown
+
         
             function setFemaleVoice() {
                 let voices = speechSynthesis.getVoices();
@@ -407,6 +410,35 @@
         
                 console.log('Female voice set:', femaleVoice ? femaleVoice.name : 'Not found');
             }
+
+
+            function updateButtonCountdown() {
+            const button = document.getElementById('stopReadingButton');
+            if (remainingTime > 0) {
+                remainingTime--;
+                const minutes = Math.floor(remainingTime / 60);
+                const seconds = remainingTime % 60;
+                button.textContent = `Reading resumes in ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            } else {
+                clearInterval(countdownInterval);
+                button.textContent = 'Stop Reading for 60 Minutes';
+            }
+        }
+
+        function stopReadingFor60Minutes() {
+            stopReading = true;
+            remainingTime = 60 * 60; // Reset remaining time to 60 minutes
+            clearTimeout(stopTimeout);
+            clearInterval(countdownInterval);
+
+            stopTimeout = setTimeout(() => {
+                stopReading = false;
+                console.log('Reading resumed after 60 minutes.');
+            }, 60 * 60 * 1000); // 60 minutes in milliseconds
+
+            countdownInterval = setInterval(updateButtonCountdown, 1000); // Update every second
+            console.log('Reading stopped for 60 minutes.');
+        }
         
             function readText(text) {
                 if (stopReading) {
@@ -470,6 +502,8 @@
             });
         
             document.getElementById('readAllTitles').addEventListener('click', readTitlesInSequence);
+
+                    document.getElementById('stopReadingButton').addEventListener('click', stopReadingFor60Minutes);
         </script>
      @endif
         
