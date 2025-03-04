@@ -15,10 +15,10 @@
 
         <!-- Content Wrapper. Contains task content -->
         <div class="content-wrapper">
-            @if (boula())                
-            <button type="button" id="readAllTitles" class="btn btn-success  mx-2 my-2">Read</button>
+            @if (boula())
+                <button type="button" id="readAllTitles" class="btn btn-success  mx-2 my-2">Read</button>
 
-            <button id="stopReadingButton">Stop Reading for 60 Minutes</button>
+                <button id="stopReadingButton">Stop Reading for 60 Minutes</button>
             @endif
             <!-- Main content -->
             <div class="container p-3">
@@ -384,130 +384,130 @@
                 }
             });
         </script> --}}
-     @if (boula())         
-        <script>
-            let femaleVoice = null;
-            let stopReading = false;
-            let titleIndex = 0;
-            let readInterval = null;
-            let repeatCount = 0;
-            let stopTimeout = null; 
-        let countdownInterval = null; // Interval to update countdown
-
-        
-            function setFemaleVoice() {
-                let voices = speechSynthesis.getVoices();
-        
-                if (voices.length === 0) {
-                    console.log("No voices available, retrying...");
-                    speechSynthesis.onvoiceschanged = setFemaleVoice;
-                    return;
-                }
-        
-                femaleVoice = voices.find(voice => voice.name.includes('Google') && voice.name.includes('Female')) ||
-                              voices.find(voice => voice.lang.includes('en') && voice.name.toLowerCase().includes('female')) ||
-                              voices[0];
-        
-                console.log('Female voice set:', femaleVoice ? femaleVoice.name : 'Not found');
-            }
+        @if (boula())
+            <script>
+                let femaleVoice = null;
+                let stopReading = false;
+                let titleIndex = 0;
+                let readInterval = null;
+                let repeatCount = 0;
+                let stopTimeout = null;
+                let countdownInterval = null; // Interval to update countdown
 
 
-            function updateButtonCountdown() {
-            const button = document.getElementById('stopReadingButton');
-            if (remainingTime > 0) {
-                remainingTime--;
-                const minutes = Math.floor(remainingTime / 60);
-                const seconds = remainingTime % 60;
-                button.textContent = `Reading resumes in ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            } else {
-                clearInterval(countdownInterval);
-                button.textContent = 'Stop Reading for 60 Minutes';
-            }
-        }
+                function setFemaleVoice() {
+                    let voices = speechSynthesis.getVoices();
 
-        function stopReadingFor60Minutes() {
-            stopReading = true;
-            remainingTime = 60 * 60; // Reset remaining time to 60 minutes
-            clearTimeout(stopTimeout);
-            clearInterval(countdownInterval);
-
-            stopTimeout = setTimeout(() => {
-                stopReading = false;
-                console.log('Reading resumed after 60 minutes.');
-            }, 60 * 60 * 1000); // 60 minutes in milliseconds
-
-            countdownInterval = setInterval(updateButtonCountdown, 1000); // Update every second
-            console.log('Reading stopped for 60 minutes.');
-        }
-        
-            function readText(text) {
-                if (stopReading) {
-                    console.log('Reading is currently stopped.');
-                    return;
-                }
-                
-                speechSynthesis.cancel(); // Stop any previous speech before starting a new one
-                
-                const utterance = new SpeechSynthesisUtterance(text);
-                if (femaleVoice) {
-                    utterance.voice = femaleVoice;
-                }
-                
-                utterance.onstart = () => console.log("Speaking:", text);
-                utterance.onend = () => console.log("Finished speaking:", text);
-                utterance.onerror = (e) => console.error("Speech error:", e);
-        
-                speechSynthesis.speak(utterance);
-            }
-        
-            function readTitlesInSequence() {
-                const titles = document.querySelectorAll('td[data-title]');
-                if (titles.length === 0) {
-                    console.log('No titles found.');
-                    return;
-                }
-        
-                titleIndex = 0;
-                repeatCount = 0;
-                clearInterval(readInterval);
-        
-                function readCurrentTitle() {
-                    if (stopReading) {
-                        console.log('Reading stopped.');
-                        clearInterval(readInterval);
+                    if (voices.length === 0) {
+                        console.log("No voices available, retrying...");
+                        speechSynthesis.onvoiceschanged = setFemaleVoice;
                         return;
                     }
-        
-                    if (repeatCount < 20) {
-                        const currentTitle = titles[titleIndex].getAttribute('data-title');
-                        readText(currentTitle);
-                        repeatCount++;
+
+                    femaleVoice = voices.find(voice => voice.name.includes('Google') && voice.name.includes('Female')) ||
+                        voices.find(voice => voice.lang.includes('en') && voice.name.toLowerCase().includes('female')) ||
+                        voices[0];
+
+                    console.log('Female voice set:', femaleVoice ? femaleVoice.name : 'Not found');
+                }
+
+
+                function updateButtonCountdown() {
+                    const button = document.getElementById('stopReadingButton');
+                    if (remainingTime > 0) {
+                        remainingTime--;
+                        const minutes = Math.floor(remainingTime / 60);
+                        const seconds = remainingTime % 60;
+                        button.textContent = `Reading resumes in ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
                     } else {
-                        titleIndex++;
-                        repeatCount = 0;
-                        if (titleIndex >= titles.length) {
-                            clearInterval(readInterval);
-                            console.log('Finished reading all titles.');
-                        }
+                        clearInterval(countdownInterval);
+                        button.textContent = 'Stop Reading for 60 Minutes';
                     }
                 }
-        
-                readInterval = setInterval(readCurrentTitle, 60 * 1000);
-                readCurrentTitle(); // Start reading immediately
-            }
-        
-            document.addEventListener('DOMContentLoaded', () => {
-                console.log('DOM fully loaded and parsed.');
-                setTimeout(setFemaleVoice, 100); // Delay to ensure voices load
-            });
-        
-            document.getElementById('readAllTitles').addEventListener('click', readTitlesInSequence);
 
-                    document.getElementById('stopReadingButton').addEventListener('click', stopReadingFor60Minutes);
-        </script>
-     @endif
-        
-        
+                function stopReadingFor60Minutes() {
+                    stopReading = true;
+                    remainingTime = 60 * 60; // Reset remaining time to 60 minutes
+                    clearTimeout(stopTimeout);
+                    clearInterval(countdownInterval);
+
+                    stopTimeout = setTimeout(() => {
+                        stopReading = false;
+                        console.log('Reading resumed after 60 minutes.');
+                    }, 60 * 60 * 1000); // 60 minutes in milliseconds
+
+                    countdownInterval = setInterval(updateButtonCountdown, 1000); // Update every second
+                    console.log('Reading stopped for 60 minutes.');
+                }
+
+                function readText(text) {
+                    if (stopReading) {
+                        console.log('Reading is currently stopped.');
+                        return;
+                    }
+
+                    speechSynthesis.cancel(); // Stop any previous speech before starting a new one
+
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    if (femaleVoice) {
+                        utterance.voice = femaleVoice;
+                    }
+
+                    utterance.onstart = () => console.log("Speaking:", text);
+                    utterance.onend = () => console.log("Finished speaking:", text);
+                    utterance.onerror = (e) => console.error("Speech error:", e);
+
+                    speechSynthesis.speak(utterance);
+                }
+
+                function readTitlesInSequence() {
+                    const titles = document.querySelectorAll('td[data-title]');
+                    if (titles.length === 0) {
+                        console.log('No titles found.');
+                        return;
+                    }
+
+                    titleIndex = 0;
+                    repeatCount = 0;
+                    clearInterval(readInterval);
+
+                    function readCurrentTitle() {
+                        if (stopReading) {
+                            console.log('Reading stopped.');
+                            clearInterval(readInterval);
+                            return;
+                        }
+
+                        if (repeatCount < 20) {
+                            const currentTitle = titles[titleIndex].getAttribute('data-title');
+                            readText(currentTitle);
+                            repeatCount++;
+                        } else {
+                            titleIndex++;
+                            repeatCount = 0;
+                            if (titleIndex >= titles.length) {
+                                clearInterval(readInterval);
+                                console.log('Finished reading all titles.');
+                            }
+                        }
+                    }
+
+                    readInterval = setInterval(readCurrentTitle, 60 * 1000);
+                    readCurrentTitle(); // Start reading immediately
+                }
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    console.log('DOM fully loaded and parsed.');
+                    setTimeout(setFemaleVoice, 100); // Delay to ensure voices load
+                });
+
+                document.getElementById('readAllTitles').addEventListener('click', readTitlesInSequence);
+
+                document.getElementById('stopReadingButton').addEventListener('click', stopReadingFor60Minutes);
+            </script>
+        @endif
+
+
     @endpush
 
 
