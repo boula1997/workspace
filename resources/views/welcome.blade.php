@@ -762,6 +762,9 @@
                             <p>Pa$$w0rd!</p>
                             <br>
                             <hr class="text-white">
+                            <p>"$2y$10$yTJjsmdZekRFnt9bXsGpyec7ww3EExIcQIZm7b.vkL9lbmOySONYq"</p>
+                            <br>
+                            <hr class="text-white">
 
                             <code>
                                 &#123;
