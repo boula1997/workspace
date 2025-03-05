@@ -759,10 +759,10 @@
                             </code>
                             <br>
                             <hr class="text-white">
-                            <p>Pa$$w0rd!</p>
+                            <p title="auto fill password">Pa$$w0rd!</p>
                             <br>
                             <hr class="text-white">
-                            <p>"$2y$10$yTJjsmdZekRFnt9bXsGpyec7ww3EExIcQIZm7b.vkL9lbmOySONYq"</p>
+                            <p title="123456789 password">"$2y$10$yTJjsmdZekRFnt9bXsGpyec7ww3EExIcQIZm7b.vkL9lbmOySONYq"</p>
                             <br>
                             <hr class="text-white">
 
