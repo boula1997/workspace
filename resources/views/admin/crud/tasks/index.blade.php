@@ -33,7 +33,7 @@
                                         <div class="row">
                                             <div class="col-md-6 d-flex justify-content-start">
                                                 @if (request()->routeIs('tasks.index'))
-                                                    <h1 class="card-title fw-bold">@lang('general.tasks')</h1>
+                                                    <h1 class="card-title fw-bold">@lang('general.tasks') (You can order rows by dragging from first column)</h1>
                                                 @elseif(request()->routeIs('tasks.all'))
                                                     <h1 class="card-title fw-bold">@lang('general.alltasks')</h1>
                                                 @else
