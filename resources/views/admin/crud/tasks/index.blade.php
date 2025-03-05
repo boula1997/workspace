@@ -709,40 +709,36 @@
                     window.matchMedia("(max-width: 768px)").matches;
             }
 
-            if (isMobileDevice())
+            $(function() {
+                var tableConfig = {
+                    "responsive": true,
+                    "lengthChange": false,
+                    "autoWidth": false,
+                    "paging": false,
+                    "searching": true,
+                    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                    "rowReorder": {
+                        selector: "td:first-child" // Drag by first column
+                    }
+                };
 
-                $(function() {
-                    $("#example1").DataTable({
-                        "responsive": true,
-                        columnDefs: [{
-                                targets: [2, 3, 4, 5, 6], // Columns to hide on mobile
-                                responsivePriority: 1, // Lower priority means it gets hidden first
-                                visible: false, // Force hide
-                            },
-                            {
-                                targets: [0, 1], // Columns that must always be visible
-                                responsivePriority: 1, // Higher priority means it stays visible
-                            }
-                        ],
-                        "lengthChange": false,
-                        "autoWidth": false,
-                        "paging": false,
-                        "searching": true,
-                        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-                    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-                });
+                if (isMobileDevice()) {
+                    tableConfig.columnDefs = [{
+                            targets: [2, 3, 4, 5, 6], // Hide these columns on mobile
+                            responsivePriority: 1,
+                            visible: false
+                        },
+                        {
+                            targets: [0, 1], // Always visible columns
+                            responsivePriority: 1
+                        }
+                    ];
+                }
 
-            else
-                $(function() {
-                    $("#example1").DataTable({
-                        "responsive": true,
-                        "lengthChange": false,
-                        "autoWidth": false,
-                        "paging": false,
-                        "searching": true,
-                        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-                    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-                });
+                var table = $("#example1").DataTable(tableConfig);
+                table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            });
+
 
             function toggleCheckbox(taskId) {
                 const checkbox = document.getElementById(`checkbox-${taskId}`);
