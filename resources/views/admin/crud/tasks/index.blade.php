@@ -33,7 +33,8 @@
                                         <div class="row">
                                             <div class="col-md-6 d-flex justify-content-start">
                                                 @if (request()->routeIs('tasks.index'))
-                                                    <h1 class="card-title fw-bold">@lang('general.tasks') (You can order rows by dragging from first column)</h1>
+                                                    <h1 class="card-title fw-bold">@lang('general.tasks') (You can order rows by
+                                                        dragging from first column)</h1>
                                                 @elseif(request()->routeIs('tasks.all'))
                                                     <h1 class="card-title fw-bold">@lang('general.alltasks')</h1>
                                                 @else
@@ -393,33 +394,26 @@
                 let repeatCount = 0;
                 let stopTimeout = null;
                 let countdownInterval = null; // Interval to update countdown
-
-
+                let remainingTime = 0;
 
                 function setFemaleVoice() {
                     let voices = speechSynthesis.getVoices();
-
                     if (voices.length === 0) {
                         console.log("No voices available, retrying...");
                         speechSynthesis.onvoiceschanged = setFemaleVoice;
                         return;
                     }
 
-                    // Try to find an Arabic female voice
                     femaleVoice = voices.find(voice =>
                             voice.lang.startsWith('ar') && voice.name.toLowerCase().includes('female')
                         ) ||
-                        // Try to find any Arabic Google voice
                         voices.find(voice =>
                             voice.lang.startsWith('ar') && voice.name.includes('Google')
                         ) ||
-                        // Try to find any Arabic voice
                         voices.find(voice => voice.lang.startsWith('ar')) ||
-                        // If no Arabic voices, fall back to English female voice
                         voices.find(voice =>
                             voice.lang.startsWith('en') && voice.name.toLowerCase().includes('female')
                         ) ||
-                        // Last fallback: any voice available
                         voices[0];
 
                     console.log('Selected Voice:', femaleVoice ? femaleVoice.name : 'Not found');
@@ -427,11 +421,8 @@
 
                 document.addEventListener('DOMContentLoaded', () => {
                     console.log('DOM fully loaded and parsed.');
-                    setTimeout(setFemaleVoice, 200); // Slight delay to ensure voices load
+                    setTimeout(setFemaleVoice, 200);
                 });
-
-
-
 
                 function updateButtonCountdown() {
                     const button = document.getElementById('stopReadingButton');
@@ -448,17 +439,26 @@
 
                 function stopReadingFor60Minutes() {
                     stopReading = true;
-                    remainingTime = 60 * 60; // Reset remaining time to 60 minutes
+                    remainingTime = 60 * 60; // 60 minutes
                     clearTimeout(stopTimeout);
                     clearInterval(countdownInterval);
 
                     stopTimeout = setTimeout(() => {
                         stopReading = false;
                         console.log('Reading resumed after 60 minutes.');
-                    }, 60 * 60 * 1000); // 60 minutes in milliseconds
+                    }, 60 * 60 * 1000);
 
-                    countdownInterval = setInterval(updateButtonCountdown, 1000); // Update every second
+                    countdownInterval = setInterval(updateButtonCountdown, 1000);
                     console.log('Reading stopped for 60 minutes.');
+                }
+
+                function resumeReadingNow() {
+                    stopReading = false; // Reset stop flag
+                    clearTimeout(stopTimeout); // Cancel the stop timeout
+                    clearInterval(countdownInterval); // Stop countdown display
+                    document.getElementById('stopReadingButton').textContent = 'Stop Reading for 60 Minutes';
+                    console.log('Reading resumed immediately.');
+                    readTitlesInSequence(); // Start reading again
                 }
 
                 function readText(text) {
@@ -467,8 +467,7 @@
                         return;
                     }
 
-                    speechSynthesis.cancel(); // Stop any previous speech before starting a new one
-
+                    speechSynthesis.cancel();
                     const utterance = new SpeechSynthesisUtterance(text);
                     if (femaleVoice) {
                         utterance.voice = femaleVoice;
@@ -507,8 +506,8 @@
                             titleIndex++;
                             repeatCount = 0;
                             if (titleIndex >= titles.length) {
-                                clearInterval(readInterval);
-                                console.log('Finished reading all titles.');
+                                console.log('Finished reading all titles. Restarting...');
+                                titleIndex = 0; // Reset index to restart reading
                             }
                         }
                     }
@@ -517,13 +516,8 @@
                     readCurrentTitle(); // Start reading immediately
                 }
 
-                document.addEventListener('DOMContentLoaded', () => {
-                    console.log('DOM fully loaded and parsed.');
-                    setTimeout(setFemaleVoice, 100); // Delay to ensure voices load
-                });
 
-                document.getElementById('readAllTitles').addEventListener('click', readTitlesInSequence);
-
+                document.getElementById('readAllTitles').addEventListener('click', resumeReadingNow);
                 document.getElementById('stopReadingButton').addEventListener('click', stopReadingFor60Minutes);
             </script>
         @endif
