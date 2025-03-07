@@ -175,11 +175,11 @@
                                                                 </button>
 
                                                                 <button
-                                                                    class="btn btn-outline-secondary btn-sm copy-keywords clickable-text"
-                                                                    content="{{ $task->keywords }}" type="button"
+                                                                    class="btn btn-outline-secondary btn-sm deleteTask"
+                                                                   type="button"
                                                                     data-keywords="{{ $task->keywords }}"
-                                                                    title="@lang('general.copy_keywords')">
-                                                                    <i class="fas fa-copy"></i>
+                                                                    title="@lang('general.delete')">
+                                                                    <i class="fas fa-trash"></i>
                                                                 </button>
 
                                                             </td>
@@ -248,6 +248,12 @@
 
 
     @push('scripts')
+    <script>
+        $(document).on('click', '.deleteTask', function () {
+            // Get the closest table row to the clicked button and remove it
+            $(this).closest('tr').remove();
+        });
+    </script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 document.querySelectorAll("audio, video").forEach((el) => {
