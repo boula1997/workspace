@@ -518,7 +518,7 @@
                         }
                     }
 
-                    readInterval = setInterval(readCurrentTitle, 5 * 60 * 1000);
+                    readInterval = setInterval(readCurrentTitle, 2 * 60 * 1000);
                     readCurrentTitle(); // Start reading immediately
                 }
 
