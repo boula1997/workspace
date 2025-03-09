@@ -637,6 +637,14 @@
                             <p>Ready to do magic {{ ':)' }}</p>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>.bat files on this system</h4>
+                            <p>E:\xampp\htdocs\workspace\hourly_alarm.bat</p>
+                            <p>E:\xampp\htdocs\workspace\open_link.bat</p>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <h1>Alarm device every hour (you can import task from file here and also there the bat file
