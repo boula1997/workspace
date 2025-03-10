@@ -75,6 +75,7 @@
 {{-- <script src="{{asset('js/iconpicker-1.5.0.json')}}"></script> --}}
 <script src="{{ asset('js/iconpicker-1.5.0.js') }}"></script>
 <script src="{{ asset('admin/file-upload/image-input.js') }}"></script>
+<script src="{{ asset('lightbox-dist/js/lightbox.min.js') }}"></script>
 <!-- Page specific script -->
 {{-- <script>
     $(document).ready(function() {
