@@ -40,7 +40,6 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="table-responsive">
                                     <table id="example1" class="table table-hover">
                                         <thead>
                                             <tr>
@@ -108,19 +107,8 @@
                                         
 
                                     </table>
-                                </div>
 
-                                    <!-- Separate tfoot for better responsiveness -->
-                                    <div class="table-footer-summary">
-                                        <table class="table">
-                                            <tr>
-                                                <td colspan="2" class="text-right fw-bold">Total Cost:</td>
-                                                <td id="total-cost"></td>
-                                                <td id="total-rest"></td>
-                                                <td colspan="2"></td>
-                                            </tr>
-                                        </table>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -135,48 +123,48 @@
 
 @push('scripts')
     <script>
-$(function() {
-    var table = $("#example1").DataTable({
-        "responsive": true,
-        "lengthChange": false,
-        "autoWidth": false,
-        "paging": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-        "stateSave": true,
-        "search": { "smart": true }
-    });
+        $(function() {
+            var table = $("#example1").DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "paging": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                "stateSave": true,
+                "search": {
+                    "smart": true
+                }
+            });
 
-    table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-    $('#projectFilter').on('change', function() {
-        var selectedTitles = $(this).val();
-        table.columns(1).search(selectedTitles ? selectedTitles.join('|') : '', true, false).draw();
-    });
+            $('#projectFilter').on('change', function() {
+                var selectedTitles = $(this).val();
+                table.columns(1).search(selectedTitles ? selectedTitles.join('|') : '', true, false).draw();
+            });
 
-    function calculateTotals() {
-    let totalCost = 0, totalRest = 0;
+            function calculateTotals() {
+                let totalCost = 0,
+                    totalRest = 0;
 
-    $("#example1 tbody tr:visible").each(function() {
-        let cost = parseFloat($(this).find('.cost').text().replace(/[^\d.-]/g, '')) || 0;
-        let rest = parseFloat($(this).find('.rest').text().replace(/[^\d.-]/g, '')) || 0;
+                table.rows({
+                    search: 'applied'
+                }).every(function() {
+                    let rowNode = $(this.node());
 
-        totalCost += cost;
-        totalRest += rest;
-    });
+                    let cost = parseFloat(rowNode.find('.cost').text().replace(/[^0-9.-]+/g, "")) || 0;
+                    let rest = parseFloat(rowNode.find('.rest').text().replace(/[^0-9.-]+/g, "")) || 0;
 
-    $('#total-cost').text(totalCost.toLocaleString());
-    $('#total-rest').text(totalRest.toLocaleString());
-}
+                    totalCost += cost;
+                    totalRest += rest;
+                });
 
-// ✅ Run on DataTable events
-table.on('search.dt draw.dt', calculateTotals);
-calculateTotals();
+                $('#total-cost').text(totalCost.toFixed(2));
+                $('#total-rest').text(totalRest.toFixed(2));
+            }
 
-
-    // Calculate initially and on table updates
-    calculateTotals();
-    table.on('search.dt draw.dt', calculateTotals);
-});
-
+            calculateTotals();
+            table.on('search.dt draw.dt', calculateTotals);
+        });
     </script>
 @endpush
