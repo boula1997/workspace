@@ -108,8 +108,8 @@ class ProjectController extends Controller
             $data = $request->except('images','profile_avatar_remove','delimages','image');
             $project->update($data);
             $project->updateFiles();
-            return redirect()->route('projects.index')
-                ->with('success', trans('general.update_successfully'));
+            return redirect()->back()->with(['success' => __('general.update_successfully')]);
+
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
