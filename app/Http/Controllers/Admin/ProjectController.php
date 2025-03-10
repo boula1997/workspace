@@ -102,7 +102,7 @@ class ProjectController extends Controller
      */
     public function update(ProjectRequest $request, Project $project)
     {
-        dd($request->images);
+        dd($request->all());
 
         try {
             $data = $request->except('images','profile_avatar_remove','delimages','image');
