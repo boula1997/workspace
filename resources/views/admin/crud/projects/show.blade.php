@@ -18,7 +18,7 @@
                                         @if (isset($image->id))
                                             <div class="col-12 mb-2">
                                                 <div class="zoom-container">
-                                                    <img class="zoomable" src="{{ $image->url }}" alt="">
+                                                    <img class="zoomable" src="{{ $image->url }}" style="height: 100vh !important" alt="">
                                                 </div>
                                             </div>
                                         @endif
