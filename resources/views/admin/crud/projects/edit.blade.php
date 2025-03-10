@@ -56,19 +56,7 @@
                             </div>
                         </div>
 
-                        <!-- Normal title input -->
-                        <div class="col-md-12">
-                            <div class="form-group"> <label>{{ __('general.debit') }} <span class="text-danger"> *
-                                    </span></label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend"> <span class="input-group-text"><i
-                                                class="fas fa-pen"></i></span> </div> <input type="number" name="debit"
-                                        placeholder="{{ __('general.debit') }}"
-                                        class="form-control pl-1 min-h-40px @error('debit') is-invalid @enderror"
-                                        value="{{ old('debit', $project->debit) }}">
-                                </div>
-                            </div>
-                        </div>
+
 
                         {{-- Checkbox Input --}} <div class="col-md-6 ps-4">
                             <div class="form-group">
@@ -117,6 +105,21 @@
                                 </div>
                             </div>
                         </div>
+
+
+                                                <!-- Normal title input -->
+                                                <div class="col-md-12">
+                                                    <div class="form-group"> <label>{{ __('general.debit') }} <span class="text-danger"> *
+                                                            </span></label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend"> <span class="input-group-text"><i
+                                                                        class="fas fa-pen"></i></span> </div> <input type="number" name="debit"
+                                                                placeholder="{{ __('general.debit') }}"
+                                                                class="form-control pl-1 min-h-40px @error('debit') is-invalid @enderror"
+                                                                value="{{ old('debit', $project->debit) }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
 
                         {{-- Date input --}} <div class="col-md-6">
                             <div class="form-group"> <label for="dateInput">{{ __('general.deadline') }} <span
