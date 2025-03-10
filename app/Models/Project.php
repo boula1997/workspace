@@ -28,7 +28,7 @@ class Project extends Model
 
     public function getImagesAttribute()
     {
-        return  count($this->files)>0?$this->files:["default.jpg"];
+        return is_array($this->files) && count($this->files) > 0 ? $this->files : ["default.jpg"];
     }
     public function getImageAttribute()
     {
