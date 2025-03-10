@@ -57,7 +57,6 @@ class ProjectController extends Controller
     public function store(ProjectRequest $request)
     {
         try {
-            dd($request->images);
             $project=$this->project->create($request->except('images','profile_avatar_remove','delimages','image'));
             $project->uploadFiles();
 
@@ -103,6 +102,8 @@ class ProjectController extends Controller
      */
     public function update(ProjectRequest $request, Project $project)
     {
+        dd($request->images);
+
         try {
             $data = $request->except('images','profile_avatar_remove','delimages','image');
             $project->update($data);
