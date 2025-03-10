@@ -95,7 +95,7 @@ function activeDeadline()
 
 function taskLog($action,$task_title){
 
-    $task=Task::where('title',$task_title)->where('employee_id',auth()->user()->id)->first();
+    $task=Task::where('title',$task_title)->where('employee_id',auth()->user()?auth()->user()->id:0)->first();
     if(!isset($task)){
         return redirect()->back()->with(['error' => __('general.you_are_not_allowed_to_do_this_assignit_to_you_first')]);
     }
@@ -104,7 +104,7 @@ function taskLog($action,$task_title){
         History::create([
             'action'=>$action,
             'task_id'=>$task->id,
-            'employee_id'=>auth()->user()->id,
+            'employee_id'=>auth()->user()?auth()->user()->id:0,
         ]);
 
 
@@ -137,7 +137,7 @@ function dectatorBoula(){
 
 function notAllowedTaskAction($taskTitle){
     $taskIds = Task::where('title', $taskTitle)->pluck('employee_id')->toArray();  // Convert to array
-    if (!in_array(auth()->user()->id, $taskIds)) {
+    if (!in_array(auth()->user()?auth()->user()->id:0, $taskIds)) {
         return redirect()->back()->with(['error' => __('general.you_are_not_allowed_to_do_this_assignit_to_you_first')]);
     }
 }
@@ -280,9 +280,9 @@ function itemsCount($model)
         $finishedTAsks=count(Task::where('status',1)->get()->unique('title'));
         $allTAsks=count(Task::get()->unique('title'));
     }else{
-        $tasks=count(Task::where('status',0)->where('employee_id',auth()->user()->id)->get()->unique('title'));
-        $finishedTAsks=count(Task::where('status',1)->where('employee_id',auth()->user()->id)->get()->unique('title'));
-        $allTAsks=count(Task::where('employee_id',auth()->user()->id)->get()->unique('title'));
+        $tasks=count(Task::where('status',0)->where('employee_id',auth()->user()?auth()->user()->id:0)->get()->unique('title'));
+        $finishedTAsks=count(Task::where('status',1)->where('employee_id',auth()->user()?auth()->user()->id:0)->get()->unique('title'));
+        $allTAsks=count(Task::where('employee_id',auth()->user()?auth()->user()->id:0)->get()->unique('title'));
     }
 
     if(auth()->user() && auth()->user()->type=='admin'){
@@ -290,9 +290,9 @@ function itemsCount($model)
         $finishedTAsks=count(Followup::where('status',1)->get()->unique('title'));
         $allTAsks=count(Followup::get()->unique('title'));
     }else{
-        $followups=count(Followup::where('status',0)->where('employee_id',auth()->user()->id)->get()->unique('title'));
-        $finishedTAsks=count(Followup::where('status',1)->where('employee_id',auth()->user()->id)->get()->unique('title'));
-        $allTAsks=count(Followup::where('employee_id',auth()->user()->id)->get()->unique('title'));}
+        $followups=count(Followup::where('status',0)->where('employee_id',auth()->user()?auth()->user()->id:0)->get()->unique('title'));
+        $finishedTAsks=count(Followup::where('status',1)->where('employee_id',auth()->user()?auth()->user()->id:0)->get()->unique('title'));
+        $allTAsks=count(Followup::where('employee_id',auth()->user()?auth()->user()->id:0)->get()->unique('title'));}
 
     $items = [
         "faqs" => count(Faq::get()),
