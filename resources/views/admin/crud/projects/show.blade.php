@@ -11,18 +11,20 @@
                 <div class="card card-custom">
                     <div class="card-body">
                         <div class="row">
-                            <div class="form-group"> <label
-                                    for="exampleInputFile1">{{ __('general.images') }}</label>
+                            <div class="form-group">
+                                <label for="exampleInputFile1">{{ __('general.images') }}</label>
                                 <div class="row">
                                     @foreach ($images as $image)
                                         @if (isset($image->id))
-                                            <div class="col-md-12"> <img width="100" height="100" class="mx-3"
-                                                    src="{{ $image->url }}" alt=""> </div>
+                                            <div class="col-12 mb-2">
+                                                <img class="img-fluid w-100" src="{{ $image->url }}" alt="">
+                                            </div>
                                         @endif
                                     @endforeach
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>
