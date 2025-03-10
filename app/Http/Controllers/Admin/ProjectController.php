@@ -91,7 +91,7 @@ class ProjectController extends Controller
     {
         //    dd($project->title);
         $images = $project->images;
-
+dd($images);
         return view('admin.crud.projects.edit', compact('project','images'));
     }
     /**
