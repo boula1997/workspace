@@ -166,7 +166,7 @@
                                                                     <i class="fas fa-edit  text-secondary  fa-md"></i>
                                                                 </a>
 
-                                                                <button class="btn btn-outline-secondary btn-sm mx-1 btn-icon"
+                                                                <button class="btn btn-secondary btn-sm mx-1 btn-icon"
                                                                     data-toggle="modal" data-target="#keywordsModal"
                                                                     data-task-id="{{ $task->id }}"
                                                                     data-keywords="{{ $task->keywords }}"
@@ -175,7 +175,7 @@
                                                                 </button>
 
                                                                 <button
-                                                                    class="btn btn-outline-secondary btn-sm deleteTask delete-icon btn-icon"
+                                                                    class="btn btn-secondary btn-sm deleteTask delete-icon btn-icon"
                                                                    type="button"
                                                                     data-keywords="{{ $task->keywords }}"
                                                                     title="@lang('general.delete')">
