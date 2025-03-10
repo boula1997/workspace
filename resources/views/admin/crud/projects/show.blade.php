@@ -15,7 +15,6 @@
                                 <label for="exampleInputFile1">{{ __('general.images') }}</label>
                                 <div class="d-flex">
                                     @foreach ($images as $image)
-                                    {{dd($images)}}
                                         @if (isset($image->id))
                                         <div class="zoom-container">
                                             <img class="zoomable m-2" src="{{ $image->url }}" style="height: 100vh !important" alt="">
