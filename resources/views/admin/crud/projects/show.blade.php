@@ -13,14 +13,12 @@
                         <div class="row">
                             <div class="form-group">
                                 <label for="exampleInputFile1">{{ __('general.images') }}</label>
-                                <div class="row">
+                                <div class="d-flex">
                                     @foreach ($images as $image)
                                         @if (isset($image->id))
-                                            <div class="col-12 mb-2">
-                                                <div class="zoom-container">
-                                                    <img class="zoomable" src="{{ $image->url }}" style="height: 100vh !important" alt="">
-                                                </div>
-                                            </div>
+                                        <div class="zoom-container">
+                                            <img class="zoomable" src="{{ $image->url }}" style="height: 100vh !important" alt="">
+                                        </div>
                                         @endif
                                     @endforeach
                                 </div>
