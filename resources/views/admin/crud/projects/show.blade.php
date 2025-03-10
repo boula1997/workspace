@@ -17,7 +17,7 @@
                                     @foreach ($images as $image)
                                         @if (isset($image->id))
                                             <div class="col-12 mb-2">
-                                                <img class="img-fluid w-100" src="{{ $image->url }}" alt="">
+                                                <img style="height: 100vh !important" src="{{ $image->url }}" alt="">
                                             </div>
                                         @endif
                                     @endforeach
