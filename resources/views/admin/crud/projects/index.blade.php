@@ -146,7 +146,7 @@
                 }
             });
 
-            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            // table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
             $('#projectFilter').on('change', function() {
                 var selectedTitles = $(this).val();
