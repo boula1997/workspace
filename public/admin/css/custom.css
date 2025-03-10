@@ -173,6 +173,35 @@ body, .navbar, .sidebar, .content-wrapper {
   width: 100px; /* Adjust as needed */
 }
 
+
+.dropzone {
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.dropzone p {
+  color: #777;
+}
+
+.dropzone:hover {
+  border-color: #007bff;
+}
+
+.preview-img {
+  object-fit: cover;
+  border: 2px solid #ddd;
+  padding: 5px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.preview-img:hover {
+  border-color: #007bff;
+}
+
+
 .btn-icon {
   padding: 0; /* Remove extra padding */
   width: unset !important; /* Allow it to fit the icon */
