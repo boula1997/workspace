@@ -163,7 +163,7 @@
 
                                                             <td>
                                                                 <a href="{{ route('tasks.edit', $task) }}" title="edit">
-                                                                    <i class="fas fa-edit  text-secondary  fa-lg"></i>
+                                                                    <i class="fas fa-edit  text-secondary  fa-md"></i>
                                                                 </a>
 
                                                                 <button class="btn btn-outline-secondary btn-sm mx-1"
@@ -171,7 +171,7 @@
                                                                     data-task-id="{{ $task->id }}"
                                                                     data-keywords="{{ $task->keywords }}"
                                                                     data-task-title="{{ $task->title }}" type="button">
-                                                                    <i class="fas fa-key fa-lg"></i>
+                                                                    <i class="fas fa-key fa-md"></i>
                                                                 </button>
 
                                                                 <button
