@@ -107,8 +107,6 @@
                                         
 
                                     </table>
-
-
                                 </div>
                             </div>
                         </div>
@@ -152,36 +150,4 @@
         });
     </script>
 @endpush
-@push('scripts')
-    <script>
 
-            $('#projectFilter').on('change', function() {
-                var selectedTitles = $(this).val();
-                table.columns(1).search(selectedTitles ? selectedTitles.join('|') : '', true, false).draw();
-            });
-
-            function calculateTotals() {
-                let totalCost = 0,
-                    totalRest = 0;
-
-                table.rows({
-                    search: 'applied'
-                }).every(function() {
-                    let rowNode = $(this.node());
-
-                    let cost = parseFloat(rowNode.find('.cost').text().replace(/[^0-9.-]+/g, "")) || 0;
-                    let rest = parseFloat(rowNode.find('.rest').text().replace(/[^0-9.-]+/g, "")) || 0;
-
-                    totalCost += cost;
-                    totalRest += rest;
-                });
-
-                $('#total-cost').text(totalCost.toFixed(2));
-                $('#total-rest').text(totalRest.toFixed(2));
-            }
-
-            calculateTotals();
-            table.on('search.dt draw.dt', calculateTotals);
-        });
-    </script>
-@endpush
