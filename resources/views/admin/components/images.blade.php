@@ -50,9 +50,11 @@
 
 
 
+@push('scripts')
 <script>
     $(document).ready(function () {
         let previewContainer = $("#preview-container");
+        let droppedFiles = []; // Store dropped files
 
         $("#drop-area").on("click", function () {
             $("#fileInput").click();
@@ -72,13 +74,17 @@
             $(this).removeClass("border-primary");
 
             let files = event.originalEvent.dataTransfer.files;
-            handleFiles(files);
+            handleFiles(files, true); // Pass true to indicate drag-and-drop
         });
 
-        function handleFiles(files) {
+        function handleFiles(files, isDropped = false) {
             $.each(files, function (index, file) {
                 let reader = new FileReader();
                 let fileType = file.type;
+
+                if (isDropped) {
+                    droppedFiles.push(file); // Store dropped files for submission
+                }
 
                 reader.onload = function (e) {
                     let fileElement;
@@ -109,10 +115,40 @@
         }
 
         $(document).on("click", ".remove-file", function () {
+            let index = $(this).closest(".col-md-3").index();
+            droppedFiles.splice(index, 1); // Remove from dropped files array
             $(this).closest(".col-md-3").remove();
+        });
+
+        $("form").on("submit", function (event) {
+            if (droppedFiles.length > 0) {
+                event.preventDefault();
+                
+                let formData = new FormData(this);
+
+                $.each(droppedFiles, function (index, file) {
+                    formData.append("images[]", file);
+                });
+
+                $.ajax({
+                    url: $(this).attr("action"),
+                    method: $(this).attr("method"),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        location.reload();
+                    },
+                    error: function (error) {
+                        alert("Upload failed.");
+                    }
+                });
+            }
         });
     });
 </script>
+@endpush
+
 
 
 
