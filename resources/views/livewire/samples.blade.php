@@ -114,7 +114,7 @@
                                                     <div>
                                                         <input type="hidden" name="sample_id"
                                                             value="{{ $sample->id }}">
-                                                        <textarea class="form-control  summernote" name="script" id="" cols="30" rows="10">{{ isset($sample->script) ? $sample->script : '' }}</textarea>
+                                                        <textarea class="form-control  summernote" name="script" id="" cols="30" rows="5">{{ isset($sample->script) ? $sample->script : '' }}</textarea>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">

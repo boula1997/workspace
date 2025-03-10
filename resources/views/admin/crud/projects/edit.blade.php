@@ -160,14 +160,14 @@
                         <div class="col-md-12">
                             <div class="col-form-group"> <label>{{ __('general.tasks') }} <span class="text-danger"> *
                                     </span></label>
-                                <textarea rows="10" class=" summernote @error('tasks') is-invalid @enderror" name="{{ 'tasks' }}"> {!! old('tasks', $project->tasks) !!} </textarea>
+                                <textarea rows="5" class=" summernote @error('tasks') is-invalid @enderror" name="{{ 'tasks' }}"> {!! old('tasks', $project->tasks) !!} </textarea>
                             </div>
                         </div>
 
                         <div class="col-md-12">
                             <div class="col-form-group"> <label>{{ __('general.codeLinks') }} <span class="text-danger">
                                         * </span></label>
-                                <textarea rows="10" class=" summernote @error('codeLinks') is-invalid @enderror" name="{{ 'codeLinks' }}"> {!! old('codeLinks', $project->codeLinks) !!} </textarea>
+                                <textarea rows="5" class=" summernote @error('codeLinks') is-invalid @enderror" name="{{ 'codeLinks' }}"> {!! old('codeLinks', $project->codeLinks) !!} </textarea>
                             </div>
                         </div>
 

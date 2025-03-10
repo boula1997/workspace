@@ -96,7 +96,7 @@
                                                 <div class="modal-body">
                                                     <div>
                                                         <input type="hidden" name="issue_id" value="{{ $issue->id }}">
-                                                        <textarea class="form-control" name="codeLinks" id="" cols="30" rows="10">{{ $issue->codeLinks }}</textarea>
+                                                        <textarea class="form-control" name="codeLinks" id="" cols="30" rows="5">{{ $issue->codeLinks }}</textarea>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">

@@ -33,7 +33,7 @@
 
     {{-- <div class="form-group">
         <label for="exampleFormControlInput2">Tasks:</label>
-        <textarea name="tasks" wire:model="tasks" id="" class="form-control noHide" cols="30" rows="10"></textarea>
+        <textarea name="tasks" wire:model="tasks" id="" class="form-control noHide" cols="30" rows="5"></textarea>
         @error('tasks') <span class="text-danger">{{ $message }}</span>@enderror
     </div> --}}
     <button wire:click.prevent="update()" class="btn btn-dark">Update</button>

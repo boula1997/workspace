@@ -148,7 +148,7 @@
                                                         <div>
                                                             <input type="hidden" name="account_id"
                                                                 value="{{ $account->id }}">
-                                                            <textarea class="form-control  summernote" name="tasks" id="" cols="30" rows="10">{{ isset($account->tasks) ? $account->tasks : '' }}</textarea>
+                                                            <textarea class="form-control  summernote" name="tasks" id="" cols="30" rows="5">{{ isset($account->tasks) ? $account->tasks : '' }}</textarea>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">

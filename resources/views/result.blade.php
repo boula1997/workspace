@@ -859,7 +859,7 @@
     @endif
 
     @if ($action == 'Search all attributes at once')
-        <textarea class="text-white " name="print" id="print" cols="30" rows="10"></textarea>
+        <textarea class="text-white " name="print" id="print" cols="30" rows="5"></textarea>
         <div id="printResult" class="text-white">
 
         </div>

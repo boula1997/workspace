@@ -121,7 +121,7 @@
                                     <div class="modal-body">
                                         <div>
                                             <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                            <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="10">{{ isset($post->codeLinks) ? $post->codeLinks : '' }}</textarea>
+                                            <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="5">{{ isset($post->codeLinks) ? $post->codeLinks : '' }}</textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -156,7 +156,7 @@
                                     <div class="modal-body">
                                         <div>
                                             <input type="hidden" name="issue_id" value="{{ $refrnce->id }}">
-                                            <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="10">{{ isset($refrnce->codeLinks) ? $refrnce->codeLinks : '' }}</textarea>
+                                            <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="5">{{ isset($refrnce->codeLinks) ? $refrnce->codeLinks : '' }}</textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -234,7 +234,7 @@
                                 <div>
                                     <input type="hidden" name="post_id"
                                         value="{{ $website->id }}">
-                                    <textarea class="form-control  summernote" name="tasks" id="" cols="30" rows="10">{{ isset($website->tasks) ? $website->tasks : '' }}</textarea>
+                                    <textarea class="form-control  summernote" name="tasks" id="" cols="30" rows="5">{{ isset($website->tasks) ? $website->tasks : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="modal-footer">
