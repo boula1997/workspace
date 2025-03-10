@@ -12,14 +12,14 @@
                             <div class="col-md-12">
                                 <select id="projectFilter" class="form-control" multiple>
                                     @foreach ($projects as $project)
-                                        @if (rest($project) > 0)
-                                            <option value="{{ $project->title }}">{{ $project->title }}</option>
-                                        @endif
+                                    @if (rest($project)>0)                                        
+                                    <option value="{{ $project->title }}">{{ $project->title }}</option>
+                                    @endif
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-
+                        
                         <!-- left column -->
                         <div class="col-md-12">
                             <!-- general form elements -->
@@ -44,27 +44,27 @@
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>{{ __('general.title') }}</th>
+                                                <th>{{__('general.title')}}</th>
 
-                                                <th>{{ __('general.cost') }}</th>
-
-                                                <th>{{ __('general.payed') }}</th>
-
-                                                <th>{{ __('general.debit') }}</th>
-
-                                                <th>{{ __('general.isYousab') }}</th>
-
-                                                <th>{{ __('general.status') }}</th>
-
-                                                <th>{{ __('general.appearance') }}</th>
-
-                                                <th>{{ __('general.deal') }}</th>
-
-                                                <th>{{ __('general.deadline') }}</th>
-
-                                                <th>{{ __('general.lastTransaction') }}</th>
-
-                                                <th>{{ __('general.fees') }}</th>
+                                                <th>{{__('general.cost')}}</th>
+                                                
+                                                <th>{{__('general.payed')}}</th>
+                                                
+                                                <th>{{__('general.debit')}}</th>
+                                                
+                                                <th>{{__('general.isYousab')}}</th>
+                                                
+                                                <th>{{__('general.status')}}</th>
+                                                
+                                                <th>{{__('general.appearance')}}</th>
+                                                
+                                                <th>{{__('general.deal')}}</th>
+                                                
+                                                <th>{{__('general.deadline')}}</th>
+                                                
+                                                <th>{{__('general.lastTransaction')}}</th>
+                                                
+                                                <th>{{__('general.fees')}}</th>
                                                 <th>@lang('general.controls')</th>
                                             </tr>
                                         </thead>
@@ -73,27 +73,26 @@
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $project->title }}</td>
-                                        
-                                                    <td class="cost">{{ $project->cost }}</td>
-                                        
+
+                                                    <td>{{ $project->cost }}</td>
+                                                    
                                                     <td>{{ $project->payed }}</td>
-                                        
-                                                    <td class="rest">{{ $project->debit }}</td>
-                                        
-                                                    <td>{{ $project->isYousab ? __('general.yes') : __('general.no') }}</td>
-                                        
-                                                    <td>{{ $project->status ? __('general.yes') : __('general.no') }}</td>
-                                        
-                                                    <td>{{ $project->appearance ? __('general.yes') : __('general.no') }}</td>
-                                        
-                                                    <td>{{ $project->deal ? __('general.yes') : __('general.no') }}</td>
-                                        
+                                                    
+                                                    <td>{{ $project->debit }}</td>
+                                                    
+                                                    <td>{{$project->isYousab?__('general.yes'):__('general.no') }}</td>
+                                                    
+                                                    <td>{{$project->status?__('general.yes'):__('general.no') }}</td>
+                                                    
+                                                    <td>{{$project->appearance?__('general.yes'):__('general.no') }}</td>
+                                                    
+                                                    <td>{{$project->deal?__('general.yes'):__('general.no') }}</td>
+                                                    
                                                     <td>{{ $project->deadline }}</td>
-                                        
+                                                    
                                                     <td>{{ $project->lastTransaction }}</td>
-                                        
+                                                    
                                                     <td>{{ $project->fees }}</td>
-                                        
                                                     <td>
                                                         @include('admin.components.controls', [
                                                             'route' => 'projects',
@@ -104,21 +103,8 @@
                                                 </tr>
                                             @endforeach
                                         </tbody>
-                                        
 
                                     </table>
-
-                                    <!-- Separate tfoot for better responsiveness -->
-                                    <div class="table-footer-summary">
-                                        <table class="table">
-                                            <tr>
-                                                <td colspan="2" class="text-right fw-bold">Total Cost:</td>
-                                                <td id="total-cost"></td>
-                                                <td id="total-rest"></td>
-                                                <td colspan="2"></td>
-                                            </tr>
-                                        </table>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -132,49 +118,65 @@
 @endsection
 
 @push('scripts')
-    <script>
-        $(function() {
-            var table = $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "paging": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                "stateSave": true,
-                "search": {
-                    "smart": true
-                }
-            });
 
-            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-
-            $('#projectFilter').on('change', function() {
-                var selectedTitles = $(this).val();
-                table.columns(1).search(selectedTitles ? selectedTitles.join('|') : '', true, false).draw();
-            });
-
-            function calculateTotals() {
-                let totalCost = 0,
-                    totalRest = 0;
-
-                table.rows({
-                    search: 'applied'
-                }).every(function() {
-                    let rowNode = $(this.node());
-
-                    let cost = parseFloat(rowNode.find('.cost').text().replace(/[^0-9.-]+/g, "")) || 0;
-                    let rest = parseFloat(rowNode.find('.rest').text().replace(/[^0-9.-]+/g, "")) || 0;
-
-                    totalCost += cost;
-                    totalRest += rest;
-                });
-
-                $('#total-cost').text(totalCost.toFixed(2));
-                $('#total-rest').text(totalRest.toFixed(2));
+<script>
+    $(function() {
+        // Initialize DataTable with stateSave and custom state management
+        var table = $("#example1").DataTable({
+            "responsive": true,
+            "lengthChange": false,
+            "autoWidth": false,
+            "paging": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+            "stateSave": true, // Enable state saving
+            "search": {
+                "smart": true  // Enable smart search
             }
-
-            calculateTotals();
-            table.on('search.dt draw.dt', calculateTotals);
         });
-    </script>
+
+        // Append DataTable buttons to container
+        table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+        // Filter the table based on selected titles
+        $('#projectFilter').on('change', function() {
+            var selectedTitles = $(this).val(); // Get selected project titles
+            table.columns(1).search(selectedTitles.join('|'), true, false).draw(); // Search the title column (index 1)
+        });
+
+        // Function to calculate the total cost and rest for visible rows
+        function calculateTotals() {
+            let totalCost = 0;
+            let totalRest = 0;
+
+            // Iterate over each visible row in the DataTable
+            table.rows({ search: 'applied' }).every(function() {
+                const rowNode = $(this.node());
+
+                // Extract and parse the cost value
+                let costText = rowNode.find('.cost').text().trim();
+                let cost = parseFloat(costText.replace(/[^0-9.-]+/g, "")) || 0;
+                totalCost += cost;
+
+                // Extract and parse the rest value
+                let restText = rowNode.find('.rest').text().trim();
+                let rest = parseFloat(restText.replace(/[^0-9.-]+/g, "")) || 0;
+                totalRest += rest;
+            });
+
+            // Display the totals in the summary row
+            $('#total-cost').text(totalCost.toFixed(2));
+            $('#total-rest').text(totalRest.toFixed(2));
+        }
+
+        // Calculate the initial totals for all visible rows
+        calculateTotals();
+
+        // Recalculate the totals whenever a search/filter or column visibility change occurs
+        table.on('search.dt column-visibility.dt', function() {
+            calculateTotals();
+        });
+    });
+</script>
+
 @endpush
+

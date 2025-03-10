@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>one tab window browser</title>
+    <title>Websites</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('bootstrap-5.3.1-dist/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('bootstrap-5.3.1-dist/js/bootstrap.min.js') }}">
@@ -125,7 +125,7 @@
                                     <div class="modal-body">
                                         <div>
                                             <input type="hidden" name="account_id" value="{{ $account->id }}">
-                                            <textarea class="form-control  summernote" name="tasks" id="" cols="30" rows="5">{{ isset($account->tasks) ? $account->tasks : '' }}</textarea>
+                                            <textarea class="form-control  summernote" name="tasks" id="" cols="30" rows="10">{{ isset($account->tasks) ? $account->tasks : '' }}</textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -152,8 +152,6 @@
     </div>
 
     <div id="startTime" startTime={{ getHourFromDateTime(settingFirst()->startTime) }}></div>
-
-    @include('navIcon')
 
     <!-- Start button WhatsApp -->
     {{-- <a id="whats" class="whats" href="http://127.0.0.1:9000/" >

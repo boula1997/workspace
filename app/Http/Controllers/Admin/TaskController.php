@@ -313,30 +313,6 @@ class TaskController extends Controller
         }
     }
     
-
-    public function updateCounter(Request $request)
-    {
-
-
-
-        $taskId = $request->query('task_id'); // Retrieve query parameter
-        $remainingTime = $request->query('counter'); // Retrieve query parameter
-    
-        // Update the task in the database (example)
-        $task = Task::find($taskId);
-        if($task->counter==0)
-        return response()->json(['status' => 'error', 'message' => 'Task is finished'], 404);
-
-        if ($task) {
-            $task->counter = $remainingTime;
-            // $task->save();
-    
-            return response()->json(['status' => 'success', 'message' => 'Task counter updated']);
-        }
-    
-        return response()->json(['status' => 'error', 'message' => 'Task not found'], 404);
-    }
-    
     
 
     /**
@@ -364,26 +340,26 @@ class TaskController extends Controller
     {
         try {
 
-            foreach($request->employees as $employee){
-                Task::create([
-                    'title'=>$request->title,
-                    'employee_id'=>$employee,
-                    'project_id'=>$task->project_id,
-                    'keywords'=>$task->keywords
-                ]);
-                }
-                $task->delete();
+    foreach($request->employees as $employee){
+        Task::create([
+            'title'=>$request->title,
+            'employee_id'=>$employee,
+            'project_id'=>$task->project_id,
+            'keywords'=>$task->keywords
+        ]);
+        }
+        $task->delete();
 
-                emailTasks();
+        emailTasks();
 
-                    
-                    // Get the previous and the one before the previous route
-                    $previousRoute = session('previousRoute');
-                    $twoRoutesAgo = session('twoRoutesAgo');
             
-                    // Redirect to either the previous or the one before
-                    return redirect($twoRoutesAgo)
-                        ->with(['success' => __('general.updated_successfully')]);
+            // Get the previous and the one before the previous route
+            $previousRoute = session('previousRoute');
+            $twoRoutesAgo = session('twoRoutesAgo');
+    
+            // Redirect to either the previous or the one before
+            return redirect($twoRoutesAgo)
+                ->with(['success' => __('general.updated_successfully')]);
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);

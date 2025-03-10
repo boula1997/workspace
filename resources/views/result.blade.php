@@ -859,7 +859,7 @@
     @endif
 
     @if ($action == 'Search all attributes at once')
-        <textarea class="text-white " name="print" id="print" cols="30" rows="5"></textarea>
+        <textarea class="text-white " name="print" id="print" cols="30" rows="100"></textarea>
         <div id="printResult" class="text-white">
 
         </div>
@@ -1092,7 +1092,7 @@
                                     @if ($table->TABLE_NAME[0] == $letter)
                                         <!-- Table Name -->
                                         <span id="table" style="cursor: pointer;" 
-                                              content="{{$table->TABLE_NAME}}" 
+                                              content="SELECT * FROM {{ $table->TABLE_NAME }} order by updated_at desc limit 1 \G;" 
                                               table="{{ $table->TABLE_NAME }}" 
                                               class="toggleRelation fw-bold clickable-text-db" 
                                               title="{{ str_replace('_id', '', $array2[$loop->index]) }}">
@@ -1108,7 +1108,7 @@
                                             <span  
                                             class="clickable-text-db" 
                                             style="cursor: pointer;" 
-                                            content="{{ $item }}">
+                                            content="SELECT {{ $item }} FROM {{ $table->TABLE_NAME }} order by updated_at desc limit 1;">
                                             {{ $item }}
                                         </span> 
                                         <span class="text-info">{{ explode(' ', $dataTypes[$i])[$loop->index] }}</span>

@@ -55,7 +55,7 @@
 
                                 <div class="col-form-group">
                                     <label>@lang('general.description')(@lang('general.' . $locale))<span class="text-danger">*</span></label>
-                                    <textarea rows="5" class="summernote @error($locale . '.description') is-invalid @enderror"
+                                    <textarea rows="100" class="summernote @error($locale . '.description') is-invalid @enderror"
                                         name="{{ $locale . '[description]' }}">
                                         {!! old($locale . '.description', $category->translate($locale)->description) !!} 
                                     </textarea>

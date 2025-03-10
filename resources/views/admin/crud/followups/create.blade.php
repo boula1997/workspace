@@ -21,7 +21,7 @@
                                     </span></label>
                                 <div class="input-group">
                                     <textarea name="title" id="titlearea" class="form-control @error('title') is-invalid @enderror"
-                                        placeholder="ex:followup1+followup2+followup3+followup4" id="" cols="30" rows="5">{{ old('title') }}</textarea>
+                                        placeholder="ex:followup1+followup2+followup3+followup4" id="" cols="30" rows="10">{{ old('title') }}</textarea>
 
                                 </div>
                             </div>

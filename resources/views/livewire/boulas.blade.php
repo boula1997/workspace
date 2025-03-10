@@ -137,7 +137,7 @@
                                                         <div>
                                                             <input type="hidden" name="boula_id"
                                                                 value="{{ $boula->id }}">
-                                                            <textarea class="form-control  summernote" name="tasks" id="" cols="30" rows="5">{{ isset($boula->tasks) ? $boula->tasks : '' }}</textarea>
+                                                            <textarea class="form-control  summernote" name="tasks" id="" cols="30" rows="10">{{ isset($boula->tasks) ? $boula->tasks : '' }}</textarea>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">

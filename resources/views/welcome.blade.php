@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>one tab window browser</title>
+    <title>Work Space | Created By Eng: Boula Nessim</title>
     <link rel="stylesheet" href="{{ asset('bootstrap-5.3.1-dist/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('bootstrap-5.3.1-dist/js/bootstrap.min.js') }}">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <link rel="icon" href="{{ settings()->logo }}">
+    <link rel="icon" href="{{ settings()->logo}}">
 
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset('plugins/summernote/summernote-bs4.min.css') }}">
@@ -22,88 +22,75 @@
 
 </head>
 
-<style>
-    /* Set the background and text color for the Select2 container */
+<style>/* Set the background and text color for the Select2 container */
     .select2-container--default .select2-selection--single {
-        background-color: #333;
-        /* Dark background */
-        color: #fff;
-        /* White text */
-        border: 1px solid #555;
-        /* Border color */
+        background-color: #333; /* Dark background */
+        color: #fff; /* White text */
+        border: 1px solid #555; /* Border color */
     }
-
+    
     .select2-container--default .select2-selection--single .select2-selection__rendered {
-        color: #000000;
-        /* White text */
+        color: #000000; /* White text */
     }
-
+    
     .select2-container--default .select2-selection--single .select2-selection__arrow b {
-        border-color: #000000 transparent transparent transparent;
-        /* White arrow */
+        border-color: #000000 transparent transparent transparent; /* White arrow */
     }
-
+    
     /* Dropdown menu */
-    .select2-container--default .select2-results>.select2-results__options {
-        background-color: #000000;
-        /* Dark background */
-        color: #fff;
-        /* White text */
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #000000; /* Dark background */
+        color: #fff; /* White text */
     }
-
+    
     /* Hover and selected option styles */
     .select2-container--default .select2-results__option--highlighted[aria-selected] {
-        background-color: #000000;
-        /* Slightly lighter for hover */
-        color: #fff;
-        /* White text */
+        background-color: #000000; /* Slightly lighter for hover */
+        color: #fff; /* White text */
     }
-
+    
     /* Placeholder text */
     .select2-container--default .select2-selection--single .select2-selection__placeholder {
-        color: #aaa;
-        /* Light gray placeholder */
+        color: #aaa; /* Light gray placeholder */
     }
-
+    
     /* Clear button */
     .select2-container--default .select2-selection--single .select2-selection__clear {
-        color: #fff;
-        /* White clear button */
+        color: #fff; /* White clear button */
     }
 
     .select2-container--default .select2-selection--single .select2-selection__rendered {
-        color: #ffffff !important;
-        line-height: 28px;
-        background-color: black !important;
-    }
+    color: #ffffff !important;
+    line-height: 28px;
+    background-color: black !important;
+}
 
-    .select2-search--dropdown {
-        display: block !important;
-        padding: 0px !important;
-    }
+.select2-search--dropdown {
+    display: block !important; 
+    padding: 0px !important;
+}
 
-    .select2-container--default .select2-results__option--selected {
-        background-color: #ffc107 !important;
-        color: #000000 !important;
-    }
-
-    .select2-container--default .select2-results__option--selected:hover {
-        background-color: #ffc107 !important;
-        color: #000000 !important;
-    }
-
-    .select2-container--default .select2-results__option--selected:focus {
-        background-color: #ffc107 !important;
-        color: #000000 !important;
-    }
+.select2-container--default .select2-results__option--selected {
+    background-color: #ffc107 !important;
+    color: #000000 !important;
+}
+.select2-container--default .select2-results__option--selected:hover {
+    background-color: #ffc107 !important;
+    color: #000000 !important;
+}
+.select2-container--default .select2-results__option--selected:focus {
+    background-color: #ffc107 !important;
+    color: #000000 !important;
+}
+    
 </style>
 
 <body>
     <div class="container-fluid">
+     
+            @include('tabs')
 
-        @include('tabs')
-
-        @if (boula())
+        @if (boula())            
             <div class="allModals">
                 @foreach (posts() as $post)
                     <div class="modal fade" id="postModal{{ $post->id }}" tabindex="-1"
@@ -121,7 +108,7 @@
                                     <div class="modal-body">
                                         <div>
                                             <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                            <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="5">{{ isset($post->codeLinks) ? $post->codeLinks : '' }}</textarea>
+                                            <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="10">{{ isset($post->codeLinks) ? $post->codeLinks : '' }}</textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -138,39 +125,39 @@
             </div>
         @endif
 
-        @if (boula())
-            <div class="allReferences">
-                @foreach (References() as $refrnce)
-                    <div class="modal fade" id="referenceModal{{ $refrnce->id }}" tabindex="-1"
-                        aria-labelledby="referenceModalLabel{{ $refrnce->id }}" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="referenceModalLabel{{ $refrnce->id }}">
-                                        {{ $refrnce->title }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <form id="referenceForm" method="refrnce">
-                                    @csrf
-                                    <div class="modal-body">
-                                        <div>
-                                            <input type="hidden" name="issue_id" value="{{ $refrnce->id }}">
-                                            <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="5">{{ isset($refrnce->codeLinks) ? $refrnce->codeLinks : '' }}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-success">Update</button>
-                                    </div>
-                                </form>
+        @if (boula())            
+        <div class="allReferences">
+            @foreach (References() as $refrnce)
+                <div class="modal fade" id="referenceModal{{ $refrnce->id }}" tabindex="-1"
+                    aria-labelledby="referenceModalLabel{{ $refrnce->id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="referenceModalLabel{{ $refrnce->id }}">
+                                    {{ $refrnce->title }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
+                            <form id="referenceForm" method="refrnce">
+                                @csrf
+                                <div class="modal-body">
+                                    <div>
+                                        <input type="hidden" name="issue_id" value="{{ $refrnce->id }}">
+                                        <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="10">{{ isset($refrnce->codeLinks) ? $refrnce->codeLinks : '' }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-success">Update</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                @endforeach
+                </div>
+            @endforeach
 
-            </div>
+        </div>
         @endif
 
         <div id="formBody" class="mt-5">
@@ -210,10 +197,8 @@
             <div id="startTimeCheck">
                 <form id="startTimeForm" method="post">
                     <p>Set your start time of work today</p>
-                    <input type="datetime-local" id="startTimeInput" class="form-control w-25"
-                        name="startTimeInput">
-                    <button type="submit" id="startTimeButton" class="d-none btn btn-success mt-2">Reset Start
-                        Time</button>
+                    <input type="datetime-local" id="startTimeInput" class="form-control w-25" name="startTimeInput">
+                    <button type="submit" id="startTimeButton" class="d-none btn btn-success mt-2">Reset Start Time</button>
                 </form>
             </div>
             @include('success')
@@ -234,7 +219,7 @@
                                 <div>
                                     <input type="hidden" name="post_id"
                                         value="{{ $website->id }}">
-                                    <textarea class="form-control  summernote" name="tasks" id="" cols="30" rows="5">{{ isset($website->tasks) ? $website->tasks : '' }}</textarea>
+                                    <textarea class="form-control  summernote" name="tasks" id="" cols="30" rows="10">{{ isset($website->tasks) ? $website->tasks : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -251,17 +236,14 @@
                 @csrf
                 <div class="row">
                     <div class="mt-2" id="allWebsites">
-                        <p>Choose websites you will work on today <span class="text-danger">Red</span>:Dealing <span
-                                class="text-success">Green</span>:Finance <span
-                                class="text-warning">Yellow</span>:Working on</p>
+                        <p>Choose websites you will work on today <span class="text-danger">Red</span>:Dealing <span class="text-success">Green</span>:Finance <span class="text-warning">Yellow</span>:Working on</p>
                         <div class="website-container d-flex flex-wrap">
                             @foreach (websites() as $website)
                                 <p id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
-                                    class="{{ $website->deal ? ($website->status == 0 ? 'bg-secondary' : ($website->status == 1 ? 'bg-warning' : ($website->status == 2 ? 'bg-success' : 'bg-warning'))) : 'bg-danger' }}  hover-cursor mx-1 text-nowrap text-back">
+                                    class="{{$website->deal?( $website->status == 0 ? 'bg-secondary' : ($website->status == 1 ? 'bg-warning' : ($website->status == 2 ? 'bg-success' : 'bg-warning'))):'bg-danger' }}  hover-cursor mx-1 text-nowrap text-back">
                                     {{ $website->title }}</p>
 
-                                <i style="cursor: pointer;" content="{{ $website->codeLinks }}"
-                                    websiteId="{{ $website->id }}"
+                                <i style="cursor: pointer;"  content="{{ $website->codeLinks }}" websiteId="{{ $website->id }}"
                                     class="clickable-text text-secondary fas fa-copy"></i>
                             @endforeach
                         </div>
@@ -284,11 +266,11 @@
                     <div class="mt-2" id="allRoutes">
                         <div class="website-container d-flex flex-wrap">
                             @foreach (websitesRoutes() as $website)
-                                <a href="{{ $website->routesLink }}">
-                                    <button type="button" content="{{ $website->codeLinks }}"
-                                        id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
-                                        class="clickable-text btn {{ $website->status == 0 ? 'btn-outline-warning' : ($website->status == 1 ? 'btn-outline-warning' : 'btn-success') }}  hover-cursor mx-1 text-nowrap m-2">{{ $website->title }}</button>
-                                </a>
+                            <a href="{{ $website->routesLink }}">
+                                <button type="button" content="{{ $website->codeLinks }}" id="{{ $website->id }}"
+                                    title="1click:yellow 2click:green 3click:red"
+                                    class="clickable-text btn {{ $website->status == 0 ? 'btn-outline-warning' : ($website->status == 1 ? 'btn-outline-warning' : 'btn-success') }}  hover-cursor mx-1 text-nowrap m-2">{{ $website->title }}</button>
+                            </a>
                             @endforeach
                         </div>
                     </div>
@@ -306,20 +288,16 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-                                    @if (boula())
-                                        <div class="modal-body">
-                                            <div>
-                                                <p>Was the last time <span
-                                                        class="text-white">{{ setting()->last_time }}
-                                                        ({{ getTimeAgo(setting()->last_time) }})</span>?</p>
-                                                <button id="yes" class="btn btn-success">Yes</button>
-                                                <button id="no" type="button"
-                                                    class="btn btn-danger">No</button>
-                                                <input type="date" id="lastTimeDate" class="form-control w-25"
-                                                    name="lastTimeDate">
-                                            </div>
+                                    <div class="modal-body">
+                                        <div>
+                                            <p>Was the last time <span class="text-white">{{ setting()->last_time }}
+                                                    ({{ getTimeAgo(setting()->last_time) }})</span>?</p>
+                                            <button id="yes" class="btn btn-success">Yes</button>
+                                            <button id="no" type="button" class="btn btn-danger">No</button>
+                                            <input type="date" id="lastTimeDate" class="form-control w-25"
+                                                name="lastTimeDate">
                                         </div>
-                                    @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -344,7 +322,7 @@
                                     <option value="19">flags manager</option>
                                     <option value="16">get multible scripts</option>
                                     <option value="16">get multible modules</option>
-                                    <option class="{{ boula() ? '' : 'myTab' }}" value="21">Get Stats</option>
+                                    <option class="{{boula()?'':'myTab'}}" value="21">Get Stats</option>
                                     <option value="4">Get files with size bigger than</option>
                                     <option value="18">Image Workspace</option>
                                     <option value="3">Open multible modules</option>
@@ -386,13 +364,11 @@
                                     id="showWebsites">
                                 <p class="d-inline pointer-cursor">Show Websites</p>
                             </div>
-                            @if (boula())
-                                <div class="form-group mt-2">
-                                    <input class=d-inline" value="" type="checkbox" name="showReferences"
-                                        id="showReferences">
-                                    <p class="d-inline pointer-cursor">Show Refernces</p>
-                                </div>
-                            @endif
+                            <div class="form-group mt-2">
+                                <input class=d-inline" value="" type="checkbox" name="showReferences"
+                                    id="showReferences">
+                                <p class="d-inline pointer-cursor">Show Refernces</p>
+                            </div>
                             <div class="form-group mt-2">
                                 <input class=d-inline" value="" type="checkbox" name="showRoutes"
                                     id="showRoutes">
@@ -488,12 +464,8 @@
                                     name="size" placeholder="Insert file size">
                             </div>
                             <div class="form-group mt-2">
-                                <input id="db_name" type="text" class="form-control   text-white"
-                                    name="dbname" placeholder="Insert database name">
-                            </div>
-                            <div class="form-group mt-2">
-                                <input id="tablename" type="text" class="form-control   text-white"
-                                    name="tablename" placeholder="ex: tablename1,tablename2">
+                                <input type="text" class="form-control   text-white" name="dbname"
+                                    placeholder="Insert database name">
                             </div>
 
                             <div class="form-group mt-2">
@@ -519,7 +491,7 @@
                                     placeholder="Insert replaceWord">
                             </div>
                             <div class="form-group mt-2">
-                                <input value="{{ old('attribute') }}" id="attributes" type="text"
+                                <input value="{{ old('attribute') }}" type="text"
                                     class="form-control   text-white" name="attribute" placeholder="item1,item2,...">
                             </div>
                             <div class="form-group">
@@ -540,13 +512,12 @@
                                     name="module" placeholder="Insert module">
                             </div>
                             <div class="form-group mt-2">
-                                <input type="text" id="attrtypes" value="{{ old('type') }}"
-                                    class="form-control   text-white" name="type"
+                                <input type="text" value="{{ old('type') }}" class="form-control   text-white"
+                                    name="type"
                                     placeholder="all,input,inputtrans,textarea,textareatrans,select,multiselect,radio,file,multifile,image,multimage">
                             </div>
                             <div class="form-group mt-2">
-                                <textarea class="form-control   text-white" name="script" id="textarea"
-                                    placeholder="ex: keyword1, keyword2, keyword3" cols="30" rows="20"></textarea>
+                                <textarea class="form-control   text-white" name="script" id="textarea" cols="30" rows="20"></textarea>
                                 {{-- <input type="text" class="form-control   text-white" name="script" placeholder="Insert script"> --}}
                             </div>
 
@@ -568,25 +539,21 @@
                         </div>
                     </div>
                     <div class="row mt-3">
-
+                      
                         <div class="col-md-6">
                             <p>
                                 all-input-inputtrans-textarea-textareatrans-select-multiselect-staticselect-multistaticselect-radio-file-multifile-image-multimage-date-time-datetime-number-checkbox-email-tel-url
                             </p>
-                            <p>It is very helpful to use logs in laravel to debug especially in case of api where you
-                                need to see terminal or console of front. So always use it for tracing and debuging </p>
+                            <p>It is very helpful to use logs in laravel to debug especially in case of api where you need to see terminal or console of front. So always use it for tracing and debuging </p>
                             <p>
                                 $total_price = $total_price - $discount;
                                 Log::info("total_price => $total_price");
-
+                
                             </p>
                             <p>Important: use stop record in network of inspect to catch a request before reloading</p>
-                            <p>to avoid confusion when using tabs use ctrl+shift+pageup or pagedown to move tavb right
-                                to the end and start add the new needed tab</p>
-                            <p>use query that has orderby updated_at to easiloy find item you editted data in sql query
-                            </p>
-                            <p>cors or network error that prevents you from seeing the error may be because of bad
-                                browser try another account or new browser</p>
+                            <p>to avoid confusion when using tabs use ctrl+shift+pageup or pagedown to move tavb right to the end and start add the new needed tab</p>
+                            <p>use query that has orderby updated_at to easiloy find item you editted data in sql query</p>
+                            <p>cors or network error that prevents you from seeing the error may be because of bad browser try another account or new browser</p>
                             <p class="text-warning">Listen to tasks and write most important of them in notebook (Most
                                 Important)</p>
                             <p class="text-warning">alt +dblclick methodology + auto attributes automation option</p>
@@ -610,13 +577,12 @@
 
                             </ul>
                             <hr>
-                            <p class="text-warning">Use this script to have a console for websites on mobile. Just put
-                                it in the website footer:</p>
-                            <pre class="text-white">
+                        <p class="text-warning">Use this script to have a console for websites on mobile. Just put it in the website footer:</p>
+                        <pre class="text-white">
                         &lt;script src="https://cdn.jsdelivr.net/npm/eruda"&gt;&lt;/script&gt;
                         &lt;script&gt;eruda.init();&lt;/script&gt;
                         </pre>
-
+                         
                             <p class="text-warning">windows+prntscrren - ctrl+v in whatsapp methodology</p>
                             <hr>
                             <p class="text-warning">Note:keep mobile out during working hours to avoid distractions</p>
@@ -637,39 +603,28 @@
                             <p>Ready to do magic {{ ':)' }}</p>
                         </div>
                     </div>
-
                     <div class="row">
-                        <div class="col-md-6">
-                            <h4>.bat files on this system</h4>
-                            <p>E:\xampp\htdocs\workspace\hourly_alarm.bat</p>
-                            <p>E:\xampp\htdocs\workspace\open_link.bat</p>
-                        </div>
+                    <div class="col-md-6">
+                     <h1>Alarm device every hour</h1>
+                     <p>
+                        Step 1: Create a Batch Script  hourly_alarm.bat
+                        @echo off
+                        echo Alarm at the start of the hour!
+                        powershell -c (New-Object Media.SoundPlayer "C:\Windows\Media\Alarm01.wav").PlaySync()
+
+                        Step 2: Use Task Scheduler
+                        Press Win + S, type Task Scheduler, and open it.
+                        In Task Scheduler:
+                        Select Create Basic Task from the right pane.
+                        Name the task, e.g., "Hourly Alarm".
+                        Choose Daily as the trigger.
+                        Set the start time to the next hour and select Repeat task every 1 hour for the duration of 1 day.
+                        In the Action step, select Start a program and browse to your hourly_alarm.bat script.
+                        Save the task.
+
+                        Now, your alarm will play at the start of every hour. You can disable the task in Task Scheduler if you no longer need it.
+                     </p>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h1>Alarm device every hour (you can import task from file here and also there the bat file
-                                here)</h1>
-                            <p>
-                                Step 1: Create a Batch Script hourly_alarm.bat
-                                @echo off
-                                echo Alarm at the start of the hour!
-                                powershell -c (New-Object Media.SoundPlayer "C:\Windows\Media\Alarm01.wav").PlaySync()
-
-                                Step 2: Use Task Scheduler
-                                Press Win + S, type Task Scheduler, and open it.
-                                In Task Scheduler:
-                                Select Create Basic Task from the right pane.
-                                Name the task, e.g., "Hourly Alarm".
-                                Choose Daily as the trigger.
-                                Set the start time to the next hour and select Repeat task every 1 hour for the duration
-                                of 1 day.
-                                In the Action step, select Start a program and browse to your hourly_alarm.bat script.
-                                Save the task.
-
-                                Now, your alarm will play at the start of every hour. You can disable the task in Task
-                                Scheduler if you no longer need it.
-                            </p>
-                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -726,51 +681,37 @@
                         </code>
 
                     </div>
-                    <div class="row mt-5">
-                        <p class="text-warning">Always use poweshell because it has memeory</p>
+                    <div class="row mt-5" >
+                         <p class="text-warning">Always use poweshell because it has memeory</p>
                         <div class="col-md-6">
                             <p class="text-warning">Pined Clipboard elements</p>
                             <code>
                                 if (App::environment('local')) {
-                                Route::get(&#39;routes&#39;, function () {
-                                $routeCollection = Route::getRoutes();
-
-                                echo &quot;&lt;table style=&#39;width:100%; border: 1px solid black; border-collapse:
-                                collapse;&#39;&gt;&quot;;
-                                echo &quot;&lt;tr&gt;&quot;;
-                                echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;HTTP
-                                Method&lt;/th&gt;&quot;;
-                                echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Route&lt;/th&gt;&quot;;
-                                echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Name&lt;/th&gt;&quot;;
-                                echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Corresponding
-                                Action&lt;/th&gt;&quot;;
-                                echo &quot;&lt;/tr&gt;&quot;;
-
-                                foreach ($routeCollection as $value) {
-                                echo &quot;&lt;tr&gt;&quot;;
-                                echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; .
-                                $value-&gt;methods()[0] . &quot;&lt;/td&gt;&quot;;
-                                echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; . $value-&gt;uri()
-                                . &quot;&lt;/td&gt;&quot;;
-                                echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; .
-                                ($value-&gt;getName() ?? &#39;N/A&#39;) . &quot;&lt;/td&gt;&quot;;
-                                echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; .
-                                $value-&gt;getActionName() . &quot;&lt;/td&gt;&quot;;
-                                echo &quot;&lt;/tr&gt;&quot;;
-                                }
-
-                                echo &quot;&lt;/table&gt;&quot;;
+                                Route::get(&#39;routes&#39;, function () { 
+                                    $routeCollection = Route::getRoutes();
+                                    
+                                    echo &quot;&lt;table style=&#39;width:100%; border: 1px solid black; border-collapse: collapse;&#39;&gt;&quot;;
+                                    echo &quot;&lt;tr&gt;&quot;;
+                                    echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;HTTP Method&lt;/th&gt;&quot;;
+                                    echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Route&lt;/th&gt;&quot;;
+                                    echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Name&lt;/th&gt;&quot;;
+                                    echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Corresponding Action&lt;/th&gt;&quot;;
+                                    echo &quot;&lt;/tr&gt;&quot;;
+                                    
+                                    foreach ($routeCollection as $value) {
+                                        echo &quot;&lt;tr&gt;&quot;;
+                                        echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; . $value-&gt;methods()[0] . &quot;&lt;/td&gt;&quot;;
+                                        echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; . $value-&gt;uri() . &quot;&lt;/td&gt;&quot;;
+                                        echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; . ($value-&gt;getName() ?? &#39;N/A&#39;) . &quot;&lt;/td&gt;&quot;;
+                                        echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; . $value-&gt;getActionName() . &quot;&lt;/td&gt;&quot;;
+                                        echo &quot;&lt;/tr&gt;&quot;;
+                                    }
+                                    
+                                    echo &quot;&lt;/table&gt;&quot;;
                                 });
-                                }
+                               }
 
                             </code>
-                            </code>
-                            <br>
-                            <hr class="text-white">
-                            <p title="auto fill password">Pa$$w0rd!</p>
-                            <br>
-                            <hr class="text-white">
-                            <p title="Pa$$w0rd!">"$2y$10$KGRWYA9/eCPF5rwZ0vx4GevysNBDNrvlVtmsxiSTDRhtLeExnnoXi"</p>
                             <br>
                             <hr class="text-white">
 
@@ -890,12 +831,10 @@
 
         </div>
     </a> --}}
-    @include('navIcon')
 
 
 </body>
 
 @include('scripts')
-
 
 </html>

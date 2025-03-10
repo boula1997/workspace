@@ -279,7 +279,7 @@ class LocalActionController extends Controller
     if ($request->action == '8' || $request->action == '10') {
       $action = $request->action == '8' ? "Search all attributes at once" : "search project modules";
       $results = DB::select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
-      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' order by TABLE_NAME;");
+      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' and TABLE_NAME NOT IN ('jobs','password_resets','password_reset_tokens','permissions','personal_access_tokens','role_has_permissions','roles','failed_jobs','files','model_has_permissions','model_has_roles','users','admins','pages','contacts','messages','newsletters','settings') order by TABLE_NAME;");
       $dbname = $request->dbname;
       $string = '';
       $string2 = '';
@@ -303,7 +303,7 @@ class LocalActionController extends Controller
       $string = str_replace(' ', '', $string);
       $string2 = str_replace(' ', '', $string2);;
       $string3 = '';
-      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' order by TABLE_NAME;");
+      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' and TABLE_NAME NOT IN ('jobs','password_resets','password_reset_tokens','permissions','personal_access_tokens','role_has_permissions','roles','failed_jobs','files','model_has_permissions','model_has_roles','users','admins','pages','contacts','messages','newsletters','settings') order by TABLE_NAME;");
       foreach ($modules as $key => $value) {
         if (!str_contains($value->TABLE_NAME, 'translations')) {
 
@@ -375,7 +375,7 @@ class LocalActionController extends Controller
     if ($request->action == '11') {
       $action = "Open Shared Module Files";
       $string3 = '';
-      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' order by TABLE_NAME;");
+      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' and TABLE_NAME NOT IN ('jobs','password_resets','password_reset_tokens','permissions','personal_access_tokens','role_has_permissions','roles','failed_jobs','files','model_has_permissions','model_has_roles','users','admins','pages','contacts','messages','newsletters','settings') order by TABLE_NAME;");
       foreach ($modules as $key => $value) {
         if (!str_contains($value->TABLE_NAME, 'translations')) {
 
@@ -395,7 +395,7 @@ class LocalActionController extends Controller
 
       $queries=Query::latest()->get()->unique('title');
       $results = DB::select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
-      $tables = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' order by TABLE_NAME;");
+      $tables = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' and TABLE_NAME NOT IN ('jobs','password_resets','password_reset_tokens','personal_access_tokens','role_has_permissions','failed_jobs','files','model_has_permissions','model_has_roles') order by TABLE_NAME;");
       $array = [];
       $array2 = [];
       $letters = [];
@@ -724,70 +724,41 @@ if ($request->action == '28') {
    */
   public function show($db, $table, $query)
   {
-      // Switch to the requested database
-      DB::statement('USE ' . $db);
-  
-      // Execute the query if provided
-      $queryData = ($query !== "null" && $query !== "") ? DB::select($query) : null;
-  
-      // Retrieve table columns and their data types
-      $columns = DB::select("
-          SELECT COLUMN_NAME, DATA_TYPE
-          FROM INFORMATION_SCHEMA.COLUMNS
-          WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-      ", [$db, $table]);
-  
-      // Exclude specific columns
-      $excludedColumns = ['created_at', 'updated_at', 'id'];
-      $filteredColumns = collect($columns)->filter(function ($column) use ($excludedColumns) {
-          return !in_array($column->COLUMN_NAME, $excludedColumns);
-      });
-  
-      // Construct the INSERT INTO string
-      $attributes = $filteredColumns->pluck('COLUMN_NAME')->implode(',');
-      $datatypes = $filteredColumns->pluck('DATA_TYPE')->implode(',');
-  
-      $insertString = "INSERT INTO $table ($attributes) VALUES ($datatypes);";
-  
-      // Fetch table data and count
-      $data = DB::select("
-          SELECT * 
-          FROM (
-              SELECT '" . $db . "' AS db, " . $table . ".* 
-              FROM " . $db . "." . $table . "
-              ORDER BY updated_at DESC
-              LIMIT 1000
-          ) AS q;
-      ");
-  
-      $totalCount = DB::select("
-          SELECT COUNT(*) as count 
-          FROM " . $db . "." . $table . ";
-      ");
-  
-      $count = $totalCount[0]->count;
-  
-      // Fetch the latest updated_at value
-      $latestUpdatedAt = DB::select("
-          SELECT MAX(updated_at) as latest_updated_at 
-          FROM " . $db . "." . $table . ";
-      ");
-  
-      $latestUpdatedAt = $latestUpdatedAt[0]->latest_updated_at ?? null;
-  
-      return response()->json([
-          'success' => trans('general.sent_successfully'),
-          'data' => $data,
-          'queryData' => $queryData,
-          'count' => $count,
-          'insertString' => $insertString,
-          'latestUpdatedAt' => $latestUpdatedAt, // Added latest updated_at timestamp
-      ]);
+    
+    $result = DB::statement('use ' . $db . '');
+
+    if ($query !== "null" && $query !== "")
+      $queyData = DB::select($query);
+    else
+      $queyData = null;
+    //  determin database and column name
+    $data = DB::select("  
+    SELECT * 
+    FROM (
+        SELECT '" . $db . "' AS db, " . $table . ".* 
+        FROM " . $db . "." . $table . "
+        ORDER BY updated_at DESC
+        LIMIT 1000
+    ) AS q;
+");
+
+
+
+$totalCount = DB::select("  
+SELECT count(*) as count 
+FROM (
+    SELECT '" . $db . "' AS db, " . $table . ".* 
+    FROM " . $db . "." . $table . "
+    ORDER BY updated_at DESC
+) AS q;
+");
+
+
+$count=$totalCount[0]->count;
+
+
+    return response()->json(['success' => trans('general.sent_successfully'), 'data' => $data, 'queryData' => $queyData,'count' => $count]);
   }
-  
-  
-  
-  
 
   public function filterStats(Request $request)
   {
@@ -828,10 +799,6 @@ if ($request->action == '28') {
   {
     //
   }
-
-
-
-
 
   /**
    * Update the specified resource in storage.
@@ -951,47 +918,6 @@ if ($request->action == '28') {
     return response()->json(['success' => trans('general.created_successfully')]);
 
   }
-
-
-  public function getTableColumns(Request $request)
-  {
-      $dbname = $request->input('dbname');
-      $tablename = $request->input('tablename'); // Comma-separated string, e.g., "services,products"
-  
-      if (!$dbname || !$tablename) {
-          return response()->json(['error' => 'Database name and table name(s) are required'], 400);
-      }
-  
-      try {
-          $tableNames = explode(',', $tablename); // Split the comma-separated table names
-          $uniqueColumns = [];
-  
-          foreach ($tableNames as $table) {
-              $columns = DB::select("SELECT COLUMN_NAME, DATA_TYPE 
-                                     FROM INFORMATION_SCHEMA.COLUMNS 
-                                     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?", [$dbname, trim($table)]);
-  
-              foreach ($columns as $column) {
-                  // Add column name and data type if it's not already present
-                  $uniqueColumns[$column->COLUMN_NAME] = $column->DATA_TYPE;
-              }
-          }
-  
-          // Prepare response strings
-          $columnNames = array_keys($uniqueColumns); // Unique column names
-          $dataTypes = array_values($uniqueColumns); // Corresponding data types
-  
-          return response()->json([
-              'columns' => implode(',', $columnNames),
-              'dataTypes' => implode(',', $dataTypes),
-          ]);
-      } catch (\Exception $e) {
-          return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
-      }
-  }
-  
-  
-  
 
   public function updateReferences(Request $request){
     $issue=Issue::find($request->issue_id);

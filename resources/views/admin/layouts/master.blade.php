@@ -4,7 +4,7 @@
     <div class="wrapper">
         @include('admin.components.success')
         @include('admin.components.errors')
-        @include('admin.components.sidebar')
+        @include('admin.components.dashboard')
         @yield('content')
     </div>
 

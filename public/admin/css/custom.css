@@ -151,10 +151,6 @@ body, .navbar, .sidebar, .content-wrapper {
 
 }
 
-.clickable-text {
-  cursor: pointer;
-}
-
 /* Navbar color adjustments */
 .navbar {
   background-color: #2e3b4e ; /* Softer dark color for the navbar */

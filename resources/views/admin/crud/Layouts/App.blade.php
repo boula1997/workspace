@@ -6,7 +6,7 @@
     <meta name="keywords" content="Dashboard, Setting, Controls">
     <meta name="author" content="Medaht">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>one tab window browser</title>
+    <title>لوحة التحكم @yield('title')</title>
     <!-- Bootstrap -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.css" rel="stylesheet">
 
@@ -47,9 +47,6 @@
     <div class="container">
         @yield('content')
     </div>
-
-    @include('navIcon')
-
 </body>
 
 </html>

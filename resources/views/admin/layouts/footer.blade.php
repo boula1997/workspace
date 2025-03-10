@@ -10,7 +10,7 @@
 <!-- /.control-sidebar -->
 <!-- ./wrapper -->
 
-@include('navIcon')
+
 
 <script src="{{ asset('bootstrap-5.3.1-dist\js\bootstrap.js') }}"></script>
 <!-- jQuery -->
@@ -66,16 +66,9 @@
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 <script src="{{ asset('js/scripts.bundle.js') }}"></script>
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/rowreorder/1.4.0/js/dataTables.rowReorder.min.js"></script>
 {{-- <script src="{{asset('js/iconpicker-1.5.0.json')}}"></script> --}}
 <script src="{{ asset('js/iconpicker-1.5.0.js') }}"></script>
 <script src="{{ asset('admin/file-upload/image-input.js') }}"></script>
-<script src="{{ asset('lightbox-dist/js/lightbox.min.js') }}"></script>
 <!-- Page specific script -->
 {{-- <script>
     $(document).ready(function() {
@@ -165,6 +158,27 @@ if (localStorage.getItem('darkmode')==true || userEmail === "nessimboula@gmail.c
 <script>
     $(document).on('click', '.clickable-text', function(e) {
         navigator.clipboard.writeText($(this).attr('content'));
+
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "{{ app()->getLocale() == 'ar' ? 'toast-top-right' : 'toast-top-left' }}",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        toastr.success("Copied successfully!");
+
     });
 </script>
 
@@ -182,41 +196,31 @@ if (localStorage.getItem('darkmode')==true || userEmail === "nessimboula@gmail.c
 </script>
 
 
-@if (boula() || App::environment('local'))
-    {{-- <audio id="alarmSound" src="{{ asset('alarm.mp3') }}" preload="auto"></audio> --}}
+@if (boula())
+    <audio id="alarmSound" src="{{ asset('alarm.mp3') }}" preload="auto"></audio>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-          let alarm = document.getElementById("alarmSound");
-          let lastPlayedHour = null; // Store last played hour to prevent re-triggering
-          
-          function checkTime() {
-              const now = new Date();
-              const currentHour = now.getHours();
-              const minutes = now.getMinutes();
-              const seconds = now.getSeconds();
+        document.addEventListener("DOMContentLoaded", function () {
+            let alarm = document.getElementById("alarmSound");
+            let lastPlayedHour = null; // Store last played hour to prevent re-triggering
+            
+            function checkTime() {
+                const now = new Date();
+                const currentHour = now.getHours();
+                const minutes = now.getMinutes();
+                const seconds = now.getSeconds();
 
-              // Play alarm only at the start of an hour and prevent multiple triggers
-              if (minutes === 0 && seconds === 0 && lastPlayedHour !== currentHour) {
-                  lastPlayedHour = currentHour; // Update last played hour
-                  localStorage.setItem('lastPlayedHourFront',lastPlayedHour);
-                  alarm.volume = 1; 
-                  alarm.play().catch(error => console.error("Playback failed:", error));
-                  localStorage.setItem("failed", error);
+                // Play alarm only at the start of an hour and prevent multiple triggers
+                if (minutes === 0 && seconds === 0 && lastPlayedHour !== currentHour) {
+                    lastPlayedHour = currentHour; // Update last played hour
+                    alarm.volume = 1; 
+                    alarm.play().catch(error => console.error("Playback failed:", error));
+                }
+            }
 
-              }
-          }
-
-          setInterval(checkTime, 1000); // Check every second
-      });
-  </script>
-
-
-<script>
-  $(document).on('click', '.clickable-text', function(e) {
-      navigator.clipboard.writeText($(this).attr('content'));
-  });
-</script>
+            setInterval(checkTime, 1000); // Check every second
+        });
+    </script>
 @endif
 
 </body>
