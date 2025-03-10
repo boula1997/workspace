@@ -275,7 +275,7 @@ function failedResponse($data = [], $message = "error", $status = 400)
 
 function itemsCount($model)
 {
-    if(auth()->user()->type=='admin'){
+    if(auth()->user() && auth()->user()->type=='admin'){
         $tasks=count(Task::where('status',0)->get()->unique('title'));
         $finishedTAsks=count(Task::where('status',1)->get()->unique('title'));
         $allTAsks=count(Task::get()->unique('title'));
@@ -285,7 +285,7 @@ function itemsCount($model)
         $allTAsks=count(Task::where('employee_id',auth()->user()->id)->get()->unique('title'));
     }
 
-    if(auth()->user()->type=='admin'){
+    if(auth()->user() && auth()->user()->type=='admin'){
         $followups=count(Followup::where('status',0)->get()->unique('title'));
         $finishedTAsks=count(Followup::where('status',1)->get()->unique('title'));
         $allTAsks=count(Followup::get()->unique('title'));

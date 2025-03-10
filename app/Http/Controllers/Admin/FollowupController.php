@@ -42,7 +42,7 @@ class FollowupController extends Controller
             $status=[0,1];
 
             if(auth()->user()->email!="boula@gmail.com"){
-                if(auth()->user()->type=='admin')
+                if(auth()->user() && auth()->user()->type=='admin')
                 $followups = $this->followup
                     ->whereIn('status', $status)
                     ->whereDoesntHave('employee', function ($query) {
@@ -71,7 +71,7 @@ class FollowupController extends Controller
             
             }else{
 
-                if(auth()->user()->type=='admin')
+                if(auth()->user() && auth()->user()->type=='admin')
                 $followups = $this->followup->whereIn('status',$status)->orderBy('status')->latest()->get() ->unique('title');
                 else
                 $followups = $this->followup
