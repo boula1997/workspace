@@ -47,9 +47,6 @@
 <script src="{{ asset('dist/js/demo.js') }}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('dist/js/pages/dashboard.js') }}"></script>
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/rowreorder/1.4.0/js/dataTables.rowReorder.min.js"></script>
 <!-- CodeMirror -->
 <script src="{{ asset('plugins/codemirror/codemirror.js') }}"></script>
 <script src="{{ asset('plugins/codemirror/mode/css/css.js') }}"></script>
@@ -71,8 +68,6 @@
 <script src="{{ asset('js/scripts.bundle.js') }}"></script>
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
 {{-- <script src="{{asset('js/iconpicker-1.5.0.json')}}"></script> --}}
 <script src="{{ asset('js/iconpicker-1.5.0.js') }}"></script>
 <script src="{{ asset('admin/file-upload/image-input.js') }}"></script>
