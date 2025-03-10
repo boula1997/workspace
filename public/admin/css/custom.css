@@ -48,11 +48,12 @@
 
 
 .zoom-container {
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
-  cursor: zoom-in;
+  max-height: 500px; /* Adjust height as needed */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 
 
 

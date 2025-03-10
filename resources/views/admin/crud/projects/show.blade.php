@@ -20,7 +20,8 @@
 
                                     @if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
                                         <div class="zoom-container m-2" style="height: 100vh; flex: 1 1 auto; min-width: 300px; max-width: 100%;">
-                                            <img class="zoomable w-100 h-100" src="{{ $file->url }}" style="object-fit: cover;" alt="">
+                                            <img class="zoomable w-100 h-100" src="{{ $file->url }}" style="object-fit: contain;" alt="">
+
                                         </div>
                                     @endif
                                 @endforeach
