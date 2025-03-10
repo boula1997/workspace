@@ -41,7 +41,7 @@
                                                 <th>{{__('general.employee')}}</th>
                                                 
                                                 <th>{{__('general.has')}}</th>
-                                                <th>@lang('general.controls')</th>
+                                                <th class="th-controls">@lang('general.controls')</th>
                                             </tr>
                                         </thead>
                                         <tbody>

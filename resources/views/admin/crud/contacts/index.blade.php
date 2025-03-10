@@ -38,7 +38,7 @@
                                                 <th>#</th>
                                                 <th>@lang('general.contact')</th>
                                                 <th>@lang('general.icon')</th>
-                                                <th>@lang('general.controls')</th>
+                                                <th class="th-controls">@lang('general.controls')</th>
                                             </tr>
                                         </thead>
                                         <tbody>

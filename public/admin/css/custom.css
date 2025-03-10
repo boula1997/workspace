@@ -169,6 +169,10 @@ body, .navbar, .sidebar, .content-wrapper {
   color: #F39200 !important; /* Brighter on hover */
 }
 
+.th-controls {
+  width: 200px; /* Adjust as needed */
+}
+
 /* Box color adjustments */
 .box {
   background-color: #f5f6f7; /* Light box background */

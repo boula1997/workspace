@@ -37,7 +37,7 @@
                                                 <th>{{__('general.project')}}</th>
                                                 <th>{{__('general.note')}}</th>
                                                 <th>{{__('general.created_at')}}</th>
-                                                <th>@lang('general.controls')</th>
+                                                <th class="th-controls">@lang('general.controls')</th>
                                             </tr>
                                         </thead>
                                         <tbody>

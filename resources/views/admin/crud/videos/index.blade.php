@@ -40,7 +40,7 @@
                                                 <th>#</th>
                                                 <th>@lang('general.youtube_link')</th>
                                                 <th>@lang('general.title')</th>
-                                                <th>@lang('general.controls')</th>
+                                                <th class="th-controls">@lang('general.controls')</th>
                                             </tr>
                                         </thead>
                                         <tbody>

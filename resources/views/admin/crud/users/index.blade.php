@@ -35,7 +35,7 @@
                                             <th>@lang('general.image')</th>
                                             <th>@lang('general.name')</th>
                                             <th>@lang('general.email')</th>
-                                            <th>@lang('general.controls')</th>
+                                            <th class="th-controls">@lang('general.controls')</th>
                                         </tr>
                                     </thead>
                                     <tbody>

@@ -38,7 +38,7 @@
                                             <tr class="p-0 m-0">
                                                 <th>#</th>
                                                 <th>@lang('general.email')</th>
-                                                <th>@lang('general.controls')</th>
+                                                <th class="th-controls">@lang('general.controls')</th>
                                             </tr>
                                         </thead>
                                         <tbody>

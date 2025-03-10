@@ -65,7 +65,7 @@
                                                 <th>{{ __('general.lastTransaction') }}</th>
 
                                                 <th>{{ __('general.fees') }}</th>
-                                                <th>@lang('general.controls')</th>
+                                                <th class="th-controls">@lang('general.controls')</th>
                                             </tr>
                                         </thead>
                                         <tbody>

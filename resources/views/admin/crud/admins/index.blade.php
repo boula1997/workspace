@@ -37,7 +37,7 @@
                                             <th>@lang('general.role')</th>
                                             <th>@lang('general.has')</th>
                                             <th>@lang('general.received')</th>
-                                            <th>@lang('general.controls')</th>
+                                            <th class="th-controls">@lang('general.controls')</th>
                                         </tr>
                                     </thead>
                                     <tbody>
