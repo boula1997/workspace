@@ -40,6 +40,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
+                                    <div class="table-responsive">
                                     <table id="example1" class="table table-hover">
                                         <thead>
                                             <tr>
@@ -107,6 +108,7 @@
                                         
 
                                     </table>
+                                </div>
 
                                     <!-- Separate tfoot for better responsiveness -->
                                     <div class="table-footer-summary">
@@ -133,48 +135,45 @@
 
 @push('scripts')
     <script>
-        $(function() {
-            var table = $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "paging": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                "stateSave": true,
-                "search": {
-                    "smart": true
-                }
-            });
+$(function() {
+    var table = $("#example1").DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "paging": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+        "stateSave": true,
+        "search": { "smart": true }
+    });
 
-            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-            $('#projectFilter').on('change', function() {
-                var selectedTitles = $(this).val();
-                table.columns(1).search(selectedTitles ? selectedTitles.join('|') : '', true, false).draw();
-            });
+    $('#projectFilter').on('change', function() {
+        var selectedTitles = $(this).val();
+        table.columns(1).search(selectedTitles ? selectedTitles.join('|') : '', true, false).draw();
+    });
 
-            function calculateTotals() {
-                let totalCost = 0,
-                    totalRest = 0;
+    function calculateTotals() {
+        let totalCost = 0, totalRest = 0;
 
-                table.rows({
-                    search: 'applied'
-                }).every(function() {
-                    let rowNode = $(this.node());
+        table.rows({ search: 'applied' }).every(function() {
+            let row = $(this.node());
 
-                    let cost = parseFloat(rowNode.find('.cost').text().replace(/[^0-9.-]+/g, "")) || 0;
-                    let rest = parseFloat(rowNode.find('.rest').text().replace(/[^0-9.-]+/g, "")) || 0;
+            let cost = parseFloat(row.find('.cost').text().replace(/[^\d.-]/g, '')) || 0;
+            let rest = parseFloat(row.find('.rest').text().replace(/[^\d.-]/g, '')) || 0;
 
-                    totalCost += cost;
-                    totalRest += rest;
-                });
-
-                $('#total-cost').text(totalCost.toFixed(2));
-                $('#total-rest').text(totalRest.toFixed(2));
-            }
-
-            calculateTotals();
-            table.on('search.dt draw.dt', calculateTotals);
+            totalCost += cost;
+            totalRest += rest;
         });
+
+        $('#total-cost').text(totalCost.toLocaleString());
+        $('#total-rest').text(totalRest.toLocaleString());
+    }
+
+    // Calculate initially and on table updates
+    calculateTotals();
+    table.on('search.dt draw.dt', calculateTotals);
+});
+
     </script>
 @endpush
