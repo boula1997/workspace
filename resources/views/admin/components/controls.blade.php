@@ -4,13 +4,13 @@
 
         @can($role . '-list')
             <a href="{{ route($route . '.show', $module) }}" title="show">
-                <i class="fas fa-eye text-secondary fa-sm"></i>
+                <i class="fas fa-eye text-secondary fa-md"></i>
             </a>
         @endcan
 
         @can($role . '-edit')
             <a href="{{ route($route . '.edit', $module) }}" title="edit">
-                <i class="fas fa-edit  text-secondary  fa-sm"></i>
+                <i class="fas fa-edit  text-secondary  fa-md"></i>
             </a>
         @endcan
 
@@ -20,7 +20,7 @@
             @method('delete')
             <button type="button" class="btn btn-sm btn-icon delete-icon" title="{{ __('general.delete') }}"
             data-toggle="modal" data-target="#deleteModalSizeSm-{{ $module->id }}">
-            <i class="fas fa-trash text-secondary fa-sm"></i>
+            <i class="fas fa-trash text-secondary fa-md"></i>
         </button>
             <div class="modal fade" id="deleteModalSizeSm-{{ $module->id }}" tabindex="-1" role="dialog"
                 aria-hidden="true">
@@ -59,7 +59,7 @@
 
         @can($role . '-reply')
             <a href="{{ route($route . '.reply', $module->id) }}" title="reply">
-                <i class="fas fa-reply text-secondary  fa-sm"></i>
+                <i class="fas fa-reply text-secondary  fa-md"></i>
             </a>
         @endcan
 
