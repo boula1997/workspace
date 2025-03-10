@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="form-group mt-30">
-            <label for="fileInput">{{ __('general.files') }}</label>
+            <label for="fileInput">{{ __('general.images') }}</label>
             <div id="drop-area" class="border p-3 text-center bg-light">
                 <p>Drag & Drop Files Here or Click to Upload</p>
                 <input type="file" name="images[]" class="d-none" id="fileInput" multiple>
@@ -20,14 +20,14 @@
             @if (isset($image->id))
                 <div class="col-md-3 mt-3 file-box">
                     <div class="custom-control custom-switch custom-switch-off-success custom-switch-on-danger">
-                        <input type="checkbox" name="delfiles[]" value="{{ $image->id }}"
+                        <input type="checkbox" name="delimages[]" value="{{ $image->id }}"
                             class="custom-control-input" id="customSwitch{{ $image->id }}">
 
                         @php
-                            $imageExtension = pathinfo($image->url, PATHINFO_EXTENSION);
+                            $fileExtension = pathinfo($image->url, PATHINFO_EXTENSION);
                         @endphp
 
-                        @if (in_array($imageExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                        @if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
                             <a href="{{ asset($image->url) }}" data-lightbox="projects">
                                 <img width="100" height="100" class="clickable-text preview-img"
                                     src="{{ asset($image->url) }}" alt="">
@@ -47,6 +47,7 @@
         @endforeach
     </div>
 @endif
+
 
 
 <script>
@@ -112,5 +113,6 @@
         });
     });
 </script>
+
 
 
