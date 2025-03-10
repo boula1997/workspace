@@ -37,28 +37,6 @@
 @endif
 
 
-@if (isset($images))
-    <div class="row">
-        @include('admin.components.selectAll',['on'=>'danger','off'=>'success'])
-        @foreach ($images as $image)
-            @if (isset($image->id))
-                <div class="col-md-3 mt-3">
-                    <div class="custom-control custom-switch custom-switch-off-success custom-switch-on-danger">
-                        <input type="checkbox" name="delimages[]" value="{{ $image->id }}"
-                            class="custom-control-input" id="customSwitch{{ $image->id }}">
-
-                            <a href="{{ asset($image->url) }}" data-lightbox="projects"
-                                data-title="">                        <img width="100" height="100" class="clickable-text" content="{{ asset($image->url) }}" src="{{ asset($image->url) }}" alt=""
-                                for="customSwitch{{ $image->id }}"></a>
-
-
-                        <label class="custom-control-label" for="customSwitch{{ $image->id }}"></label>
-                    </div>
-                </div>
-            @endif
-        @endforeach
-    </div>
-@endif
 
 
 @push('scripts')
