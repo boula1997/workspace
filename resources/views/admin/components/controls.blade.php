@@ -18,13 +18,10 @@
            
             @csrf
             @method('delete')
-            <button type="button" class="btn btn-sm btn-clean btn-icon m-1" title="{{ __('general.delete') }}"
-                data-toggle="modal" data-target="#deleteModalSizeSm-{{ $module->id }}">
-                <span class="svg-icon svg-icon-md svg-icon-primary">
-                    <!--begin::Svg Icon | path:assets/media/svg/icons/General/Trash.svg-->
-                    <i class="fas fa-trash text-secondary  fa-sm"></i>
-                </span>
-            </button>
+            <button type="button" class="btn btn-sm btn-icon delete-icon" title="{{ __('general.delete') }}"
+            data-toggle="modal" data-target="#deleteModalSizeSm-{{ $module->id }}">
+            <i class="fas fa-trash text-secondary fa-sm"></i>
+        </button>
             <div class="modal fade" id="deleteModalSizeSm-{{ $module->id }}" tabindex="-1" role="dialog"
                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">

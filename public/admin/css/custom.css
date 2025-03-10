@@ -170,9 +170,16 @@ body, .navbar, .sidebar, .content-wrapper {
 }
 
 .th-controls {
-  width: 200px; /* Adjust as needed */
+  width: 100px; /* Adjust as needed */
 }
 
+.btn-icon {
+  padding: 0; /* Remove extra padding */
+  width: auto; /* Allow it to fit the icon */
+  height: auto;
+  border: none; /* Optional: Remove border */
+  background: none; /* Optional: Remove background */
+}
 /* Box color adjustments */
 .box {
   background-color: #f5f6f7; /* Light box background */
