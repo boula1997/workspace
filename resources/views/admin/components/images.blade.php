@@ -72,7 +72,7 @@
                     let imgElement = `
                         <div class="col-md-3 mt-3">
                             <div class="position-relative">
-                                <img src="${e.target.result}" class="img-fluid border rounded" width="100%" height="100">
+                                <img src="${e.target.result}" class="img-fluid border rounded" width="100%" height="50">
                                 <button class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-img">X</button>
                             </div>
                         </div>`;
