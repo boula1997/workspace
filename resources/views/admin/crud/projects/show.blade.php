@@ -17,13 +17,14 @@
                                     @foreach ($images as $image)
                                         @if (isset($image->id))
                                             <div class="col-12 mb-2">
-                                                <img style="height: 100vh !important" src="{{ $image->url }}" alt="">
+                                                <img class="zoomable" style="height: 100vh !important;" src="{{ $image->url }}" alt="">
                                             </div>
                                         @endif
                                     @endforeach
                                 </div>
                             </div>
                         </div>
+                        
                         
                     </div>
                 </div>
@@ -32,3 +33,17 @@
 
         </div>
     @endsection
+
+
+    @push('scripts')
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".zoomable").forEach(img => {
+                img.addEventListener("click", function () {
+                    this.classList.toggle("zoomed");
+                });
+            });
+        });
+    </script>
+    
+    @endpush

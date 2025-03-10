@@ -19,6 +19,16 @@
   position: relative;
 }
 
+.zoomable {
+  cursor: zoom-in;
+  transition: transform 0.3s ease-in-out;
+}
+.zoomable.zoomed {
+  transform: scale(2);
+  cursor: zoom-out;
+}
+
+
 
 
 .nav-pills .nav-link:not(.active):hover {
