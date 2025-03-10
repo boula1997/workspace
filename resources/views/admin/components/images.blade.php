@@ -13,34 +13,34 @@
 <!-- File Preview Section -->
 <div class="row mt-3" id="preview-container"></div>
 
-@if (isset($files))
+@if (isset($images))
     <div class="row">
         @include('admin.components.selectAll', ['on' => 'danger', 'off' => 'success'])
-        @foreach ($files as $file)
-            @if (isset($file->id))
+        @foreach ($images as $image)
+            @if (isset($image->id))
                 <div class="col-md-3 mt-3 file-box">
                     <div class="custom-control custom-switch custom-switch-off-success custom-switch-on-danger">
-                        <input type="checkbox" name="delfiles[]" value="{{ $file->id }}"
-                            class="custom-control-input" id="customSwitch{{ $file->id }}">
+                        <input type="checkbox" name="delfiles[]" value="{{ $image->id }}"
+                            class="custom-control-input" id="customSwitch{{ $image->id }}">
 
                         @php
-                            $fileExtension = pathinfo($file->url, PATHINFO_EXTENSION);
+                            $imageExtension = pathinfo($image->url, PATHINFO_EXTENSION);
                         @endphp
 
-                        @if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                            <a href="{{ asset($file->url) }}" data-lightbox="projects">
+                        @if (in_array($imageExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                            <a href="{{ asset($image->url) }}" data-lightbox="projects">
                                 <img width="100" height="100" class="clickable-text preview-img"
-                                    src="{{ asset($file->url) }}" alt="">
+                                    src="{{ asset($image->url) }}" alt="">
                             </a>
                         @else
-                            <a href="{{ asset($file->url) }}" target="_blank">
+                            <a href="{{ asset($image->url) }}" target="_blank">
                                 <div class="file-preview">
-                                    <i class="fas fa-file-alt"></i> {{ basename($file->url) }}
+                                    <i class="fas fa-file-alt"></i> {{ basename($image->url) }}
                                 </div>
                             </a>
                         @endif
 
-                        <label class="custom-control-label" for="customSwitch{{ $file->id }}"></label>
+                        <label class="custom-control-label" for="customSwitch{{ $image->id }}"></label>
                     </div>
                 </div>
             @endif
