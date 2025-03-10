@@ -31,6 +31,22 @@
 }
 
 
+.file-preview {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.file-preview i {
+  font-size: 20px;
+  margin-right: 8px;
+  color: #007bff;
+}
+
+
 .zoom-container {
   position: relative;
   overflow: hidden;
