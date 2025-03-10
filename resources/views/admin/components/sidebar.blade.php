@@ -47,6 +47,9 @@
                     </div>
                     <div class="col-md-2">
                         <button type="submit" class="btn btn-warning">Filter</button>
+                        <a href="https://www.compress2go.com/" target="__blank">
+                            <button type="button" class="btn btn-success">Compress</button>
+                        </a>
                     </div>
                 </div>
             </form>
