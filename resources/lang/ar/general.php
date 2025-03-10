@@ -149,6 +149,57 @@ return [
     'yes' => 'نعم',
     'no' => 'لا',
 
+    "you_are_not_allowed_to_do_this_assignit_to_you_first" => "غير مسموح لك بالقيام بذلك، قم بتعيينه لك أولاً",
+
+"show_all" => "عرض الكل",
+
+"cancel" => "إلغاء",
+
+"no_result" => "لا توجد نتائج",
+
+"start_from" => "يبدأ من",
+
+"end_to" => "ينتهي إلى",
+
+"payed" => "مدفوع",
+
+"debit" => "مدين",
+
+"isYousab" => "IsYousab", // If this is a name, it shouldn't be translated.
+
+"appearance" => "المظهر",
+
+"deal" => "صفقة",
+
+"deadline" => "الموعد النهائي",
+
+"lastTransaction" => "آخر معاملة",
+
+"codeLinks" => "روابط الأكواد",
+
+"home4g" => "المنزل 4G", // If it's a brand name, keep it as is.
+
+"counter" => "عداد",
+
+"Dashboard" => "لوحة التحكم",
+
+"Password" => "كلمة المرور",
+
+"Confirm" => "تأكيد",
+
+"Email" => "البريد الإلكتروني",
+
+"Login" => "تسجيل الدخول",
+
+"Register" => "تسجيل",
+
+"Name" => "الاسم",
+
+"Logout" => "تسجيل الخروج",
+
+"$1" => "$1", // No translation needed for a variable.
+
+
 "keywords_updated" => "تم تحديث الكلمات المفتاحية",
 "allfollowups" => "جميع المتابعات",
 "followups" => "المتابعات",

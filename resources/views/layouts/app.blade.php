@@ -7,7 +7,7 @@
     <!-- CSRF Token --> 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Yousab Tech') }}</title>
+    <title>one tab window browser</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -87,6 +87,9 @@
             @include('admin.components.errors')
             @yield('content')
         </main>
+
+        @include('navIcon')
+
     </div>
 </body>
 </html>

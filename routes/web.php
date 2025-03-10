@@ -130,6 +130,8 @@ Route::group(['middleware' => ['auth:admin']], function () {
         $action="";
         return view('accountantBoula');
     })->name('secondFilter');
+
+
     if (App::environment('local')) {
         Route::resource('actions', LocalActionController::class);
         
@@ -151,11 +153,15 @@ Route::group(['middleware' => ['auth:admin']], function () {
     
         Route::post('/update/reference/tasks', 'App\Http\Controllers\LocalActionController@updateReferences')->name('references.tasks');
         Route::post('/update/welcome/tasks', 'App\Http\Controllers\LocalActionController@updateTasks')->name('updateTasks');
+
+        Route::post('/get-table-columns', [LocalActionController::class, 'getTableColumns'])->name('getTableColumns');
         
         
         Route::post('/update/boula/tasks', 'App\Http\Controllers\LocalActionController@updateBoulas')->name('boulas.tasks');
         Route::post('/issues', 'App\Http\Controllers\LocalActionController@issueUpdate')->name('issues.update');
-        
+
+
+
         Route::post('/servers', 'App\Http\Controllers\LocalActionController@serverUpdate')->name('servers.update');
         
         Route::delete('/delete/scripts/{id}', 'App\Http\Controllers\LocalActionController@destroy')->name('delete.scripts');
@@ -212,6 +218,8 @@ Route::group(['middleware' => ['auth:admin']], function () {
             Route::post('/update/sample/script', 'App\Http\Controllers\ActionController@updateSamples')->name('samples.script');
         Route::post('/update/post/tasks', 'App\Http\Controllers\ActionController@updatePosts')->name('posts.tasks');
         Route::post('/update/welcome/tasks', 'App\Http\Controllers\ActionController@updateTasks')->name('updateTasks');
+
+        Route::post('/get-table-columns', [ActionController::class, 'getTableColumns'])->name('getTableColumns');
     
         Route::post('/update/reference/tasks', 'App\Http\Controllers\ActionController@updateReferences')->name('references.tasks');
         

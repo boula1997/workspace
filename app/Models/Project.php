@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\MorphFile;
+use App\Traits\MorphFiles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 
 class Project extends Model
 {
-    use HasFactory;
+    use HasFactory,MorphFiles,MorphFile;
     protected $table = 'projects';
     protected $guarded = [];
     public $timestamps = true;
@@ -24,5 +25,14 @@ class Project extends Model
     
     public function feeses(){ return $this->hasMany(Fee::class); }
     public function tasks(){ return $this->hasMany(Task::class); }
+
+    public function getImagesAttribute()
+    {
+        return  count($this->files)>0?$this->files:["default.jpg"];
+    }
+    public function getImageAttribute()
+    {
+        return  count($this->files)>0?$this->files[0]->url:["default.jpg"];
+    }
 
 }

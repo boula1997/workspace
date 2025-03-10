@@ -18,6 +18,7 @@ use App\Models\History;
 use App\Models\Project;
 use App\Models\Page;
 use App\Models\Team;
+use App\Models\Deadline;
 use App\Models\Task;
 use App\Models\Partner;
 use App\Models\Testimonial;
@@ -75,6 +76,20 @@ function clearTasks($taskTitle)
             Task::whereIn('id', $status1Tasks->pluck('id'))->delete();
         }
     }
+}
+
+
+function activeDeadline()
+{
+    // Get the closest deadline that is today or in the future
+    $deadline = Deadline::where('date', '>=', now()->toDateString())
+                        ->orderBy('date', 'asc')
+                        ->first();
+
+    return [
+        'deadline' => $deadline ? $deadline->date : now()->toDateString(),
+        'action' => $deadline ? $deadline->title : "No action to do", // No action if no deadline exists
+    ];
 }
 
 
@@ -698,7 +713,7 @@ function activeWebsitesContent()
 
 function References()
 {
-    return Issue::latest()->get();
+    return Issue::orderBy('title', 'asc')->get();
 }
 
 

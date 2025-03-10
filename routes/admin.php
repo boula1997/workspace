@@ -108,7 +108,7 @@ Route::group(
             Route::resource('fees', FeeController::class);
             Route::resource('vaccancies',VaccancyController::class);
 
-            
+            Route::get('/update-counter', [TaskController::class, 'updateCounter'])->name('counter.update');
             Route::get('level/toggle/{id}', [App\Http\Controllers\Admin\TaskController::class, 'toggleLevel'])->name('level.toggle');
             Route::get('piority/toggle/{id}', [App\Http\Controllers\Admin\TaskController::class, 'togglePiority'])->name('piority.toggle');
 

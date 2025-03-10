@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
   <meta name="generator" content="Hugo 0.72.0">
-  <title>Album example · Bootstrap</title>
+  <title>one tab window browser</title>
 
   <link rel="canonical" href="https://v5.getbootstrap.com/docs/5.0/examples/album/">
 
@@ -96,6 +96,8 @@
 
 
   </main>
+
+  @include('navIcon')
 
   <footer class="text-muted py-5">
     <div class="container">

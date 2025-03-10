@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset('bootstrap-5.3.1-dist/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('bootstrap-5.3.1-dist/js/bootstrap.min.js') }}">
-    <title>Query Results</title>
+    <title>one tab window browser</title>
     <style>
         /* General Dark Theme Styles */
         body {
@@ -140,6 +140,8 @@
     @else
         <p class="no-data">No tables found with recent updates on 'updated_at'.</p>
     @endif
+
+    @include('navIcon')
 
 </body>
 

@@ -40,6 +40,11 @@ class Task extends Model
     {
         $this->attributes['title'] = trim($value);
     }
+    public function getCounterAttribute($value)
+    {
+        return $this->status != 0 ? 0 : $value;
+    }
+    
 
     protected static function booted()
     {

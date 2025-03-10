@@ -112,7 +112,7 @@
                                                         <div>
                                                             <input type="hidden" name="credential_id"
                                                                 value="{{ $credential->id }}">
-                                                            <textarea class="form-control  summernote" name="tasks" id="" cols="30" rows="10">{{ isset($credential->tasks) ? $credential->tasks : '' }}</textarea>
+                                                            <textarea class="form-control  summernote" name="tasks" id="" cols="30" rows="5">{{ isset($credential->tasks) ? $credential->tasks : '' }}</textarea>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">

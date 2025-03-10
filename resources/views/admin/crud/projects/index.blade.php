@@ -103,7 +103,8 @@
                                                 </tr>
                                             @endforeach
                                         </tbody>
-
+                                        <!-- Summary Row -->
+  
                                     </table>
                                 </div>
                             </div>

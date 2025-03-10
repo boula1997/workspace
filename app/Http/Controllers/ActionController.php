@@ -305,7 +305,7 @@ class ActionController extends Controller
     if ($request->action == '8' || $request->action == '10') {
       $action = $request->action == '8' ? "Search all attributes at once" : "search project modules";
       $results = DB::connection('dynamic')->select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
-      $modules = DB::connection('dynamic')->select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' and TABLE_NAME NOT IN ('jobs','password_resets','password_reset_tokens','permissions','personal_access_tokens','role_has_permissions','roles','failed_jobs','files','model_has_permissions','model_has_roles','users','admins','pages','contacts','messages','newsletters','settings') order by TABLE_NAME;");
+      $modules = DB::connection('dynamic')->select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
       $dbname = $request->dbname;
       $string = '';
       $string2 = '';
@@ -329,7 +329,7 @@ class ActionController extends Controller
       $string = str_replace(' ', '', $string);
       $string2 = str_replace(' ', '', $string2);;
       $string3 = '';
-      $modules = DB::connection('dynamic')->select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' and TABLE_NAME NOT IN ('jobs','password_resets','password_reset_tokens','permissions','personal_access_tokens','role_has_permissions','roles','failed_jobs','files','model_has_permissions','model_has_roles','users','admins','pages','contacts','messages','newsletters','settings') order by TABLE_NAME;");
+      $modules = DB::connection('dynamic')->select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
       foreach ($modules as $key => $value) {
         if (!str_contains($value->TABLE_NAME, 'translations')) {
 
@@ -401,7 +401,7 @@ class ActionController extends Controller
     if ($request->action == '11') {
       $action = "Open Shared Module Files";
       $string3 = '';
-      $modules = DB::connection('dynamic')->select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' and TABLE_NAME NOT IN ('jobs','password_resets','password_reset_tokens','permissions','personal_access_tokens','role_has_permissions','roles','failed_jobs','files','model_has_permissions','model_has_roles','users','admins','pages','contacts','messages','newsletters','settings') order by TABLE_NAME;");
+      $modules = DB::connection('dynamic')->select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
       foreach ($modules as $key => $value) {
         if (!str_contains($value->TABLE_NAME, 'translations')) {
 
@@ -419,7 +419,7 @@ class ActionController extends Controller
       $action = 'desc database';
       $queries=Query::latest()->get()->unique('title');
       $results = DB::connection('dynamic')->select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
-      $tables = DB::connection('dynamic')->select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' and TABLE_NAME NOT IN ('jobs','password_resets','password_reset_tokens','personal_access_tokens','role_has_permissions','failed_jobs','files','model_has_permissions','model_has_roles') order by TABLE_NAME;");
+      $tables = DB::connection('dynamic')->select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
       $array = [];
       $array2 = [];
       $letters = [];
@@ -521,7 +521,7 @@ class ActionController extends Controller
         foreach ($array as $item) {
           $sql[] = "script LIKE '%" . $item . "%'";
         }
-        $results = DB::connection('dynamic')->select("select * from projects where " . implode(" AND ", $sql) . "order by id asc;");
+        $results = DB::select("select * from projects where " . implode(" AND ", $sql) . "order by id asc;");
         return view('welcome', compact('results', 'action', 'array','flag'));
       } else {
         $action = "get multible scripts";
@@ -533,14 +533,14 @@ class ActionController extends Controller
           foreach ($array as $item) {
             $sql[] = "script  LIKE '%" . $item . "%'";
           }
-          $results = DB::connection('dynamic')->select("select * from issues where " . implode(" AND ", $sql) . "order by id desc;");
+          $results = DB::select("select * from issues where " . implode(" AND ", $sql) . "order by id desc;");
         }
         else{
           foreach ($array as $item) {
             $sql[] = "script LIKE '%" . $item . "%'";
           }
 
-          $results = DB::connection('dynamic')->select("select * from scripts where " . implode(" AND ", $sql) . "order by id desc;");
+          $results = DB::select("select * from scripts where " . implode(" AND ", $sql) . "order by id desc;");
         }
         return view('welcome', compact('results', 'action', 'array','searchRefrences'));
       }
@@ -559,7 +559,7 @@ class ActionController extends Controller
 
     if ($request->action == '19') {
       $action = "flags manager";
-      $flags = DB::connection('dynamic')->select("SELECT distinct flag as 'flag' from paths");
+      $flags = DB::select("SELECT distinct flag as 'flag' from paths");
 
       return view('welcome', compact('action', 'flags','flag'));
     }
@@ -785,14 +785,15 @@ if ($request->action == '28') {
    */
   public function show($db, $table, $query)
   {
-    $credential=DBCredential::where('db_name',$db)->first();
-
-    $dbHost = '127.0.0.1';
-    $dbName = isset($credential->db_name)?$credential->db_name:'automation';
-    $dbUser = isset($credential->db_username)?$credential->db_username:'root';
-    $dbPass = isset($credential->db_password)?$credential->db_password:'';
-        // Temporarily configure the database connection
-        config([
+      $credential = DBCredential::where('db_name', $db)->first();
+  
+      $dbHost = '127.0.0.1';
+      $dbName = isset($credential->db_name) ? $credential->db_name : 'automation';
+      $dbUser = isset($credential->db_username) ? $credential->db_username : 'root';
+      $dbPass = isset($credential->db_password) ? $credential->db_password : '';
+  
+      // Temporarily configure the database connection
+      config([
           'database.connections.dynamic' => [
               'driver' => 'mysql',
               'host' => $dbHost,
@@ -803,40 +804,72 @@ if ($request->action == '28') {
               'collation' => 'utf8mb4_unicode_ci',
           ],
       ]);
-
-    // Use the dynamic connection
-    DB::purge('dynamic');
-    DB::reconnect('dynamic');
-    $result = DB::connection('dynamic')->statement('use ' . $db . '');
-
-    if ($query !== "null" && $query !== "")
-      $queyData = DB::connection('dynamic')->select($query);
-    else
-      $queyData = null;
-    //  determin database and column name
-    $data = DB::connection('dynamic')->select("  
-    SELECT * 
-    FROM (
-        SELECT '" . $db . "' AS db, " . $table . ".* 
-        FROM " . $db . "." . $table . "
-        ORDER BY updated_at DESC
-        LIMIT 1000
-    ) AS q;
-");
-$totalCount = DB::connection('dynamic')->select("  
-SELECT count(*) as count 
-FROM (
-    SELECT '" . $db . "' AS db, " . $table . ".* 
-    FROM " . $db . "." . $table . "
-    ORDER BY updated_at DESC
-) AS q;
-");
-
-
-$count=$totalCount[0]->count;
-
-    return response()->json(['success' => trans('general.sent_successfully'), 'data' => $data, 'queryData' => $queyData,'count' => $count]);
+  
+      // Use the dynamic connection
+      DB::purge('dynamic');
+      DB::reconnect('dynamic');
+      DB::connection('dynamic')->statement('USE ' . $db);
+  
+      // Execute the query if provided
+      $queryData = ($query !== "null" && $query !== "") ? DB::connection('dynamic')->select($query) : null;
+  
+      // Fetch column names and data types, excluding specific columns
+      $columns = DB::connection('dynamic')->select("
+          SELECT COLUMN_NAME, DATA_TYPE
+          FROM INFORMATION_SCHEMA.COLUMNS
+          WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+      ", [$db, $table]);
+  
+      // Exclude specific columns
+      $excludedColumns = ['created_at', 'updated_at', 'id'];
+      $filteredColumns = collect($columns)->filter(function ($column) use ($excludedColumns) {
+          return !in_array($column->COLUMN_NAME, $excludedColumns);
+      });
+  
+      // Construct the INSERT INTO string
+      $attributes = $filteredColumns->pluck('COLUMN_NAME')->implode(',');
+      $datatypes = $filteredColumns->pluck('DATA_TYPE')->implode(',');
+  
+      $insertString = "INSERT INTO $table ($attributes) VALUES ($datatypes);";
+  
+      // Retrieve data and count
+      $data = DB::connection('dynamic')->select("
+          SELECT * 
+          FROM (
+              SELECT '" . $db . "' AS db, " . $table . ".* 
+              FROM " . $db . "." . $table . "
+              ORDER BY updated_at DESC
+              LIMIT 1000
+          ) AS q;
+      ");
+  
+      $totalCount = DB::connection('dynamic')->select("
+          SELECT COUNT(*) as count 
+          FROM " . $db . "." . $table . ";
+      ");
+  
+      $count = $totalCount[0]->count;
+  
+      // Fetch the latest updated_at value
+      $latestUpdatedAt = DB::connection('dynamic')->select("
+          SELECT MAX(updated_at) as latest_updated_at 
+          FROM " . $db . "." . $table . ";
+      ");
+  
+      $latestUpdatedAt = $latestUpdatedAt[0]->latest_updated_at ?? null;
+  
+      return response()->json([
+          'success' => trans('general.sent_successfully'),
+          'data' => $data,
+          'queryData' => $queryData,
+          'count' => $count,
+          'insertString' => $insertString,
+          'latestUpdatedAt' => $latestUpdatedAt, // Added latest updated_at timestamp
+      ]);
   }
+  
+  
+  
 
   public function filterStats(Request $request)
   {
@@ -981,6 +1014,43 @@ $count=$totalCount[0]->count;
 
     return response()->json(['success' => trans('general.created_successfully')]);
 
+  }
+
+  public function getTableColumns(Request $request)
+  {
+      $dbname = $request->input('dbname');
+      $tablename = $request->input('tablename'); // Comma-separated string, e.g., "services,products"
+  
+      if (!$dbname || !$tablename) {
+          return response()->json(['error' => 'Database name and table name(s) are required'], 400);
+      }
+  
+      try {
+          $tableNames = explode(',', $tablename); // Split the comma-separated table names
+          $uniqueColumns = [];
+  
+          foreach ($tableNames as $table) {
+              $columns = DB::select("SELECT COLUMN_NAME, DATA_TYPE 
+                                     FROM INFORMATION_SCHEMA.COLUMNS 
+                                     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?", [$dbname, trim($table)]);
+  
+              foreach ($columns as $column) {
+                  // Add column name and data type if it's not already present
+                  $uniqueColumns[$column->COLUMN_NAME] = $column->DATA_TYPE;
+              }
+          }
+  
+          // Prepare response strings
+          $columnNames = array_keys($uniqueColumns); // Unique column names
+          $dataTypes = array_values($uniqueColumns); // Corresponding data types
+  
+          return response()->json([
+              'columns' => implode(',', $columnNames),
+              'dataTypes' => implode(',', $dataTypes),
+          ]);
+      } catch (\Exception $e) {
+          return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
+      }
   }
   public function updateReferences(Request $request){
     $issue=Issue::find($request->issue_id);

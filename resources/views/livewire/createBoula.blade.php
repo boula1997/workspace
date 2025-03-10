@@ -32,7 +32,7 @@
 
     {{-- <div class="form-group">
         <label for="exampleFormControlInput2">Tasks & Notes:</label>
-        <textarea name="tasks" id="" class="form-control noHide" cols="30" rows="10" wire:model="tasks"></textarea>
+        <textarea name="tasks" id="" class="form-control noHide" cols="30" rows="5" wire:model="tasks"></textarea>
         @error('tasks') <span class="text-danger">{{ $message }}</span>@enderror
     </div> --}}
 
