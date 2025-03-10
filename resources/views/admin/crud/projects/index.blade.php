@@ -107,6 +107,18 @@
                                         
 
                                     </table>
+
+                                    <!-- Separate tfoot for better responsiveness -->
+                                    <div class="table-footer-summary">
+                                        <table class="table">
+                                            <tr>
+                                                <td colspan="2" class="text-right fw-bold">Total Cost:</td>
+                                                <td id="total-cost"></td>
+                                                <td id="total-rest"></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -119,33 +131,50 @@
     <!-- /.content-wrapper -->
 @endsection
 
-
 @push('scripts')
     <script>
         $(function() {
-            // Define a unique key for your DataTable state in localStorage
-            const tableStateKey = "coursesTableState";
-
-            // Initialize DataTable with stateSave and custom state management
             var table = $("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "paging": true,
+                "paging": false,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                "stateSave": true, // Enable state saving
-                "stateLoadCallback": function(settings) {
-                    // Load the state from localStorage
-                    var savedState = localStorage.getItem(tableStateKey);
-                    return savedState ? JSON.parse(savedState) : null;
-                },
-                "stateSaveCallback": function(settings, data) {
-                    // Save the state to localStorage
-                    localStorage.setItem(tableStateKey, JSON.stringify(data));
+                "stateSave": true,
+                "search": {
+                    "smart": true
                 }
             });
 
+            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+            $('#projectFilter').on('change', function() {
+                var selectedTitles = $(this).val();
+                table.columns(1).search(selectedTitles ? selectedTitles.join('|') : '', true, false).draw();
+            });
+
+            function calculateTotals() {
+                let totalCost = 0,
+                    totalRest = 0;
+
+                table.rows({
+                    search: 'applied'
+                }).every(function() {
+                    let rowNode = $(this.node());
+
+                    let cost = parseFloat(rowNode.find('.cost').text().replace(/[^0-9.-]+/g, "")) || 0;
+                    let rest = parseFloat(rowNode.find('.rest').text().replace(/[^0-9.-]+/g, "")) || 0;
+
+                    totalCost += cost;
+                    totalRest += rest;
+                });
+
+                $('#total-cost').text(totalCost.toFixed(2));
+                $('#total-rest').text(totalRest.toFixed(2));
+            }
+
+            calculateTotals();
+            table.on('search.dt draw.dt', calculateTotals);
         });
     </script>
 @endpush
-
