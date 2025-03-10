@@ -17,13 +17,16 @@
                                     @foreach ($images as $image)
                                         @if (isset($image->id))
                                             <div class="col-12 mb-2">
-                                                <img class="zoomable" style="height: 100vh !important;" src="{{ $image->url }}" alt="">
+                                                <div class="zoom-container">
+                                                    <img class="zoomable" src="{{ $image->url }}" alt="">
+                                                </div>
                                             </div>
                                         @endif
                                     @endforeach
                                 </div>
                             </div>
                         </div>
+                        
                         
                         
                     </div>
@@ -39,8 +42,25 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll(".zoomable").forEach(img => {
-                img.addEventListener("click", function () {
-                    this.classList.toggle("zoomed");
+                let isZoomed = false;
+    
+                img.addEventListener("click", function (event) {
+                    if (!isZoomed) {
+                        let rect = img.getBoundingClientRect();
+                        let offsetX = event.clientX - rect.left; // Click X relative to image
+                        let offsetY = event.clientY - rect.top;  // Click Y relative to image
+                        let centerX = offsetX / rect.width * 100;
+                        let centerY = offsetY / rect.height * 100;
+    
+                        img.style.transformOrigin = `${centerX}% ${centerY}%`;
+                        img.style.transform = "scale(2)";
+                        img.parentElement.style.cursor = "zoom-out";
+                    } else {
+                        img.style.transform = "scale(1)";
+                        img.style.transformOrigin = "center center";
+                        img.parentElement.style.cursor = "zoom-in";
+                    }
+                    isZoomed = !isZoomed;
                 });
             });
         });
