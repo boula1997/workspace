@@ -35,7 +35,7 @@
                         @else
                             <a href="{{ asset($image->url) }}" target="_blank">
                                 <div class="file-preview">
-                                    <i class="fas fa-file-alt"></i> {{ basename($image->url) }}
+                                    <i class="fas fa-file-alt"></i> Show file
                                 </div>
                             </a>
                         @endif

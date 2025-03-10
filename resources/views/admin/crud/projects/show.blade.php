@@ -38,7 +38,7 @@
 
                                     @if (!in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
                                         <li>
-                                            <a href="{{ $file->url }}" target="_blank"></a>
+                                            <a href="{{ $file->url }}" target="_blank">{{ basename($file->url) }}</a>
                                         </li>
                                     @endif
                                 @endforeach
