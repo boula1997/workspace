@@ -108,17 +108,7 @@
 
                                     </table>
 
-                                    <!-- Separate tfoot for better responsiveness -->
-                                    <div class="table-footer-summary">
-                                        <table class="table">
-                                            <tr>
-                                                <td colspan="2" class="text-right fw-bold">Total Cost:</td>
-                                                <td id="total-cost"></td>
-                                                <td id="total-rest"></td>
-                                                <td colspan="2"></td>
-                                            </tr>
-                                        </table>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
