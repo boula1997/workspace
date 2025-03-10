@@ -175,8 +175,8 @@ body, .navbar, .sidebar, .content-wrapper {
 
 .btn-icon {
   padding: 0; /* Remove extra padding */
-  width: auto; /* Allow it to fit the icon */
-  height: auto;
+  width: unset !important; /* Allow it to fit the icon */
+  height: unset !important;
   border: none; /* Optional: Remove border */
   background: none; /* Optional: Remove background */
 }
