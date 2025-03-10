@@ -81,6 +81,10 @@ if (localStorage.getItem('darkmode') == "true" || userEmail === "nessimboula@gma
   });
 </script>
 
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/rowreorder/1.4.0/js/dataTables.rowReorder.min.js"></script>
+
 <!-- Eruda Console Debugging -->
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script> eruda.init(); </script>
