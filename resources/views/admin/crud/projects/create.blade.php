@@ -176,6 +176,10 @@
                         <a href="{{ route('projects.index') }}"
                             class="btn btn-outline-danger px-5
                             ">@lang('general.cancel')</a>
+
+                            <a href="https://www.compress2go.com/" target="__blank">
+                                <button type="button" class="btn btn-success">Compress</button>
+                            </a>
                     </div>
                 </div>
             </div>
