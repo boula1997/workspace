@@ -57,7 +57,7 @@ class ProjectController extends Controller
     public function store(ProjectRequest $request)
     {
         try {
-            $project=$this->project->create($request->except('images'));
+            $project=$this->project->create($request->except('images','profile_avatar_remove'));
             $project->uploadFiles();
 
             return redirect()->route('projects.index')
@@ -104,7 +104,7 @@ class ProjectController extends Controller
     public function update(ProjectRequest $request, Project $project)
     {
         try {
-            $data = $request->except('images');
+            $data = $request->except('images','profile_avatar_remove');
             $project->update($data);
             $project->updateFiles();
             return redirect()->route('projects.index')
