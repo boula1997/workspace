@@ -17,7 +17,7 @@
                                     @foreach ($images as $image)
                                         @if (isset($image->id))
                                         <div class="zoom-container">
-                                            <img class="zoomable" src="{{ $image->url }}" style="height: 100vh !important" alt="">
+                                            <img class="zoomable m-2" src="{{ $image->url }}" style="height: 100vh !important" alt="">
                                         </div>
                                         @endif
                                     @endforeach
