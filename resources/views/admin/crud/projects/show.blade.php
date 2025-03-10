@@ -11,12 +11,16 @@
                 <div class="card card-custom">
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="exampleInputFile1">{{ __('general.images') }}</label>
+                            <label>{{ __('general.images') }}</label>
                             <div class="d-flex flex-wrap">
-                                @foreach ($images as $image)
-                                    @if (isset($image->id))
+                                @foreach ($images as $file)
+                                    @php
+                                        $extension = pathinfo($file->url, PATHINFO_EXTENSION);
+                                    @endphp
+
+                                    @if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
                                         <div class="zoom-container m-2" style="height: 100vh; flex: 1 1 auto; min-width: 300px; max-width: 100%;">
-                                            <img class="zoomable w-100 h-100" src="{{ $image->url }}" style="object-fit: cover;" alt="">
+                                            <img class="zoomable w-100 h-100" src="{{ $file->url }}" style="object-fit: cover;" alt="">
                                         </div>
                                     @endif
                                 @endforeach
@@ -26,10 +30,16 @@
                         <div class="form-group mt-4">
                             <label>{{ __('general.files') }}</label>
                             <ul>
-                                @foreach ($files as $file)
-                                    <li>
-                                        <a href="{{ $file->url }}" target="_blank">{{ $file->name ?? 'Download File' }}</a>
-                                    </li>
+                                @foreach ($images as $file)
+                                    @php
+                                        $extension = pathinfo($file->url, PATHINFO_EXTENSION);
+                                    @endphp
+
+                                    @if (!in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                                        <li>
+                                            <a href="{{ $file->url }}" target="_blank">{{ basename($file->url) }}</a>
+                                        </li>
+                                    @endif
                                 @endforeach
                             </ul>
                         </div>
