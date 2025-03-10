@@ -76,7 +76,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        $images = $page->images;
+        $images = $project->images;
 
         return view('admin.crud.projects.show', compact('project','images'));
     }
