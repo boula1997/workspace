@@ -175,7 +175,7 @@
                                                                 </button>
 
                                                                 <button
-                                                                    class="btn btn-outline-secondary btn-sm deleteTask"
+                                                                    class="btn btn-outline-secondary btn-sm deleteTask delete-icon"
                                                                    type="button"
                                                                     data-keywords="{{ $task->keywords }}"
                                                                     title="@lang('general.delete')">
