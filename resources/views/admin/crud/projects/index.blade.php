@@ -145,8 +145,6 @@
                 }
             });
 
-            // Append DataTable buttons to container
-            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
     </script>
 @endpush
