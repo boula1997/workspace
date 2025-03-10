@@ -152,7 +152,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="col-form-group"> <label>{{ __('general.tasks') }} <span class="text-danger"> *
                                     </span></label>
                                 <textarea rows="5" class=" summernote @error('tasks') is-invalid @enderror" name="{{ 'tasks' }}"> {!! old('tasks') !!} </textarea>
@@ -160,7 +160,7 @@
                         </div>
                         
 
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="col-form-group"> <label>{{ __('general.codeLinks') }} <span class="text-danger">
                                         * </span></label>
                                 <textarea rows="5" class=" summernote @error('codeLinks') is-invalid @enderror" name="{{ 'codeLinks' }}"> {!! old('codeLinks') !!} </textarea>
