@@ -90,7 +90,7 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         //    dd($project->title);
-        $images = $page->images;
+        $images = $project->images;
 
         return view('admin.crud.projects.edit', compact('project','images'));
     }
