@@ -4,7 +4,7 @@
             <label for="fileInput">{{ __('general.files') }}</label>
             <div id="drop-area" class="border p-3 text-center bg-light">
                 <p>Drag & Drop Files Here or Click to Upload</p>
-                <input type="file" name="files[]" class="d-none" id="fileInput" multiple>
+                <input type="file" name="images[]" class="d-none" id="fileInput" multiple>
             </div>
         </div>
     </div>
