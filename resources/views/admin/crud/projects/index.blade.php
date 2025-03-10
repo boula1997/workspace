@@ -154,21 +154,24 @@ $(function() {
     });
 
     function calculateTotals() {
-        let totalCost = 0, totalRest = 0;
+    let totalCost = 0, totalRest = 0;
 
-        table.rows({ search: 'applied' }).every(function() {
-            let row = $(this.node());
+    $("#example1 tbody tr:visible").each(function() {
+        let cost = parseFloat($(this).find('.cost').text().replace(/[^\d.-]/g, '')) || 0;
+        let rest = parseFloat($(this).find('.rest').text().replace(/[^\d.-]/g, '')) || 0;
 
-            let cost = parseFloat(row.find('.cost').text().replace(/[^\d.-]/g, '')) || 0;
-            let rest = parseFloat(row.find('.rest').text().replace(/[^\d.-]/g, '')) || 0;
+        totalCost += cost;
+        totalRest += rest;
+    });
 
-            totalCost += cost;
-            totalRest += rest;
-        });
+    $('#total-cost').text(totalCost.toLocaleString());
+    $('#total-rest').text(totalRest.toLocaleString());
+}
 
-        $('#total-cost').text(totalCost.toLocaleString());
-        $('#total-rest').text(totalRest.toLocaleString());
-    }
+// ✅ Run on DataTable events
+table.on('search.dt draw.dt', calculateTotals);
+calculateTotals();
+
 
     // Calculate initially and on table updates
     calculateTotals();

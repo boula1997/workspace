@@ -162,6 +162,17 @@ body, .navbar, .sidebar, .content-wrapper {
 .table th, .table td {
   white-space: nowrap;
 }
+
+/* Make DataTable columns responsive */
+.dt-head-nowrap th, .dt-body-nowrap td {
+  white-space: nowrap;
+}
+
+/* Prevent table breaking layout */
+.dataTables_wrapper {
+  overflow-x: hidden !important;
+}
+
 /* Navbar color adjustments */
 .navbar {
   background-color: #2e3b4e ; /* Softer dark color for the navbar */
