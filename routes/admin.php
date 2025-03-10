@@ -155,7 +155,7 @@ Route::group(
             Route::post('/tasks/update-keywords', [TaskController::class, 'updateKeywords'])->name('tasks.updateKeywords');
         });
 
-        Route::get('/projects/public/{project}', [ProjectController::class, 'show'])->name('projects.show');
+        Route::get('/projects/public/{project}', [ProjectController::class, 'show'])->name('projects.publicShow');
     });
 }
 );
