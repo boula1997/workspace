@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Project extends Model
 {
-    use HasFactory;
+    use HasFactory,MorphFiles,MorphFile;
     protected $table = 'projects';
     protected $guarded = [];
     public $timestamps = true;
