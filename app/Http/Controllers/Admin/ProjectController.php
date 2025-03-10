@@ -57,7 +57,9 @@ class ProjectController extends Controller
     public function store(ProjectRequest $request)
     {
         try {
-            $this->project->create($request->all());
+            $project=$this->project->create($request->except('images'));
+            $project->uploadFiles();
+
             return redirect()->route('projects.index')
                 ->with('success', trans('general.created_successfully'));
         } catch (Exception $e) {
@@ -74,7 +76,9 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return view('admin.crud.projects.show', compact('project'));
+        $images = $page->images;
+
+        return view('admin.crud.projects.show', compact('project','images'));
     }
 
     /**
@@ -86,7 +90,9 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         //    dd($project->title);
-        return view('admin.crud.projects.edit', compact('project'));
+        $images = $page->images;
+
+        return view('admin.crud.projects.edit', compact('project','images'));
     }
     /**
      * Update the specified resource in storage.
@@ -98,8 +104,9 @@ class ProjectController extends Controller
     public function update(ProjectRequest $request, Project $project)
     {
         try {
-            $data = $request->all();
+            $data = $request->except('images');
             $project->update($data);
+            $project->updateFiles();
             return redirect()->route('projects.index')
                 ->with('success', trans('general.update_successfully'));
         } catch (Exception $e) {
