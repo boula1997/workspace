@@ -14,7 +14,7 @@
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Tempusdominus Bootstrap 4 -->
-    @if (boula() || auth()->user()->email=="Kerminamelad688@gmail.com")
+    @if (auth()->user() && (boula() || auth()->user()->email=="Kerminamelad688@gmail.com"))
     <link rel="stylesheet" href="{{ asset('admin/css/boulaDark.css') }}">
     @endif
     <link rel="stylesheet" href="{{ asset('plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/css/custom.css') }}">
-    @if (boula() || auth()->user()->email=="Kerminamelad688@gmail.com")
+    @if (auth()->user() &&(boula() || auth()->user()->email=="Kerminamelad688@gmail.com"))
     <link rel="stylesheet" href="{{ asset('admin/css/boulaDark.css') }}">
     @endif
     {{-- <link rel="stylesheet" href="{{ asset('css/style.bundle.css') }}"> --}}
