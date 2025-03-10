@@ -64,7 +64,7 @@ Route::group(
             Route::get('/login', function () {
                 return redirect()->route('admin.login-view');
             });
-
+            Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
             Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showAdminLoginForm'])->name('admin.login-view');
             Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'adminLogin'])->name('admin.login')->middleware('guest:admin');
             Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'showAdminRegisterForm'])->name('admin.register-view');
