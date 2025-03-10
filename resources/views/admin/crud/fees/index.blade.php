@@ -65,7 +65,7 @@
                                         <!-- Summary Row -->
                                         <tfoot>
                                             <tr>
-                                                <td colspan="6" class="text-start fw-bold">Total Amount:</td>
+                                                <td colspan="2" class="text-start fw-bold">Total:</td>
                                                 <td id="total-amount"></td> <!-- Ensure it matches the last column in <thead> -->
                                             </tr>
                                         </tfoot>
