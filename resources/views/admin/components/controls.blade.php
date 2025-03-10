@@ -4,9 +4,9 @@
 
     @can($role . '-list')
         @if ($route == 'projects')
-            <a href="{{ route($route . '.publicShow', $module) }}" title="show">
-                <i class="fas fa-eye text-secondary fa-md"></i>
-            </a>
+        <a href="{{ route($route . '.publicShow', $module) }}?project={{ urlencode($module->title) }}" title="show">
+            <i class="fas fa-eye text-secondary fa-md"></i>
+        </a>
         @else
             <a href="{{ route($route . '.show', $module) }}" title="show">
                 <i class="fas fa-eye text-secondary fa-md"></i>
