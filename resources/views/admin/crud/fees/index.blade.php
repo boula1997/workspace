@@ -66,8 +66,7 @@
                                         <tfoot>
                                             <tr>
                                                 <td colspan="6" class="text-start fw-bold">Total Amount:</td>
-                                                <td id="total-amount"></td> <!-- Cell to display the total amount -->
-                                                <td colspan="4"></td>
+                                                <td id="total-amount"></td> <!-- Ensure it matches the last column in <thead> -->
                                             </tr>
                                         </tfoot>
                                     </table>
