@@ -65,7 +65,7 @@
                                         <!-- Summary Row -->
                                         <tfoot>
                                             <tr>
-                                                <td colspan="6" class="text-right fw-bold">Total Amount:</td>
+                                                <td colspan="6" class="text-start fw-bold">Total Amount:</td>
                                                 <td id="total-amount"></td> <!-- Cell to display the total amount -->
                                                 <td colspan="4"></td>
                                             </tr>
