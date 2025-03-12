@@ -176,8 +176,7 @@
 
                                                                 <button
                                                                     class="btn btn-secondary btn-sm deleteTask delete-icon btn-icon"
-                                                                   type="button"
-                                                                    data-keywords="{{ $task->keywords }}"
+                                                                    type="button" data-keywords="{{ $task->keywords }}"
                                                                     title="@lang('general.delete')">
                                                                     <i class="fas fa-trash"></i>
                                                                 </button>
@@ -248,12 +247,12 @@
 
 
     @push('scripts')
-    <script>
-        $(document).on('click', '.deleteTask', function () {
-            // Get the closest table row to the clicked button and remove it
-            $(this).closest('tr').remove();
-        });
-    </script>
+        <script>
+            $(document).on('click', '.deleteTask', function() {
+                // Get the closest table row to the clicked button and remove it
+                $(this).closest('tr').remove();
+            });
+        </script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 document.querySelectorAll("audio, video").forEach((el) => {
@@ -753,6 +752,71 @@
                     taskRow.css('background-color', '');
                     taskRow.css('color', '');
                 }
+            }
+        </script>
+
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // Set the female voice for text-to-speech
+                setTimeout(setFemaleVoice, 200);
+
+                // Add event listener to the multi-select input for projects
+                const projectSelect = document.querySelector('select[name="projects[]"]');
+                if (projectSelect) {
+                    projectSelect.addEventListener('change', function(event) {
+                        const selectedOptions = Array.from(this.selectedOptions);
+                        if (selectedOptions.length > 0) {
+                            const selectedProject = selectedOptions[0]
+                            .text; // Get the first selected project's name
+                            readText(selectedProject); // Read the selected project's name
+                        }
+                    });
+                }
+            });
+
+            // Function to set the female voice for text-to-speech
+            function setFemaleVoice() {
+                let voices = speechSynthesis.getVoices();
+                if (voices.length === 0) {
+                    console.log("No voices available, retrying...");
+                    speechSynthesis.onvoiceschanged = setFemaleVoice;
+                    return;
+                }
+
+                femaleVoice = voices.find(voice =>
+                        voice.lang.startsWith('ar') && voice.name.toLowerCase().includes('female')
+                    ) ||
+                    voices.find(voice =>
+                        voice.lang.startsWith('ar') && voice.name.includes('Google')
+                    ) ||
+                    voices.find(voice => voice.lang.startsWith('ar')) ||
+                    voices.find(voice =>
+                        voice.lang.startsWith('en') && voice.name.toLowerCase().includes('female')
+                    ) ||
+                    voices[0];
+
+                console.log('Selected Voice:', femaleVoice ? femaleVoice.name : 'Not found');
+            }
+
+            // Function to read text using the text-to-speech system
+            function readText(text) {
+                if (stopReading) {
+                    console.log('Reading is currently stopped.');
+                    return;
+                }
+
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                if (femaleVoice) {
+                    utterance.voice = femaleVoice;
+                }
+
+                utterance.onstart = () => console.log("Speaking:", text);
+                utterance.onend = () => console.log("Finished speaking:", text);
+                utterance.onerror = (e) => console.error("Speech error:", e);
+
+                speechSynthesis.speak(utterance);
             }
         </script>
     @endpush
