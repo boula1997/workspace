@@ -104,7 +104,7 @@ class TaskController extends Controller
                           });
                 })
                 ->orderBy('status')
-                ->latest()
+                  ->latest()
                 ->get()
                 ->take(300)
                 ->unique('title');
@@ -130,6 +130,13 @@ class TaskController extends Controller
         $projects=Project::where('status','>',0)->latest()->get();
         return view('admin.crud.tasks.create',compact('employees','projects'));
     }
+
+
+    public function getActiveWebsites()
+{
+    $websites = Project::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('title');
+    return response()->json($websites);
+}
     public function bulkAction(Request $request)
     {
         

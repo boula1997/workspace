@@ -113,6 +113,8 @@ Route::group(
             Route::get('piority/toggle/{id}', [App\Http\Controllers\Admin\TaskController::class, 'togglePiority'])->name('piority.toggle');
 
             Route::get('/finished/fees', [App\Http\Controllers\Admin\FeeController::class, 'index'])->name('fees.finished');
+
+            Route::get('/get-active-websites', [TaskController::class, 'getActiveWebsites'])->name('active.websites');
             Route::get('/finished/followups', [App\Http\Controllers\Admin\FollowupController::class, 'index'])->name('followups.finished');
             Route::get('/all/followups', [App\Http\Controllers\Admin\FollowupController::class, 'index'])->name('followups.all');
             Route::get('/reply-message/{id}', [App\Http\Controllers\Admin\MessageController::class, 'reply'])->name('messages.reply');
