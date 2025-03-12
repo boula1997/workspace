@@ -147,7 +147,7 @@
 
                                                             <td class="toggleLevel" style="cursor: pointer"
                                                                 id="{{ $task->id }}">
-                                                                {{ isset($task->level) &&$task->level ? 'mobile' : 'pc' }}
+                                                                {{ $task->level ? 'mobile' : 'pc' }}
                                                             </td>
                                                             <td class="counter" data-task-id="{{ $task->id }}"
                                                                 data-counter="{{ $task->counter }}"
@@ -163,7 +163,7 @@
 
                                                             <td>
                                                                 @if (isset($task->created_at))
-                                                                    
+
                                                                 <a href="{{ route('tasks.edit', $task) }}" title="edit">
                                                                     <i class="fas fa-edit  text-secondary  fa-md"></i>
                                                                 </a>
@@ -178,11 +178,13 @@
 
                                                                 <button
                                                                     class="btn btn-secondary btn-sm deleteTask delete-icon btn-icon"
-                                                                    type="button" data-keywords="{{ $task->keywords }}"
+                                                                   type="button"
+                                                                    data-keywords="{{ $task->keywords }}"
                                                                     title="@lang('general.delete')">
                                                                     <i class="fas fa-trash"></i>
                                                                 </button>
                                                                 @endif
+                                                              
 
                                                             </td>
                                                             <td class="d-none">
@@ -250,12 +252,12 @@
 
 
     @push('scripts')
-        <script>
-            $(document).on('click', '.deleteTask', function() {
-                // Get the closest table row to the clicked button and remove it
-                $(this).closest('tr').remove();
-            });
-        </script>
+    <script>
+        $(document).on('click', '.deleteTask', function () {
+            // Get the closest table row to the clicked button and remove it
+            $(this).closest('tr').remove();
+        });
+    </script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 document.querySelectorAll("audio, video").forEach((el) => {
@@ -688,8 +690,6 @@
                         $searchInput.val(localStorage.getItem('searchValue'));
                         $searchInput.trigger('input'); // Trigger the input event to start the search
                     }
-
-                    
                 }
 
                 // Check for the input field's existence every 500ms
@@ -759,5 +759,4 @@
                 }
             }
         </script>
-
     @endpush
