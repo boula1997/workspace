@@ -679,6 +679,33 @@
 
 
             $(document).ready(function() {
+
+                $.ajax({
+        url: "{{route('active.websites')}}", // Adjust this route to match your backend
+        type: "GET",
+        success: function (response) {
+            if (response.length > 0) {
+                response.forEach(function (title, index) {
+                    let newRow = `
+                        <tr>
+                            <td></td>
+                            <td class="clickable-text">${title}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="d-none">
+                                <input type="checkbox" name="tasks[]" value="">
+                            </td>
+                        </tr>
+                    `;
+                    $("#example1 tbody").append(newRow);
+                });
+            }
+        }
+    });
                 // Function to load the value into the search input and trigger search
                 function loadSearchValue() {
                     if (localStorage.getItem('searchValue')) {
@@ -757,35 +784,5 @@
         </script>
 
 
-<script>
-    $(document).ready(function () {
-    $.ajax({
-        url: "{{route('active.websites')}}", // Adjust this route to match your backend
-        type: "GET",
-        success: function (response) {
-            if (response.length > 0) {
-                response.forEach(function (title, index) {
-                    let newRow = `
-                        <tr>
-                            <td></td>
-                            <td class="clickable-text">${title}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="d-none">
-                                <input type="checkbox" name="tasks[]" value="">
-                            </td>
-                        </tr>
-                    `;
-                    $("#example1 tbody").append(newRow);
-                });
-            }
-        }
-    });
-});
 
-</script>
     @endpush
