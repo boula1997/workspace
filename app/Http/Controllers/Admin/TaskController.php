@@ -100,6 +100,7 @@ public function index()
                 'employee_id' => 1,
                 'project_id' => 3,
                 'counter' => 20,
+                'level' => 0,
                 'piority' => 0,
                 'created_at' => null,
                 'updated_at' => null
