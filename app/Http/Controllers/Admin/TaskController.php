@@ -89,7 +89,7 @@ public function index()
         // Append active websites as new tasks with empty data
         foreach ($websites as $websiteTitle) {
             $tasks->push((object) [
-                'id' => '000',
+                'id' =>000,
                 'title' => $websiteTitle,
                 'keywords' => null,
                 'status' => null,
