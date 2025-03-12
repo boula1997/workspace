@@ -162,6 +162,8 @@
                                                             <td>{{ taskEmployees($task->title) }}</td>
 
                                                             <td>
+                                                                @if ($task->id!=000)
+                                                                    
                                                                 <a href="{{ route('tasks.edit', $task) }}" title="edit">
                                                                     <i class="fas fa-edit  text-secondary  fa-md"></i>
                                                                 </a>
@@ -180,6 +182,7 @@
                                                                     title="@lang('general.delete')">
                                                                     <i class="fas fa-trash"></i>
                                                                 </button>
+                                                                @endif
 
                                                             </td>
                                                             <td class="d-none">
