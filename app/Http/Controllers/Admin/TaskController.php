@@ -83,13 +83,17 @@ public function index()
                 ->unique('title');
         }
 
+        // Find the last task ID
+        $lastTaskId = $tasks->max('id') ?? 0;
+
         // Fetch active website titles
         $websites = Project::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('title');
 
-        // Append active websites as new tasks with empty data
-        foreach ($websites as $key=>$value) {
+        // Append active websites as new tasks with unique incremental IDs
+        foreach ($websites as $key => $value) {
+            $lastTaskId++; // Increment ID for each new website task
             $tasks->push((object) [
-                'id' =>$key,
+                'id' => $lastTaskId,
                 'title' => $value,
                 'keywords' => null,
                 'status' => null,
@@ -109,6 +113,7 @@ public function index()
         return redirect()->back()->with(['error' => __('general.something_wrong')]);
     }
 }
+
 
 
     /**
