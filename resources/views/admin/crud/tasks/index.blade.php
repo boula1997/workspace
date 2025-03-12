@@ -162,7 +162,7 @@
                                                             <td>{{ taskEmployees($task->title) }}</td>
 
                                                             <td>
-                                                                @if (isset($task->piority))
+                                                                @if (isset($task->created_at))
                                                                     
                                                                 <a href="{{ route('tasks.edit', $task) }}" title="edit">
                                                                     <i class="fas fa-edit  text-secondary  fa-md"></i>
