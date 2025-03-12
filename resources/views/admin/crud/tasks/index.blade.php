@@ -147,7 +147,7 @@
 
                                                             <td class="toggleLevel" style="cursor: pointer"
                                                                 id="{{ $task->id }}">
-                                                                {{ $task->level ? 'mobile' : 'pc' }}
+                                                                {{ isset($task->level) &&$task->level ? 'mobile' : 'pc' }}
                                                             </td>
                                                             <td class="counter" data-task-id="{{ $task->id }}"
                                                                 data-counter="{{ $task->counter }}"
