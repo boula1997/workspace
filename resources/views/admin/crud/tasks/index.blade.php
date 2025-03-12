@@ -176,8 +176,7 @@
 
                                                                 <button
                                                                     class="btn btn-secondary btn-sm deleteTask delete-icon btn-icon"
-                                                                   type="button"
-                                                                    data-keywords="{{ $task->keywords }}"
+                                                                    type="button" data-keywords="{{ $task->keywords }}"
                                                                     title="@lang('general.delete')">
                                                                     <i class="fas fa-trash"></i>
                                                                 </button>
@@ -248,12 +247,12 @@
 
 
     @push('scripts')
-    <script>
-        $(document).on('click', '.deleteTask', function () {
-            // Get the closest table row to the clicked button and remove it
-            $(this).closest('tr').remove();
-        });
-    </script>
+        <script>
+            $(document).on('click', '.deleteTask', function() {
+                // Get the closest table row to the clicked button and remove it
+                $(this).closest('tr').remove();
+            });
+        </script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 document.querySelectorAll("audio, video").forEach((el) => {
@@ -686,6 +685,8 @@
                         $searchInput.val(localStorage.getItem('searchValue'));
                         $searchInput.trigger('input'); // Trigger the input event to start the search
                     }
+
+                    
                 }
 
                 // Check for the input field's existence every 500ms
@@ -755,34 +756,5 @@
                 }
             }
         </script>
-
-<script>
-   $.ajax({
-        url: "{{route('active.websites')}}", // Adjust this route to match your backend
-        type: "GET",
-        success: function (response) {
-            if (response.length > 0) {
-                response.forEach(function (title, index) {
-                    let newRow = `
-                        <tr>
-                            <td>000</td>
-                            <td class="clickable-text">Doing som task for ${title}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="d-none">
-                                <input type="checkbox" name="tasks[]" value="">
-                            </td>
-                        </tr>
-                    `;
-                    $("#example1 tbody").append(newRow);
-                });
-            }
-        }
-    });
-</script>
 
     @endpush

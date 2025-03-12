@@ -44,80 +44,70 @@ class TaskController extends Controller
 
 
 
-    public function index()
-    {
-        try {
-
-            $employees=Admin::orderBy('name', 'ASC')->get();
-            $projects = Project::whereHas('tasks', function ($query) {
+public function index()
+{
+    try {
+        $employees = Admin::orderBy('name', 'ASC')->get();
+        $projects = Project::whereHas('tasks', function ($query) {
             $query->whereNotNull('id'); // Ensures tasks exist
-                })->orderBy('title', 'ASC')->get();
+        })->orderBy('title', 'ASC')->get();
 
-            if(request()->routeIs('tasks.finished'))
-            $status=[1];
-            else if(request()->routeIs('tasks.index'))
-            $status=[0];
-            else
-            $status=[0,1];
+        // Determine status based on route
+        if (request()->routeIs('tasks.finished')) {
+            $status = [1];
+        } elseif (request()->routeIs('tasks.index')) {
+            $status = [0];
+        } else {
+            $status = [0, 1];
+        }
 
-            if(auth()->user()->email!="boula@gmail.com"){
-                if(true)
-                $tasks = $this->task
-                    ->whereIn('status', $status)
-                    ->whereDoesntHave('employee', function ($query) {
-                        $query->where('email', 'boula@gmail.com');
-                    })
-                    ->orderBy('status')
-                    ->latest()
-                    ->take(300)
-                    ->get()
-                    ->unique('title');
-                else
-                $tasks = $this->task
+        // Fetch tasks based on user permissions
+        if (auth()->user()->email != "boula@gmail.com") {
+            $tasks = $this->task
                 ->whereIn('status', $status)
-                ->where(function ($query) {
-                    $query->where('employee_id', auth()->user()->id)
-                          ->orWhereHas('employee', function ($query) {
-                              $query->where('name', 'All');
-                          });
-                })
                 ->whereDoesntHave('employee', function ($query) {
                     $query->where('email', 'boula@gmail.com');
                 })
-                ->orderBy('status') // Order by status
-                ->latest()   
-                ->take(300)       // Then order by latest date
-                ->get()
-                ->unique('title');
-            
-            }else{
-
-                if(true)
-                $tasks = $this->task->whereIn('status',$status)->orderBy('status')->latest()->take(300)->get()->unique('title');
-                else
-                $tasks = $this->task
-                ->whereIn('status', $status)
-                ->where(function ($query) {
-                    $query->where('employee_id', auth()->user()->id)
-                          ->orWhereHas('employee', function ($query) {
-                              $query->where('name', 'All');
-                          });
-                })
                 ->orderBy('status')
-                  ->latest()
-                ->get()
+                ->latest()
                 ->take(300)
+                ->get()
                 ->unique('title');
-            
-            }
-
-            return view('admin.crud.tasks.index', compact('tasks','employees','projects'))
-                ->with('i', (request()->input('page', 1) - 1) * 5);
-        } catch (Exception $e) {
-            dd($e->getMessage());
-            return redirect()->back()->with(['error' => __('general.something_wrong')]);
+        } else {
+            $tasks = $this->task
+                ->whereIn('status', $status)
+                ->orderBy('status')
+                ->latest()
+                ->take(300)
+                ->get()
+                ->unique('title');
         }
+
+        // Fetch active website titles
+        $websites = Project::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('title');
+
+        // Append active websites as new tasks with empty data
+        foreach ($websites as $websiteTitle) {
+            $tasks->push((object) [
+                'id' => '000',
+                'title' => $websiteTitle,
+                'keywords' => null,
+                'status' => null,
+                'employee_id' => null,
+                'project_id' => null,
+                'created_at' => null,
+                'updated_at' => null
+            ]);
+        }
+
+        return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects'))
+            ->with('i', (request()->input('page', 1) - 1) * 5);
+    } catch (Exception $e) {
+        dd($e->getMessage());
+        return redirect()->back()->with(['error' => __('general.something_wrong')]);
     }
+}
+
 
     /**
      * Show the form for creating a new resource.
@@ -132,11 +122,11 @@ class TaskController extends Controller
     }
 
 
-    public function getActiveWebsites()
-{
-    $websites = Project::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('title');
-    return response()->json($websites);
-}
+        public function getActiveWebsites()
+    {
+        $websites = Project::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('title');
+        return response()->json($websites);
+    }
     public function bulkAction(Request $request)
     {
         
