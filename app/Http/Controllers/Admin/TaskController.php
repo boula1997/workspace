@@ -95,6 +95,7 @@ public function index()
                 'status' => null,
                 'employee_id' => null,
                 'project_id' => null,
+                'counter' => 20,
                 'created_at' => null,
                 'updated_at' => null
             ]);
