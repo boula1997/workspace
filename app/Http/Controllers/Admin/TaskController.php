@@ -87,10 +87,10 @@ public function index()
         $websites = Project::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('title');
 
         // Append active websites as new tasks with empty data
-        foreach ($websites as $websiteTitle) {
+        foreach ($websites as $key=>$value) {
             $tasks->push((object) [
-                'id' =>000,
-                'title' => $websiteTitle,
+                'id' =>$key,
+                'title' => $value,
                 'keywords' => null,
                 'status' => null,
                 'employee_id' => null,
