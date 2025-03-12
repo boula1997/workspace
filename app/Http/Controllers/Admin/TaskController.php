@@ -96,11 +96,11 @@ public function index()
                 'id' => $lastTaskId,
                 'title' => $value,
                 'keywords' => null,
-                'status' => null,
-                'employee_id' => null,
-                'project_id' => null,
+                'status' => 0,
+                'employee_id' => 1,
+                'project_id' => 3,
                 'counter' => 20,
-                'piority' => null,
+                'piority' => 0,
                 'created_at' => null,
                 'updated_at' => null
             ]);
