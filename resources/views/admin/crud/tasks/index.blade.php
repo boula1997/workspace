@@ -688,8 +688,8 @@
                 response.forEach(function (title, index) {
                     let newRow = `
                         <tr>
-                            <td></td>
-                            <td class="clickable-text">${title}</td>
+                            <td>000</td>
+                            <td class="clickable-text">Doing som task for ${title}</td>
                             <td></td>
                             <td></td>
                             <td></td>
