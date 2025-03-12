@@ -94,7 +94,7 @@ public function index()
             $lastTaskId++; // Increment ID for each new website task
             $tasks->push((object) [
                 'id' => $lastTaskId,
-                'title' =>'Doing some task for'.$value,
+                'title' =>'Doing some task for '.$value,
                 'keywords' => null,
                 'status' => 0,
                 'employee_id' => 1,
