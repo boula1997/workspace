@@ -124,7 +124,7 @@
                                                             {{ __('general.title') }}
                                                         </th>
                                                         <th>{{ __('general.level') }}</th>
-                                                        <th>{{ __('general.counter') }}</th>
+                                                        {{-- <th>{{ __('general.counter') }}</th> --}}
                                                         <th>{{ __('general.piority') }}</th>
                                                         <th>{{ __('general.project') }}</th>
                                                         <th>{{ __('general.employees') }}</th>
@@ -149,11 +149,11 @@
                                                                 id="{{ $task->id }}">
                                                                 {{ $task->level ? 'mobile' : 'pc' }}
                                                             </td>
-                                                            <td class="counter" data-task-id="{{ $task->id }}"
+                                                            {{-- <td class="counter" data-task-id="{{ $task->id }}"
                                                                 data-counter="{{ $task->counter }}"
                                                                 style="cursor: pointer;">
                                                                 {{ $task->counter }}
-                                                            </td>
+                                                            </td> --}}
                                                             <td class="togglePiority" style="cursor: pointer"
                                                                 id="{{ $task->id }}">
                                                                 {{ $task->piority ? 'Important' : 'Normal' }}</td>
