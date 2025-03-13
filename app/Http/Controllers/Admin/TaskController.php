@@ -137,35 +137,102 @@ public function index()
     }
     public function bulkAction(Request $request)
     {
+        
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
-    
-        if (!isset($request->employees) && $action == 'assign') {
-            return redirect()->back()->with('error', __('Select Employee!'));
-        }
-        if (!isset($request->projects) && $action == 'filterProject') {
-            return redirect()->back()->with('error', __('Select Project!'));
-        }
-        
-        if (isset($taskIds)) {
-            $task = Task::whereIn('id', $taskIds)->first();
-            $tasks = Task::whereIn('id', $taskIds)->get();
-        } else {
-            $tasks = collect();
-        }
-        
-        // Find the last task ID
+
+         
+        if(!isset($request->employees)&& $action == 'assign')
+        return redirect()->back()->with('error', __('Select Employee!'));
+
+        if(!isset($request->projects)&& $action == 'filterProject')
+        return redirect()->back()->with('error', __('Select Project!'));
+         if(isset($taskIds)){
+             $task=Task::whereIn('id', $taskIds)->first();
+             $tasks=Task::whereIn('id', $taskIds)->get();
+         }else{
+          $tasks=[];
+         }
+        if ($action == 'assign') {
+            foreach($tasks as $task) {
+                $taskssameTitles=Task::where('title', $task->title)->get();
+                foreach($taskssameTitles as $tasksameTitle){
+                    foreach($request->employees as $employee){
+                    Task::create([
+                        'title'=>$tasksameTitle->title,
+                        'employee_id'=>$employee,
+                        'project_id'=>$tasksameTitle->project_id,
+                        'keywords'=>$tasksameTitle->keywords
+                    ]);
+                }
+                $tasksameTitle->delete();
+
+
+                
+             }
+             clearTasks($task->title);
+            }
+            emailTasks();
+            return redirect()->back()->with('success', __('Tasks assigned successfully.'));
+        } elseif ($action == 'reassign') {
+            foreach($tasks as $task) {
+                $taskssameTitles=Task::where('title', $task->title)->get();
+                foreach($taskssameTitles as $tasksameTitle){
+                    foreach($request->employees as $employee){
+                        History::where('employee_id', $employee)->where('task_id',$tasksameTitle->id)->delete();
+                        Task::create([
+                            'title'=>$tasksameTitle->title,
+                            'employee_id'=>$employee,
+                            'project_id'=>$tasksameTitle->project_id,
+                            'keywords'=>$tasksameTitle->keywords
+                        ]);
+                }
+                // $tasksameTitle->delete();
+
+
+                
+             }
+             clearTasks($task->title);
+            }
+            emailTasks();
+            return redirect()->back()->with('success', __('Tasks assigned successfully.'));
+        }  elseif ($action == 'delete') {
+            $tasks=Task::whereIn('id', $taskIds)->get();
+            foreach($tasks as $task) {
+                notAllowedTaskAction($task->title);
+                if($task->status==1)
+                Task::where('title',$task->title)->update(['status' => !$task->status]);
+                else
+                Task::where('title',$task->title)->where('employee_id',auth()->user()->id)->update(['status' => !$task->status]);
+                taskLog("Delete",$task->title);
+                clearTasks($task->title);
+            }; 
+            emailTasks();
+            return redirect()->back()->with('success', __('Tasks deleted successfully.'));
+        }else if($action=='filterProject'){
+         
+            if($request->route_name=="tasks.index")
+            $tasks=Task::whereIn('project_id', $request->projects)->where('status',0)->orderBy('project_id','desc')->get()->unique('title');
+            else if($request->route_name=="tasks.finished"){
+                $tasks = Task::whereIn('project_id', $request->projects)
+                ->orderBy('project_id', 'desc')
+                ->latest('created_at') // Ensure latest tasks by creation date
+                ->take(300) // Limit the results to 300
+                ->get()
+                ->unique('title');
+
+                        // Find the last task ID
         $lastTaskId = $tasks->max('id') ?? 0;
-        
+
         // Fetch active website titles
         $websites = Project::latest()->pluck('title');
-        
+
         // Append active websites as new tasks with unique incremental IDs
         foreach ($websites as $key => $value) {
             $lastTaskId++; // Increment ID for each new website task
             $tasks->push((object) [
                 'id' => $lastTaskId,
-                'title' => 'Doing some task or updating tasks for ' . $value,
+                'title' =>'Doing some task or updating tasks for '.$value,
                 'keywords' => null,
                 'status' => 0,
                 'employee_id' => 1,
@@ -177,81 +244,26 @@ public function index()
                 'updated_at' => null
             ]);
         }
-        
-        if ($action == 'assign') {
-            foreach ($tasks as $task) {
-                $taskssameTitles = Task::where('title', $task->title)->get();
-                foreach ($taskssameTitles as $tasksameTitle) {
-                    foreach ($request->employees as $employee) {
-                        Task::create([
-                            'title' => $tasksameTitle->title,
-                            'employee_id' => $employee,
-                            'project_id' => $tasksameTitle->project_id,
-                            'keywords' => $tasksameTitle->keywords
-                        ]);
-                    }
-                    $tasksameTitle->delete();
-                }
-                clearTasks($task->title);
+
+
             }
-            emailTasks();
-            return redirect()->back()->with('success', __('Tasks assigned successfully.'));
-        } elseif ($action == 'reassign') {
-            foreach ($tasks as $task) {
-                $taskssameTitles = Task::where('title', $task->title)->get();
-                foreach ($taskssameTitles as $tasksameTitle) {
-                    foreach ($request->employees as $employee) {
-                        History::where('employee_id', $employee)->where('task_id', $tasksameTitle->id)->delete();
-                        Task::create([
-                            'title' => $tasksameTitle->title,
-                            'employee_id' => $employee,
-                            'project_id' => $tasksameTitle->project_id,
-                            'keywords' => $tasksameTitle->keywords
-                        ]);
-                    }
-                }
-                clearTasks($task->title);
-            }
-            emailTasks();
-            return redirect()->back()->with('success', __('Tasks reassigned successfully.'));
-        } elseif ($action == 'delete') {
-            foreach ($tasks as $task) {
-                notAllowedTaskAction($task->title);
-                if ($task->status == 1) {
-                    Task::where('title', $task->title)->update(['status' => !$task->status]);
-                } else {
-                    Task::where('title', $task->title)->where('employee_id', auth()->user()->id)->update(['status' => !$task->status]);
-                }
-                taskLog("Delete", $task->title);
-                clearTasks($task->title);
-            }
-            emailTasks();
-            return redirect()->back()->with('success', __('Tasks deleted successfully.'));
-        } elseif ($action == 'filterProject') {
-            if ($request->route_name == "tasks.index") {
-                $tasks = Task::whereIn('project_id', $request->projects)->where('status', 0)->orderBy('project_id', 'desc')->get()->unique('title');
-            } elseif ($request->route_name == "tasks.finished") {
-                $tasks = Task::whereIn('project_id', $request->projects)
-                    ->orderBy('project_id', 'desc')
-                    ->latest('created_at')
-                    ->take(300)
-                    ->get()
-                    ->unique('title');
-            } else {
-                $tasks = Task::whereIn('project_id', $request->projects)->orderBy('project_id', 'desc')->take(300)->get()->unique('title');
-            }
-            $employees = Admin::orderBy('name', 'ASC')->get();
+
+            else
+            $tasks=Task::whereIn('project_id', $request->projects)->orderBy('project_id','desc')->take(300)->get()->unique('title');
+
+            $employees=Admin::orderBy('name', 'ASC')->get();
             $projects = Project::whereHas('tasks', function ($query) {
-                $query->whereNotNull('id');
+               $query->whereNotNull('id'); // Ensures tasks exist
             })->orderBy('title', 'ASC')->get();
-            $type = $request->route_name;
-            return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects', 'type'))
-                ->with('i', (request()->input('page', 1) - 1) * 5);
+            $type=$request->route_name;
+            return view('admin.crud.tasks.index', compact('tasks','employees','projects','type'))
+            ->with('i', (request()->input('page', 1) - 1) * 5);
         }
+
+
     
         return redirect()->back()->with('error', __('Invalid action selected.'));
     }
-    
     
 
     
