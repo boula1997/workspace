@@ -218,7 +218,8 @@ public function index()
         $lastTaskId = $tasks->max('id') ?? 0;
 
         // Fetch active website titles
-        $websites = Project::latest()->pluck('title');
+        $websites = Project::whereIn('id', $request->projects)->latest()->pluck('title');
+
 
         // Append active websites as new tasks with unique incremental IDs
         foreach ($websites as $key => $value) {
@@ -259,7 +260,7 @@ public function index()
         $lastTaskId = $tasks->max('id') ?? 0;
 
         // Fetch active website titles
-        $websites = Project::latest()->pluck('title');
+        $websites = Project::whereIn('id', $request->projects)->latest()->pluck('title');
 
         // Append active websites as new tasks with unique incremental IDs
         foreach ($websites as $key => $value) {
