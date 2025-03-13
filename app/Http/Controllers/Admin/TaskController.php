@@ -189,7 +189,7 @@ public function index()
             ->get()
             ->unique('title');
 
-            return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds'))
+            return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds','employeeIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         } elseif ($action == 'reassign') {
             foreach($tasks as $task) {
@@ -220,7 +220,7 @@ public function index()
             ->get()
             ->unique('title');
 
-            return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds'))
+            return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds','employeeIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         }  elseif ($action == 'delete') {
             $tasks=Task::whereIn('id', $taskIds)->get();
@@ -242,7 +242,7 @@ public function index()
             ->get()
             ->unique('title');
             
-        return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds'))
+        return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds','employeeIds'))
         ->with('i', (request()->input('page', 1) - 1) * 5);
         }else if($action=='filterProject'){
          
@@ -318,7 +318,7 @@ public function index()
                $query->whereNotNull('id'); // Ensures tasks exist
             })->orderBy('title', 'ASC')->get();
             $type=$request->route_name;
-            return view('admin.crud.tasks.index', compact('tasks','employees','projects','type','projectIds'))
+            return view('admin.crud.tasks.index', compact('tasks','employees','projects','type','projectIds','employeeIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         }
 
