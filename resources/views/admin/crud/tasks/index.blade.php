@@ -61,11 +61,7 @@
                                         <form action="{{ route('tasks.bulkAction') }}" method="POST">
                                             @csrf
                                             <div class="row d-flex align-items-center thisForm">
-                                                {{-- Load Select2 CSS and JS --}}
-                                                <link
-                                                    href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"
-                                                    rel="stylesheet" />
-                                                <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
 
                                                 {{-- Dynamic Select Input for Employees --}}
                                                 <div class="col-md-4 mb-4">
@@ -97,15 +93,7 @@
                                                     </select>
                                                 </div>
 
-                                                <script>
-                                                    $(document).ready(function() {
-                                                        $('.select2').select2({
-                                                            placeholder: "{{ __('general.select') }}", // Adds a placeholder text
-                                                            allowClear: true, // Allows users to clear selection
-                                                            width: '100%', // Ensures full width for better UI
-                                                        });
-                                                    });
-                                                </script>
+
 
 
                                                 <input type="hidden" name="route_name"

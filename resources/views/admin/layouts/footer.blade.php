@@ -115,6 +115,17 @@ if (localStorage.getItem('darkmode') == "true" || userEmail === "nessimboula@gma
   </script>
 @endif
 
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script>
+  $(document).ready(function() {
+      $('.select2').select2({
+          placeholder: "{{ __('general.select') }}", // Adds a placeholder text
+          allowClear: true, // Allows users to clear selection
+          width: '100%', // Ensures full width for better UI
+      });
+  });
+</script>
+
 @stack('scripts')
 
 </body>
