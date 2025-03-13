@@ -182,7 +182,7 @@ public function index()
             }
             emailTasks();
 
-            $tasks = Task::where('status',1)->whereIn('project_id', $projectIds)
+            $tasks = Task::where('status',0)->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
             ->latest('created_at') // Ensure latest tasks by creation date
             ->take(300) // Limit the results to 300
@@ -286,7 +286,7 @@ public function index()
 
             else{
 
-                $tasks=Task::whereIn('project_id', $projectIds)->orderBy('project_id','desc')->take(300)->get()->unique('title');
+                $tasks=Task::where('status',0)->whereIn('project_id', $projectIds)->orderBy('project_id','desc')->take(300)->get()->unique('title');
 
                         // Find the last task ID
                         $lastTaskId = $tasks->max('id') ?? 0;
