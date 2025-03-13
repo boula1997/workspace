@@ -720,43 +720,42 @@
                     window.matchMedia("(max-width: 768px)").matches;
             }
 
-            $(function () {
-    var table = $("#example1").DataTable({
-        "responsive": true,
-        "lengthChange": false,
-        "autoWidth": false,
-        "paging": false,
-        "searching": true,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-        "rowReorder": {
-            selector: "td:first-child"
-        },
-        "order": [], // Disable default ordering
-        "createdRow": function (row, data, dataIndex) {
-            var title = $(row).find("td:nth-child(2)").text().trim(); // Adjust column index if needed
-            if (title.startsWith("Doing some task") || title.startsWith("Updating tasks")) {
-                $(row).addClass("priority-row"); // Add a class for easier sorting
-            }
-        }
-    });
+            $(function() {
+                var table = $("#example1").DataTable({
+                    "responsive": true,
+                    "lengthChange": false,
+                    "autoWidth": false,
+                    "paging": false,
+                    "searching": true,
+                    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                    "rowReorder": {
+                        selector: "td:first-child"
+                    },
+                    "order": [
+                        [0, "desc"]
+                    ], // Default ordering by ID
+                    "columnDefs": [{
+                        "targets": 1, // Assuming title is the second column
+                        "orderable": true,
+                        "type": "custom-title-sort"
+                    }]
+                });
 
-    table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+                table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-    // Custom sorting: move "Doing some task" rows to the top
-    moveCustomRowsToTop(table);
-});
+                // Custom sorting function
+                $.fn.dataTable.ext.type.order['custom-title-sort-pre'] = function(data) {
+                    if (data.startsWith("Doing some task") || data.startsWith("Updating tasks")) {
+                        return "AAA" + data; // Forces it to be at the top
+                    }
+                    return "ZZZ" + data; // Push others lower
+                };
 
-function moveCustomRowsToTop(table) {
-    table.order([1, "desc"]).draw(); // Sort by title descending
-    table.rows().every(function () {
-        var row = this.node();
-        var title = $(row).find("td:nth-child(2)").text().trim();
+                table.order([
+                    [1, "asc"]
+                ]).draw(); // Reapply sorting
+            });
 
-        if (title.startsWith("Doing some task") || title.startsWith("Updating tasks")) {
-            $(row).prependTo("#example1 tbody");
-        }
-    });
-}
 
 
 
