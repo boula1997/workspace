@@ -143,13 +143,13 @@ public function index()
 
         $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('status','>',0)->latest()->get();
-        $projectIds=$request->projects;
+        $projectIds=isset($request->projects)?$request->projects:[];
 
          
         if(!isset($request->employees)&& $action == 'assign')
         return redirect()->back()->with('error', __('Select Employee!'));
 
-        if(!isset($request->projects)&& $action == 'filterProject')
+        if(!isset($projectIds)&& $action == 'filterProject')
         return redirect()->back()->with('error', __('Select Project!'));
          if(isset($taskIds)){
              $task=Task::whereIn('id', $taskIds)->first();
@@ -178,7 +178,7 @@ public function index()
             }
             emailTasks();
 
-            $tasks = Task::where('status',1)->whereIn('project_id', $request->projects)
+            $tasks = Task::where('status',1)->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
             ->latest('created_at') // Ensure latest tasks by creation date
             ->take(300) // Limit the results to 300
@@ -209,7 +209,7 @@ public function index()
             }
             emailTasks();
 
-            $tasks = Task::where('status',0)->whereIn('project_id', $request->projects)
+            $tasks = Task::where('status',0)->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
             ->latest('created_at') // Ensure latest tasks by creation date
             ->take(300) // Limit the results to 300
@@ -231,7 +231,7 @@ public function index()
             }; 
             emailTasks();
 
-            $tasks = Task::where('status',0)->whereIn('project_id', $request->projects)
+            $tasks = Task::where('status',0)->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
             ->latest('created_at') // Ensure latest tasks by creation date
             ->take(300) // Limit the results to 300
@@ -243,13 +243,13 @@ public function index()
         }else if($action=='filterProject'){
          
             if($request->route_name=="tasks.index"){
-                $tasks=Task::whereIn('project_id', $request->projects)->where('status',0)->orderBy('project_id','desc')->get()->unique('title');
+                $tasks=Task::whereIn('project_id', $projectIds)->where('status',0)->orderBy('project_id','desc')->get()->unique('title');
 
                                         // Find the last task ID
         $lastTaskId = $tasks->max('id') ?? 0;
 
         // Fetch active website titles
-        $websites = Project::whereIn('id', $request->projects)->latest()->pluck('title');
+        $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
 
 
         // Append active websites as new tasks with unique incremental IDs
@@ -272,7 +272,7 @@ public function index()
 
             }
             else if($request->route_name=="tasks.finished"){
-                $tasks = Task::where('status',1)->whereIn('project_id', $request->projects)
+                $tasks = Task::where('status',1)->whereIn('project_id', $projectIds)
                 ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
                 ->take(300) // Limit the results to 300
@@ -282,13 +282,13 @@ public function index()
 
             else{
 
-                $tasks=Task::whereIn('project_id', $request->projects)->orderBy('project_id','desc')->take(300)->get()->unique('title');
+                $tasks=Task::whereIn('project_id', $projectIds)->orderBy('project_id','desc')->take(300)->get()->unique('title');
 
                         // Find the last task ID
                         $lastTaskId = $tasks->max('id') ?? 0;
 
                         // Fetch active website titles
-                        $websites = Project::whereIn('id', $request->projects)->latest()->pluck('title');
+                        $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
 
                         // Append active websites as new tasks with unique incremental IDs
                         foreach ($websites as $key => $value) {
