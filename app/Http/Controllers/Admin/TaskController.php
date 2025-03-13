@@ -211,17 +211,10 @@ public function index()
             return redirect()->back()->with('success', __('Tasks deleted successfully.'));
         }else if($action=='filterProject'){
          
-            if($request->route_name=="tasks.index")
-            $tasks=Task::whereIn('project_id', $request->projects)->where('status',0)->orderBy('project_id','desc')->get()->unique('title');
-            else if($request->route_name=="tasks.finished"){
-                $tasks = Task::whereIn('project_id', $request->projects)
-                ->orderBy('project_id', 'desc')
-                ->latest('created_at') // Ensure latest tasks by creation date
-                ->take(300) // Limit the results to 300
-                ->get()
-                ->unique('title');
+            if($request->route_name=="tasks.index"){
+                $tasks=Task::whereIn('project_id', $request->projects)->where('status',0)->orderBy('project_id','desc')->get()->unique('title');
 
-                        // Find the last task ID
+                                        // Find the last task ID
         $lastTaskId = $tasks->max('id') ?? 0;
 
         // Fetch active website titles
@@ -244,6 +237,16 @@ public function index()
                 'updated_at' => null
             ]);
         }
+
+            }
+            else if($request->route_name=="tasks.finished"){
+                $tasks = Task::whereIn('project_id', $request->projects)
+                ->orderBy('project_id', 'desc')
+                ->latest('created_at') // Ensure latest tasks by creation date
+                ->take(300) // Limit the results to 300
+                ->get()
+                ->unique('title');
+
 
 
             }
