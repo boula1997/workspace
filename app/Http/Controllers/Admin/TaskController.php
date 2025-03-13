@@ -142,7 +142,7 @@ public function index()
         $action = $request->input('action');
         $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('appearance',1)->latest()->get();
-        loadActiveProjects(isset($request->projects)?$request->projects:[]);
+        // loadActiveProjects(isset($request->projects)?$request->projects:[]);
         $projectIds=activeWebsitesIds();
         $employeeIds=isset($request->employees)?$request->employees:[];
 
