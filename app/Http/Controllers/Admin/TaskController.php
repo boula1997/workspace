@@ -51,7 +51,6 @@ public function index()
         $allEmployees=Admin::orderBy('name', 'ASC')->pluck('id');
         $projects=Project::where('status','>',0)->latest()->get();
         $allProjectIds=Project::where('status','>',0)->latest()->pluck('id');
-        loadActiveProjects(isset($request->projects)?$request->projects:[]);
         $projectIds=activeWebsitesIds();
         $employeeIds=isset($request->employees)?$request->employees:[];
 
