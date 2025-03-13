@@ -47,10 +47,12 @@ class TaskController extends Controller
 public function index()
 {
     try {
-        $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::whereHas('tasks', function ($query) {
-            $query->whereNotNull('id'); // Ensures tasks exist
-        })->orderBy('title', 'ASC')->get();
+        $employees=Admin::orderBy('name', 'ASC')->get();
+        $allEmployees=Admin::orderBy('name', 'ASC')->pluck('id');
+        $projects=Project::where('status','>',0)->latest()->get();
+        $allProjectIds=Project::where('status','>',0)->latest()->pluck('id');
+        $projectIds=isset($request->projects)?$request->projects:[];
+        $employeeIds=isset($request->employees)?$request->employees:[];
 
         // Determine status based on route
         if (request()->routeIs('tasks.finished')) {
@@ -107,7 +109,7 @@ public function index()
             ]);
         }
 
-        return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects'))
+        return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds','employeeIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
     } catch (Exception $e) {
         dd($e->getMessage());
