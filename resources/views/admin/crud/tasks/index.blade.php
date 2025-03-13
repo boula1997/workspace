@@ -720,35 +720,58 @@
                     window.matchMedia("(max-width: 768px)").matches;
             }
 
-            $(function() {
-                var tableConfig = {
-                    "responsive": true,
-                    "lengthChange": false,
-                    "autoWidth": false,
-                    "paging": false,
-                    "searching": true,
-                    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                    "rowReorder": {
-                        selector: "td:first-child" // Drag by first column
-                    }
-                };
+            $(function () {
+    var tableConfig = {
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "paging": false,
+        "searching": true,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+        "rowReorder": {
+            selector: "td:first-child" // Drag by first column
+        }
+    };
 
-                if (isMobileDevice()) {
-                    tableConfig.columnDefs = [{
-                            targets: [2, 3, 4, 5, 6], // Hide these columns on mobile
-                            responsivePriority: 1,
-                            visible: false
-                        },
-                        {
-                            targets: [0, 1], // Always visible columns
-                            responsivePriority: 1
-                        }
-                    ];
-                }
+    if (isMobileDevice()) {
+        tableConfig.columnDefs = [
+            {
+                targets: [2, 3, 4, 5, 6], // Hide these columns on mobile
+                responsivePriority: 1,
+                visible: false
+            },
+            {
+                targets: [0, 1], // Always visible columns
+                responsivePriority: 1
+            }
+        ];
+    }
 
-                var table = $("#example1").DataTable(tableConfig);
-                table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            });
+    var table = $("#example1").DataTable(tableConfig);
+    table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+    // Move "Doing some task or updating tasks" rows to the top
+    moveCustomRowsToTop(table);
+});
+
+function moveCustomRowsToTop(table) {
+    var rowsToMove = [];
+
+    table.rows().every(function () {
+        var row = this.node();
+        var title = $(row).find("td:nth-child(2)").text().trim(); // Adjust column index if needed
+
+        if (title.startsWith("Doing some task") || title.startsWith("Updating tasks")) {
+            rowsToMove.push(row);
+        }
+    });
+
+    if (rowsToMove.length > 0) {
+        // Detach and prepend the selected rows
+        $(rowsToMove).detach().prependTo("#example1 tbody");
+    }
+}
+
 
 
             function toggleCheckbox(taskId) {
