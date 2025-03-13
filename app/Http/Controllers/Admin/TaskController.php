@@ -186,7 +186,7 @@ $tasks = $newTasks->merge($tasks);
             $tasks = Task::where('status', 0)
             ->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
-            ->latest('created_at') // Ensure latest tasks by creation date
+            ->orderBy('id', 'desc') // Ensure latest tasks by creation date
             ->take(300) // Limit the results to 300
             ->get()
             ->unique('title');
@@ -245,7 +245,7 @@ $tasks = $newTasks->merge($tasks);
 
             $tasks = Task::where('status',0)->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
-            ->latest('created_at') // Ensure latest tasks by creation date
+            ->orderBy('id', 'desc') // Ensure latest tasks by creation date
             ->take(300) // Limit the results to 300
             ->get()
             ->unique('title');
@@ -295,7 +295,7 @@ $tasks = $newTasks->merge($tasks);
 
             $tasks = Task::where('status',0)->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
-            ->latest('created_at') // Ensure latest tasks by creation date
+            ->orderBy('id', 'desc') // Ensure latest tasks by creation date
             ->take(300) // Limit the results to 300
             ->get()
             ->unique('title');
@@ -339,7 +339,7 @@ $tasks = $newTasks->merge($tasks);
             else if($request->route_name=="tasks.finished"){
                 $tasks = Task::where('status',1)->whereIn('project_id', $projectIds)
                 ->orderBy('project_id', 'desc')
-                ->latest('created_at') // Ensure latest tasks by creation date
+                ->orderBy('id', 'desc') // Ensure latest tasks by creation date
                 ->take(300) // Limit the results to 300
                 ->get()
                 ->unique('title');
@@ -347,7 +347,7 @@ $tasks = $newTasks->merge($tasks);
 
             else{
 
-                $tasks=Task::where('status',0)->whereIn('project_id', $projectIds)->orderBy('project_id','desc') ->orderBy('id', 'desc')->take(300)->get()->unique('title');
+                $tasks=Task::where('status',0)->whereIn('project_id', $projectIds)->orderBy('project_id','desc')->orderBy('id', 'desc')->take(300)->get()->unique('title');
             }
 
             $employees=Admin::orderBy('name', 'ASC')->get();
