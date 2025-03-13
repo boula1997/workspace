@@ -186,7 +186,7 @@ $tasks = $newTasks->merge($tasks);
             $tasks = Task::where('status', 0)
             ->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
-            ->orderBy('id', 'desc') // Ensure latest tasks by creation date
+            ->orderBy('id', 'asc') // Ensure latest tasks by creation date
             ->take(300) // Limit the results to 300
             ->get()
             ->unique('title');
@@ -245,7 +245,7 @@ $tasks = $newTasks->merge($tasks);
 
             $tasks = Task::where('status',0)->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
-            ->orderBy('id', 'desc') // Ensure latest tasks by creation date
+            ->orderBy('id', 'asc') // Ensure latest tasks by creation date
             ->take(300) // Limit the results to 300
             ->get()
             ->unique('title');
@@ -295,7 +295,7 @@ $tasks = $newTasks->merge($tasks);
 
             $tasks = Task::where('status',0)->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
-            ->orderBy('id', 'desc') // Ensure latest tasks by creation date
+            ->orderBy('id', 'asc') // Ensure latest tasks by creation date
             ->take(300) // Limit the results to 300
             ->get()
             ->unique('title');
@@ -333,13 +333,13 @@ $tasks = $newTasks->merge($tasks);
         }else if($action=='filterProject'){
          
             if($request->route_name=="tasks.index"){
-                $tasks=Task::whereIn('project_id', $projectIds)->where('status',0)->orderBy('project_id','desc') ->orderBy('id', 'desc')->get()->unique('title');
+                $tasks=Task::whereIn('project_id', $projectIds)->where('status',0)->orderBy('project_id','desc') ->orderBy('id', 'asc')->get()->unique('title');
 
             }
             else if($request->route_name=="tasks.finished"){
                 $tasks = Task::where('status',1)->whereIn('project_id', $projectIds)
                 ->orderBy('project_id', 'desc')
-                ->orderBy('id', 'desc') // Ensure latest tasks by creation date
+                ->orderBy('id', 'asc') // Ensure latest tasks by creation date
                 ->take(300) // Limit the results to 300
                 ->get()
                 ->unique('title');
@@ -347,7 +347,7 @@ $tasks = $newTasks->merge($tasks);
 
             else{
 
-                $tasks=Task::where('status',0)->whereIn('project_id', $projectIds)->orderBy('project_id','desc')->orderBy('id', 'desc')->take(300)->get()->unique('title');
+                $tasks=Task::where('status',0)->whereIn('project_id', $projectIds)->orderBy('project_id','desc')->orderBy('id', 'asc')->take(300)->get()->unique('title');
             }
 
             $employees=Admin::orderBy('name', 'ASC')->get();
