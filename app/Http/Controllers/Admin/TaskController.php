@@ -251,8 +251,34 @@ public function index()
 
             }
 
-            else
-            $tasks=Task::whereIn('project_id', $request->projects)->orderBy('project_id','desc')->take(300)->get()->unique('title');
+            else{
+
+                $tasks=Task::whereIn('project_id', $request->projects)->orderBy('project_id','desc')->take(300)->get()->unique('title');
+
+                        // Find the last task ID
+        $lastTaskId = $tasks->max('id') ?? 0;
+
+        // Fetch active website titles
+        $websites = Project::latest()->pluck('title');
+
+        // Append active websites as new tasks with unique incremental IDs
+        foreach ($websites as $key => $value) {
+            $lastTaskId++; // Increment ID for each new website task
+            $tasks->push((object) [
+                'id' => $lastTaskId,
+                'title' =>'Doing some task or updating tasks for '.$value,
+                'keywords' => null,
+                'status' => 0,
+                'employee_id' => 1,
+                'project_id' => 3,
+                'counter' => 20,
+                'level' => 0,
+                'piority' => 0,
+                'created_at' => null,
+                'updated_at' => null
+            ]);
+        }
+            }
 
             $employees=Admin::orderBy('name', 'ASC')->get();
             $projects = Project::whereHas('tasks', function ($query) {
