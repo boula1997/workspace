@@ -141,6 +141,9 @@ public function index()
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
 
+        $employees=Admin::orderBy('name', 'ASC')->get();
+        $projects=Project::where('status','>',0)->latest()->get();
+
          
         if(!isset($request->employees)&& $action == 'assign')
         return redirect()->back()->with('error', __('Select Employee!'));
