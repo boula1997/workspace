@@ -189,6 +189,30 @@ public function index()
             ->get()
             ->unique('title');
 
+            // Find the last task ID
+            $lastTaskId = $tasks->max('id') ?? 0;
+
+            // Fetch active website titles
+            $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
+
+            // Append active websites as new tasks with unique incremental IDs
+            foreach ($websites as $key => $value) {
+                $lastTaskId++; // Increment ID for each new website task
+                $tasks->push((object) [
+                    'id' => $lastTaskId,
+                    'title' =>'Doing some task or updating tasks for '.$value,
+                    'keywords' => null,
+                    'status' => 0,
+                    'employee_id' => 1,
+                    'project_id' => 3,
+                    'counter' => 20,
+                    'level' => 0,
+                    'piority' => 0,
+                    'created_at' => null,
+                    'updated_at' => null
+                ]);
+}
+
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds','employeeIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         } elseif ($action == 'reassign') {
@@ -220,6 +244,30 @@ public function index()
             ->get()
             ->unique('title');
 
+                        // Find the last task ID
+                        $lastTaskId = $tasks->max('id') ?? 0;
+
+                        // Fetch active website titles
+                        $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
+            
+                        // Append active websites as new tasks with unique incremental IDs
+                        foreach ($websites as $key => $value) {
+                            $lastTaskId++; // Increment ID for each new website task
+                            $tasks->push((object) [
+                                'id' => $lastTaskId,
+                                'title' =>'Doing some task or updating tasks for '.$value,
+                                'keywords' => null,
+                                'status' => 0,
+                                'employee_id' => 1,
+                                'project_id' => 3,
+                                'counter' => 20,
+                                'level' => 0,
+                                'piority' => 0,
+                                'created_at' => null,
+                                'updated_at' => null
+                            ]);
+            }
+
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds','employeeIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         }  elseif ($action == 'delete') {
@@ -241,59 +289,13 @@ public function index()
             ->take(300) // Limit the results to 300
             ->get()
             ->unique('title');
-            
-        return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds','employeeIds'))
-        ->with('i', (request()->input('page', 1) - 1) * 5);
-        }else if($action=='filterProject'){
-         
-            if($request->route_name=="tasks.index"){
-                $tasks=Task::whereIn('project_id', $projectIds)->where('status',0)->orderBy('project_id','desc')->get()->unique('title');
-
-                                        // Find the last task ID
-        $lastTaskId = $tasks->max('id') ?? 0;
-
-        // Fetch active website titles
-        $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
-
-
-        // Append active websites as new tasks with unique incremental IDs
-        foreach ($websites as $key => $value) {
-            $lastTaskId++; // Increment ID for each new website task
-            $tasks->push((object) [
-                'id' => $lastTaskId,
-                'title' =>'Doing some task or updating tasks for '.$value,
-                'keywords' => null,
-                'status' => 0,
-                'employee_id' => 1,
-                'project_id' => 3,
-                'counter' => 20,
-                'level' => 0,
-                'piority' => 0,
-                'created_at' => null,
-                'updated_at' => null
-            ]);
-        }
-
-            }
-            else if($request->route_name=="tasks.finished"){
-                $tasks = Task::where('status',1)->whereIn('project_id', $projectIds)
-                ->orderBy('project_id', 'desc')
-                ->latest('created_at') // Ensure latest tasks by creation date
-                ->take(300) // Limit the results to 300
-                ->get()
-                ->unique('title');
-            }
-
-            else{
-
-                $tasks=Task::where('status',0)->whereIn('project_id', $projectIds)->orderBy('project_id','desc')->take(300)->get()->unique('title');
 
                         // Find the last task ID
                         $lastTaskId = $tasks->max('id') ?? 0;
 
                         // Fetch active website titles
                         $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
-
+            
                         // Append active websites as new tasks with unique incremental IDs
                         foreach ($websites as $key => $value) {
                             $lastTaskId++; // Increment ID for each new website task
@@ -310,7 +312,28 @@ public function index()
                                 'created_at' => null,
                                 'updated_at' => null
                             ]);
-        }
+            }
+            
+        return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds','employeeIds'))
+        ->with('i', (request()->input('page', 1) - 1) * 5);
+        }else if($action=='filterProject'){
+         
+            if($request->route_name=="tasks.index"){
+                $tasks=Task::whereIn('project_id', $projectIds)->where('status',0)->orderBy('project_id','desc')->get()->unique('title');
+
+            }
+            else if($request->route_name=="tasks.finished"){
+                $tasks = Task::where('status',1)->whereIn('project_id', $projectIds)
+                ->orderBy('project_id', 'desc')
+                ->latest('created_at') // Ensure latest tasks by creation date
+                ->take(300) // Limit the results to 300
+                ->get()
+                ->unique('title');
+            }
+
+            else{
+
+                $tasks=Task::where('status',0)->whereIn('project_id', $projectIds)->orderBy('project_id','desc')->take(300)->get()->unique('title');
             }
 
             $employees=Admin::orderBy('name', 'ASC')->get();
@@ -318,6 +341,30 @@ public function index()
                $query->whereNotNull('id'); // Ensures tasks exist
             })->orderBy('title', 'ASC')->get();
             $type=$request->route_name;
+
+                        // Find the last task ID
+                        $lastTaskId = $tasks->max('id') ?? 0;
+
+                        // Fetch active website titles
+                        $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
+            
+                        // Append active websites as new tasks with unique incremental IDs
+                        foreach ($websites as $key => $value) {
+                            $lastTaskId++; // Increment ID for each new website task
+                            $tasks->push((object) [
+                                'id' => $lastTaskId,
+                                'title' =>'Doing some task or updating tasks for '.$value,
+                                'keywords' => null,
+                                'status' => 0,
+                                'employee_id' => 1,
+                                'project_id' => 3,
+                                'counter' => 20,
+                                'level' => 0,
+                                'piority' => 0,
+                                'created_at' => null,
+                                'updated_at' => null
+                            ]);
+            }
             return view('admin.crud.tasks.index', compact('tasks','employees','projects','type','projectIds','employeeIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         }
