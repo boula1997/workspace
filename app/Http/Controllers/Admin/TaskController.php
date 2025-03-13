@@ -48,9 +48,7 @@ public function index()
 {
     try {
         $employees=Admin::orderBy('name', 'ASC')->get();
-        $allEmployees=Admin::orderBy('name', 'ASC')->pluck('id');
-        $projects=Project::where('status','>',0)->latest()->get();
-        $allProjectIds=Project::where('status','>',0)->latest()->pluck('id');
+        $projects=Project::where('appearance',1)->latest()->get();
         $projectIds=activeWebsitesIds();
         $employeeIds=isset($request->employees)?$request->employees:[];
 
@@ -127,7 +125,7 @@ public function index()
     public function create()
     {
         $employees=Admin::orderBy('name', 'ASC')->get();
-        $projects=Project::where('status','>',0)->latest()->get();
+        $projects=Project::where('appearance',1)->latest()->get();
         return view('admin.crud.tasks.create',compact('employees','projects'));
     }
 
@@ -143,7 +141,7 @@ public function index()
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
         $employees=Admin::orderBy('name', 'ASC')->get();
-        $projects=Project::where('status','>',0)->latest()->get();
+        $projects=Project::where('appearance',1)->latest()->get();
         loadActiveProjects(isset($request->projects)?$request->projects:[]);
         $projectIds=activeWebsitesIds();
         $employeeIds=isset($request->employees)?$request->employees:[];
@@ -490,7 +488,7 @@ public function index()
     {
         //    dd($task->title);
         $employees=Admin::orderBy('name', 'ASC')->get();
-        $projects=Project::where('status','>',0)->get();
+        $projects=Project::where('appearance',1)->get();
         $selectedEmployees=Task::where('title',$task->title)->pluck('employee_id')->toArray();
         return view('admin.crud.tasks.edit', compact('task','employees','projects','selectedEmployees'));
     }
