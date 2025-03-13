@@ -141,8 +141,11 @@ public function index()
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
         $employees=Admin::orderBy('name', 'ASC')->get();
+        $allEmployees=Admin::orderBy('name', 'ASC')->pluck('id');
         $projects=Project::where('status','>',0)->latest()->get();
-        $projectIds=isset($request->projects)?$request->projects:[];
+        $allProjectIds=Project::where('status','>',0)->latest()->pluck('id');
+        $projectIds=isset($request->projects)?$request->projects:$allProjectIds;
+        $employeeIds=isset($request->employees)?$request->employees:$allEmployees;
 
          
         if(!isset($request->employees)&& $action == 'assign')
