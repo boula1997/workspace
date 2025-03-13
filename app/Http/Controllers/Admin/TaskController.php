@@ -173,7 +173,9 @@ public function index()
              clearTasks($task->title);
             }
             emailTasks();
-            return redirect()->back()->with('success', __('Tasks assigned successfully.'));
+
+            return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects'))
+            ->with('i', (request()->input('page', 1) - 1) * 5);
         } elseif ($action == 'reassign') {
             foreach($tasks as $task) {
                 $taskssameTitles=Task::where('title', $task->title)->get();
@@ -195,7 +197,9 @@ public function index()
              clearTasks($task->title);
             }
             emailTasks();
-            return redirect()->back()->with('success', __('Tasks assigned successfully.'));
+
+            return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects'))
+            ->with('i', (request()->input('page', 1) - 1) * 5);
         }  elseif ($action == 'delete') {
             $tasks=Task::whereIn('id', $taskIds)->get();
             foreach($tasks as $task) {
@@ -208,7 +212,9 @@ public function index()
                 clearTasks($task->title);
             }; 
             emailTasks();
-            return redirect()->back()->with('success', __('Tasks deleted successfully.'));
+            
+        return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects'))
+        ->with('i', (request()->input('page', 1) - 1) * 5);
         }else if($action=='filterProject'){
          
             if($request->route_name=="tasks.index"){
