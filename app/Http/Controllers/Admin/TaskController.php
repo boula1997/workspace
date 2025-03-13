@@ -83,33 +83,29 @@ public function index()
                 ->unique('title');
         }
 
-// Find the last task ID
-$lastTaskId = $tasks->max('id') ?? 0;
+        // Find the last task ID
+        $lastTaskId = $tasks->max('id') ?? 0;
 
-// Fetch active website titles
-$websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
+        // Fetch active website titles
+        $websites = Project::latest()->pluck('title');
 
-// Create new task objects and prepend them to the tasks collection
-$newTasks = collect();
-foreach ($websites as $key => $value) {
-    $lastTaskId++; // Increment ID for each new website task
-    $newTasks->push((object) [
-        'id' => $lastTaskId,
-        'title' => 'Doing some task or updating tasks for ' . $value,
-        'keywords' => null,
-        'status' => 0,
-        'employee_id' => 1,
-        'project_id' => 3,
-        'counter' => 20,
-        'level' => 0,
-        'piority' => 0,
-        'created_at' => null,
-        'updated_at' => null
-    ]);
-}
-
-// Merge new tasks at the beginning
-$tasks = $newTasks->merge($tasks);
+        // Append active websites as new tasks with unique incremental IDs
+        foreach ($websites as $key => $value) {
+            $lastTaskId++; // Increment ID for each new website task
+            $tasks->push((object) [
+                'id' => $lastTaskId,
+                'title' =>'Doing some task or updating tasks for '.$value,
+                'keywords' => null,
+                'status' => 0,
+                'employee_id' => 1,
+                'project_id' => 3,
+                'counter' => 20,
+                'level' => 0,
+                'piority' => 0,
+                'created_at' => null,
+                'updated_at' => null
+            ]);
+        }
 
         return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds','employeeIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
@@ -183,41 +179,36 @@ $tasks = $newTasks->merge($tasks);
             }
             emailTasks();
 
-            $tasks = Task::where('status', 0)
-            ->whereIn('project_id', $projectIds)
+            $tasks = Task::where('status',0)->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
-            ->orderBy('id', 'asc') // Ensure latest tasks by creation date
+            ->latest('created_at') // Ensure latest tasks by creation date
             ->take(300) // Limit the results to 300
             ->get()
             ->unique('title');
-        
-        // Find the last task ID
-        $lastTaskId = $tasks->max('id') ?? 0;
-        
-        // Fetch active website titles
-        $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
-        
-        // Create new task objects and prepend them to the tasks collection
-        $newTasks = collect();
-        foreach ($websites as $key => $value) {
-            $lastTaskId++; // Increment ID for each new website task
-            $newTasks->push((object) [
-                'id' => $lastTaskId,
-                'title' => 'Doing some task or updating tasks for ' . $value,
-                'keywords' => null,
-                'status' => 0,
-                'employee_id' => 1,
-                'project_id' => 3,
-                'counter' => 20,
-                'level' => 0,
-                'piority' => 0,
-                'created_at' => null,
-                'updated_at' => null
-            ]);
-        }
-        
-        // Merge new tasks at the beginning
-        $tasks = $newTasks->merge($tasks);
+
+            // Find the last task ID
+            $lastTaskId = $tasks->max('id') ?? 0;
+
+            // Fetch active website titles
+            $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
+
+            // Append active websites as new tasks with unique incremental IDs
+            foreach ($websites as $key => $value) {
+                $lastTaskId++; // Increment ID for each new website task
+                $tasks->push((object) [
+                    'id' => $lastTaskId,
+                    'title' =>'Doing some task or updating tasks for '.$value,
+                    'keywords' => null,
+                    'status' => 0,
+                    'employee_id' => 1,
+                    'project_id' => 3,
+                    'counter' => 20,
+                    'level' => 0,
+                    'piority' => 0,
+                    'created_at' => null,
+                    'updated_at' => null
+                ]);
+}
 
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds','employeeIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
@@ -245,38 +236,34 @@ $tasks = $newTasks->merge($tasks);
 
             $tasks = Task::where('status',0)->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
-            ->orderBy('id', 'asc') // Ensure latest tasks by creation date
+            ->latest('created_at') // Ensure latest tasks by creation date
             ->take(300) // Limit the results to 300
             ->get()
             ->unique('title');
 
-  // Find the last task ID
-$lastTaskId = $tasks->max('id') ?? 0;
+                        // Find the last task ID
+                        $lastTaskId = $tasks->max('id') ?? 0;
 
-// Fetch active website titles
-$websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
-
-// Create new task objects and prepend them to the tasks collection
-$newTasks = collect();
-foreach ($websites as $key => $value) {
-    $lastTaskId++; // Increment ID for each new website task
-    $newTasks->push((object) [
-        'id' => $lastTaskId,
-        'title' => 'Doing some task or updating tasks for ' . $value,
-        'keywords' => null,
-        'status' => 0,
-        'employee_id' => 1,
-        'project_id' => 3,
-        'counter' => 20,
-        'level' => 0,
-        'piority' => 0,
-        'created_at' => null,
-        'updated_at' => null
-    ]);
-}
-
-// Merge new tasks at the beginning
-$tasks = $newTasks->merge($tasks);
+                        // Fetch active website titles
+                        $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
+            
+                        // Append active websites as new tasks with unique incremental IDs
+                        foreach ($websites as $key => $value) {
+                            $lastTaskId++; // Increment ID for each new website task
+                            $tasks->push((object) [
+                                'id' => $lastTaskId,
+                                'title' =>'Doing some task or updating tasks for '.$value,
+                                'keywords' => null,
+                                'status' => 0,
+                                'employee_id' => 1,
+                                'project_id' => 3,
+                                'counter' => 20,
+                                'level' => 0,
+                                'piority' => 0,
+                                'created_at' => null,
+                                'updated_at' => null
+                            ]);
+            }
 
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds','employeeIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
@@ -295,51 +282,47 @@ $tasks = $newTasks->merge($tasks);
 
             $tasks = Task::where('status',0)->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
-            ->orderBy('id', 'asc') // Ensure latest tasks by creation date
+            ->latest('created_at') // Ensure latest tasks by creation date
             ->take(300) // Limit the results to 300
             ->get()
             ->unique('title');
 
-// Find the last task ID
-$lastTaskId = $tasks->max('id') ?? 0;
+                        // Find the last task ID
+                        $lastTaskId = $tasks->max('id') ?? 0;
 
-// Fetch active website titles
-$websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
-
-// Create new task objects and prepend them to the tasks collection
-$newTasks = collect();
-foreach ($websites as $key => $value) {
-    $lastTaskId++; // Increment ID for each new website task
-    $newTasks->push((object) [
-        'id' => $lastTaskId,
-        'title' => 'Doing some task or updating tasks for ' . $value,
-        'keywords' => null,
-        'status' => 0,
-        'employee_id' => 1,
-        'project_id' => 3,
-        'counter' => 20,
-        'level' => 0,
-        'piority' => 0,
-        'created_at' => null,
-        'updated_at' => null
-    ]);
-}
-
-// Merge new tasks at the beginning
-$tasks = $newTasks->merge($tasks);
+                        // Fetch active website titles
+                        $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
+            
+                        // Append active websites as new tasks with unique incremental IDs
+                        foreach ($websites as $key => $value) {
+                            $lastTaskId++; // Increment ID for each new website task
+                            $tasks->push((object) [
+                                'id' => $lastTaskId,
+                                'title' =>'Doing some task or updating tasks for '.$value,
+                                'keywords' => null,
+                                'status' => 0,
+                                'employee_id' => 1,
+                                'project_id' => 3,
+                                'counter' => 20,
+                                'level' => 0,
+                                'piority' => 0,
+                                'created_at' => null,
+                                'updated_at' => null
+                            ]);
+            }
             
         return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds','employeeIds'))
         ->with('i', (request()->input('page', 1) - 1) * 5);
         }else if($action=='filterProject'){
          
             if($request->route_name=="tasks.index"){
-                $tasks=Task::whereIn('project_id', $projectIds)->where('status',0)->orderBy('project_id','desc') ->orderBy('id', 'asc')->get()->unique('title');
+                $tasks=Task::whereIn('project_id', $projectIds)->where('status',0)->orderBy('project_id','desc')->get()->unique('title');
 
             }
             else if($request->route_name=="tasks.finished"){
                 $tasks = Task::where('status',1)->whereIn('project_id', $projectIds)
                 ->orderBy('project_id', 'desc')
-                ->orderBy('id', 'asc') // Ensure latest tasks by creation date
+                ->latest('created_at') // Ensure latest tasks by creation date
                 ->take(300) // Limit the results to 300
                 ->get()
                 ->unique('title');
@@ -347,7 +330,7 @@ $tasks = $newTasks->merge($tasks);
 
             else{
 
-                $tasks=Task::where('status',0)->whereIn('project_id', $projectIds)->orderBy('project_id','desc')->orderBy('id', 'asc')->take(300)->get()->unique('title');
+                $tasks=Task::where('status',0)->whereIn('project_id', $projectIds)->orderBy('project_id','desc')->take(300)->get()->unique('title');
             }
 
             $employees=Admin::orderBy('name', 'ASC')->get();
@@ -356,33 +339,29 @@ $tasks = $newTasks->merge($tasks);
             })->orderBy('title', 'ASC')->get();
             $type=$request->route_name;
 
-            // Find the last task ID
-            $lastTaskId = $tasks->max('id') ?? 0;
+                        // Find the last task ID
+                        $lastTaskId = $tasks->max('id') ?? 0;
 
-            // Fetch active website titles
-            $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
-
-            // Create new task objects and prepend them to the tasks collection
-            $newTasks = collect();
-            foreach ($websites as $key => $value) {
-                $lastTaskId++; // Increment ID for each new website task
-                $newTasks->push((object) [
-                    'id' => $lastTaskId,
-                    'title' => 'Doing some task or updating tasks for ' . $value,
-                    'keywords' => null,
-                    'status' => 0,
-                    'employee_id' => 1,
-                    'project_id' => 3,
-                    'counter' => 20,
-                    'level' => 0,
-                    'piority' => 0,
-                    'created_at' => null,
-                    'updated_at' => null
-                ]);
+                        // Fetch active website titles
+                        $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
+            
+                        // Append active websites as new tasks with unique incremental IDs
+                        foreach ($websites as $key => $value) {
+                            $lastTaskId++; // Increment ID for each new website task
+                            $tasks->push((object) [
+                                'id' => $lastTaskId,
+                                'title' =>'Doing some task or updating tasks for '.$value,
+                                'keywords' => null,
+                                'status' => 0,
+                                'employee_id' => 1,
+                                'project_id' => 3,
+                                'counter' => 20,
+                                'level' => 0,
+                                'piority' => 0,
+                                'created_at' => null,
+                                'updated_at' => null
+                            ]);
             }
-
-            // Merge new tasks at the beginning
-            $tasks = $newTasks->merge($tasks);
             return view('admin.crud.tasks.index', compact('tasks','employees','projects','type','projectIds','employeeIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         }
