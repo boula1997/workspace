@@ -51,7 +51,8 @@ public function index()
         $allEmployees=Admin::orderBy('name', 'ASC')->pluck('id');
         $projects=Project::where('status','>',0)->latest()->get();
         $allProjectIds=Project::where('status','>',0)->latest()->pluck('id');
-        $projectIds=isset($request->projects)?$request->projects:[];
+        loadActiveProjects(isset($request->projects)?$request->projects:[]);
+        $projectIds=activeWebsitesIds();
         $employeeIds=isset($request->employees)?$request->employees:[];
 
         // Determine status based on route
@@ -143,10 +144,9 @@ public function index()
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
         $employees=Admin::orderBy('name', 'ASC')->get();
-        $allEmployees=Admin::orderBy('name', 'ASC')->pluck('id');
         $projects=Project::where('status','>',0)->latest()->get();
-        $allProjectIds=Project::where('status','>',0)->latest()->pluck('id');
-        $projectIds=isset($request->projects)?$request->projects:[];
+        loadActiveProjects(isset($request->projects)?$request->projects:[]);
+        $projectIds=activeWebsitesIds();
         $employeeIds=isset($request->employees)?$request->employees:[];
 
          

@@ -447,6 +447,17 @@ if (!function_exists('contact')) {
     {
       Contact::where('type', $type)->first();
     }
+
+    
+}
+
+function loadActiveProjects($projects)
+{
+    // Deactivate all active projects
+    DB::update("UPDATE projects SET status = 0 WHERE status = 1");
+
+    // Activate the selected projects
+    Project::whereIn('id', $projects)->update(['status' => 1]);
 }
 
 // if (!function_exists('projects')) {
@@ -673,6 +684,11 @@ function getLastTwoSegments($path)
 function activeWebsites()
 {   
     $websites=Project::where('appearance',1)->where('status','!=',0)->latest()->get();
+    return $websites;
+}   
+function activeWebsitesIds()
+{   
+    $websites=Project::where('appearance',1)->where('status','!=',0)->latest()->pluck('id');
     return $websites;
 }   
 function activeWebsitesTitle()
