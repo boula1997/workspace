@@ -364,7 +364,7 @@ function getFollowupTitles($followups)
 
 
 function taskEmployees($title){
-
+dd(request()->routeIs('tasks.finished'));
     if (request()->routeIs('tasks.finished'))
     $employee_ids=Task::where('title',$title)->where('status',1)->pluck('employee_id');
     elseif(request()->routeIs('tasks.all'))
