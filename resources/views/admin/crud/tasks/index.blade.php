@@ -159,7 +159,7 @@
                                                                 {{ $task->piority ? 'Important' : 'Normal' }}</td>
                                                             <td>{{ isset($task->project->title) ? $task->project->title : 'None' }}
                                                             </td>
-                                                            <td>{{ dd(taskEmployees($task->title) )}}</td>
+                                                            <td>{{ $task->title}}</td>
 
                                                             <td>
                                                                 @if (isset($task->created_at))
