@@ -70,7 +70,7 @@
                                                         <option value="">{{ __('general.select') }}</option>
                                                         @foreach ($employees as $employee)
                                                             <option value="{{ $employee->id }}"
-                                                                {{ collect(old('employees'))->contains($employee->id) ? 'selected' : '' }}>
+                                                                {{ collect(old('employees',$employeeIds))->contains($employee->id) ? 'selected' : '' }}>
                                                                 {{ $employee->name }}</option>
                                                         @endforeach
                                                     </select>
@@ -84,7 +84,7 @@
                                                         <option value="">{{ __('general.select') }}</option>
                                                         @foreach ($projects as $project)
                                                             <option value="{{ $project->id }}"
-                                                                {{ collect(old('projects'))->contains($project->id) ? 'selected' : '' }}>
+                                                                {{ collect(old('projects',$projectIds))->contains($project->id) ? 'selected' : '' }}>
                                                                 {{ $project->title }}</option>
                                                         @endforeach
                                                     </select>

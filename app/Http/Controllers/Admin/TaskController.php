@@ -140,7 +140,6 @@ public function index()
         
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
-
         $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('status','>',0)->latest()->get();
         $projectIds=isset($request->projects)?$request->projects:[];
