@@ -143,6 +143,7 @@ public function index()
 
         $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('status','>',0)->latest()->get();
+        $projectIds=$request->projects;
 
          
         if(!isset($request->employees)&& $action == 'assign')
@@ -184,7 +185,7 @@ public function index()
             ->get()
             ->unique('title');
 
-            return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects'))
+            return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         } elseif ($action == 'reassign') {
             foreach($tasks as $task) {
@@ -215,7 +216,7 @@ public function index()
             ->get()
             ->unique('title');
 
-            return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects'))
+            return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         }  elseif ($action == 'delete') {
             $tasks=Task::whereIn('id', $taskIds)->get();
@@ -237,7 +238,7 @@ public function index()
             ->get()
             ->unique('title');
             
-        return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects'))
+        return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects','projectIds'))
         ->with('i', (request()->input('page', 1) - 1) * 5);
         }else if($action=='filterProject'){
          
@@ -313,7 +314,7 @@ public function index()
                $query->whereNotNull('id'); // Ensures tasks exist
             })->orderBy('title', 'ASC')->get();
             $type=$request->route_name;
-            return view('admin.crud.tasks.index', compact('tasks','employees','projects','type'))
+            return view('admin.crud.tasks.index', compact('tasks','employees','projects','type','projectIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         }
 
