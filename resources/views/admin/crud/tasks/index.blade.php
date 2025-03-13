@@ -61,34 +61,52 @@
                                         <form action="{{ route('tasks.bulkAction') }}" method="POST">
                                             @csrf
                                             <div class="row d-flex align-items-center thisForm">
-                                                {{-- Dynamic Select Input --}}
+                                                {{-- Load Select2 CSS and JS --}}
+                                                <link
+                                                    href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"
+                                                    rel="stylesheet" />
+                                                <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+                                                {{-- Dynamic Select Input for Employees --}}
                                                 <div class="col-md-4 mb-4">
                                                     <label
                                                         class="col-form-label text-right">{{ __('general.employees') }}</label>
-                                                    <select class="form-control selectpicker" id="multiSelect1"
-                                                        multiple="multiple" data-live-search="true" name="employees[]">
-                                                        <option value="">{{ __('general.select') }}</option>
+                                                    <select class="form-control select2" id="multiSelectEmployees"
+                                                        multiple="multiple" name="employees[]">
                                                         @foreach ($employees as $employee)
                                                             <option value="{{ $employee->id }}"
-                                                                {{ collect(old('employees',$employeeIds))->contains($employee->id) ? 'selected' : '' }}>
-                                                                {{ $employee->name }}</option>
+                                                                {{ collect(old('employees', $employeeIds))->contains($employee->id) ? 'selected' : '' }}>
+                                                                {{ $employee->name }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                {{-- Dynamic Select Input --}}
+
+                                                {{-- Dynamic Select Input for Projects --}}
                                                 <div class="col-md-4 mb-4">
                                                     <label
                                                         class="col-form-label text-right">{{ __('general.projects') }}</label>
-                                                    <select class="form-control selectpicker" id="multiSelect1"
-                                                        multiple="multiple" data-live-search="true" name="projects[]">
-                                                        <option value="">{{ __('general.select') }}</option>
+                                                    <select class="form-control select2" id="multiSelectProjects"
+                                                        multiple="multiple" name="projects[]">
                                                         @foreach ($projects as $project)
                                                             <option value="{{ $project->id }}"
-                                                                {{ collect(old('projects',$projectIds))->contains($project->id) ? 'selected' : '' }}>
-                                                                {{ $project->title }}</option>
+                                                                {{ collect(old('projects', $projectIds))->contains($project->id) ? 'selected' : '' }}>
+                                                                {{ $project->title }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                 </div>
+
+                                                <script>
+                                                    $(document).ready(function() {
+                                                        $('.select2').select2({
+                                                            placeholder: "{{ __('general.select') }}", // Adds a placeholder text
+                                                            allowClear: true, // Allows users to clear selection
+                                                            width: '100%', // Ensures full width for better UI
+                                                        });
+                                                    });
+                                                </script>
+
 
                                                 <input type="hidden" name="route_name"
                                                     value="{{ isset($type) ? $type : Route::currentRouteName() }}">
@@ -163,28 +181,29 @@
 
                                                             <td>
                                                                 @if (isset($task->created_at))
+                                                                    <a href="{{ route('tasks.edit', $task) }}"
+                                                                        title="edit">
+                                                                        <i class="fas fa-edit  text-secondary  fa-md"></i>
+                                                                    </a>
 
-                                                                <a href="{{ route('tasks.edit', $task) }}" title="edit">
-                                                                    <i class="fas fa-edit  text-secondary  fa-md"></i>
-                                                                </a>
+                                                                    <button class="btn btn-secondary btn-sm mx-1 btn-icon"
+                                                                        data-toggle="modal" data-target="#keywordsModal"
+                                                                        data-task-id="{{ $task->id }}"
+                                                                        data-keywords="{{ $task->keywords }}"
+                                                                        data-task-title="{{ $task->title }}"
+                                                                        type="button">
+                                                                        <i class="fas fa-key fa-md"></i>
+                                                                    </button>
 
-                                                                <button class="btn btn-secondary btn-sm mx-1 btn-icon"
-                                                                    data-toggle="modal" data-target="#keywordsModal"
-                                                                    data-task-id="{{ $task->id }}"
-                                                                    data-keywords="{{ $task->keywords }}"
-                                                                    data-task-title="{{ $task->title }}" type="button">
-                                                                    <i class="fas fa-key fa-md"></i>
-                                                                </button>
-
-                                                                <button
-                                                                    class="btn sbtn-secondary btn-sm deleteTask delete-icon btn-icon"
-                                                                   type="button"
-                                                                    data-keywords="{{ $task->keywords }}"
-                                                                    title="@lang('general.delete')">
-                                                                    <i class="fas fa-trash"></i>
-                                                                </button>
+                                                                    <button
+                                                                        class="btn sbtn-secondary btn-sm deleteTask delete-icon btn-icon"
+                                                                        type="button"
+                                                                        data-keywords="{{ $task->keywords }}"
+                                                                        title="@lang('general.delete')">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
                                                                 @endif
-                                                              
+
 
                                                             </td>
                                                             <td class="d-none">
@@ -252,12 +271,12 @@
 
 
     @push('scripts')
-    <script>
-        $(document).on('click', '.deleteTask', function () {
-            // Get the closest table row to the clicked button and remove it
-            $(this).closest('tr').remove();
-        });
-    </script>
+        <script>
+            $(document).on('click', '.deleteTask', function() {
+                // Get the closest table row to the clicked button and remove it
+                $(this).closest('tr').remove();
+            });
+        </script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 document.querySelectorAll("audio, video").forEach((el) => {

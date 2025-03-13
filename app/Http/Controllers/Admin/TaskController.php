@@ -356,33 +356,33 @@ $tasks = $newTasks->merge($tasks);
             })->orderBy('title', 'ASC')->get();
             $type=$request->route_name;
 
-// Find the last task ID
-$lastTaskId = $tasks->max('id') ?? 0;
+            // Find the last task ID
+            $lastTaskId = $tasks->max('id') ?? 0;
 
-// Fetch active website titles
-$websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
+            // Fetch active website titles
+            $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
 
-// Create new task objects and prepend them to the tasks collection
-$newTasks = collect();
-foreach ($websites as $key => $value) {
-    $lastTaskId++; // Increment ID for each new website task
-    $newTasks->push((object) [
-        'id' => $lastTaskId,
-        'title' => 'Doing some task or updating tasks for ' . $value,
-        'keywords' => null,
-        'status' => 0,
-        'employee_id' => 1,
-        'project_id' => 3,
-        'counter' => 20,
-        'level' => 0,
-        'piority' => 0,
-        'created_at' => null,
-        'updated_at' => null
-    ]);
-}
+            // Create new task objects and prepend them to the tasks collection
+            $newTasks = collect();
+            foreach ($websites as $key => $value) {
+                $lastTaskId++; // Increment ID for each new website task
+                $newTasks->push((object) [
+                    'id' => $lastTaskId,
+                    'title' => 'Doing some task or updating tasks for ' . $value,
+                    'keywords' => null,
+                    'status' => 0,
+                    'employee_id' => 1,
+                    'project_id' => 3,
+                    'counter' => 20,
+                    'level' => 0,
+                    'piority' => 0,
+                    'created_at' => null,
+                    'updated_at' => null
+                ]);
+            }
 
-// Merge new tasks at the beginning
-$tasks = $newTasks->merge($tasks);
+            // Merge new tasks at the beginning
+            $tasks = $newTasks->merge($tasks);
             return view('admin.crud.tasks.index', compact('tasks','employees','projects','type','projectIds','employeeIds'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         }
