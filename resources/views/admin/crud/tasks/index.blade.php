@@ -721,7 +721,7 @@
             }
 
             $(function () {
-    var tableConfig = {
+    var table = $("#example1").DataTable({
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
@@ -729,48 +729,35 @@
         "searching": true,
         "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
         "rowReorder": {
-            selector: "td:first-child" // Drag by first column
-        }
-    };
-
-    if (isMobileDevice()) {
-        tableConfig.columnDefs = [
-            {
-                targets: [2, 3, 4, 5, 6], // Hide these columns on mobile
-                responsivePriority: 1,
-                visible: false
-            },
-            {
-                targets: [0, 1], // Always visible columns
-                responsivePriority: 1
+            selector: "td:first-child"
+        },
+        "order": [], // Disable default ordering
+        "createdRow": function (row, data, dataIndex) {
+            var title = $(row).find("td:nth-child(2)").text().trim(); // Adjust column index if needed
+            if (title.startsWith("Doing some task") || title.startsWith("Updating tasks")) {
+                $(row).addClass("priority-row"); // Add a class for easier sorting
             }
-        ];
-    }
+        }
+    });
 
-    var table = $("#example1").DataTable(tableConfig);
     table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-    // Move "Doing some task or updating tasks" rows to the top
+    // Custom sorting: move "Doing some task" rows to the top
     moveCustomRowsToTop(table);
 });
 
 function moveCustomRowsToTop(table) {
-    var rowsToMove = [];
-
+    table.order([1, "desc"]).draw(); // Sort by title descending
     table.rows().every(function () {
         var row = this.node();
-        var title = $(row).find("td:nth-child(2)").text().trim(); // Adjust column index if needed
+        var title = $(row).find("td:nth-child(2)").text().trim();
 
         if (title.startsWith("Doing some task") || title.startsWith("Updating tasks")) {
-            rowsToMove.push(row);
+            $(row).prependTo("#example1 tbody");
         }
     });
-
-    if (rowsToMove.length > 0) {
-        // Detach and prepend the selected rows
-        $(rowsToMove).detach().prependTo("#example1 tbody");
-    }
 }
+
 
 
 
