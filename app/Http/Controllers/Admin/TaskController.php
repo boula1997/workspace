@@ -177,6 +177,13 @@ public function index()
             }
             emailTasks();
 
+            $tasks = Task::where('status',1)->whereIn('project_id', $request->projects)
+            ->orderBy('project_id', 'desc')
+            ->latest('created_at') // Ensure latest tasks by creation date
+            ->take(300) // Limit the results to 300
+            ->get()
+            ->unique('title');
+
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         } elseif ($action == 'reassign') {
@@ -201,6 +208,13 @@ public function index()
             }
             emailTasks();
 
+            $tasks = Task::where('status',0)->whereIn('project_id', $request->projects)
+            ->orderBy('project_id', 'desc')
+            ->latest('created_at') // Ensure latest tasks by creation date
+            ->take(300) // Limit the results to 300
+            ->get()
+            ->unique('title');
+
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
         }  elseif ($action == 'delete') {
@@ -215,6 +229,13 @@ public function index()
                 clearTasks($task->title);
             }; 
             emailTasks();
+
+            $tasks = Task::where('status',0)->whereIn('project_id', $request->projects)
+            ->orderBy('project_id', 'desc')
+            ->latest('created_at') // Ensure latest tasks by creation date
+            ->take(300) // Limit the results to 300
+            ->get()
+            ->unique('title');
             
         return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects'))
         ->with('i', (request()->input('page', 1) - 1) * 5);
@@ -250,15 +271,12 @@ public function index()
 
             }
             else if($request->route_name=="tasks.finished"){
-                $tasks = Task::whereIn('project_id', $request->projects)
+                $tasks = Task::where('status',1)->whereIn('project_id', $request->projects)
                 ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
                 ->take(300) // Limit the results to 300
                 ->get()
                 ->unique('title');
-
-
-
             }
 
             else{
