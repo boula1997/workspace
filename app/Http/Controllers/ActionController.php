@@ -187,6 +187,7 @@ class ActionController extends Controller
 
       if (isset($plural)) {
         $results = DB::connection('dynamic')->select("Select concat(path ,'*',replace(replace(replace(replace(path,'" . $request->name . 's' . "','" . $request->plural . "'),'" . ucfirst($request->name) . 's' . "','" . ucfirst($request->plural) . "'),'" . $request->name . "','" . $request->rname . "'),'" . ucfirst($request->name) . "','" . ucfirst($request->rname) . "')) as path from paths where flag='" . $request->selectFlag . "' and path like '%" . $request->name . "%" . $request->extension ."' or path like '%" . $request->name . "%" . $request->extension ."x". "';");
+        dd("Select concat(path ,'*',replace(replace(replace(replace(path,'" . $request->name . 's' . "','" . $request->plural . "'),'" . ucfirst($request->name) . 's' . "','" . ucfirst($request->plural) . "'),'" . $request->name . "','" . $request->rname . "'),'" . ucfirst($request->name) . "','" . ucfirst($request->rname) . "')) as path from paths where flag='" . $request->selectFlag . "' and path like '%" . $request->name . "%" . $request->extension ."' or path like '%" . $request->name . "%" . $request->extension ."x". "';");
         $resultsTranslation = DB::connection('dynamic')->select("select db, id, value,`key` from (select '" . $request->dbname . "' as db, ltm_translations.* from " . $request->dbname . ".ltm_translations where value IS NULL) as q;");
         $dbname = $request->dbname;
         return view('welcome', compact('results', 'action', 'data', 'replaced', 'module', 'plural', 'rmodule','selectFlag','resultsTranslation','dbname'));
@@ -197,7 +198,6 @@ class ActionController extends Controller
         $dbname = $request->dbname;
 
 
-        dd($results);
         return view('welcome', compact('results', 'action', 'data', 'replaced', 'module', 'rmodule','resultsauto','selectFlag','resultsTranslation','dbname'));
       }
     }
