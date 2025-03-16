@@ -3,7 +3,6 @@
         <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         <div id="newModuleB">
-            {{dd($results)}}
             @foreach ($results as $result)
    
                  
