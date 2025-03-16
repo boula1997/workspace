@@ -415,7 +415,8 @@
                             </div>
                             <div class="form-group mt-2">
                                 <input class=" d-inline" type="checkbox" name="replace" id="">
-                                <p class="d-inline pointer-cursor">Would you like to update files paths or urls paths?
+                                <p class="d-inline pointer-cursor">Would you like to update files paths or urls paths? git ls-files --exclude-standard | findstr /R "^app ^database ^resources ^routes ^config ^tests ^bootstrap"
+
                                 </p>
                             </div>
                             <div class="form-group mt-2">
