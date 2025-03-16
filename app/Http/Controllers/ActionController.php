@@ -192,7 +192,9 @@ class ActionController extends Controller
         return view('welcome', compact('results', 'action', 'data', 'replaced', 'module', 'plural', 'rmodule','selectFlag','resultsTranslation','dbname'));
       } else {
         $results = DB::connection('dynamic')->select("Select concat(path ,'*',replace(replace(path,'" . $request->name . "','" . $request->rname . "'),'" . ucfirst($request->name) . "','" . ucfirst($request->rname) . "')) as path from paths where flag='" . $request->selectFlag . "' and path like '%" . $request->name . "%" . $request->extension ."' or path like '%" . $request->name . "%" . $request->extension ."x". "';");
-dd("Select concat(path ,'*',replace(replace(path,'" . $request->name . "','" . $request->rname . "'),'" . ucfirst($request->name) . "','" . ucfirst($request->rname) . "')) as path from paths where flag='" . $request->selectFlag . "' and path like '%" . $request->name . "%" . $request->extension ."' or path like '%" . $request->name . "%" . $request->extension ."x". "';");
+
+        dd($results);
+
         $resultsTranslation = DB::connection('dynamic')->select("select db, id, value,`key` from (select '" . $request->dbname . "' as db, ltm_translations.* from " . $request->dbname . ".ltm_translations where value IS NULL) as q;");
         $dbname = $request->dbname;
 
