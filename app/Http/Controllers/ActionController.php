@@ -197,7 +197,7 @@ class ActionController extends Controller
         $dbname = $request->dbname;
 
 
-        dd($results);
+        dd($results,$resultsTranslation);
         return view('welcome', compact('results', 'action', 'data', 'replaced', 'module', 'rmodule','resultsauto','selectFlag','resultsTranslation','dbname'));
       }
     }
