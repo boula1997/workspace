@@ -78,7 +78,7 @@
                                         
                                                     <td>{{ $project->payed }}</td>
                                         
-                                                    <td class="rest">{{ $project->debit }}</td>
+                                                    <td class="rest">{{ rest($project) }}</td>
                                         
                                                     <td>{{ $project->isYousab ? __('general.yes') : __('general.no') }}</td>
                                         
