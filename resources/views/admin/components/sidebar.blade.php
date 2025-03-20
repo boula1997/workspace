@@ -87,6 +87,7 @@
                     alt="">
                     
                 </a>
+                <br>
                 <p class="text-sm">Freelancers Employment Methodology</p>
 
 
