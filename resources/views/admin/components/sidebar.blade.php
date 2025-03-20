@@ -90,7 +90,7 @@
                 
                 
             </div>
-            <p class="text-sm">Freelancers Employment Methodology</p>
+            <p class="text-sm text-center">Freelancers Employment Methodology</p>
         {{-- <div class="">
             <!-- Sidebar user panel (optional) -->
             <a href="{{ route('edit.profile') }}">
