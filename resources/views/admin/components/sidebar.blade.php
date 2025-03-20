@@ -87,11 +87,10 @@
                     alt="">
                     
                 </a>
-                <br>
-                <p class="text-sm">Freelancers Employment Methodology</p>
-
-
-        </div>
+                
+                
+            </div>
+            <p class="text-sm">Freelancers Employment Methodology</p>
         {{-- <div class="">
             <!-- Sidebar user panel (optional) -->
             <a href="{{ route('edit.profile') }}">
