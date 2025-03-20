@@ -83,8 +83,10 @@
 
 
             <a href="{{ route('action') }}">
-                <img class="logo-side pt-3" style="height: 100px" src="{{ settings()->white_logo }}"
+                <img class="logo-side pt-3" style="height: 100px" src="{{ settings()->logo }}"
                     alt="">
+        <p>Freelancers Employment Methodology</p>
+
             </a>
 
 
