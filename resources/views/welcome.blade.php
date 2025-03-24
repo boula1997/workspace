@@ -335,8 +335,8 @@
                                     <option value="">Select the required action</option>
                                     <option class="" value="15">add script</option>
                                     <option class="" value="15">add module</option>
-                                    <option value="23">auto attributes</option>
-                                    <option value="0">create new module(or Open newly added module)</option>
+                                    <option value="23">auto attributes (edit first methodology to avoid filling data)</option>
+                                    <option value="0">create new module(or Open newly added module edit first methodology to avoid filling data)</option>
                                     <option value="14">checkout multible module</option>
                                     <option value="6">copy multible modules using repo</option>
                                     <option value="12">desc database</option>
