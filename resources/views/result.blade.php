@@ -1063,7 +1063,6 @@
         @if ($action == 'desc database')
             <button class="btn btn-primary w-25 text-right fixed-top mt-5" id="resetDB"><span>Reset</span></button>
             <div class="row mb-2 mt-5">
-                <h3>Used also to reach files of modules when clicking on tables names and use also routes code in pined clipboard</h3>
                 <form method="post" class="d-flex" id="queryForm">
                     @csrf
                     <input class="form-control  mx-3 text-white  w-25" type="text" name="dbname" readonly
