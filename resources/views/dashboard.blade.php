@@ -93,7 +93,7 @@
 
                 @if (boula())
                     <div class="row">
-                        <h4>Methodologies</h>
+                        <h4>Methodologies</h4>
                             <li>Edit first methodology: when adding or removing attributes do it first in edit.blade.php to
                                 avoid any poring filling data or validations issues and if no entered modules add them from
                                 database through ready insert and chatgpt to fill data inside insert </li>
