@@ -1116,7 +1116,6 @@
                 if (localStorage.getItem('selectAction') ==
                     'add module' || localStorage.getItem('selectAction') ==
                     'get multible scripts') {
-                    $('#projectContent').attr('checked', true);
                     $('#textarea').show().attr('placeholder', 'ex: keyword1, keyword2, keyword3');
 
                 } else {
