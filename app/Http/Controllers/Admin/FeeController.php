@@ -48,7 +48,7 @@ class FeeController extends Controller
      */
     public function create()
     {
-        $projects=Project::where('status','>',0)->get();
+        $projects=Project::latest()->get();
         return view('admin.crud.fees.create',compact('projects'));
     }
 
