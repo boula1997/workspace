@@ -1275,7 +1275,7 @@
                     @foreach ($results as $result)
                         <div class="d-none hilightResult" array="{{ json_encode($array) }}"></div>
                         <pre class="text-white  resultContent">
-                    {!! htmlspecialchars($result->script) !!}
+                    {!! htmlspecialchars($result->codeLinks) !!}
                 </pre>
                         <form method="post" id="{{ $result->id }}"
                             class="{{ $action == 'get multible scripts' ? 'script' : 'module' }}">
@@ -1300,7 +1300,7 @@
                                             <p>
                                                 Are you sure you want to delete this script?<br><br>
                                                 <span class="text-secondary text-limit" style="--lines:3;">
-                                                    {{ $result->script }}
+                                                    {{ $result->codeLinks }}
                                                 </span>
                                             </p>
                                         </div>
