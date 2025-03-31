@@ -534,7 +534,7 @@ class ActionController extends Controller
           
           $searchRefrences=true;
           foreach ($array as $item) {
-            $sql[] = "script  LIKE '%" . $item . "%'";
+            $sql[] = "codeLinks  LIKE '%" . $item . "%'";
           }
           $results = DB::select("select * from issues where " . implode(" AND ", $sql) . "order by id desc;");
         }
