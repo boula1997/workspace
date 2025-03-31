@@ -537,7 +537,6 @@ class ActionController extends Controller
             $sql[] = "codeLinks  LIKE '%" . $item . "%'";
           }
 
-          dd("select * from issues where " . implode(" AND ", $sql) . "order by id desc;");
           $results = DB::select("select * from issues where " . implode(" AND ", $sql) . "order by id desc;");
         }
         else{
