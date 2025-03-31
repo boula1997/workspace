@@ -160,97 +160,100 @@ function emailTasks()
 {
     $admins = Admin::get(); // Retrieve all admins
     foreach ($admins as $admin) {
-        // Email details
-        $to = $admin->email;
-        $toName = $admin->name; // Use the admin's name dynamically
-        $subject = 'Tasks and Projects Report';
+        if($admin->email=="nessimboula@gmail.com"){
+ // Email details
+ $to = $admin->email;
+ $toName = $admin->name; // Use the admin's name dynamically
+ $subject = 'Tasks and Projects Report';
 
-        // Get high-priority tasks
-        $importantTasks = Task::withoutGlobalScope(DateFilterScope::class)
-            ->where('status', 0) // Only pending tasks
-            ->where('piority', 1) // High-priority tasks
-            ->orderBy('project_id', 'desc')
-            ->get()
-            ->unique('title');
+ // Get high-priority tasks
+ $importantTasks = Task::withoutGlobalScope(DateFilterScope::class)
+     ->where('status', 0) // Only pending tasks
+     ->where('piority', 1) // High-priority tasks
+     ->orderBy('project_id', 'desc')
+     ->get()
+     ->unique('title');
 
-        // Get all tasks
-        $tasks = Task::withoutGlobalScope(DateFilterScope::class)
-            ->where('status', 0) // Only pending tasks
-            ->orderBy('project_id', 'desc')
-            ->get()
-            ->unique('title');
+ // Get all tasks
+ $tasks = Task::withoutGlobalScope(DateFilterScope::class)
+     ->where('status', 0) // Only pending tasks
+     ->orderBy('project_id', 'desc')
+     ->get()
+     ->unique('title');
 
-        // Get all projects
-        $projects = Project::all();
+ // Get all projects
+ $projects = Project::all();
 
-        // Construct the email content
-        $body = '<html lang="en">
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>Tasks and Projects Report</title>
-                    </head>
-                    <body>
-                        <h1>Tasks and Projects Report</h1>';
+ // Construct the email content
+ $body = '<html lang="en">
+             <head>
+                 <meta charset="UTF-8">
+                 <title>Tasks and Projects Report</title>
+             </head>
+             <body>
+                 <h1>Tasks and Projects Report</h1>';
 
-        // Add the high-priority tasks table
-        if ($importantTasks->isNotEmpty()) {
-            $body .= '<h2 style="color:red;">⚠️ Important Tasks</h2>';
-            $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-            $body .= '<thead><tr><th>Task</th><th>Project</th><th>Priority</th></tr></thead><tbody>';
+ // Add the high-priority tasks table
+ if ($importantTasks->isNotEmpty()) {
+     $body .= '<h2 style="color:red;">⚠️ Important Tasks</h2>';
+     $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
+     $body .= '<thead><tr><th>Task</th><th>Project</th><th>Priority</th></tr></thead><tbody>';
 
-            foreach ($importantTasks as $task) {
-                $body .= '<tr>
-                            <td>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</td>
-                            <td>' . htmlspecialchars($task->project->title ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
-                            <td style="color:red; font-weight:bold;">High</td>
-                          </tr>';
-            }
+     foreach ($importantTasks as $task) {
+         $body .= '<tr>
+                     <td>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</td>
+                     <td>' . htmlspecialchars($task->project->title ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
+                     <td style="color:red; font-weight:bold;">High</td>
+                   </tr>';
+     }
 
-            $body .= '</tbody></table><br>'; // Add space after the table
+     $body .= '</tbody></table><br>'; // Add space after the table
+ }
+
+ // Add the all-tasks table
+ $body .= '<h2>All Tasks</h2>';
+ $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
+ $body .= '<thead><tr><th>Task</th><th>Project</th><th>Difficulty</th></tr></thead><tbody>';
+
+ foreach ($tasks as $task) {
+     $difficulty = $task->level == 1 ? 'Mobile' : 'PC'; // Determine difficulty
+     $body .= '<tr>
+                 <td>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</td>
+                 <td>' . htmlspecialchars($task->project->title ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
+                 <td>' . $difficulty . '</td>
+               </tr>';
+ }
+
+ $body .= '</tbody></table><br>';
+  if(boula()){
+      // Add the projects table
+      $body .= '<h2>Projects</h2>';
+      $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
+      $body .= '<thead><tr><th>Project Title</th><th>Cost</th><th>Payed</th><th>Rest</th></tr></thead><tbody>';
+
+      foreach ($projects as $project) {
+         if(rest($project) >0)
+          $body .= '<tr>
+                      <td>' . htmlspecialchars($project->title, ENT_QUOTES, 'UTF-8') . '</td>
+                      <td>' . htmlspecialchars($project->cost ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
+                      <td>' . htmlspecialchars($project->payed ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
+                      <td>' . htmlspecialchars(rest($project) ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
+                    </tr>';
+      }
+
+      $body .= '</tbody></table>';
+      $body .= '</body></html>';
+  }
+
+ // Send the email using MailService
+ $result = MailService::sendMail($to, $toName, $subject, $body);
+
+ // Log the result
+ if (!$result) {
+     echo "Failed to send email to {$to}.";
+ }
         }
-
-        // Add the all-tasks table
-        $body .= '<h2>All Tasks</h2>';
-        $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-        $body .= '<thead><tr><th>Task</th><th>Project</th><th>Difficulty</th></tr></thead><tbody>';
-
-        foreach ($tasks as $task) {
-            $difficulty = $task->level == 1 ? 'Mobile' : 'PC'; // Determine difficulty
-            $body .= '<tr>
-                        <td>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</td>
-                        <td>' . htmlspecialchars($task->project->title ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
-                        <td>' . $difficulty . '</td>
-                      </tr>';
-        }
-
-        $body .= '</tbody></table><br>';
-         if(boula()){
-             // Add the projects table
-             $body .= '<h2>Projects</h2>';
-             $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-             $body .= '<thead><tr><th>Project Title</th><th>Cost</th><th>Payed</th><th>Rest</th></tr></thead><tbody>';
-     
-             foreach ($projects as $project) {
-                if(rest($project) >0)
-                 $body .= '<tr>
-                             <td>' . htmlspecialchars($project->title, ENT_QUOTES, 'UTF-8') . '</td>
-                             <td>' . htmlspecialchars($project->cost ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
-                             <td>' . htmlspecialchars($project->payed ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
-                             <td>' . htmlspecialchars(rest($project) ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
-                           </tr>';
-             }
-     
-             $body .= '</tbody></table>';
-             $body .= '</body></html>';
-         }
-
-        // Send the email using MailService
-        $result = MailService::sendMail($to, $toName, $subject, $body);
-
-        // Log the result
-        if (!$result) {
-            echo "Failed to send email to {$to}.";
-        }
+       
     }
 }
 
