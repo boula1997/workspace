@@ -484,10 +484,10 @@ if (!function_exists('contact')) {
 function loadActiveProjects($projects)
 {
     // Deactivate all active projects
-    DB::update("UPDATE projects SET status = 0");
+    // DB::update("UPDATE projects SET status = 0");
 
-    // Activate the selected projects
-    Project::whereIn('id', $projects)->update(['status' => 1]);
+    // // Activate the selected projects
+    // Project::whereIn('id', $projects)->update(['status' => 1]);
 }
 
 // if (!function_exists('projects')) {
