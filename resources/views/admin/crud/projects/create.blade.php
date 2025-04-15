@@ -100,7 +100,7 @@
                                             </span></label> </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>  
 
 
                                                 {{-- Number Input --}} <div class="col-md-6">
