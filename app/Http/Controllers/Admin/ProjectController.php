@@ -106,6 +106,10 @@ class ProjectController extends Controller
 
         try {
             $data = $request->except('images','profile_avatar_remove','delimages','image');
+            $data["isYousab"]=isset($request->isYousab)?0:1;
+            $data["status"]=isset($request->status)?0:1;
+            $data["appearance"]=isset($request->appearance)?0:1;
+            $data["deal"]=isset($request->deal)?0:1;
             $project->update($data);
             $project->updateFiles();
             return redirect()->back()->with(['success' => __('general.update_successfully')]);
