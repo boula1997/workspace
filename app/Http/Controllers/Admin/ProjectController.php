@@ -110,6 +110,7 @@ class ProjectController extends Controller
             $data["status"]=isset($request->status)?1:0;
             $data["appearance"]=isset($request->appearance)?1:0;
             $data["deal"]=isset($request->deal)?1:0;
+            
             $project->update($data);
             $project->updateFiles();
             return redirect()->back()->with(['success' => __('general.update_successfully')]);
