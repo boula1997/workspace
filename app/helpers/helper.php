@@ -919,7 +919,7 @@ function databases()
         // Use the dynamic connection
         DB::purge('dynamic');
         DB::reconnect('dynamic');
-        $databases = DB::connection('dynamic')->select("SELECT schema_name FROM information_schema.schemata");
+        $databases = DB::connection('dynamic')->select("SELECT db_name as schema_name FROM d_b_credentials");
     }
 
     return $databases;
