@@ -489,8 +489,12 @@
                                     name="size" placeholder="Insert file size">
                             </div>
                             <div class="form-group mt-2">
-                                <input id="db_name" type="text" class="form-control   text-white"
-                                    name="dbname" placeholder="Insert database name">
+                                <select class="select form-control" name="dbname" id="db_name">
+                                    <option value="search for query">Search for db</option>
+                                    @foreach (databases() as $database)
+                                       <option value="{{ $database->schema_name }}">{{ $database->schema_name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group mt-2">
                                 <input id="tablename" type="text" class="form-control   text-white"

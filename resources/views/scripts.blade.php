@@ -59,6 +59,12 @@
                 allowClear: true
             });
         });
+        $(document).ready(function() {
+            $('#db_name').select2({
+                placeholder: "Select a database",
+                allowClear: true
+            });
+        });
     </script>
 
     <script>

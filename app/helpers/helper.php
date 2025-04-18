@@ -892,3 +892,38 @@ function boula()
     return true;
     return false;
 }
+
+
+function databases()
+{
+    if (App::environment('local'))
+    $databases = DB::select("SELECT schema_name FROM information_schema.schemata");
+    else{
+        $dbHost = '127.0.0.1';
+        $dbName = isset($credential->db_name)?$credential->db_name:'yousabte_workspace';
+        $dbUser = isset($credential->db_username)?$credential->db_username:'yousabte_workspace';
+        $dbPass = isset($credential->db_password)?$credential->db_password:'kD[asKgc%ydC';
+            // Temporarily configure the database connection
+            config([
+              'database.connections.dynamic' => [
+                  'driver' => 'mysql',
+                  'host' => $dbHost,
+                  'database' => $dbName,
+                  'username' => $dbUser,
+                  'password' => $dbPass,
+                  'charset' => 'utf8mb4',
+                  'collation' => 'utf8mb4_unicode_ci',
+              ],
+          ]);
+    
+        // Use the dynamic connection
+        DB::purge('dynamic');
+        DB::reconnect('dynamic');
+        $databases = DB::connection('dynamic')->select("SELECT schema_name FROM information_schema.schemata");
+    }
+
+    return $databases;
+}
+
+
+
