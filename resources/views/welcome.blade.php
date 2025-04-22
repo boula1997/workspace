@@ -121,7 +121,8 @@
                                     <div class="modal-body">
                                         <div>
                                             <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                            <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="5" style="height:100vh !important">{{ isset($post->codeLinks) ? $post->codeLinks : '' }}</textarea>
+                                            <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="5"
+                                                style="height:100vh !important">{{ isset($post->codeLinks) ? $post->codeLinks : '' }}</textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -156,7 +157,8 @@
                                     <div class="modal-body">
                                         <div>
                                             <input type="hidden" name="issue_id" value="{{ $refrnce->id }}">
-                                            <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="5" style="height:100vh !important">{{ isset($refrnce->codeLinks) ? $refrnce->codeLinks : '' }}</textarea>
+                                            <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="5"
+                                                style="height:100vh !important">{{ isset($refrnce->codeLinks) ? $refrnce->codeLinks : '' }}</textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -192,7 +194,8 @@
                                 @csrf
                                 <div class="modal-body">
                                     <div>
-                                        <textarea class="form-control  summernote" name="tasks" id="" cols="30" rows="30" style="height:100vh !important">{!! websitesActive() !!}</textarea>
+                                        <textarea class="form-control  summernote" name="tasks" id="" cols="30" rows="30"
+                                            style="height:100vh !important">{!! websitesActive() !!}</textarea>
                                     </div>
                                 </div>
 
@@ -335,8 +338,10 @@
                                     <option value="">Select the required action</option>
                                     <option class="" value="15">add script</option>
                                     <option class="" value="15">add module</option>
-                                    <option value="23">auto attributes (edit first methodology to avoid filling data)</option>
-                                    <option value="0">create new module(or Open newly added module edit first methodology to avoid filling data)</option>
+                                    <option value="23">auto attributes (edit first methodology to avoid filling
+                                        data)</option>
+                                    <option value="0">create new module(or Open newly added module edit first
+                                        methodology to avoid filling data)</option>
                                     <option value="14">checkout multible module</option>
                                     <option value="6">copy multible modules using repo</option>
                                     <option value="12">desc database</option>
@@ -415,7 +420,9 @@
                             </div>
                             <div class="form-group mt-2">
                                 <input class=" d-inline" type="checkbox" name="replace" id="">
-                                <p class="d-inline pointer-cursor">Would you like to update files paths or urls paths? git ls-files --exclude-standard | findstr /R "^app ^database ^resources ^routes ^config ^tests ^bootstrap"
+                                <p class="d-inline pointer-cursor">Would you like to update files paths or urls paths?
+                                    git ls-files --exclude-standard | findstr /R "^app ^database ^resources ^routes
+                                    ^config ^tests ^bootstrap"
 
                                 </p>
                             </div>
@@ -492,7 +499,8 @@
                                 <select class="select form-control" name="dbname" id="db_name">
                                     <option value="search for query">Search for db</option>
                                     @foreach (databases() as $database)
-                                       <option value="{{ $database->schema_name }}">{{ $database->schema_name }}</option>
+                                        <option value="{{ $database->schema_name }}">{{ $database->schema_name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>

@@ -39,6 +39,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
     
     
             Route::get('/', [HomeController::class, 'index'])->name('action');
+            Route::get('/videos', [HomeController::class, 'videos'])->name('videos');
             Route::get('/faq-page', 'App/Http/Controllers/FaqController@index')->name('front.faq');
             // Route::get('/message', 'App/Http/Controllers/MessageController@index')->name('front.message');
             Route::get('/message', [MessageController::class,'index'])->name('front.message');

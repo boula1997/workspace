@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Service;
+use App\Models\Video;
 use App\Models\Testimonial;
 use App\Models\Process;
 use App\Models\Gallery;
@@ -65,6 +66,17 @@ class HomeController extends Controller
             $partners=$this->partners->get();
 
             return view('front.index', compact('testimonials', 'services', 'processes', 'portfolios', 'teams', 'counters','faqs','teams','partners'));
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return redirect()->back()->with(['error' => __('general.something_wrong')]);
+        }
+    }
+    public function videos()
+    {
+        try {
+            $videos = $this->video->get();
+
+            return view('front.index', compact( 'videos'));
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
