@@ -1061,7 +1061,7 @@
     </div>
     <div class=" text-justify">
         @if ($action == 'desc database')
-            <button class="btn btn-primary w-25 text-right mt-5" id="resetDB"><span>Reset</span></button>
+            <button class="btn btn-primary w-25 text-right fixed-top mt-5" id="resetDB"><span>Reset</span></button>
 
             <button id="runQueryBtn" class="btn btn-primary">Run Query in New Tab</button>
 
