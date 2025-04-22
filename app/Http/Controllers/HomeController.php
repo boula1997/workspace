@@ -32,8 +32,9 @@ class HomeController extends Controller
     private $teams;
     private $partners;
 
-    public function __construct(Service $service, Testimonial $testimonial, Team $team, Process $process, Counter $counter, Gallery $portfolio,Faq $faq,Team $teams,Partner $partners)
+    public function __construct(Service $service,Video $video, Testimonial $testimonial, Team $team, Process $process, Counter $counter, Gallery $portfolio,Faq $faq,Team $teams,Partner $partners)
     {
+        $this->video = $video;
         $this->service = $service;
         $this->testimonial = $testimonial;
         $this->team = $team;
