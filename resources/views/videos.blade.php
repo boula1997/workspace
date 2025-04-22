@@ -31,7 +31,7 @@
                                     allowfullscreen></iframe>
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title">Video {{ $loop->index + 1 }}</h5>
+                            <h5 class="card-title">{{$video->title}}</h5>
                         </div>
                     </div>
                 </div>
