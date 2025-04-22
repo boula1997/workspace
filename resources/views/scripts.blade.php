@@ -2032,10 +2032,9 @@
                 toastNow();
             });
 
-            $('#meet').on('click', function(e) {
+            $('#videos').on('click', function(e) {
                 e.preventDefault();
-                window.open('https://us04web.zoom.us/');
-                window.open('https://meet.google.com/');
+                window.open('https://yousab-tech.com/workspace/public/en/videos');
             });
             $('#DBCredentials').on('click', function(e) {
                 e.preventDefault();

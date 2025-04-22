@@ -7,7 +7,7 @@
         <button class="btn btn-outline-warning col-2" id="{{boula()?'googlead':''}}">GANM</button>
         <button class="btn btn-outline-warning col-2" id="{{boula()?'seo':''}}">SEO</button>
         <button class="btn btn-outline-warning col-2" id="{{boula()?'routes':''}}">Routes</button>
-        <button class="btn btn-outline-warning col-2" id="{{boula()?'meet':''}}">Meet</button>
+        <button class="btn btn-outline-warning col-2" id="videos">Videos</button>
         
     </div>
     
