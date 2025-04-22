@@ -26,7 +26,8 @@
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="card bg-dark text-white">
                         <div class="ratio ratio-16x9">
-                            <iframe src="https://www.youtube.com/embed/{{ \Illuminate\Support\Str::afterLast('4KPzCKNygFY', 'v=') }}"
+                            <iframe src="https://www.youtube.com/embed/{{ preg_match('/(?:v=|\/)([a-zA-Z0-9_-]{11})/', $video->youtube_link, $matches) ? $matches[1] : '' }}
+"
                                     allowfullscreen></iframe>
                         </div>
                         <div class="card-body">
