@@ -77,7 +77,7 @@ class HomeController extends Controller
         try {
             $videos = $this->video->get();
 
-            return view('front.index', compact( 'videos'));
+            return view('front.videos', compact( 'videos'));
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
