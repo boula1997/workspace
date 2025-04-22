@@ -1062,6 +1062,9 @@
     <div class=" text-justify">
         @if ($action == 'desc database')
             <button class="btn btn-primary w-25 text-right fixed-top mt-5" id="resetDB"><span>Reset</span></button>
+
+            <button id="runQueryBtn" class="btn btn-primary">Run Query in New Tab</button>
+
             <div class="row mb-2 mt-5">
                 <form method="post" class="d-flex" id="queryForm">
                     @csrf
