@@ -386,12 +386,12 @@
                                     <option value=".png">png</option>
                                 </select>
                             </div>
+                            @if (boula())
                             <div class="form-group mt-2">
                                 <input class=d-inline" value="" type="checkbox" name="showWebsites"
                                     id="showWebsites">
                                 <p class="d-inline pointer-cursor">Show Websites</p>
                             </div>
-                            @if (boula())
                                 <div class="form-group mt-2">
                                     <input class=d-inline" value="" type="checkbox" name="showReferences"
                                         id="showReferences">
