@@ -953,6 +953,8 @@ if ($request->action == '28') {
     $setting = Setting::latest()->first();
     if ($setting->last_time != $date)
       $setting = Setting::create(['last_time' => $date]);
+
+      yousabEmails();
     return response()->json(['success' => trans('general.sent_successfully'), 'date' => $setting->last_time]);
   }
 
