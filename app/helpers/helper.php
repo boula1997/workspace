@@ -161,10 +161,10 @@ function yousabEmails()
             $body = '<html lang="en">
                         <head>
                             <meta charset="UTF-8">
-                            <title>Tasks and Projects Report</title>
+                            <title>Yousab Tech Report</title>
                         </head>
                         <body>
-                            <h1>Tasks and Projects Report</h1>';
+                            <h1>Yousab Tech Report</h1>';
 
             // Add the high-priority tasks table
             if ($importantTasks->isNotEmpty()) {
