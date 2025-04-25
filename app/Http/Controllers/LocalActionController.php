@@ -880,7 +880,6 @@ if ($request->action == '28') {
 
   public function lastUpdate($date)
   {
-
     $setting = Setting::latest()->first();
     if ($setting->last_time != $date)
       $setting = Setting::create(['last_time' => $date]);
