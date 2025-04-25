@@ -9,7 +9,6 @@ use App\Http\Requests\Dashboard\TaskRequest;
 use App\Models\Admin;
 use App\Models\History;
 use App\Models\Project;
-use App\Services\MailService;
 use Exception;
 
 class TaskController extends Controller

@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\FollowupRequest;
 use App\Models\Admin;
 use App\Models\Project;
-use App\Services\MailService;
 use Exception;
 
 class FollowupController extends Controller
@@ -109,16 +108,6 @@ class FollowupController extends Controller
     public function bulkAction(Request $request)
     {
 
-                // Set the recipient, subject, and body
-        $to = "nessimboula@gmail.com";
-        $toName = "Boula Nessim";
-        $subject = 'Tasks report: Employee use bluck actions in followups';
-        $body = (auth('admin')->user()->name=='Kermina'?'<b>your wife ':'<b>this user ').auth('admin')->user()->email.' has used bluck actions in followups</b>';
-
-        // Call the MailService to send the email
-        $result = MailService::sendMail($to, $toName, $subject, $body);
-
-
         $action = $request->input('action');
 
 
@@ -218,43 +207,7 @@ class FollowupController extends Controller
             $twoRoutesAgo = session('twoRoutesAgo');
 
 
-                // Fetch follow-up titles with phone and without phone
-                $followupsWithPhone = Followup::where('hasPhone', 1)->distinct()->pluck('title');
-                $followupsWithoutPhone = Followup::where('hasPhone', 0)->distinct()->pluck('title');
-
-                // Set the recipient, subject, and body
-                $to = "nessimboula@gmail.com";
-                $toName = "Boula Nessim";
-                $subject = 'Tasks report: Employee has joined';
-
-                // Start building the email body
-                $body = '<b>The user ' . $request->email . ' has joined</b><br><br>';
-                $body .= '<h3>Follow-ups with phone:</h3>';
-                $body .= '<ul>';
-
-                // Add links for follow-ups with phone
-                foreach ($followupsWithPhone as $followup) {
-                    $body .= '<li><a href="' . $followup . '">' . htmlspecialchars($followup) . '</a></li>';
-                }
-
-                $body .= '</ul><br>';
-
-                $body .= '<h3>Follow-ups without phone:</h3>';
-                $body .= '<ul>';
-
-                // Add links for follow-ups without phone
-                foreach ($followupsWithoutPhone as $followup) {
-                    $body .= '<li><a href="' . $followup . '">' . htmlspecialchars($followup) . '</a></li>';
-                }
-
-                $body .= '</ul>';
-                
-                // Send the email using MailService
-                $admins=Admin::get();
-                foreach($admins as $admin){
-                    if($admin->email=="nessimboula@gmail.com")
-                    $result = MailService::sendMail($admin->email, $admin->name, $subject, $body);
-                }
+               
     
             // Redirect to either the previous or the one before
             return redirect($twoRoutesAgo)
