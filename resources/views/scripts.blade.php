@@ -142,7 +142,9 @@
             $('#updatedatQueries').hide();
 
             $('#updatedatButton').on('click',function(e){
-            $('#updatedatQueries').toggle();
+
+            $('#updatedatQueries').toggle();}
+
             );
 
             // Toggle visibility on button click
