@@ -139,6 +139,11 @@
         $(document).ready(function() {
             // Initially hide the element
             $('#selectTables').hide();
+            $('#updatedatQueries').hide();
+
+            $('#updatedatButton').on('click',function(e){
+            $('#updatedatQueries').toggle();
+            );
 
             // Toggle visibility on button click
             $('#selectsButton').on('click', function() {

@@ -1132,6 +1132,14 @@
 
             <button class="btn btn-warning" id="selectsButton">Show Selects and other k</button>
 
+            <button class="btn btn-warning" id="updatedatButton">Add updated_at to tables</button>
+
+            <div id="updatedatQueries">
+            @foreach ($tables as $table)
+            <p>ALTER TABLE {{$table->TABLE_NAME}} ADD COLUMN `updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP;</p>
+            @endforeach
+            </div>
+
             <div id="selectTables">
                 <input type="number" class="noHide" id="timeInput" value="5">
                 <input type="text" class="noHide" placeholder="insert a coulmn to import and export" id="columnInput" value="">
