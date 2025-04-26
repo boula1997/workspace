@@ -837,32 +837,15 @@ if ($request->action == '28') {
       $insertString = "INSERT INTO $table ($attributes) VALUES ($datatypes);";
   
       // Retrieve data and count
-      $hasUpdatedAt = DB::connection('dynamic')->select("
-      SELECT COUNT(*) as count
-      FROM INFORMATION_SCHEMA.COLUMNS
-      WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = 'updated_at'
-  ", [$db, $table])[0]->count;
-  
-  if ($hasUpdatedAt > 0) {
       $data = DB::connection('dynamic')->select("
           SELECT * 
           FROM (
               SELECT '" . $db . "' AS db, " . $table . ".* 
               FROM " . $db . "." . $table . "
+              ORDER BY updated_at DESC
               LIMIT 1000
           ) AS q;
       ");
-  } else {
-      $data = DB::connection('dynamic')->select("
-          SELECT * 
-          FROM (
-              SELECT '" . $db . "' AS db, " . $table . ".* 
-              FROM " . $db . "." . $table . "
-              LIMIT 1000
-          ) AS q;
-      ");
-  }
-  
   
       $totalCount = DB::connection('dynamic')->select("
           SELECT COUNT(*) as count 
