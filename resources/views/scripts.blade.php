@@ -2169,7 +2169,7 @@
 
                     if (status) {
                         data.queryData.forEach((boula, index) => {
-                            let boulaId = (typeof boula.id !== 'undefined' && boula.id !== null && boula.id !== '') ? boula.id : index;
+                            let boulaId =  index;
 
                             console.log('boula', boula);
 
@@ -2192,7 +2192,7 @@
                         });
                     } else {
                         data.data.forEach((boula, index) => {
-                            let boulaId = (typeof boula.id !== 'undefined' && boula.id !== null && boula.id !== '') ? boula.id : index;
+                            let boulaId = index;
 
                             console.log('boula', boula);
 
