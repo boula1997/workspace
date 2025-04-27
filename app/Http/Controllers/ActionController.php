@@ -445,7 +445,7 @@ class ActionController extends Controller
         array_push($array, $string);
         array_push($array2, $string2);
         array_push($dataTypes, $datatype);
-        array_push($letters, $table->TABLE_NAME[0]);
+        array_push($letters, $table->TABLE_NAME[$request->startingOrderLetter]);
         array_push($counts, $count);
       }
 
