@@ -2174,7 +2174,7 @@
                             console.log('boula', boula);
 
                             $('#jsonResult').append(
-                                `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boulaId}'>show ${boulaId}</button>`
+                                `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boulaId}'>show ${index}</button>`
                             );
 
                             if ('btn' + boulaId == localStorage.getItem('openedQueryId'))
@@ -2197,7 +2197,7 @@
                             console.log('boula', boula);
 
                             $('#jsonResult').append(
-                                `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boulaId}'>show ${boulaId}</button>`
+                                `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boulaId}'>show ${index}</button>`
                             );
 
                             if ('btn' + boulaId == localStorage.getItem('openedQueryId'))
