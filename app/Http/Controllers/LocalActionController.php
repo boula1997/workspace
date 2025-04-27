@@ -437,7 +437,9 @@ class LocalActionController extends Controller
 
       $credential=DBCredential::where('db_name',isset($dbname)?$dbname:'yousabte_automation')->first();
 
-      return view('welcome', compact('results', 'tables', 'action', 'replaced', 'module', 'array', 'dbname', 'letters', 'array2','dataTypes','queries','credential','counts'));
+      $startingOrderLetter=$request->startingOrderLetter;
+
+      return view('welcome', compact('results', 'tables', 'action', 'replaced', 'module', 'array', 'dbname', 'letters', 'array2','dataTypes','queries','credential','counts','startingOrderLetter'));
     }
 
     if ($request->action == '13') {

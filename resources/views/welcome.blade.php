@@ -505,6 +505,11 @@
                                 </select>
                             </div>
                             <div class="form-group mt-2">
+
+                                <input id="startingOrderLetter" type="number" min=0 class="form-control   text-white" value="0"
+                                    name="startingOrderLetter" placeholder="ex: 3,4,5">
+                            </div>
+                            <div class="form-group mt-2">
                                 <input id="tablename" type="text" class="form-control   text-white"
                                     name="tablename" placeholder="ex: tablename1,tablename2">
                             </div>

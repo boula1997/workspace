@@ -987,6 +987,7 @@
                                 $(this).hide().attr('required', false);
                         });
                 $('input[name="dbname"').show().attr('placeholder', 'Enter db name');
+                $('input[name="startingOrderLetter"').show().attr('placeholder', 'ex: 3,4,5');
                 $('#textarea').hide().attr('required', false);
                 $('#websites').addClass('d-none');
                 $('#flaginput').hide().attr('required', false);

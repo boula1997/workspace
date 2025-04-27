@@ -1091,7 +1091,7 @@
                         <div class="d-none">
                             @foreach ($tables as $table)
                                 <div>
-                                    @if ($table->TABLE_NAME[0] == $letter)
+                                    @if ($table->TABLE_NAME[$startingOrderLetter] == $letter)
                                         <!-- Table Name -->
                                         <span id="table" style="cursor: pointer;" 
                                               content="{{$table->TABLE_NAME}}" 
