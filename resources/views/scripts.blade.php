@@ -2169,7 +2169,7 @@
 
                     if (status) {
                         data.queryData.forEach((boula, index) => {
-                            let boulaId = (boula.id !== undefined && boula.id !== null) ? boula.id : index;
+                            let boulaId = (typeof boula.id !== 'undefined' && boula.id !== null && boula.id !== '') ? boula.id : index;
 
                             console.log('boula', boula);
 
@@ -2178,13 +2178,9 @@
                             );
 
                             if ('btn' + boulaId == localStorage.getItem('openedQueryId'))
-                                $('#jsonResult').append(
-                                    `<div class="col-md-3" id="id${boulaId}">`
-                                );
+                                $('#jsonResult').append(`<div class="col-md-3" id="id${boulaId}">`);
                             else
-                                $('#jsonResult').append(
-                                    `<div class="col-md-3 d-none" id="id${boulaId}">`
-                                );
+                                $('#jsonResult').append(`<div class="col-md-3 d-none" id="id${boulaId}">`);
 
                             Object.entries(boula).forEach(element => {
                                 $(`#id${boulaId}`).append(
@@ -2196,7 +2192,7 @@
                         });
                     } else {
                         data.data.forEach((boula, index) => {
-                            let boulaId = (boula.id !== undefined && boula.id !== null) ? boula.id : index;
+                            let boulaId = (typeof boula.id !== 'undefined' && boula.id !== null && boula.id !== '') ? boula.id : index;
 
                             console.log('boula', boula);
 
@@ -2205,13 +2201,9 @@
                             );
 
                             if ('btn' + boulaId == localStorage.getItem('openedQueryId'))
-                                $('#jsonResult').append(
-                                    `<div class="col-md-3" id="id${boulaId}">`
-                                );
+                                $('#jsonResult').append(`<div class="col-md-3" id="id${boulaId}">`);
                             else
-                                $('#jsonResult').append(
-                                    `<div class="col-md-3 d-none" id="id${boulaId}">`
-                                );
+                                $('#jsonResult').append(`<div class="col-md-3 d-none" id="id${boulaId}">`);
 
                             Object.entries(boula).forEach(element => {
                                 $(`#id${boulaId}`).append(
@@ -2222,6 +2214,7 @@
                             $('#jsonResult').append("<hr>");
                         });
                     }
+
 
 
 
