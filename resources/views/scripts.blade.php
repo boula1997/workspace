@@ -1758,7 +1758,7 @@
                     response.data.forEach(boula => {
                         console.log('boula', response);
                         $('#jsonResult').append(
-                            `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id}'>show ${boula[firstKey]}</button>`
+                            `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id}'>show ${boula.id}</button>`
                         );
 
                         if ('btn' + boula.id == localStorage.getItem(
@@ -2168,13 +2168,11 @@
 
 
                         if (status) {
-let firstKey = Object.keys(boula)[0];
-
                             data.queryData.forEach(boula => {
                                 alert($('#table').closest('.count'));
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id}'>show ${boula[firstKey]}</button>`
+                                    `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id}'>show ${boula.id}</button>`
                                 );
 
                                 if ('btn' + boula.id == localStorage.getItem(
