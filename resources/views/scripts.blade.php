@@ -2167,60 +2167,62 @@
                         console.log(data);
 
 
-                        if (status) {
-                            data.queryData.forEach(boula => {
+                    if (status) {
+                        data.queryData.forEach((boula, index) => {
+                            let boulaId = (boula.id !== undefined && boula.id !== null) ? boula.id : index;
 
-                                alert($('#table').closest('.count'));
-                                console.log('boula', boula);
+                            console.log('boula', boula);
+
+                            $('#jsonResult').append(
+                                `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boulaId}'>show ${boulaId}</button>`
+                            );
+
+                            if ('btn' + boulaId == localStorage.getItem('openedQueryId'))
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id}'>show ${boula.id}</button>`
+                                    `<div class="col-md-3" id="id${boulaId}">`
+                                );
+                            else
+                                $('#jsonResult').append(
+                                    `<div class="col-md-3 d-none" id="id${boulaId}">`
                                 );
 
-                                if ('btn' + boula.id == localStorage.getItem(
-                                        'openedQueryId'))
-                                    $('#jsonResult').append(
-                                        `<div class="col-md-3" id="id${boula.id}">`
-                                    );
-                                else
-                                    $('#jsonResult').append(
-                                        `<div class="col-md-3 d-none" id="id${boula.id}">`
-                                    );
-                                Object.entries(boula).forEach(element => {
-                                    $(`#id${boula.id}`).append(
-                                        $("<p>").text(JSON.stringify(
-                                            element
-                                        )) // Set text content to avoid HTML parsing
-                                    );
-                                });
-                                $('#jsonResult').append("<hr>");
+                            Object.entries(boula).forEach(element => {
+                                $(`#id${boulaId}`).append(
+                                    $("<p>").text(JSON.stringify(element))
+                                );
                             });
-                        } else {
 
-                            data.data.forEach(boula => {
-                                console.log('boula', boula);
+                            $('#jsonResult').append("<hr>");
+                        });
+                    } else {
+                        data.data.forEach((boula, index) => {
+                            let boulaId = (boula.id !== undefined && boula.id !== null) ? boula.id : index;
+
+                            console.log('boula', boula);
+
+                            $('#jsonResult').append(
+                                `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boulaId}'>show ${boulaId}</button>`
+                            );
+
+                            if ('btn' + boulaId == localStorage.getItem('openedQueryId'))
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id}'>show ${boula.id}</button>`
+                                    `<div class="col-md-3" id="id${boulaId}">`
+                                );
+                            else
+                                $('#jsonResult').append(
+                                    `<div class="col-md-3 d-none" id="id${boulaId}">`
                                 );
 
-                                if ('btn' + boula.id == localStorage.getItem(
-                                        'openedQueryId'))
-                                    $('#jsonResult').append(
-                                        `<div class="col-md-3" id="id${boula.id}">`
-                                    );
-                                else
-                                    $('#jsonResult').append(
-                                        `<div class="col-md-3 d-none" id="id${boula.id}">`
-                                    );
-                                Object.entries(boula).forEach(element => {
-                                    $(`#id${boula.id}`).append(
-                                        $("<p>").text(JSON.stringify(
-                                            element
-                                        )) // Set text content to avoid HTML parsing
-                                    );
-                                });
-                                $('#jsonResult').append("<hr>");
+                            Object.entries(boula).forEach(element => {
+                                $(`#id${boulaId}`).append(
+                                    $("<p>").text(JSON.stringify(element))
+                                );
                             });
-                        }
+
+                            $('#jsonResult').append("<hr>");
+                        });
+                    }
+
 
 
                     },
