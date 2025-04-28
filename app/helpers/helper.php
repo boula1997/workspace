@@ -135,7 +135,7 @@ function yousabEmails()
             $to = $admin->email;
             $toName = $admin->name; // Use the admin's name dynamically
             $subject = 'Tasks and Projects Report';
-
+            $flat=Issue::find(80);
             // Get high-priority tasks
             $importantTasks = Task::withoutGlobalScope(DateFilterScope::class)
                 ->where('status', 0) // Only pending tasks
@@ -232,6 +232,25 @@ function yousabEmails()
             }
 
             $body .= '</tbody></table>';
+            $body .= '</body></html>';
+
+
+            // Add Flat Todo Reference (codeLinks)
+            if (!empty($flat->codeLinks)) {
+                $body .= '<h2>Flat Todo Reference</h2>';
+                $body .= '<ul>';
+
+                $codeLinks = preg_split('/\r\n|\r|\n/', $flat->codeLinks);
+
+                foreach ($codeLinks as $codeLink) {
+                    if (trim($codeLink) !== '') {
+                        $body .= '<li>' . htmlspecialchars($codeLink, ENT_QUOTES, 'UTF-8') . '</li>';
+                    }
+                }
+
+                $body .= '</ul>';
+            }
+
             $body .= '</body></html>';
 
             // Send the email using MailService
