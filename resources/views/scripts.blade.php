@@ -1755,7 +1755,7 @@
                 contentType: false,
                 processData: false,
                 success: (response) => {
-                    response.data.forEach(boula => {
+                    response.data.forEach((boula,index) => {
                         console.log('boula', response);
                         $('#jsonResult').append(
                             `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id}'>show ${boula.id}</button>`
@@ -1764,14 +1764,14 @@
                         if ('btn' + boula.id == localStorage.getItem(
                                 'openedQueryId'))
                             $('#jsonResult').append(
-                                `<div class="col-md-3" id="id${boula.id}">`
+                                `<div class="col-md-3" id="id${index}">`
                             );
                         else
                             $('#jsonResult').append(
-                                `<div class="col-md-3 d-none" id="id${boula.id}">`
+                                `<div class="col-md-3 d-none" id="id${index}">`
                             );
                         Object.entries(boula).forEach(element => {
-                            $(`#id${boula.id}`).append(
+                            $(`#id${index}`).append(
                                 $("<p>").text(JSON.stringify(
                                     element
                                 )) // Set text content to avoid HTML parsing
@@ -2168,7 +2168,7 @@
 
 
                         if (status) {
-                            data.queryData.forEach(boula => {
+                            data.queryData.forEach((boula,index) => {
                                 alert($('#table').closest('.count'));
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
@@ -2182,10 +2182,10 @@
                                     );
                                 else
                                     $('#jsonResult').append(
-                                        `<div class="col-md-3 d-none" id="id${boula.id}">`
+                                        `<div class="col-md-3 d-none" id="id${index}">`
                                     );
                                 Object.entries(boula).forEach(element => {
-                                    $(`#id${boula.id}`).append(
+                                    $(`#id${index}`).append(
                                         $("<p>").text(JSON.stringify(
                                             element
                                         )) // Set text content to avoid HTML parsing
@@ -2195,7 +2195,7 @@
                             });
                         } else {
 
-                            data.data.forEach(boula => {
+                            data.data.forEach((boula,index) => {
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
                                     `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id}'>show ${boula.id}</button>`
@@ -2208,10 +2208,10 @@
                                     );
                                 else
                                     $('#jsonResult').append(
-                                        `<div class="col-md-3 d-none" id="id${boula.id}">`
+                                        `<div class="col-md-3 d-none" id="id${index}">`
                                     );
                                 Object.entries(boula).forEach(element => {
-                                    $(`#id${boula.id}`).append(
+                                    $(`#id${index}`).append(
                                         $("<p>").text(JSON.stringify(
                                             element
                                         )) // Set text content to avoid HTML parsing
@@ -2306,7 +2306,7 @@
                     datatype: 'JSON',
                     success: function(data) {
                         console.log(data);
-                        data.data.forEach(boula => {
+                        data.data.forEach((boula,index) => {
                             console.log('boula', boula);
                             $('#jsonResult').append(
                                 `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id}'>show ${boula.id}</button>`
@@ -2319,10 +2319,10 @@
                                 );
                             else
                                 $('#jsonResult').append(
-                                    `<div class="col-md-3 d-none" id="id${boula.id}">`
+                                    `<div class="col-md-3 d-none" id="id${index}">`
                                 );
                             Object.entries(boula).forEach(element => {
-                                $(`#id${boula.id}`).append(
+                                $(`#id${index}`).append(
                                     $("<p>").text(JSON.stringify(
                                         element
                                     )) // Set text content to avoid HTML parsing
@@ -2366,7 +2366,7 @@
                             $('#queryCommand').val(data
                             .insertString); // FIXED: Use `.val()` for textarea
 
-                            data.data.forEach(boula => {
+                            data.data.forEach((boula,index) => {
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
                                     `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id}'>show ${boula.id}</button>`
@@ -2378,11 +2378,11 @@
                                         );
                                 else
                                     $('#jsonResult').append(
-                                        `<div class="col-md-3 d-none" id="id${boula.id}">`
+                                        `<div class="col-md-3 d-none" id="id${index}">`
                                         );
 
                                 Object.entries(boula).forEach(element => {
-                                    $(`#id${boula.id}`).append(
+                                    $(`#id${index}`).append(
                                         $("<p>").text(JSON
                                             .stringify(element)
                                             ) // Ensure safe text rendering
