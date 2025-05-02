@@ -1758,20 +1758,20 @@
                     response.data.forEach((boula,index) => {
                         console.log('boula', response);
                         $('#jsonResult').append(
-                            `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id}'>show ${boula.id ?? index}</button>`
+                            `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}'>show ${boula.id ?? index}</button>`
                         );
 
-                        if ('btn' + boula.id == localStorage.getItem(
+                        if ('btn' + boula.id ?? index == localStorage.getItem(
                                 'openedQueryId'))
                             $('#jsonResult').append(
-                                `<div class="col-md-3" id="id${index}">`
+                                `<div class="col-md-3" id="id${boula.id ?? index}">`
                             );
                         else
                             $('#jsonResult').append(
-                                `<div class="col-md-3 d-none" id="id${index}">`
+                                `<div class="col-md-3 d-none" id="id${boula.id ?? index}">`
                             );
                         Object.entries(boula).forEach(element => {
-                            $(`#id${index}`).append(
+                            $(`#id${boula.id ?? index}`).append(
                                 $("<p>").text(JSON.stringify(
                                     element
                                 )) // Set text content to avoid HTML parsing
@@ -2172,20 +2172,20 @@
                                 alert($('#table').closest('.count'));
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id}'>show ${boula.id ?? index}</button>`
+                                    `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}'>show ${boula.id ?? index}</button>`
                                 );
 
-                                if ('btn' + boula.id == localStorage.getItem(
+                                if ('btn' + boula.id ?? index == localStorage.getItem(
                                         'openedQueryId'))
                                     $('#jsonResult').append(
-                                        `<div class="col-md-3" id="id${boula.id}">`
+                                        `<div class="col-md-3" id="id${boula.id ?? index}">`
                                     );
                                 else
                                     $('#jsonResult').append(
-                                        `<div class="col-md-3 d-none" id="id${index}">`
+                                        `<div class="col-md-3 d-none" id="id${boula.id ?? index}">`
                                     );
                                 Object.entries(boula).forEach(element => {
-                                    $(`#id${index}`).append(
+                                    $(`#id${boula.id ?? index}`).append(
                                         $("<p>").text(JSON.stringify(
                                             element
                                         )) // Set text content to avoid HTML parsing
@@ -2198,20 +2198,20 @@
                             data.data.forEach((boula,index) => {
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id}'>show ${boula.id ?? index}</button>`
+                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}'>show ${boula.id ?? index}</button>`
                                 );
 
-                                if ('btn' + boula.id == localStorage.getItem(
+                                if ('btn' + boula.id ?? index == localStorage.getItem(
                                         'openedQueryId'))
                                     $('#jsonResult').append(
-                                        `<div class="col-md-3" id="id${boula.id}">`
+                                        `<div class="col-md-3" id="id${boula.id ?? index}">`
                                     );
                                 else
                                     $('#jsonResult').append(
-                                        `<div class="col-md-3 d-none" id="id${index}">`
+                                        `<div class="col-md-3 d-none" id="id${boula.id ?? index}">`
                                     );
                                 Object.entries(boula).forEach(element => {
-                                    $(`#id${index}`).append(
+                                    $(`#id${boula.id ?? index}`).append(
                                         $("<p>").text(JSON.stringify(
                                             element
                                         )) // Set text content to avoid HTML parsing
@@ -2309,20 +2309,20 @@
                         data.data.forEach((boula,index) => {
                             console.log('boula', boula);
                             $('#jsonResult').append(
-                                `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id}'>show ${boula.id ?? index}</button>`
+                                `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}'>show ${boula.id ?? index}</button>`
 
                             );
-                            if ('btn' + boula.id == localStorage.getItem(
+                            if ('btn' + boula.id ?? index == localStorage.getItem(
                                     'openedQueryId'))
                                 $('#jsonResult').append(
-                                    `<div class="col-md-3" id="id${boula.id}">`
+                                    `<div class="col-md-3" id="id${boula.id ?? index}">`
                                 );
                             else
                                 $('#jsonResult').append(
-                                    `<div class="col-md-3 d-none" id="id${index}">`
+                                    `<div class="col-md-3 d-none" id="id${boula.id ?? index}">`
                                 );
                             Object.entries(boula).forEach(element => {
-                                $(`#id${index}`).append(
+                                $(`#id${boula.id ?? index}`).append(
                                     $("<p>").text(JSON.stringify(
                                         element
                                     )) // Set text content to avoid HTML parsing
@@ -2369,20 +2369,20 @@
                             data.data.forEach((boula,index) => {
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id}'>show ${boula.id ?? index}</button>`
+                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}'>show ${boula.id ?? index}</button>`
                                 );
-                                if ('btn' + boula.id == localStorage.getItem(
+                                if ('btn' + boula.id ?? index == localStorage.getItem(
                                         'openedQueryId'))
                                     $('#jsonResult').append(
-                                        `<div class="col-md-3" id="id${boula.id}">`
+                                        `<div class="col-md-3" id="id${boula.id ?? index}">`
                                         );
                                 else
                                     $('#jsonResult').append(
-                                        `<div class="col-md-3 d-none" id="id${index}">`
+                                        `<div class="col-md-3 d-none" id="id${boula.id ?? index}">`
                                         );
 
                                 Object.entries(boula).forEach(element => {
-                                    $(`#id${index}`).append(
+                                    $(`#id${boula.id ?? index}`).append(
                                         $("<p>").text(JSON
                                             .stringify(element)
                                             ) // Ensure safe text rendering
