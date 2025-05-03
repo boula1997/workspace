@@ -1012,7 +1012,6 @@
                             type: 'add attributes types'
                         },
                         showSpecial: () => {
-                            $selectedDBname.show().attr('required', true);
                             $stack.show().attr('placeholder', 'Select stack');
                         }
                     },
@@ -1021,27 +1020,18 @@
                         placeholders: {
                             templateName: 'insert component name',
                             word: 'enter endpoint'
-                        },
-                        showSpecial: () => {
-                            $selectedDBname.show().attr('required', true);
                         }
                     },
                     'Ajax get': {
                         show: ['module'],
                         placeholders: {
                             module: 'attribute name'
-                        },
-                        showSpecial: () => {
-                            $selectedDBname.show().attr('required', true);
                         }
                     },
                     'Ajax post': {
                         show: ['module'],
                         placeholders: {
                             module: 'route name'
-                        },
-                        showSpecial: () => {
-                            $selectedDBname.show().attr('required', true);
                         }
                     },
                     'checkout multible module': {
