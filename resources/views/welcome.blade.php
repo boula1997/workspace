@@ -338,10 +338,8 @@
                                     <option value="">Select the required action</option>
                                     <option class="" value="15">add script</option>
                                     <option class="" value="15">add module</option>
-                                    <option value="23">auto attributes (edit first methodology to avoid filling
-                                        data)</option>
-                                    <option value="0">create new module(or Open newly added module edit first
-                                        methodology to avoid filling data)</option>
+                                    <option value="23">auto attributes (edit first methodology to avoid filling data)</option>
+                                    <option value="0">create new module(or Open newly added module edit first methodology to avoid filling data)</option>
                                     <option value="14">checkout multible module</option>
                                     <option value="6">copy multible modules using repo</option>
                                     <option value="12">desc database</option>
@@ -495,8 +493,8 @@
                                 <input type="text" value="{{ old('size') }}" class="form-control   text-white"
                                     name="size" placeholder="Insert file size">
                             </div>
-                            <div class="form-group mt-2">
-                                <select class="select form-control" name="dbname" id="db_name">
+                            <div class="form-group mt-2" id="dbcontainer">
+                                <select class="select form-control" name="dbname" id="db_name" >
                                     <option value="search for query">Search for db</option>
                                     @foreach (databases() as $database)
                                         <option value="{{ $database->schema_name }}">{{ $database->schema_name }}
@@ -607,7 +605,7 @@
                                 browser try another account or new browser</p>
                             <p class="text-warning">Listen to tasks and write most important of them in notebook (Most
                                 Important)</p>
-                            <p class="text-warning">alt +dblclick methodology + auto attributes automation option</p>
+                            <p class="text-warning">alt +dblclick methodology + auto attributes (edit first methodology to avoid filling data) automation option</p>
                             <ul class="text-white">
                                 <li>
                                     write attributes on lines like this and copy them using alt+dblclick

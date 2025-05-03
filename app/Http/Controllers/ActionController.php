@@ -139,9 +139,9 @@ class ActionController extends Controller
 
 
     if ($request->action == '0' || $request->action == '2') {
-      $action = $request->action == '0' ? 'create new module(or Open newly added module)' : 'Rename module';
+      $action = $request->action == '0' ? 'create new module(or Open newly added module edit first methodology to avoid filling data)' : 'Rename module';
         
-      // auto attributes
+      // auto attributes (edit first methodology to avoid filling data)
       $attributes = explode(',', $request->attribute);
       $types = explode(',', $request->type);
       $replaceWords = ['undefined', 'Undefined'];
@@ -179,7 +179,7 @@ class ActionController extends Controller
       usort($resultsauto, function ($a, $b) {
           return strcmp($a['script_name'], $b['script_name']);
       });
-      // auto attributes
+      // auto attributes (edit first methodology to avoid filling data)
       $module = $request->has('name') ? $request->name : null;
       $plural = $request->plural;
       $data = $request->all();
@@ -206,7 +206,7 @@ class ActionController extends Controller
       $action = $request->action == '1' ? 'Delete multible module' : ($request->action == '3' ? 'Open multible modules' : ($request->action == '20' ? 'Reblace word in module' : 'copy multible modules using repo'));
 
 
-      // auto attributes
+      // auto attributes (edit first methodology to avoid filling data)
       $attributes = explode(',', $request->attribute);
       $types = explode(',', $request->type);
       $replaceWords = ['undefined', 'Undefined'];
@@ -244,7 +244,7 @@ class ActionController extends Controller
       usort($resultsauto, function ($a, $b) {
           return strcmp($a['script_name'], $b['script_name']);
       });
-      // auto attributes
+      // auto attributes (edit first methodology to avoid filling data)
 
       // Search multible in sql
       $array = explode(',', $request->name);
@@ -585,7 +585,7 @@ class ActionController extends Controller
       return view('welcome', compact('action', 'data', 'last','timeClicks','clicksByDay','flag'));
     }
     if ($request->action == '23') {
-      $action = "auto attributes";
+      $action = "auto attributes (edit first methodology to avoid filling data)";
       $attributes = explode(',', $request->attribute);
       $types = explode(',', $request->type);
       $replaceWords = ['undefined', 'Undefined'];

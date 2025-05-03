@@ -1,5 +1,5 @@
 <div class="row mt-5">
-    @if ($action == 'create new module(or Open newly added module)')
+    @if ($action == 'create new module(or Open newly added module edit first methodology to avoid filling data)')
         <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         <div id="newModuleB">
@@ -1400,7 +1400,7 @@
         @endif
     </div>
     <div>
-        @if ($action == 'auto attributes')
+        @if ($action == 'auto attributes (edit first methodology to avoid filling data)')
             @foreach ($results as $scriptResult)
                 {{-- <h4 class="text-warning">{{ $scriptResult['script_name'] }}</h4> --}}
                 <div>

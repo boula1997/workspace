@@ -811,7 +811,8 @@
         }
 
         function showSelectedActionInputs() {
-            if (localStorage.getItem('selectAction') == 'create new module(or Open newly added module)') {
+            if (localStorage.getItem('selectAction') == 'create new module(or Open newly added module edit first methodology to avoid filling data)') {
+            
                 $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
                     .each(
                         function() {
@@ -820,6 +821,8 @@
                             else
                                 $(this).removeAttr('checked');
                         });
+
+
                 $('input[name="name"').show().attr('placeholder', 'current module name');
                 $('input[name="rname"').show().attr('placeholder', 'need to create module name');
                 $('#flaginput').show().attr('placeholder', 'Flag');
@@ -829,7 +832,7 @@
                 $('#websites').addClass('d-none');
 
                 $('input[name="attribute"').show().attr('placeholder', 'Add attributes');
-                $('input[name="dbname"').show().attr('placeholder', 'Insert database name');
+                $('#dbcontainer').show().attr('placeholder', 'Insert database name');
                 $('input[name="tablename"').show().attr('placeholder', 'ex: tablename1,tablename2');
 
                 $('input[name="module"').show().attr('placeholder', 'need to create module name');
@@ -876,7 +879,7 @@
                 $('input[name="flag"').hide().attr('required', false);
                 $('input[name="rname"').show().attr('placeholder', 'Enter rname');
                 $('input[name="attribute"').show().attr('placeholder', 'Enter attribute');
-                $('input[name="dbname"').show().attr('placeholder', 'Enter dbname');
+                $('#dbcontainer').show().attr('placeholder', 'Enter dbname');
 
                 $('input[name="module"').show().attr('placeholder', 'Enter module');
                 $('input[name="type"').show().attr('placeholder', 'Enter type');
@@ -909,7 +912,7 @@
                 $('#websites').addClass('d-none');
 
                 $('input[name="attribute"').show().attr('placeholder', 'Enter attribute');
-                $('input[name="dbname"').show().attr('placeholder', 'Enter dbname');
+                $('#dbcontainer').show().attr('placeholder', 'Enter dbname');
 
                 $('input[name="module"').show().attr('placeholder', 'Enter module');
                 $('input[name="type"').show().attr('placeholder', 'Enter type');
@@ -969,7 +972,7 @@
                             if ($(this).attr('type') !== 'checkbox')
                                 $(this).hide().attr('required', false);
                         });
-                $('input[name="dbname"').show().attr('placeholder', 'Enter dbname');
+                $('#dbcontainer').show().attr('placeholder', 'Enter dbname');
                 $('#textarea').hide().attr('required', false);
                 $('#websites').addClass('d-none');
 
@@ -986,7 +989,7 @@
                             if ($(this).attr('type') !== 'checkbox')
                                 $(this).hide().attr('required', false);
                         });
-                $('input[name="dbname"').show().attr('placeholder', 'Enter db name');
+                $('#dbcontainer').show().attr('placeholder', 'Enter db name');
                 $('input[name="startingOrderLetter"').show().attr('placeholder', 'ex: 3,4,5');
                 $('#textarea').hide().attr('required', false);
                 $('#websites').addClass('d-none');
@@ -1002,7 +1005,7 @@
                 $('input[name="name"').show().attr('placeholder', 'Enter name');
                 $('#flaginput').show().attr('placeholder', 'Enter flaginput');
                 $('input[name="flag"').hide().attr('required', false);
-                $('input[name="dbname"').show().attr('placeholder', 'Enter dbname');
+                $('#dbcontainer').show().attr('placeholder', 'Enter dbname');
                 $('#textarea').hide().attr('required', false);
                 $('#websites').addClass('d-none');
 
@@ -1016,7 +1019,7 @@
                             if ($(this).attr('type') !== 'checkbox')
                                 $(this).hide().attr('required', false);
                         });
-                $('input[name="dbname"').show().attr('placeholder', 'Enter link');
+                $('#dbcontainer').show().attr('placeholder', 'Enter link');
                 $('#textarea').hide().attr('required', false);
                 $('#websites').addClass('d-none');
 
@@ -1029,7 +1032,7 @@
                             if ($(this).attr('type') !== 'checkbox')
                                 $(this).hide().attr('required', false);
                         });
-                $('input[name="dbname"').show().attr('placeholder', 'enter base url');
+                $('#dbcontainer').show().attr('placeholder', 'enter base url');
                 $('input[name="templateName"').show().attr('placeholder', 'insert component name');
                 $('input[name="projectrepolink"').show().attr('placeholder',
                     'insert attribute name');
@@ -1040,7 +1043,7 @@
                 if (localStorage.getItem('selectAction') ==
                     'React post') {
                     $('input[name="attribute"').show().attr('placeholder', 'add attributes');
-                    $('input[name="dbname"').show().attr('placeholder', 'insert database name');
+                    $('#dbcontainer').show().attr('placeholder', 'insert database name');
 
                     $('input[name="module"').show().attr('placeholder', 'need to create module');
                     $('input[name="type"').show().attr('placeholder', 'add attributes types');
@@ -1056,7 +1059,7 @@
                             if ($(this).attr('type') !== 'checkbox')
                                 $(this).hide().attr('required', false);
                         });
-                $('input[name="dbname"').show().attr('placeholder', 'enter base url');
+                $('#dbcontainer').show().attr('placeholder', 'enter base url');
                 $('input[name="templateName"').show().attr('placeholder', 'insert component name');
                 $('input[name="word"').show().attr('placeholder', 'enter endpoint');
                 $('#textarea').hide().attr('required', false);
@@ -1071,7 +1074,7 @@
                             if ($(this).attr('type') !== 'checkbox')
                                 $(this).hide().attr('required', false);
                         });
-                $('input[name="dbname"').show().attr('placeholder', 'url');
+                $('#dbcontainer').show().attr('placeholder', 'url');
                 $('input[name="module"').show().attr('placeholder', 'attribute name');
                 $('#textarea').hide().attr('required', false);
 
@@ -1086,7 +1089,7 @@
                             if ($(this).attr('type') !== 'checkbox')
                                 $(this).hide().attr('required', false);
                         });
-                $('input[name="dbname"').show().attr('placeholder', 'insert form id');
+                $('#dbcontainer').show().attr('placeholder', 'insert form id');
                 $('input[name="module"').show().attr('placeholder', 'route name');
                 $('#textarea').hide().attr('required', false);
 
@@ -1116,16 +1119,18 @@
                             if ($(this).attr('type') !== 'checkbox')
                                 $(this).hide().attr('required', false);
                         });
-                $('input[name="dbname"').show().attr('placeholder', 'Enter dbname');
+                $('#dbcontainer').show().attr('placeholder', 'Enter dbname');
                 $('#textarea').hide().attr('required', false);
                 $('#websites').addClass('d-none');
 
                 $('#flaginput').hide().attr('required', false);
             } else if (localStorage.getItem('selectAction') == 'add script' || localStorage.getItem('selectAction') ==
-                'auto attributes' || localStorage.getItem('selectAction') ==
+                'auto attributes (edit first methodology to avoid filling data)' || localStorage.getItem('selectAction') ==
                 'get multible scripts' || localStorage.getItem('selectAction') ==
                 'add module' || localStorage.getItem('selectAction') ==
                 'get multible modules') {
+
+                $('#dbcontainer').hide();
 
                 if (localStorage.getItem('selectAction') ==
                     'add module' || localStorage.getItem('selectAction') ==
@@ -1152,9 +1157,9 @@
                 $('#stack').hide().attr('required', false);
 
                 if (localStorage.getItem('selectAction') ==
-                    'auto attributes') {
+                    'auto attributes (edit first methodology to avoid filling data)') {
                     $('input[name="attribute"').show().attr('placeholder', 'add attributes');
-                    $('input[name="dbname"').show().attr('placeholder', 'insert database name');
+                    $('#dbcontainer').show().attr('placeholder', 'insert database name');
                     $('input[name="tablename"').show().attr('placeholder', 'ex: tablename1,tablename2');
 
                     $('input[name="module"').show().attr('placeholder', 'need to create module');
