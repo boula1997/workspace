@@ -104,8 +104,10 @@
 </style>
 
 <body>
-    <div class="container-fluid overflow-y-hidden">
+    <div class="container-fluid">
         @include('tabs')
+    </div>
+    <div class="container-fluid overflow-y-hidden">
         <div class="row justify-content-center">
             {{-- <div class="allModals">
                 @foreach (posts() as $post)
