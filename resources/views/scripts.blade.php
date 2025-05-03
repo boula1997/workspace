@@ -833,7 +833,6 @@
                 const $textarea = $('#textarea');
                 const $selectedDBname = $('#selectedDBname');
                 const $websites = $('#websites');
-                const $dbContainer = $('#dbcontainer');
                 
                 // Hide everything by default
                 hideAllInputs();
@@ -842,7 +841,6 @@
                 $websites.addClass('d-none');
                 $flagInput.hide().attr('required', false);
                 $stack.hide().attr('required', false);
-                $dbContainer.hide();
                 
                 // Action configurations
                 const actionConfigs = {
