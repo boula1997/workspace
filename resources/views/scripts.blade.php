@@ -810,409 +810,340 @@
             });
         }
 
-        function showSelectedActionInputs() {
-            if (localStorage.getItem('selectAction') == 'create new module(or Open newly added module edit first methodology to avoid filling data)') {
-            
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
+            function showSelectedActionInputs() {
+                // Get the selected action once
+                const selectedAction = localStorage.getItem('selectAction');
+                
+                // Common operations
+                const hideAllInputs = () => {
+                    $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
+                        .each(function() {
+                            if ($(this).attr('type') !== 'checkbox') {
                                 $(this).hide().attr('required', false);
-                            else
+                            } else {
                                 $(this).removeAttr('checked');
+                            }
                         });
 
-
-                $('input[name="name"').show().attr('placeholder', 'current module name');
-                $('input[name="rname"').show().attr('placeholder', 'need to create module name');
-                $('#flaginput').show().attr('placeholder', 'Flag');
-                $('#stack').show().attr('placeholder', 'Select stack');
-                $('input[name="flag"').hide().attr('required', false);
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-
-                $('input[name="attribute"').show().attr('placeholder', 'Add attributes');
-                $('#dbcontainer').show().attr('placeholder', 'Insert database name');
-                $('input[name="tablename"').show().attr('placeholder', 'ex: tablename1,tablename2');
-
-                $('input[name="module"').show().attr('placeholder', 'need to create module name');
-                $('input[name="type"').show().attr('placeholder', 'Select attributes types');
-                $('#stack').show().attr('placeholder', 'Enter stack');
-
-
-
-                let bar3 = false;
-                if (bar3) {
-
-                    $('#refrencePlural').attr('checked', true);
-                    $('input[name="plural"').show().attr('placeholder', 'Enter plural');
-                } else {
-
-                    $('#refrencePlural').attr('checked', false);
-                    $('input[name="plural"').hide().attr('required', false);
+                };
+                
+                // Common elements
+                const $flagInput = $('#flaginput');
+                const $stack = $('#stack');
+                const $textarea = $('#textarea');
+                const $selectedDBname = $('#selectedDBname');
+                const $websites = $('#websites');
+                const $dbContainer = $('#dbcontainer');
+                
+                // Hide everything by default
+                hideAllInputs();
+                $textarea.hide().attr('required', false);
+                $selectedDBname.hide().attr('required', false);
+                $websites.addClass('d-none');
+                $flagInput.hide().attr('required', false);
+                $stack.hide().attr('required', false);
+                $dbContainer.hide();
+                
+                // Action configurations
+                const actionConfigs = {
+                    'create new module(or Open newly added module edit first methodology to avoid filling data)': {
+                        show: ['name', 'rname', 'attribute', 'tablename', 'module', 'type'],
+                        placeholders: {
+                            name: 'current module name',
+                            rname: 'need to create module name',
+                            attribute: 'Add attributes',
+                            tablename: 'ex: tablename1,tablename2',
+                            module: 'need to create module name',
+                            type: 'Select attributes types'
+                        },
+                        showSpecial: () => {
+                            $flagInput.show().attr('placeholder', 'Flag');
+                            $selectedDBname.show().attr('required', true);
+                        },
+                        checkboxHandling: () => {
+                            $('#refrencePlural').attr('checked', false);
+                            $('input[name="plural"').hide().attr('required', false);
+                        }
+                    },
+                    'Delete multible module': {
+                        show: ['name'],
+                        placeholders: {
+                            name: 'Enter name'
+                        },
+                        showSpecial: () => {
+                            $flagInput.show().attr('placeholder', 'Enter flag');
+                            $stack.show().attr('placeholder', 'Enter stack');
+                            $('#searchRefrences').attr('checked', false);
+                        }
+                    },
+                    'Rename module': {
+                        show: ['name', 'rname', 'attribute', 'module', 'type'],
+                        placeholders: {
+                            name: 'Enter name',
+                            rname: 'Enter rname',
+                            attribute: 'Enter attribute',
+                            module: 'Enter module',
+                            type: 'Enter type'
+                        },
+                        showSpecial: () => {
+                            $flagInput.show().attr('placeholder', 'Enter flaginput');
+                            $stack.show().attr('placeholder', 'Enter stack');
+                            $selectedDBname.show().attr('required', true);
+                        },
+                        checkboxHandling: () => {
+                            $('#refrencePlural').attr('checked', false);
+                            $('input[name="plural"').hide().attr('required', false);
+                        }
+                    },
+                    'Open multible modules': {
+                        show: ['name', 'attribute', 'module', 'type'],
+                        placeholders: {
+                            name: 'Enter name',
+                            attribute: 'Enter attribute',
+                            module: 'Enter module',
+                            type: 'Enter type'
+                        },
+                        showSpecial: () => {
+                            $flagInput.show().attr('placeholder', 'Enter flag');
+                            $stack.show().attr('placeholder', 'Enter stack');
+                           $selectedDBname.show().attr('required', true);
+                        }
+                    },
+                    'Reblace word in module': {
+                        show: ['name', 'word', 'replaceWord'],
+                        placeholders: {
+                            name: 'Enter name',
+                            word: 'Enter word',
+                            replaceWord: 'Enter replaceWord'
+                        },
+                        showSpecial: () => {
+                            $flagInput.show().attr('placeholder', 'Enter flaginput');
+                        }
+                    },
+                    'Get files with size bigger than': {
+                        show: ['size'],
+                        placeholders: {
+                            size: 'Enter size'
+                        }
+                    },
+                    'copy multible modules using repo': {
+                        show: ['name', 'repolink', 'projectrepolink'],
+                        placeholders: {
+                            name: 'Enter name',
+                            repolink: 'Enter repo link',
+                            projectrepolink: 'Enter project repo link'
+                        },
+                        showSpecial: () => {
+                            $flagInput.show().attr('placeholder', 'Enter flag');
+                        }
+                    },
+                    'translate all attributes': {
+                        showSpecial: () => {
+                            $selectedDBname.show().attr('required', true);
+                        }
+                    },
+                    'Search all attributes at once': {
+                        show: ['startingOrderLetter'],
+                        placeholders: {
+                            startingOrderLetter: 'ex: 3,4,5'
+                        },
+                        showSpecial: () => {
+                            $selectedDBname.show().attr('required', true);
+                        }
+                    },
+                    'search project modules': {
+                        show: ['startingOrderLetter'],
+                        placeholders: {
+                            startingOrderLetter: 'ex: 3,4,5'
+                        },
+                        showSpecial: () => {
+                            $selectedDBname.show().attr('required', true);
+                        }
+                    },
+                    'Show or Delete project images': {
+                        show: ['startingOrderLetter'],
+                        placeholders: {
+                            startingOrderLetter: 'ex: 3,4,5'
+                        },
+                        showSpecial: () => {
+                            $selectedDBname.show().attr('required', true);
+                        }
+                    },
+                    'desc database': {
+                        show: ['startingOrderLetter'],
+                        placeholders: {
+                            startingOrderLetter: 'ex: 3,4,5'
+                        },
+                        showSpecial: () => {
+                            $selectedDBname.show().attr('required', true);
+                        }
+                    },
+                    'Prebare multible modules to work on': {
+                        show: ['name'],
+                        placeholders: {
+                            name: 'Enter name'
+                        },
+                        showSpecial: () => {
+                            $flagInput.show().attr('placeholder', 'Enter flaginput');
+                            $selectedDBname.show().attr('required', true);
+                        }
+                    },
+                    'translate untranslated words': {
+                        showSpecial: () => {
+                            $selectedDBname.show().attr('required', true);
+                        }
+                    },
+                    'Add new template link': {
+                        showSpecial: () => {
+                            $selectedDBname.show().attr('required', true);
+                        }
+                    },
+                    'Add new googlead link': {
+                        showSpecial: () => {
+                            $selectedDBname.show().attr('required', true);
+                        }
+                    },
+                    'React post': {
+                        show: ['templateName', 'projectrepolink', 'word', 'attribute', 'module', 'type'],
+                        placeholders: {
+                            templateName: 'insert component name',
+                            projectrepolink: 'insert attribute name',
+                            word: 'enter endpoint',
+                            attribute: 'add attributes',
+                            module: 'need to create module',
+                            type: 'add attributes types'
+                        },
+                        showSpecial: () => {
+                            $selectedDBname.show().attr('required', true);
+                            $stack.show().attr('placeholder', 'Select stack');
+                        }
+                    },
+                    'React get': {
+                        show: ['templateName', 'word'],
+                        placeholders: {
+                            templateName: 'insert component name',
+                            word: 'enter endpoint'
+                        },
+                        showSpecial: () => {
+                            $selectedDBname.show().attr('required', true);
+                        }
+                    },
+                    'Ajax get': {
+                        show: ['module'],
+                        placeholders: {
+                            module: 'attribute name'
+                        },
+                        showSpecial: () => {
+                            $selectedDBname.show().attr('required', true);
+                        }
+                    },
+                    'Ajax post': {
+                        show: ['module'],
+                        placeholders: {
+                            module: 'route name'
+                        },
+                        showSpecial: () => {
+                            $selectedDBname.show().attr('required', true);
+                        }
+                    },
+                    'checkout multible module': {
+                        show: ['name', 'commit'],
+                        placeholders: {
+                            name: 'Enter repo link',
+                            commit: 'Enter commit'
+                        },
+                        showSpecial: () => {
+                            $flagInput.show().attr('placeholder', 'Enter flag');
+                        }
+                    },
+                    'Open Shared Module Files': {
+                        showSpecial: () => {
+                            $selectedDBname.show().attr('required', true);
+                        }
+                    },
+                    'add script': {
+                        showTextarea: true,
+                        placeholder: 'ex: keyword1, keyword2, keyword3'
+                    },
+                    'auto attributes (edit first methodology to avoid filling data)': {
+                        show: ['attribute', 'tablename', 'module', 'type'],
+                        placeholders: {
+                            attribute: 'add attributes',
+                            tablename: 'ex: tablename1,tablename2',
+                            module: 'need to create module',
+                            type: 'add attributes types'
+                        },
+                        showSpecial: () => {
+                            $selectedDBname.show().attr('required', true);
+                            $stack.show().attr('placeholder', 'Select stack');
+                        },
+                        showTextarea: false
+                    },
+                    'get multible scripts': {
+                        showTextarea: true,
+                        placeholder: 'ex: keyword1, keyword2, keyword3',
+                        checkboxHandling: () => {
+                            $('#projectContent').attr('checked', false);
+                        }
+                    },
+                    'add module': {
+                        showTextarea: true,
+                        placeholder: 'ex: keyword1, keyword2, keyword3',
+                        checkboxHandling: () => {
+                            $('#projectContent').attr('checked', false);
+                        }
+                    },
+                    'get multible modules': {
+                        showTextarea: true,
+                        placeholder: 'ex:keyword1,keyword2,keyword3'
+                    },
+                    'Open Websites': {
+                        showSpecial: () => {
+                            $websites.removeClass('d-none');
+                        }
+                    },
+                    'Servers Hostings and git default': {},
+                    'Image Workspace': {},
+                    'flags manager': {},
+                    'Get Stats': {},
+                    'Select the required action': {}
+                };
+                
+                // Handle the selected action
+                if (actionConfigs[selectedAction]) {
+                    const config = actionConfigs[selectedAction];
+                    
+                    // Show regular inputs
+                    if (config.show) {
+                        config.show.forEach(inputName => {
+                            $(`input[name="${inputName}"]`)
+                                .show()
+                                .attr('placeholder', config.placeholders[inputName]);
+                        });
+                    }
+                    
+                    // Show textarea if needed
+                    if (config.showTextarea !== undefined) {
+                        if (config.showTextarea) {
+                            $textarea.show().attr('placeholder', config.placeholder);
+                        } else {
+                            $textarea.hide().attr('required', false);
+                        }
+                    }
+                    
+                    // Execute special show operations
+                    if (config.showSpecial) {
+                        config.showSpecial();
+                    }
+                    
+                    // Handle checkbox operations
+                    if (config.checkboxHandling) {
+                        config.checkboxHandling();
+                    }
                 }
-            } else if (localStorage.getItem('selectAction') == 'Delete multible module') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('input[name="name"').show().attr('placeholder', 'Enter name');
-                $('#flaginput').show().attr('placeholder', 'Enter flag');
-                $('#stack').show().attr('placeholder', 'Enter stack');
-                $('input[name="flag"').hide().attr('required', false);
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-                $('#searchRefrences').attr('checked', false);
-
-            } else if (localStorage.getItem('selectAction') == 'Rename module') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('input[name="name"').show().attr('placeholder', 'Enter name');
-                $('#flaginput').show().attr('placeholder', 'Enter flaginput');
-                $('#stack').show().attr('placeholder', 'Enter stack');
-                $('input[name="flag"').hide().attr('required', false);
-                $('input[name="rname"').show().attr('placeholder', 'Enter rname');
-                $('input[name="attribute"').show().attr('placeholder', 'Enter attribute');
-                $('#dbcontainer').show().attr('placeholder', 'Enter dbname');
-
-                $('input[name="module"').show().attr('placeholder', 'Enter module');
-                $('input[name="type"').show().attr('placeholder', 'Enter type');
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-
-
-
-                let bar4 = false;
-                if (bar4) {
-
-                    $('#refrencePlural').attr('checked', true);
-                    $('input[name="plural"').show().attr('placeholder', 'Enter plural');
-                } else {
-
-                    $('#refrencePlural').attr('checked', false);
-                    $('input[name="plural"').hide().attr('required', false);
-                }
-            } else if (localStorage.getItem('selectAction') == 'Open multible modules') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('input[name="name"').show().attr('placeholder', 'Enter name');
-                $('#flaginput').show().attr('placeholder', 'Enter flag');
-                $('input[name="flag"').hide().attr('required', false);
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-
-                $('input[name="attribute"').show().attr('placeholder', 'Enter attribute');
-                $('#dbcontainer').show().attr('placeholder', 'Enter dbname');
-
-                $('input[name="module"').show().attr('placeholder', 'Enter module');
-                $('input[name="type"').show().attr('placeholder', 'Enter type');
-                $('#textarea').hide().attr('required', false);
-                $('#stack').show().attr('placeholder', 'Enter stack');
-
-
-            } else if (localStorage.getItem('selectAction') == 'Reblace word in module') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('#flaginput').show().attr('placeholder', 'Enter flaginput');
-                $('input[name="flag"').hide().attr('required', false);
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-
-                $('input[name="name"').show().attr('placeholder', 'Enter name');
-                $('input[name="word"').show().attr('placeholder', 'Enter word');
-                $('input[name="replaceWord"').show().attr('placeholder', 'Enter replaceWord');
-
-            } else if (localStorage.getItem('selectAction') == 'Get files with size bigger than') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('input[name="size"').show().attr('placeholder', 'Enter size');
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-
-                $('#flaginput').hide().attr('required', false);
-                $('#stack').hide().attr('required', false);
-            } else if (localStorage.getItem('selectAction') == 'copy multible modules using repo') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('input[name="name"').show().attr('placeholder', 'Enter name');
-                $('#flaginput').show().attr('placeholder', 'Enter flag');
-                $('input[name="flag"').hide().attr('required', false);
-                $('input[name="repolink"').show().attr('placeholder', 'Enter repo link');
-                $('input[name="projectrepolink"').show().attr('placeholder',
-                    'Enter project repo link');
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-
-            } else if (localStorage.getItem('selectAction') == 'translate all attributes') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('#dbcontainer').show().attr('placeholder', 'Enter dbname');
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-
-                $('#flaginput').hide().attr('required', false);
-            } else if (localStorage.getItem('selectAction') == 'Search all attributes at once' || localStorage.getItem(
-                    'selectAction') ==
-                'search project modules' || localStorage.getItem('selectAction') == 'Show or Delete project images' ||
-                localStorage.getItem('selectAction') ==
-                'desc database'
-            ) {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('#dbcontainer').show().attr('placeholder', 'Enter db name');
-                $('input[name="startingOrderLetter"').show().attr('placeholder', 'ex: 3,4,5');
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-                $('#flaginput').hide().attr('required', false);
-
-            } else if (localStorage.getItem('selectAction') == 'Prebare multible modules to work on') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('input[name="name"').show().attr('placeholder', 'Enter name');
-                $('#flaginput').show().attr('placeholder', 'Enter flaginput');
-                $('input[name="flag"').hide().attr('required', false);
-                $('#dbcontainer').show().attr('placeholder', 'Enter dbname');
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-
-
-            } else if (localStorage.getItem('selectAction') == 'translate untranslated words' || localStorage.getItem(
-                    'selectAction') == 'Add new template link' || localStorage.getItem(
-                    'selectAction') == 'Add new googlead link') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('#dbcontainer').show().attr('placeholder', 'Enter link');
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-
-                $('#flaginput').hide().attr('required', false);
-            } else if (localStorage.getItem('selectAction') == 'translate untranslated words' || localStorage.getItem(
-                    'selectAction') == 'React post') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('#dbcontainer').show().attr('placeholder', 'enter base url');
-                $('input[name="templateName"').show().attr('placeholder', 'insert component name');
-                $('input[name="projectrepolink"').show().attr('placeholder',
-                    'insert attribute name');
-                $('input[name="word"').show().attr('placeholder', 'enter endpoint');
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-
-                if (localStorage.getItem('selectAction') ==
-                    'React post') {
-                    $('input[name="attribute"').show().attr('placeholder', 'add attributes');
-                    $('#dbcontainer').show().attr('placeholder', 'insert database name');
-
-                    $('input[name="module"').show().attr('placeholder', 'need to create module');
-                    $('input[name="type"').show().attr('placeholder', 'add attributes types');
-                    $('#textarea').hide().attr('required', false);
-                    $('#stack').show().attr('placeholder', 'Select stack');
-                }
-                $('#flaginput').hide().attr('required', false);
-            } else if (localStorage.getItem('selectAction') == 'translate untranslated words' || localStorage.getItem(
-                    'selectAction') == 'React get') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('#dbcontainer').show().attr('placeholder', 'enter base url');
-                $('input[name="templateName"').show().attr('placeholder', 'insert component name');
-                $('input[name="word"').show().attr('placeholder', 'enter endpoint');
-                $('#textarea').hide().attr('required', false);
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-                $('#flaginput').hide().attr('required', false);
-            } else if (localStorage.getItem(
-                    'selectAction') == 'Ajax get') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('#dbcontainer').show().attr('placeholder', 'url');
-                $('input[name="module"').show().attr('placeholder', 'attribute name');
-                $('#textarea').hide().attr('required', false);
-
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-                $('#flaginput').hide().attr('required', false);
-            } else if (localStorage.getItem(
-                    'selectAction') == 'Ajax post') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('#dbcontainer').show().attr('placeholder', 'insert form id');
-                $('input[name="module"').show().attr('placeholder', 'route name');
-                $('#textarea').hide().attr('required', false);
-
-
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-                $('#flaginput').hide().attr('required', false);
-            } else if (localStorage.getItem('selectAction') == 'checkout multible module') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('input[name="name"').show().attr('placeholder', 'Enter repo link');
-                $('#flaginput').show().attr('placeholder', 'Enter flag');
-                $('input[name="flag"').hide().attr('required', false);
-                $('input[name="commit"').show().attr('placeholder', 'Enter commit');
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-
-
-            } else if (localStorage.getItem('selectAction') == 'Open Shared Module Files') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('#dbcontainer').show().attr('placeholder', 'Enter dbname');
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-
-                $('#flaginput').hide().attr('required', false);
-            } else if (localStorage.getItem('selectAction') == 'add script' || localStorage.getItem('selectAction') ==
-                'auto attributes (edit first methodology to avoid filling data)' || localStorage.getItem('selectAction') ==
-                'get multible scripts' || localStorage.getItem('selectAction') ==
-                'add module' || localStorage.getItem('selectAction') ==
-                'get multible modules') {
-
-                $('#dbcontainer').hide();
-
-                if (localStorage.getItem('selectAction') ==
-                    'add module' || localStorage.getItem('selectAction') ==
-                    'get multible scripts') {
-                    $('#textarea').show().attr('placeholder', 'ex: keyword1, keyword2, keyword3');
-
-                } else {
-
-                    $('#projectContent').attr('checked', false);
-                }
-
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-
-                if (localStorage.getItem('selectAction') ==
-                    'get multible modules')
-                    $('#textarea').show().attr('placeholder', 'ex:keyword1,keyword2,keyword3');
-                else
-                    $('#textarea').show().attr('placeholder', 'ex: keyword1, keyword2, keyword3');
-                $('#stack').hide().attr('required', false);
-
-                if (localStorage.getItem('selectAction') ==
-                    'auto attributes (edit first methodology to avoid filling data)') {
-                    $('input[name="attribute"').show().attr('placeholder', 'add attributes');
-                    $('#dbcontainer').show().attr('placeholder', 'insert database name');
-                    $('input[name="tablename"').show().attr('placeholder', 'ex: tablename1,tablename2');
-
-                    $('input[name="module"').show().attr('placeholder', 'need to create module');
-                    $('input[name="type"').show().attr('placeholder', 'add attributes types');
-                    $('#textarea').hide().attr('required', false);
-                    $('#stack').show().attr('placeholder', 'Select stack');
-                }
-
-                $('#flaginput').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-
-
-            } else if (localStorage.getItem('selectAction') == 'Servers Hostings and git default' || localStorage.getItem(
-                    'selectAction') == 'Image Workspace' || localStorage.getItem('selectAction') == 'flags manager' ||
-                localStorage.getItem('selectAction') == 'Get Stats') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-                $('#flaginput').hide().attr('required', false);
-                $('#stack').hide().attr('required', false);
-
-            } else if (localStorage.getItem('selectAction') == 'Select the required action') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('#textarea').hide().attr('required', false);
-                $('#websites').addClass('d-none');
-
-                $('#flaginput').hide().attr('required', false);
-                $('#stack').hide().attr('required', false);
-
-            } else if (localStorage.getItem('selectAction') == 'Open Websites') {
-                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                    .each(
-                        function() {
-                            if ($(this).attr('type') !== 'checkbox')
-                                $(this).hide().attr('required', false);
-                        });
-                $('#textarea').hide().attr('required', false);
-                $('#flaginput').hide().attr('required', false);
-                $('#stack').hide().attr('required', false);
-                $('#websites').removeClass('d-none')
-
             }
-        }
+
+
         $(document).ready(function(e) {
             $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
                 .each(

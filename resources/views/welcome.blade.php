@@ -493,7 +493,7 @@
                                 <input type="text" value="{{ old('size') }}" class="form-control   text-white"
                                     name="size" placeholder="Insert file size">
                             </div>
-                            <div class="form-group mt-2" id="dbcontainer">
+                            <div class="form-group mt-2" id="selectedDBname">
                                 <select class="select form-control" name="dbname" id="db_name" >
                                     <option value="search for query">Search for db</option>
                                     @foreach (databases() as $database)
