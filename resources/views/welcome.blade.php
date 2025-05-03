@@ -100,8 +100,11 @@
 
 <body>
     <div class="container-fluid">
-
         @include('tabs')
+    </div>
+    
+    <div class="container">
+
 
         @if (boula())
             <div class="allModals">
