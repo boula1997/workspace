@@ -1179,8 +1179,9 @@
                     </code>
                 </div>
                 <div>
+                    <div>mysqldump -u {{$dbname}} -p  {{$dbname}} > {{$dbname}}_export.sql</div>      
                     <div>mysqldump -u {{$dbname}} -p --complete-insert {{$dbname}} > {{$dbname}}_export.sql</div>      
-                    <div>mysqldump -u {{$dbname}} -p --no-create-info --complete-insert --ignore-table=yousabte_gym_sports.permissions --ignore-table=yousabte_gym_sports.migrations {{$dbname}} >{{$dbname}}_export.sql</div>
+                    <div>mysqldump -u {{$dbname}} -p --no-create-info --complete-insert --ignore-table={{$dbname}}.permissions --ignore-table={{$dbname}}.migrations {{$dbname}} >{{$dbname}}_export.sql</div>
                     <div>mysqldump -u {{$dbname}} -p --no-data {{$dbname}}> {{$dbname}}_export.sql</div>
                     <hr class="text-white">
                     <div>mysql -u {{$dbname}} -p {{$dbname}} < {{$dbname}}_export.sql</div>
