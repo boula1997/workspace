@@ -832,6 +832,7 @@
                 const $stack = $('#stack');
                 const $textarea = $('#textarea');
                 const $selectedDBname = $('#selectedDBname');
+                const $selectedStack = $('#stack');
                 const $websites = $('#websites');
                 
                 // Hide everything by default
@@ -857,6 +858,7 @@
                         showSpecial: () => {
                             $flagInput.show().attr('placeholder', 'Flag');
                             $selectedDBname.show().attr('required', true);
+                            $selectedStack.show();
                         },
                         checkboxHandling: () => {
                             $('#refrencePlural').attr('checked', false);
