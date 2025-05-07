@@ -32,10 +32,10 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-md-6 d-flex justify-content-start">
-                                                @if (request()->routeIs('tasks.index'))
+                                                @if (request()->route('taskType')=="task")
                                                     <h1 class="card-title fw-bold">@lang('general.tasks') (You can order rows by
                                                         dragging from first column)</h1>
-                                                @elseif(request()->routeIs('tasks.all'))
+                                                @elseif(request()->route('taskType')=="alltasks")
                                                     <h1 class="card-title fw-bold">@lang('general.alltasks')</h1>
                                                 @else
                                                     <h1 class="card-title fw-bold">@lang('general.finishedTasks')</h1>
@@ -58,14 +58,16 @@
                                             </button>
 
                                         </div>
-                                        <form action="{{ route('tasks.bulkAction', ['taskType' => request()->route('taskType)]) }}" method="POST">
+                             <form action="{{ route('tasks.bulkAction', ['taskType' => request()->route('taskType')]) }}" method="POST">
+
                                             @csrf
                                             <div class="row d-flex align-items-center thisForm">
 
 
                                                 {{-- Dynamic Select Input for Employees --}}
                                                 <div class="col-md-4 mb-4">
-     <label class="col-form-label text-right">{{ __('general.employees') }}</label>
+                                                    <label
+                                                        class="col-form-label text-right">{{ __('general.employees') }}</label>
                                                     <select class="form-control select2" id="multiSelectEmployees"
                                                         multiple="multiple" name="employees[]">
                                                         @foreach ($employees as $employee)
