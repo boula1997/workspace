@@ -58,7 +58,7 @@
                                             </button>
 
                                         </div>
-                                        <form action="{{ route('tasks.bulkAction') }}" method="get">
+                                        <form action="{{ route('tasks.bulkAction') }}" method="POST">
                                             @csrf
                                             <div class="row d-flex align-items-center thisForm">
 
