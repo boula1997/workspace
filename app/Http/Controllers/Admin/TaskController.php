@@ -144,7 +144,7 @@ foreach ($websites as $key => $value) {
         $action = $request->input('action');
         $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('appearance',1)->latest()->get();
-        loadActiveProjects(isset($request->projects)?$request->projects:[]);
+        // loadActiveProjects(isset($request->projects)?$request->projects:[]);
         $projectIds=activeWebsitesIds();
         $employeeIds=isset($request->employees)?$request->employees:[];
 
@@ -152,7 +152,7 @@ foreach ($websites as $key => $value) {
         if(!isset($request->employees)&& $action == 'assign')
         return redirect()->back()->with('error', __('Select Employee!'));
 
-        if(!isset($projectIds)&& $action == 'filterProject')
+        if(!isset($request->projects)&& $action == 'filterProject')
         return redirect()->back()->with('error', __('Select Project!'));
          if(isset($taskIds)){
              $task=Task::whereIn('id', $taskIds)->first();
