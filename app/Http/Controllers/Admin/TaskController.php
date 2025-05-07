@@ -179,7 +179,7 @@ foreach ($websites as $key => $value) {
              }
              clearTasks($task->title);
             }
-            emailTasks();
+            
 
             $tasks = Task::where('status',0)->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
@@ -238,7 +238,7 @@ foreach ($websites as $key => $value) {
              }
              clearTasks($task->title);
             }
-            emailTasks();
+            
 
             $tasks = Task::where('status',0)->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
@@ -286,7 +286,7 @@ foreach ($websites as $key => $value) {
                 Task::where('title',$task->title)->where('employee_id',auth()->user()->id)->update(['status' => !$task->status]);
                 clearTasks($task->title);
             }; 
-            emailTasks();
+            
 
             $tasks = Task::where('status',0)->whereIn('project_id', $projectIds)
             ->orderBy('project_id', 'desc')
@@ -414,7 +414,7 @@ foreach ($websites as $key => $value) {
             // Get the previous and the one before the previous route
             $previousRoute = session('previousRoute');
             $twoRoutesAgo = session('twoRoutesAgo');
-            emailTasks();
+            
     
             // Redirect to either the previous or the one before
             return redirect($twoRoutesAgo)
@@ -444,7 +444,7 @@ foreach ($websites as $key => $value) {
             $task = Task::find($id);
             $task->where('title',$task->title)->update(['level' => !$task->level]);
     
-            emailTasks();
+            
     
             return response()->json(['success' => __('general.changed_successfully')]);
         } catch (Exception $e) {
@@ -458,7 +458,7 @@ foreach ($websites as $key => $value) {
             $task = Task::find($id);
             $task->where('title',$task->title)->update(['piority' => !$task->piority]);
     
-            emailTasks();
+            
     
             return response()->json(['success' => __('general.changed_successfully')]);
         } catch (Exception $e) {
@@ -527,7 +527,7 @@ foreach ($websites as $key => $value) {
                 }
                 $task->delete();
 
-                emailTasks();
+                
 
                     
                     // Get the previous and the one before the previous route
@@ -555,7 +555,7 @@ foreach ($websites as $key => $value) {
                 'status' => !$task->status,
                 'created_at' => now() // or use Carbon::now()
             ]);
-            emailTasks();
+            
        
 
 
