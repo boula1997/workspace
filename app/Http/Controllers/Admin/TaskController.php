@@ -150,6 +150,14 @@ class TaskController extends Controller
         $projectIds = activeWebsitesIds();
         $employeeIds = isset($request->employees) ? $request->employees : [];
 
+        if (request()->route('taskType')=="finishedTasks") {
+            $status = [1];
+        } elseif (request()->route('taskType')=="tasks") {
+            $status = [0];
+        } else {
+            $status = [0, 1];
+        }
+
         if (!isset($request->employees) && $action == 'assign')
             dd("Select Employee!");
 
@@ -182,14 +190,14 @@ class TaskController extends Controller
             }
 
 
-            $tasks = Task::where('status', 0)->whereIn('project_id', $request->projects)
+            $tasks = Task::whereIn('status',$status)->whereIn('project_id', $request->projects)
                 ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
                  // Limit the results to 300
                 ->get()
                 ->unique('title');
 
-                dd($tasks);
+             
 
             if (boula()) {
 
@@ -246,7 +254,7 @@ class TaskController extends Controller
             }
 
 
-            $tasks = Task::where('status', 0)->whereIn('project_id', $request->projects)
+            $tasks = Task::whereIn('status',$status)->whereIn('project_id', $request->projects)
                 ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
                  // Limit the results to 300
@@ -298,7 +306,7 @@ class TaskController extends Controller
             ;
 
 
-            $tasks = Task::where('status', 0)->whereIn('project_id', $request->projects)
+            $tasks = Task::whereIn('status',$status)->whereIn('project_id', $request->projects)
                 ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
                  // Limit the results to 300
@@ -351,7 +359,7 @@ class TaskController extends Controller
                     ->unique('title');
             } else {
 
-                $tasks = Task::where('status', 0)->whereIn('project_id', $request->projects)->orderBy('project_id', 'desc')->get()->unique('title');
+                $tasks = Task::whereIn('status',$status)->whereIn('project_id', $request->projects)->orderBy('project_id', 'desc')->get()->unique('title');
             }
 
             $employees = Admin::orderBy('name', 'ASC')->get();

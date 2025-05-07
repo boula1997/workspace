@@ -95,6 +95,19 @@
                                                 </div>
 
 
+                                                {{-- Dynamic Select Input for Projects --}}
+                                                <div class="col-md-4 mb-4">
+                                                    <label
+                                                        class="col-form-label text-right">{{ __('general.projects') }}</label>
+                                                    <select class="form-control select2 bg-dark" 
+                                                         name="taskType">
+                                                           <option value="tasks">tasks</option>
+                                                           <option value="finishedTasks">finishedTasks</option>
+                                                           <option value="allTasks">allTasks</option>
+                                                    </select>
+                                                </div>
+
+
 
 
                                                 <input type="hidden" name="route_name"
