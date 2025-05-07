@@ -349,7 +349,7 @@ class TaskController extends Controller
         } else if ($action == 'filterProject') {
 
             $tasks = Task::whereIn('project_id', $request->projects)->whereIn('status', $status)->orderBy('project_id', 'desc')->get()->unique('title');
-            $employees = Admin::orderBy('name', 'ASC')->get();
+                $employees = Admin::orderBy('name', 'ASC')->get();
             $projects = Project::whereHas('tasks', function ($query) {
                 $query->whereNotNull('id'); // Ensures tasks exist
             })->orderBy('title', 'ASC')->get();

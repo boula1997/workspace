@@ -96,16 +96,11 @@
 
 
                                                 {{-- Dynamic Select Input for Projects --}}
-                                                <div class="col-md-4 mb-4">
-                                                    <label
-                                                        class="col-form-label text-right">{{ __('general.projects') }}</label>
-                                                    <select class="form-control select2 bg-dark" 
-                                                         name="taskType">
-                                                           <option value="tasks">tasks</option>
-                                                           <option value="finishedTasks">finishedTasks</option>
-                                                           <option value="allTasks">allTasks</option>
-                                                    </select>
-                                                </div>
+                                                <select class="form-control select2 bg-dark" name="taskType" id="taskTypeSelect">
+                                                    <option value="tasks">tasks</option>
+                                                    <option value="finishedTasks">finishedTasks</option>
+                                                    <option value="allTasks">allTasks</option>
+                                                </select>
 
 
 
@@ -274,28 +269,44 @@
 
     @push('scripts')
 
-<script>
-    $(document).ready(function () {
-        // Get selected project IDs from localStorage
-        let storedProjects = localStorage.getItem('selectedProjects');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const select = document.getElementById('taskTypeSelect');
+            const savedValue = localStorage.getItem('taskType');
 
-        if (storedProjects) {
-            let selectedIds = JSON.parse(storedProjects); // convert to array
+            if (savedValue) {
+                select.value = savedValue;
+            }
 
-            // Set the selected values in the select2 element
-            $('#multiSelectProjects').val(selectedIds).trigger('change');
-        }
-
-        // Save selection on change
-        $('#multiSelectProjects').on('change', function () {
-            let selected = $(this).val(); // get array of selected values
-            localStorage.setItem('selectedProjects', JSON.stringify(selected));
+            select.addEventListener('change', function () {
+                localStorage.setItem('taskType', this.value);
+            });
         });
+    </script>
 
-        // Initialize select2 (optional if already initialized)
-        $('#multiSelectProjects').select2();
-    });
-</script>
+
+    <script>
+        $(document).ready(function () {
+            // Get selected project IDs from localStorage
+            let storedProjects = localStorage.getItem('selectedProjects');
+
+            if (storedProjects) {
+                let selectedIds = JSON.parse(storedProjects); // convert to array
+
+                // Set the selected values in the select2 element
+                $('#multiSelectProjects').val(selectedIds).trigger('change');
+            }
+
+            // Save selection on change
+            $('#multiSelectProjects').on('change', function () {
+                let selected = $(this).val(); // get array of selected values
+                localStorage.setItem('selectedProjects', JSON.stringify(selected));
+            });
+
+            // Initialize select2 (optional if already initialized)
+            $('#multiSelectProjects').select2();
+        });
+    </script>
 
 
         
