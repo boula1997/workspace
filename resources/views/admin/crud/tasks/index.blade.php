@@ -86,7 +86,7 @@
                                                         multiple="multiple" name="projects[]">
                                                         @foreach ($projects as $project)
                                                             <option value="{{ $project->id }}"
-                                                                {{ collect(old('projects', $projectIds))->contains($project->id) ? 'selected' : '' }}>
+                                                                {{ collect(old('projects', []))->contains($project->id) ? 'selected' : '' }}>
                                                                 {{ $project->title }}
                                                             </option>
                                                         @endforeach
@@ -259,6 +259,32 @@
 
 
     @push('scripts')
+
+<script>
+    $(document).ready(function () {
+        // Get selected project IDs from localStorage
+        let storedProjects = localStorage.getItem('selectedProjects');
+
+        if (storedProjects) {
+            let selectedIds = JSON.parse(storedProjects); // convert to array
+
+            // Set the selected values in the select2 element
+            $('#multiSelectProjects').val(selectedIds).trigger('change');
+        }
+
+        // Save selection on change
+        $('#multiSelectProjects').on('change', function () {
+            let selected = $(this).val(); // get array of selected values
+            localStorage.setItem('selectedProjects', JSON.stringify(selected));
+        });
+
+        // Initialize select2 (optional if already initialized)
+        $('#multiSelectProjects').select2();
+    });
+</script>
+
+
+        
         <script>
             $(document).on('click', '.deleteTask', function() {
                 // Get the closest table row to the clicked button and remove it
