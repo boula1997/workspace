@@ -158,7 +158,6 @@ class TaskController extends Controller
             $status = [0, 1];
         }
 
-        dd($status);
 
         if (!isset($request->employees) && $action == 'assign')
             dd("Select Employee!");
