@@ -139,7 +139,7 @@ class TaskController extends Controller
     }
     public function bulkAction(Request $request)
     {
-
+            dd(400);
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
         $employees = Admin::orderBy('name', 'ASC')->get();
