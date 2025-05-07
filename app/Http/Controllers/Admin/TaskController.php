@@ -279,7 +279,7 @@ foreach ($websites as $key => $value) {
         }  elseif ($action == 'delete') {
             $tasks=Task::whereIn('id', $taskIds)->get();
             foreach($tasks as $task) {
-                notAllowedTaskAction($task->title);
+                // notAllowedTaskAction($task->title);
                 if($task->status==1)
                 Task::where('title',$task->title)->update(['status' => !$task->status]);
                 else
