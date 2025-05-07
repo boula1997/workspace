@@ -269,20 +269,22 @@
 
     @push('scripts')
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const select = document.getElementById('taskTypeSelect');
-            const savedValue = localStorage.getItem('taskType');
+        <script>
+            $(document).ready(function () {
+                var $select = $('#taskTypeSelect');
+                var savedValue = localStorage.getItem('taskType');
 
-            if (savedValue) {
-                select.value = savedValue;
-            }
+                if (savedValue) {
+                    $select.val(savedValue).trigger('change'); // set value AND trigger change event
+                }
 
-            select.addEventListener('change', function () {
-                localStorage.setItem('taskType', this.value);
+                $select.on('change', function () {
+                    localStorage.setItem('taskType', $(this).val());
+                });
             });
-        });
-    </script>
+        </script>
+
+
 
 
     <script>
