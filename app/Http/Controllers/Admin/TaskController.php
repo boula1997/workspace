@@ -158,6 +158,8 @@ class TaskController extends Controller
             $status = [0, 1];
         }
 
+        dd($status);
+
         if (!isset($request->employees) && $action == 'assign')
             dd("Select Employee!");
 
@@ -351,7 +353,7 @@ class TaskController extends Controller
                 $tasks = Task::whereIn('project_id', $request->projects)->where('status', 0)->orderBy('project_id', 'desc')->get()->unique('title');
 
             } else if ($request->route_name == "tasks.finished") {
-                $tasks = Task::where('status', 1)->whereIn('project_id', $request->projects)
+                $tasks = Task::whereIn('status', $status)->whereIn('project_id', $request->projects)
                     ->orderBy('project_id', 'desc')
                     ->latest('created_at') // Ensure latest tasks by creation date
                      // Limit the results to 300
