@@ -181,7 +181,7 @@ foreach ($websites as $key => $value) {
             }
             
 
-            $tasks = Task::where('status',0)->whereIn('project_id', $projectIds)
+            $tasks = Task::where('status',0)->whereIn('project_id', $request->projects)
             ->orderBy('project_id', 'desc')
             ->latest('created_at') // Ensure latest tasks by creation date
             ->take(300) // Limit the results to 300
