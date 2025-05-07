@@ -69,7 +69,7 @@ class TaskController extends Controller
                     })
                     ->orderBy('status')
                     ->latest()
-                    ->take(300)
+                    
                     ->get()
                     ->unique('title');
             } else {
@@ -77,7 +77,7 @@ class TaskController extends Controller
                     ->whereIn('status', $status)
                     ->orderBy('status')
                     ->latest()
-                    ->take(300)
+                    
                     ->get()
                     ->unique('title');
             }
@@ -183,7 +183,7 @@ class TaskController extends Controller
             $tasks = Task::where('status', 0)->whereIn('project_id', $request->projects)
                 ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
-                ->take(300) // Limit the results to 300
+                 // Limit the results to 300
                 ->get()
                 ->unique('title');
 
@@ -244,7 +244,7 @@ class TaskController extends Controller
             $tasks = Task::where('status', 0)->whereIn('project_id', $request->projects)
                 ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
-                ->take(300) // Limit the results to 300
+                 // Limit the results to 300
                 ->get()
                 ->unique('title');
 
@@ -293,7 +293,7 @@ class TaskController extends Controller
             $tasks = Task::where('status', 0)->whereIn('project_id', $request->projects)
                 ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
-                ->take(300) // Limit the results to 300
+                 // Limit the results to 300
                 ->get()
                 ->unique('title');
 
@@ -335,12 +335,12 @@ class TaskController extends Controller
                 $tasks = Task::where('status', 1)->whereIn('project_id', $request->projects)
                     ->orderBy('project_id', 'desc')
                     ->latest('created_at') // Ensure latest tasks by creation date
-                    ->take(300) // Limit the results to 300
+                     // Limit the results to 300
                     ->get()
                     ->unique('title');
             } else {
 
-                $tasks = Task::where('status', 0)->whereIn('project_id', $request->projects)->orderBy('project_id', 'desc')->take(300)->get()->unique('title');
+                $tasks = Task::where('status', 0)->whereIn('project_id', $request->projects)->orderBy('project_id', 'desc')->get()->unique('title');
             }
 
             $employees = Admin::orderBy('name', 'ASC')->get();
