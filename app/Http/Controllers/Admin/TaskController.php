@@ -284,7 +284,6 @@ foreach ($websites as $key => $value) {
                 Task::where('title',$task->title)->update(['status' => !$task->status]);
                 else
                 Task::where('title',$task->title)->where('employee_id',auth()->user()->id)->update(['status' => !$task->status]);
-                taskLog("Delete",$task->title);
                 clearTasks($task->title);
             }; 
             emailTasks();

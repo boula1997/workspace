@@ -82,7 +82,7 @@
                                                 <div class="col-md-4 mb-4">
                                                     <label
                                                         class="col-form-label text-right">{{ __('general.projects') }}</label>
-                                                    <select class="form-control select2" id="multiSelectProjects"
+                                                    <select class="form-control select2 bg-dark" id="multiSelectProjects"
                                                         multiple="multiple" name="projects[]">
                                                         @foreach ($projects as $project)
                                                             <option value="{{ $project->id }}"
