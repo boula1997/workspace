@@ -64,6 +64,40 @@ body{
 }
 
 
+/* General dark background */
+.select2-container--default .select2-selection--multiple {
+  background-color: #2b2b2b;
+  border: 1px solid #444;
+  color: #fff;
+  min-height: 38px;
+}
+
+/* Selected items */
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  background-color: #444;
+  border: 1px solid #666;
+  color: #fff;
+}
+
+/* Placeholder and search field */
+.select2-container--default .select2-search--inline .select2-search__field {
+  background-color: transparent;
+  color: #fff;
+}
+
+/* Dropdown */
+.select2-container--default .select2-results > .select2-results__options {
+  background-color: #2b2b2b;
+  color: #fff;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+  background-color: #444;
+  color: #fff;
+}
+
+
+
 
 
 
