@@ -348,20 +348,7 @@ class TaskController extends Controller
             ]);
         } else if ($action == 'filterProject') {
 
-            if ($request->route_name == "tasks.index") {
-                $tasks = Task::whereIn('project_id', $request->projects)->where('status', 0)->orderBy('project_id', 'desc')->get()->unique('title');
-
-            } else if ($request->route_name == "tasks.finished") {
-                $tasks = Task::whereIn('status', $status)->whereIn('project_id', $request->projects)
-                    ->orderBy('project_id', 'desc')
-                    ->latest('created_at') // Ensure latest tasks by creation date
-                     // Limit the results to 300
-                    ->get()
-                    ->unique('title');
-            } else {
-
-                $tasks = Task::whereIn('status',$status)->whereIn('project_id', $request->projects)->orderBy('project_id', 'desc')->get()->unique('title');
-            }
+            $tasks = Task::whereIn('project_id', $request->projects)->whereIn('status', $status)->orderBy('project_id', 'desc')->get()->unique('title');
 
             $employees = Admin::orderBy('name', 'ASC')->get();
             $projects = Project::whereHas('tasks', function ($query) {
