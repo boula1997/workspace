@@ -65,8 +65,7 @@
 
                                                 {{-- Dynamic Select Input for Employees --}}
                                                 <div class="col-md-4 mb-4">
-                                                    <label
-                                                        class="col-form-label text-right">{{ __('general.employees') }}</label>
+     <label class="col-form-label text-right">{{ __('general.employees') }}</label>
                                                     <select class="form-control select2" id="multiSelectEmployees"
                                                         multiple="multiple" name="employees[]">
                                                         @foreach ($employees as $employee)
