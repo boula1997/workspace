@@ -93,14 +93,20 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
+                                                <div class="col-md-4 mb-4">
+                                                    <label
+                                                        class="col-form-label text-right">{{ __('general.type') }}</label>
+
+                                                    {{-- Dynamic Select Input for Projects --}}
+                                                        <select class="form-control select2 bg-dark" name="taskType" id="taskTypeSelect">
+                                                            <option value="tasks">tasks</option>
+                                                            <option value="finishedTasks">finishedTasks</option>
+                                                            <option value="allTasks">allTasks</option>
+                                                        </select>
+                                                </div>
 
 
-                                                {{-- Dynamic Select Input for Projects --}}
-                                                <select class="form-control select2 bg-dark" name="taskType" id="taskTypeSelect">
-                                                    <option value="tasks">tasks</option>
-                                                    <option value="finishedTasks">finishedTasks</option>
-                                                    <option value="allTasks">allTasks</option>
-                                                </select>
+
 
 
 
