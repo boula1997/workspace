@@ -586,7 +586,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('tasks.all') }}" class="nav-link">
+                                <a href="{{ route('tasks.index', ['status' => 'alltasks']) }}" class="nav-link">
                                     <i class=" px-1 far fa-circle nav-icon"></i>
                                     <p>@lang('general.show')</p>
                                 </a>
@@ -605,7 +605,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('tasks.index') }}" class="nav-link">
+                                <a href="{{ route('tasks.index', ['status' => 'tasks']) }}" class="nav-link">
                                     <i class=" px-1 far fa-circle nav-icon"></i>
                                     <p>@lang('general.show')</p>
                                 </a>
@@ -624,7 +624,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('tasks.finished') }}" class="nav-link">
+                                <a href="{{ route('tasks.index', ['status' => 'finishedTasks']) }}" class="nav-link">
                                     <i class=" px-1 far fa-circle nav-icon"></i>
                                     <p>@lang('general.show')</p>
                                 </a>

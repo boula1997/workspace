@@ -52,9 +52,9 @@ class TaskController extends Controller
             $employeeIds = isset($request->employees) ? $request->employees : [];
 
             // Determine status based on route
-            if (request()->routeIs('tasks.finished')) {
+            if (request()->route('taskType')=="finishedTasks") {
                 $status = [1];
-            } elseif (request()->routeIs('tasks.index')) {
+            } elseif (request()->route('taskType')=="tasks") {
                 $status = [0];
             } else {
                 $status = [0, 1];
@@ -66,7 +66,7 @@ class TaskController extends Controller
                     ->whereIn('status', $status)
                     ->whereDoesntHave('employee', function ($query) {
                         $query->where('email', 'boula@gmail.com');
-                    })
+                    })->where('status',$status)
                     ->orderBy('status')
                     ->latest()
                     
