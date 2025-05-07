@@ -389,7 +389,7 @@ class TaskController extends Controller
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects', 'type', 'projectIds', 'employeeIds'))
             ->with([
                 'i' => (request()->input('page', 1) - 1) * 5,
-                'taskType' => request()->route('taskType'), // for example
+                'taskType' => request()->route('    '), // for example
             ]);
         }
 
