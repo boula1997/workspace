@@ -241,7 +241,7 @@ class TaskController extends Controller
             }
 
 
-            $tasks = Task::where('status', 0)->whereIn('project_id', $projectIds)
+            $tasks = Task::where('status', 0)->whereIn('project_id', $request->projects)
                 ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
                 ->take(300) // Limit the results to 300
@@ -290,7 +290,7 @@ class TaskController extends Controller
             ;
 
 
-            $tasks = Task::where('status', 0)->whereIn('project_id', $projectIds)
+            $tasks = Task::where('status', 0)->whereIn('project_id', $request->projects)
                 ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
                 ->take(300) // Limit the results to 300
@@ -329,10 +329,10 @@ class TaskController extends Controller
         } else if ($action == 'filterProject') {
 
             if ($request->route_name == "tasks.index") {
-                $tasks = Task::whereIn('project_id', $projectIds)->where('status', 0)->orderBy('project_id', 'desc')->get()->unique('title');
+                $tasks = Task::whereIn('project_id', $request->projects)->where('status', 0)->orderBy('project_id', 'desc')->get()->unique('title');
 
             } else if ($request->route_name == "tasks.finished") {
-                $tasks = Task::where('status', 1)->whereIn('project_id', $projectIds)
+                $tasks = Task::where('status', 1)->whereIn('project_id', $request->projects)
                     ->orderBy('project_id', 'desc')
                     ->latest('created_at') // Ensure latest tasks by creation date
                     ->take(300) // Limit the results to 300
@@ -340,7 +340,7 @@ class TaskController extends Controller
                     ->unique('title');
             } else {
 
-                $tasks = Task::where('status', 0)->whereIn('project_id', $projectIds)->orderBy('project_id', 'desc')->take(300)->get()->unique('title');
+                $tasks = Task::where('status', 0)->whereIn('project_id', $request->projects)->orderBy('project_id', 'desc')->take(300)->get()->unique('title');
             }
 
             $employees = Admin::orderBy('name', 'ASC')->get();
@@ -355,7 +355,7 @@ class TaskController extends Controller
                 $lastTaskId = $tasks->max('id') ?? 0;
 
                 // Fetch active website titles
-                $websites = Project::whereIn('id', $projectIds)->latest()->pluck('title');
+                $websites = Project::whereIn('id', $request->projects)->latest()->pluck('title');
 
                 // Append active websites as new tasks with unique incremental IDs
                 foreach ($websites as $key => $value) {
