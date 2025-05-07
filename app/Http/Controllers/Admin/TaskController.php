@@ -110,7 +110,10 @@ class TaskController extends Controller
             }
 
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects', 'projectIds', 'employeeIds'))
-                ->with('i', (request()->input('page', 1) - 1) * 5);
+            ->with([
+                'i' => (request()->input('page', 1) - 1) * 5,
+                'taskType' => request()->input('taskType'), // for example
+            ]);
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
@@ -217,7 +220,10 @@ class TaskController extends Controller
 
 
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects', 'projectIds', 'employeeIds'))
-                ->with('i', (request()->input('page', 1) - 1) * 5);
+            ->with([
+                'i' => (request()->input('page', 1) - 1) * 5,
+                'taskType' => request()->input('taskType'), // for example
+            ]);
         } elseif ($action == 'reassign') {
             foreach ($tasks as $task) {
                 $taskssameTitles = Task::where('title', $task->title)->get();
@@ -275,7 +281,10 @@ class TaskController extends Controller
             }
 
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects', 'projectIds', 'employeeIds'))
-                ->with('i', (request()->input('page', 1) - 1) * 5);
+            ->with([
+                'i' => (request()->input('page', 1) - 1) * 5,
+                'taskType' => request()->input('taskType'), // for example
+            ]);
         } elseif ($action == 'delete') {
             $tasks = Task::whereIn('id', $taskIds)->get();
             foreach ($tasks as $task) {
@@ -324,7 +333,10 @@ class TaskController extends Controller
             }
 
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects', 'projectIds', 'employeeIds'))
-                ->with('i', (request()->input('page', 1) - 1) * 5);
+            ->with([
+                'i' => (request()->input('page', 1) - 1) * 5,
+                'taskType' => request()->input('taskType'), // for example
+            ]);
         } else if ($action == 'filterProject') {
 
             if ($request->route_name == "tasks.index") {
@@ -375,7 +387,10 @@ class TaskController extends Controller
                 }
             }
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects', 'type', 'projectIds', 'employeeIds'))
-                ->with('i', (request()->input('page', 1) - 1) * 5);
+            ->with([
+                'i' => (request()->input('page', 1) - 1) * 5,
+                'taskType' => request()->input('taskType'), // for example
+            ]);
         }
 
 
