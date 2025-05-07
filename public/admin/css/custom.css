@@ -122,8 +122,8 @@ body{
 
 
 .select2-container--default .select2-selection--single {
-  background-color: black;
-  border: 1px solid black;
+  background-color: black !important;
+  border: 1px solid black !important;
   border-radius: 4px;
 }
 
