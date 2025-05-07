@@ -150,9 +150,9 @@ class TaskController extends Controller
         $projectIds = activeWebsitesIds();
         $employeeIds = isset($request->employees) ? $request->employees : [];
 
-        if (request()->route('taskType')=="finishedTasks") {
+        if (request()->taskType=="finishedTasks") {
             $status = [1];
-        } elseif (request()->route('taskType')=="tasks") {
+        } elseif (request()->taskType=="tasks") {
             $status = [0];
         } else {
             $status = [0, 1];
