@@ -58,7 +58,7 @@
                                             </button>
 
                                         </div>
-                                        <form action="{{ route('tasks.bulkAction', ['status' => request()->route('taskType)]) }}" method="POST">
+                                        <form action="{{ route('tasks.bulkAction', ['taskType' => request()->route('taskType)]) }}" method="POST">
                                             @csrf
                                             <div class="row d-flex align-items-center thisForm">
 
