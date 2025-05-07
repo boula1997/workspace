@@ -147,7 +147,6 @@ foreach ($websites as $key => $value) {
         // loadActiveProjects(isset($request->projects)?$request->projects:[]);
         $projectIds=activeWebsitesIds();
         $employeeIds=isset($request->employees)?$request->employees:[];
-      dd($request->projects);
          
         if(!isset($request->employees)&& $action == 'assign')
         return redirect()->back()->with('error', __('Select Employee!'));
@@ -187,7 +186,7 @@ foreach ($websites as $key => $value) {
             ->take(300) // Limit the results to 300
             ->get()
             ->unique('title');
-
+                
             if(boula()){
 
                             // Find the last task ID
