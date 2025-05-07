@@ -149,10 +149,10 @@ class TaskController extends Controller
         $employeeIds = isset($request->employees) ? $request->employees : [];
 
         if (!isset($request->employees) && $action == 'assign')
-            return redirect()->back()->with('error', __('Select Employee!'));
+            dd("Select Employee!");
 
         if (!isset($request->projects) && $action == 'filterProject')
-            return redirect()->back()->with('error', __('Select Project!'));
+            dd("Select Project!");
         if (isset($taskIds)) {
             $task = Task::whereIn('id', $taskIds)->first();
             $tasks = Task::whereIn('id', $taskIds)->get();
