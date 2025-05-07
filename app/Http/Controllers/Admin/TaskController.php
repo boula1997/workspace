@@ -61,11 +61,11 @@ class TaskController extends Controller
             }
 
             // Fetch tasks based on user permissions
-            if (auth()->user()->email != "boula@gmail.com") {
+            if (auth()->user()->email != "nessimboula@gmail.com") {
                 $tasks = $this->task
                     ->whereIn('status', $status)
                     ->whereDoesntHave('employee', function ($query) {
-                        $query->where('email', 'boula@gmail.com');
+                        $query->where('email', 'nessimboula@gmail.com');
                     })->where('status',$status)
                     ->orderBy('status')
                     ->latest()

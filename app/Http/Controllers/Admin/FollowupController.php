@@ -40,12 +40,12 @@ class FollowupController extends Controller
             else
             $status=[0,1];
 
-            if(auth()->user()->email!="boula@gmail.com"){
+            if(auth()->user()->email!="nessimboula@gmail.com"){
                 if(auth()->user() && auth()->user()->type=='admin')
                 $followups = $this->followup
                     ->whereIn('status', $status)
                     ->whereDoesntHave('employee', function ($query) {
-                        $query->where('email', 'boula@gmail.com');
+                        $query->where('email', 'nessimboula@gmail.com');
                     })
                     ->orderBy('status')
                     ->latest()
@@ -61,7 +61,7 @@ class FollowupController extends Controller
                           });
                 })
                 ->whereDoesntHave('employee', function ($query) {
-                    $query->where('email', 'boula@gmail.com');
+                    $query->where('email', 'nessimboula@gmail.com');
                 })
                 ->orderBy('status') // Order by status
                 ->latest()          // Then order by latest date
