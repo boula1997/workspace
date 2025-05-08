@@ -1998,9 +1998,11 @@
             $('#backup').on('click', function(e) {
                 e.preventDefault();
                 navigator.clipboard.writeText(
-                    'mysqldump -u yousabte_workspace -p --complete-insert yousabte_workspace > yousabte_workspace_export.sql\n' +
-                    '\n' +
-                    'kD[asKgc%ydC'
+                 'kD[asKgc%ydC'
+                      +
+                     'mysqldump -u yousabte_workspace -p --complete-insert yousabte_workspace > yousabte_workspace_export.sql\n' +
+                    '\n'
+                   
                 );
                 toastNow();
             });
