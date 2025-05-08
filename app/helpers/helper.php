@@ -217,14 +217,18 @@ function yousabEmails()
                                     <td>' . htmlspecialchars(rest($project) ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
                                   </tr>';
                 }
-
+                $totalCost = $projects->sum('cost');
+                $totalPayed = $projects->sum('payed');
+                $totalRest = $projects->sum(function ($project) {
+                    return rest($project);
+                });
+    
                 $body .= '<tr style="font-weight:bold; background-color:#f0f0f0;">
                 <td>Total</td>
                 <td>' . htmlspecialchars($totalCost, ENT_QUOTES, 'UTF-8') . '</td>
                 <td>' . htmlspecialchars($totalPayed, ENT_QUOTES, 'UTF-8') . '</td>
                 <td>' . htmlspecialchars($totalRest, ENT_QUOTES, 'UTF-8') . '</td>
               </tr>';
-
                 $body .= '</tbody></table><br>';
             }
 
@@ -242,12 +246,6 @@ function yousabEmails()
                           </tr>';
             }
 
-
-            $totalCost = $projects->sum('cost');
-            $totalPayed = $projects->sum('payed');
-            $totalRest = $projects->sum(function ($project) {
-                return rest($project);
-            });
 
 
 
