@@ -268,7 +268,7 @@
 
                                 <i style="cursor: pointer;" content="{{ $website->codeLinks }}"
                                     websiteId="{{ $website->id }}"
-                                    class="clickable-text text-secondary fas fa-copy"></i>
+                                    class="text-secondary fas fa-copy"></i>
                             @endforeach
                         </div>
                         <button type="button" class="btn btn-outline-success w-100" id="amDone">I am
@@ -281,7 +281,7 @@
                             @foreach (References() as $refrnce)
                                 <button type="button" content="{{ $refrnce->codeLinks }}" id="{{ $refrnce->id }}"
                                     title="1click:yellow 2click:green 3click:red"
-                                    class="clickable-text reference btn {{ $refrnce->status == 0 ? 'btn-outline-warning' : ($refrnce->status == 1 ? 'btn-outline-warning' : 'btn-success') }}  hover-cursor mx-1 text-nowrap m-2">{{ $refrnce->title }}</button>
+                                    class="reference btn {{ $refrnce->status == 0 ? 'btn-outline-warning' : ($refrnce->status == 1 ? 'btn-outline-warning' : 'btn-success') }}  hover-cursor mx-1 text-nowrap m-2">{{ $refrnce->title }}</button>
                             @endforeach
                         </div>
                     </div>
@@ -293,7 +293,7 @@
                                 <a href="{{ $website->routesLink }}">
                                     <button type="button" content="{{ $website->codeLinks }}"
                                         id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
-                                        class="clickable-text btn {{ $website->status == 0 ? 'btn-outline-warning' : ($website->status == 1 ? 'btn-outline-warning' : 'btn-success') }}  hover-cursor mx-1 text-nowrap m-2">{{ $website->title }}</button>
+                                        class="btn {{ $website->status == 0 ? 'btn-outline-warning' : ($website->status == 1 ? 'btn-outline-warning' : 'btn-success') }}  hover-cursor mx-1 text-nowrap m-2">{{ $website->title }}</button>
                                 </a>
                             @endforeach
                         </div>
