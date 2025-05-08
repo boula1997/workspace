@@ -48,6 +48,7 @@
                     <option value="model">Model</option>
                     <option value="seeder">Seeder</option>
                     <option value="migration">Migration</option>
+                    <option value="dropMigration">dropMigration</option>
                     <option value="json">Json</option>
 
                 </select>
