@@ -18,7 +18,7 @@ class Samples extends Component
     public function render()
     {   
 
-        $this->samples = Sample::orderBy('id','ASC')->where('stack','dashfastkart')->whereIn('title',["dropMigration"])->get();
+        $this->samples = Sample::orderBy('id','ASC')->whereIn('title',["dropMigration"])->get();
         return view('livewire.samples');
     }
   
