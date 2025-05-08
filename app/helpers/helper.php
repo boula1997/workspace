@@ -83,8 +83,8 @@ function activeDeadline()
 {
     // Get the closest deadline that is today or in the future
     $deadline = Deadline::where('date', '>=', now()->toDateString())
-                        ->orderBy('date', 'asc')
-                        ->first();
+        ->orderBy('date', 'asc')
+        ->first();
 
     return [
         'deadline' => $deadline ? $deadline->date : now()->toDateString(),
@@ -95,34 +95,38 @@ function activeDeadline()
 
 
 
-function dectatorBoula(){
+function dectatorBoula()
+{
     // Check if the user is authenticated before accessing their email
-    if(!boula())
-    if (in_array(request()->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'])) {
-        abort(403, 'Action not allowed');
-    }
+    if (!boula())
+        if (in_array(request()->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'])) {
+            abort(403, 'Action not allowed');
+        }
 }
 
-function notAllowedTaskAction($taskTitle){
+function notAllowedTaskAction($taskTitle)
+{
     $taskIds = Task::where('title', $taskTitle)->pluck('employee_id')->toArray();  // Convert to array
-    if (!in_array(auth()->user()?auth()->user()->id:0, $taskIds)) {
+    if (!in_array(auth()->user() ? auth()->user()->id : 0, $taskIds)) {
         return redirect()->back()->with(['error' => __('general.you_are_not_allowed_to_do_this_assignit_to_you_first')]);
     }
 }
 
-function received($admin){
-    $received=Accountant::where('employee_id',$admin->id)->sum('received');
-    if(isset($received) && (auth()->user()->email==$admin->email || boula()))
-     return $received;
+function received($admin)
+{
+    $received = Accountant::where('employee_id', $admin->id)->sum('received');
+    if (isset($received) && (auth()->user()->email == $admin->email || boula()))
+        return $received;
     else
-    return 'None';
+        return 'None';
 }
-function has($admin){
-    $has=Accountant::where('employee_id',$admin->id)->sum('has');
-    if(isset($has) && (auth()->user()->email==$admin->email || boula()))
-     return $has;
+function has($admin)
+{
+    $has = Accountant::where('employee_id', $admin->id)->sum('has');
+    if (isset($has) && (auth()->user()->email == $admin->email || boula()))
+        return $has;
     else
-    return 'None';
+        return 'None';
 }
 
 
@@ -135,7 +139,7 @@ function yousabEmails()
             $to = $admin->email;
             $toName = $admin->name; // Use the admin's name dynamically
             $subject = 'Tasks and Projects Report';
-            $flat=Issue::find(80);
+            $flat = Issue::find(80);
             // Get high-priority tasks
             $importantTasks = Task::withoutGlobalScope(DateFilterScope::class)
                 ->where('status', 0) // Only pending tasks
@@ -231,6 +235,20 @@ function yousabEmails()
                           </tr>';
             }
 
+
+            $totalCost = $projects->sum('cost');
+            $totalPayed = $projects->sum('payed');
+            $totalRest = $projects->sum(function ($project) {
+                return rest($project);
+            });
+
+            $body .= '<tr style="font-weight:bold; background-color:#f0f0f0;">
+            <td>Total</td>
+            <td>' . htmlspecialchars($totalCost, ENT_QUOTES, 'UTF-8') . '</td>
+            <td>' . htmlspecialchars($totalPayed, ENT_QUOTES, 'UTF-8') . '</td>
+            <td>' . htmlspecialchars($totalRest, ENT_QUOTES, 'UTF-8') . '</td>
+          </tr>';
+
             $body .= '</tbody></table>';
             $body .= '</body></html>';
 
@@ -313,24 +331,25 @@ function failedResponse($data = [], $message = "error", $status = 400)
 
 function itemsCount($model)
 {
-    if(auth()->user() && auth()->user()->type=='admin'){
-        $tasks=count(Task::where('status',0)->get()->unique('title'));
-        $finishedTAsks=count(Task::where('status',1)->get()->unique('title'));
-        $allTAsks=count(Task::get()->unique('title'));
-    }else{
-        $tasks=count(Task::where('status',0)->where('employee_id',auth()->user()?auth()->user()->id:0)->get()->unique('title'));
-        $finishedTAsks=count(Task::where('status',1)->where('employee_id',auth()->user()?auth()->user()->id:0)->get()->unique('title'));
-        $allTAsks=count(Task::where('employee_id',auth()->user()?auth()->user()->id:0)->get()->unique('title'));
+    if (auth()->user() && auth()->user()->type == 'admin') {
+        $tasks = count(Task::where('status', 0)->get()->unique('title'));
+        $finishedTAsks = count(Task::where('status', 1)->get()->unique('title'));
+        $allTAsks = count(Task::get()->unique('title'));
+    } else {
+        $tasks = count(Task::where('status', 0)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get()->unique('title'));
+        $finishedTAsks = count(Task::where('status', 1)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get()->unique('title'));
+        $allTAsks = count(Task::where('employee_id', auth()->user() ? auth()->user()->id : 0)->get()->unique('title'));
     }
 
-    if(auth()->user() && auth()->user()->type=='admin'){
-        $followups=count(Followup::where('status',0)->get()->unique('title'));
-        $finishedTAsks=count(Followup::where('status',1)->get()->unique('title'));
-        $allTAsks=count(Followup::get()->unique('title'));
-    }else{
-        $followups=count(Followup::where('status',0)->where('employee_id',auth()->user()?auth()->user()->id:0)->get()->unique('title'));
-        $finishedTAsks=count(Followup::where('status',1)->where('employee_id',auth()->user()?auth()->user()->id:0)->get()->unique('title'));
-        $allTAsks=count(Followup::where('employee_id',auth()->user()?auth()->user()->id:0)->get()->unique('title'));}
+    if (auth()->user() && auth()->user()->type == 'admin') {
+        $followups = count(Followup::where('status', 0)->get()->unique('title'));
+        $finishedTAsks = count(Followup::where('status', 1)->get()->unique('title'));
+        $allTAsks = count(Followup::get()->unique('title'));
+    } else {
+        $followups = count(Followup::where('status', 0)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get()->unique('title'));
+        $finishedTAsks = count(Followup::where('status', 1)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get()->unique('title'));
+        $allTAsks = count(Followup::where('employee_id', auth()->user() ? auth()->user()->id : 0)->get()->unique('title'));
+    }
 
     $items = [
         "faqs" => count(Faq::get()),
@@ -346,12 +365,12 @@ function itemsCount($model)
         "projects" => count(Project::get()),
         "tasks" => $tasks,
         "finishedTasks" => $finishedTAsks,
-        "alltasks" =>$allTAsks,
+        "alltasks" => $allTAsks,
         "teams" => count(Team::get()),
         "fees" => count(Fee::get()),
         "followups" => $followups,
         "finishedFollowups" => $finishedTAsks,
-        "allfollowups" =>$allTAsks,
+        "allfollowups" => $allTAsks,
         "finishedFees" => count(Fee::get()),
         "partners" => count(Partner::get()),
         "services" => count(Service::get()),
@@ -381,12 +400,12 @@ function services()
 }
 function rest($project)
 {
-    $totalFee=0;
-    foreach($project->feeses as $fee){
-        if($fee->amount>0)
-        $totalFee+=$fee->amount;
+    $totalFee = 0;
+    foreach ($project->feeses as $fee) {
+        if ($fee->amount > 0)
+            $totalFee += $fee->amount;
     }
-    return $project->cost-$totalFee;
+    return $project->cost - $totalFee;
 }
 
 function getFollowupTitles($followups)
@@ -401,9 +420,10 @@ function getFollowupTitles($followups)
 }
 
 
-function taskEmployees($title){
-    $employee_ids=Task::where('title',$title)->pluck('employee_id');
-    $names=Admin::whereIn('id',$employee_ids)->pluck('name');
+function taskEmployees($title)
+{
+    $employee_ids = Task::where('title', $title)->pluck('employee_id');
+    $names = Admin::whereIn('id', $employee_ids)->pluck('name');
     return json_encode($names);
 }
 
@@ -414,9 +434,10 @@ function products()
     return $products;
 }
 
-function followupEmployees($title){
-    $employee_ids=Followup::where('title',$title)->pluck('employee_id');
-    $names=Admin::whereIn('id',$employee_ids)->pluck('name');
+function followupEmployees($title)
+{
+    $employee_ids = Followup::where('title', $title)->pluck('employee_id');
+    $names = Admin::whereIn('id', $employee_ids)->pluck('name');
     return json_encode($names);
 }
 
@@ -436,7 +457,8 @@ if (!function_exists('tasks')) {
 
     function tasks($type)
     {
-        return isset($type) ?  Task::where('type', $type)->get() : Task::latest()->get();;
+        return isset($type) ? Task::where('type', $type)->get() : Task::latest()->get();
+        ;
     }
 }
 
@@ -444,7 +466,7 @@ if (!function_exists('task')) {
 
     function task($type)
     {
-      Task::where('type', $type)->first();
+        Task::where('type', $type)->first();
     }
 }
 if (!function_exists('favourite')) {
@@ -459,7 +481,8 @@ if (!function_exists('followups')) {
 
     function followups($type)
     {
-        return isset($type) ?  Followup::where('type', $type)->get() : Followup::latest()->get();;
+        return isset($type) ? Followup::where('type', $type)->get() : Followup::latest()->get();
+        ;
     }
 }
 
@@ -467,7 +490,7 @@ if (!function_exists('followup')) {
 
     function followup($type)
     {
-      Followup::where('type', $type)->first();
+        Followup::where('type', $type)->first();
     }
 }
 
@@ -475,7 +498,8 @@ if (!function_exists('contacts')) {
 
     function contacts($type)
     {
-        return isset($type) ?  Contact::where('type', $type)->get() : Contact::latest()->get();;
+        return isset($type) ? Contact::where('type', $type)->get() : Contact::latest()->get();
+        ;
     }
 }
 
@@ -483,10 +507,10 @@ if (!function_exists('contact')) {
 
     function contact($type)
     {
-      Contact::where('type', $type)->first();
+        Contact::where('type', $type)->first();
     }
 
-    
+
 }
 
 function loadActiveProjects($projects)
@@ -510,7 +534,8 @@ if (!function_exists('accountants')) {
 
     function accountants($type)
     {
-        return isset($type) ?  Accountant::where('type', $type)->get() : Accountant::latest()->get();;
+        return isset($type) ? Accountant::where('type', $type)->get() : Accountant::latest()->get();
+        ;
     }
 }
 
@@ -518,7 +543,7 @@ if (!function_exists('accountant')) {
 
     function accountant($type)
     {
-      Accountant::where('type', $type)->first();
+        Accountant::where('type', $type)->first();
     }
 }
 
@@ -526,7 +551,8 @@ if (!function_exists('historys')) {
 
     function historys($type)
     {
-        return isset($type) ?  History::where('type', $type)->get() : History::latest()->get();;
+        return isset($type) ? History::where('type', $type)->get() : History::latest()->get();
+        ;
     }
 }
 
@@ -534,7 +560,7 @@ if (!function_exists('history')) {
 
     function history($type)
     {
-      History::where('type', $type)->first();
+        History::where('type', $type)->first();
     }
 }
 
@@ -585,7 +611,8 @@ function getTimeAgo($carbonObject)
     );
 }
 
-function diffDays($monthYearDate = null, $date2 = null) {
+function diffDays($monthYearDate = null, $date2 = null)
+{
     // If $monthYearDate is null, use the current month and year
     if ($monthYearDate === null) {
         $startOfMonth = Carbon::now()->startOfMonth();
@@ -593,7 +620,7 @@ function diffDays($monthYearDate = null, $date2 = null) {
     } else {
         // Parse the month and year from the input date
         list($year, $month) = explode('-', $monthYearDate);
-        
+
         // Get the first and last day of the given month
         $startOfMonth = Carbon::create($year, $month, 1)->startOfDay();
         $endOfMonth = Carbon::create($year, $month, 1)->endOfMonth()->endOfDay();
@@ -604,11 +631,11 @@ function diffDays($monthYearDate = null, $date2 = null) {
     // Calculate the difference in days
     $diffInDays = $endOfMonth->diffInDays($startOfMonth);
 
-        // If $date2 is null, use the end of the current month as the end date
-        if ($monthYearDate === null || isCurrentMonth($monthYearDate)) {
-            $date2 = Carbon::now();
-            $diffInDays = $date2->diffInDays($startOfMonth);
-        }
+    // If $date2 is null, use the end of the current month as the end date
+    if ($monthYearDate === null || isCurrentMonth($monthYearDate)) {
+        $date2 = Carbon::now();
+        $diffInDays = $date2->diffInDays($startOfMonth);
+    }
 
     return $diffInDays;
 }
@@ -643,10 +670,11 @@ function calculateAge($birthdate)
 
 
 
-function isCurrentMonth($monthYearDate) {
+function isCurrentMonth($monthYearDate)
+{
     // Parse the month and year from the input date
     list($year, $month) = explode('-', $monthYearDate);
-    
+
     // Get the current month and year
     $currentMonth = date('m');
     $currentYear = date('Y');
@@ -674,28 +702,30 @@ function statsColor($index)
         $years = floor($diff / (365 * 60 * 60 * 24));
         $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
         $days = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
-        return  $days > 3 ? 'text-success' : 'text-danger';
+        return $days > 3 ? 'text-success' : 'text-danger';
     }
 }
 
 function websites()
 {
-    return Project::where('appearance',1)->orderBy('title', 'asc')->get();
+    return Project::where('appearance', 1)->orderBy('title', 'asc')->get();
 }
 function websitesRoutes()
 {
-    return Project::where('routesLink','!=',null)->latest()->get();
+    return Project::where('routesLink', '!=', null)->latest()->get();
 }
 function websitesActive()
-{    $string='';
-    $websites=Project::where('appearance',1)->where('status','!=',0)->latest()->get();
-    foreach($websites as $website){
-        $string.=$website->tasks.'</br>********************************</br>';
+{
+    $string = '';
+    $websites = Project::where('appearance', 1)->where('status', '!=', 0)->latest()->get();
+    foreach ($websites as $website) {
+        $string .= $website->tasks . '</br>********************************</br>';
     }
     return $string;
 }
 
-function pathsArr($path) {
+function pathsArr($path)
+{
     // Check if the path contains an asterisk (*)
     if (strpos($path, '*') === false) {
         dd($path);  // Return 0 if no asterisk is found
@@ -720,26 +750,26 @@ function getLastTwoSegments($path)
     return implode('/', $lastTwoSegments);
 }
 function activeWebsites()
-{   
-    $websites=Project::where('appearance',1)->where('status','!=',0)->latest()->get();
+{
+    $websites = Project::where('appearance', 1)->where('status', '!=', 0)->latest()->get();
     return $websites;
-}   
+}
 function activeWebsitesIds()
-{   
-    $websites=Project::where('appearance',1)->where('status','!=',0)->latest()->pluck('id');
+{
+    $websites = Project::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('id');
     return $websites;
-}   
+}
 function activeWebsitesTitle()
-{   
-    $websites=Project::where('appearance',1)->where('status','!=',0)->latest()->pluck('title');
+{
+    $websites = Project::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('title');
     return $websites;
 }
 function activeWebsitesContent()
 {
     $websites = Project::where('appearance', 1)
-                    ->where('status', '!=', 0)
-                    ->latest()
-                    ->pluck('codeLinks'); // Retrieves the collection of 'codeLinks'
+        ->where('status', '!=', 0)
+        ->latest()
+        ->pluck('codeLinks'); // Retrieves the collection of 'codeLinks'
 
     // Merge all non-null values and concatenate into a single string
     $mergedWebsites = $websites->filter()->implode("\n");
@@ -776,7 +806,8 @@ function accountantBoula()
     return $payed[0];
 }
 
-function workMonths(){
+function workMonths()
+{
     // Assuming $startDate is the specific date from which you want to count months
     // I started 2024-01-01 but I enterd it 2024-02-01 to make it count month after it finsish not when start
     $startDate = Carbon::parse('2024-01-01');
@@ -792,17 +823,19 @@ function workMonths(){
 
     // Combine whole months and fraction of the current month
     $exactNumberOfMonths = $numberOfMonths;
-    return $exactNumberOfMonths+fractionOfDayInMonth();
+    return $exactNumberOfMonths + fractionOfDayInMonth();
 }
 
-function fractionOfDayInMonth() {
+function fractionOfDayInMonth()
+{
     $currentDate = Carbon::now();
     $daysInMonth = $currentDate->daysInMonth;
     $currentDay = $currentDate->day;
 
     return $currentDay / $daysInMonth;
 }
-function DayInMonth() {
+function DayInMonth()
+{
     // Set the timezone to Africa/Cairo
     date_default_timezone_set('Africa/Cairo');
 
@@ -822,21 +855,21 @@ function DayInMonth() {
 function updated_atPost()
 {
     // dd(71);
-    $post=Project::latest('updated_at')->first();
-    
+    $post = Project::latest('updated_at')->first();
+
     return Carbon::parse($post->updated_at)->format('H:i:s');
 }
 function updated_atBoula()
 {
     // dd(71);
-    $boula=Boula::latest('updated_at')->first();
-    return Carbon::parse($boula->updated_at)->format('H:i:s') ;
+    $boula = Boula::latest('updated_at')->first();
+    return Carbon::parse($boula->updated_at)->format('H:i:s');
 }
 function updated_atSample()
 {
     // dd(71);
-    $sample=Sample::latest('updated_at')->first();
-    return Carbon::parse($sample->updated_at)->format('H:i:s') ;
+    $sample = Sample::latest('updated_at')->first();
+    return Carbon::parse($sample->updated_at)->format('H:i:s');
 }
 
 
@@ -854,7 +887,8 @@ function getHourFromDateTime($dateTime)
     return $date->hour;
 }
 
-function getDateFromDateTime($dateTime) {
+function getDateFromDateTime($dateTime)
+{
     $date = Carbon::parse($dateTime);
     return $date->toDateString();
 }
@@ -887,17 +921,18 @@ if (!function_exists('taskCommitPer')) {
     function taskCommitPer()
     {
         $websites = Project::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('title');
-        $done = Server::orderBy('project', 'ASC')->where('committed',1)->whereIn('project', $websites)->get();
+        $done = Server::orderBy('project', 'ASC')->where('committed', 1)->whereIn('project', $websites)->get();
         $all = Server::orderBy('project', 'ASC')->whereIn('project', $websites)->get();
-        return count($done)/count($all)*100;
+        return count($done) / count($all) * 100;
 
-}}
+    }
+}
 
 
 function boula()
 {
-    if(auth()->user() && (auth()->user()->email=="nessimboula@gmail.com" || App::environment('local')))
-    return true;
+    if (auth()->user() && (auth()->user()->email == "nessimboula@gmail.com" || App::environment('local')))
+        return true;
     return false;
 }
 
@@ -905,25 +940,25 @@ function boula()
 function databases()
 {
     if (App::environment('local'))
-    $databases = DB::select("SELECT schema_name FROM information_schema.schemata");
-    else{
+        $databases = DB::select("SELECT schema_name FROM information_schema.schemata");
+    else {
         $dbHost = '127.0.0.1';
-        $dbName = isset($credential->db_name)?$credential->db_name:'yousabte_workspace';
-        $dbUser = isset($credential->db_username)?$credential->db_username:'yousabte_workspace';
-        $dbPass = isset($credential->db_password)?$credential->db_password:'kD[asKgc%ydC';
-            // Temporarily configure the database connection
-            config([
-              'database.connections.dynamic' => [
-                  'driver' => 'mysql',
-                  'host' => $dbHost,
-                  'database' => $dbName,
-                  'username' => $dbUser,
-                  'password' => $dbPass,
-                  'charset' => 'utf8mb4',
-                  'collation' => 'utf8mb4_unicode_ci',
-              ],
-          ]);
-    
+        $dbName = isset($credential->db_name) ? $credential->db_name : 'yousabte_workspace';
+        $dbUser = isset($credential->db_username) ? $credential->db_username : 'yousabte_workspace';
+        $dbPass = isset($credential->db_password) ? $credential->db_password : 'kD[asKgc%ydC';
+        // Temporarily configure the database connection
+        config([
+            'database.connections.dynamic' => [
+                'driver' => 'mysql',
+                'host' => $dbHost,
+                'database' => $dbName,
+                'username' => $dbUser,
+                'password' => $dbPass,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+            ],
+        ]);
+
         // Use the dynamic connection
         DB::purge('dynamic');
         DB::reconnect('dynamic');
