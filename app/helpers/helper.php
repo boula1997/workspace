@@ -218,6 +218,13 @@ function yousabEmails()
                                   </tr>';
                 }
 
+                $body .= '<tr style="font-weight:bold; background-color:#f0f0f0;">
+                <td>Total</td>
+                <td>' . htmlspecialchars($totalCost, ENT_QUOTES, 'UTF-8') . '</td>
+                <td>' . htmlspecialchars($totalPayed, ENT_QUOTES, 'UTF-8') . '</td>
+                <td>' . htmlspecialchars($totalRest, ENT_QUOTES, 'UTF-8') . '</td>
+              </tr>';
+
                 $body .= '</tbody></table><br>';
             }
 
@@ -242,12 +249,7 @@ function yousabEmails()
                 return rest($project);
             });
 
-            $body .= '<tr style="font-weight:bold; background-color:#f0f0f0;">
-            <td>Total</td>
-            <td>' . htmlspecialchars($totalCost, ENT_QUOTES, 'UTF-8') . '</td>
-            <td>' . htmlspecialchars($totalPayed, ENT_QUOTES, 'UTF-8') . '</td>
-            <td>' . htmlspecialchars($totalRest, ENT_QUOTES, 'UTF-8') . '</td>
-          </tr>';
+
 
             $body .= '</tbody></table>';
             $body .= '</body></html>';
