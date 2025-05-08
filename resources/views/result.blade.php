@@ -1403,7 +1403,6 @@
     <div>
         @if ($action == 'auto attributes (edit first methodology to avoid filling data)')
             @foreach ($results as $scriptResult)
-            {{dd($results)}}
                 {{-- <h4 class="text-warning">{{ $scriptResult['script_name'] }}</h4> --}}
                 <div>
                     @foreach ($scriptResult['results'] as $result)
