@@ -122,7 +122,7 @@ class LocalActionController extends Controller
       $replacementWords = ['attribute', 'Attribute'];
       $module = $request->module;
       $resultsauto = [];
-      $titles = ["index1", "index2", "create", "edit", "show", "resource", "request", "model", "seeder", "migration",'json'];
+      $titles = ["index1", "index2", "create", "edit", "show", "resource", "request", "model", "seeder", "migration","dropMigration",'json'];
       
         foreach ($attributes as $key => $value) {
           if (isset($types[$key])) {
@@ -184,7 +184,7 @@ class LocalActionController extends Controller
       $replacementWords = ['attribute', 'Attribute'];
       $module = $request->module;
       $resultsauto = [];
-      $titles = ["index1", "index2", "create", "edit", "show", "resource", "request", "model", "seeder", "migration",'json'];
+      $titles = ["index1", "index2", "create", "edit", "show", "resource", "request", "model", "seeder", "migration","dropMigration",'json'];
       
         foreach ($attributes as $key => $value) {
           if (isset($types[$key])) {
@@ -573,7 +573,7 @@ class LocalActionController extends Controller
       $replacementWords = ['attribute', 'Attribute'];
       $module = $request->module;
       $results = [];
-      $titles = ["index1", "index2", "create", "edit", "show", "resource", "request", "model", "seeder", "migration",'json'];
+      $titles = ["index1", "index2", "create", "edit", "show", "resource", "request", "model", "seeder", "migration","dropMigration",'json'];
 
         foreach ($attributes as $key => $value) {
           if (isset($types[$key])) {
@@ -632,7 +632,7 @@ class LocalActionController extends Controller
     $replacementWords = ['attribute', 'Attribute'];
     $module = $request->module;
     $results = [];
-    $titles = ["index1", "index2", "create", "edit", "show", "resource", "request", "model", "seeder", "migration",'json'];
+    $titles = ["index1", "index2", "create", "edit", "show", "resource", "request", "model", "seeder", "migration","dropMigration",'json'];
 
         foreach ($attributes as $key => $value) {
           if (isset($types[$key])) {
