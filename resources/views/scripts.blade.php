@@ -2000,8 +2000,9 @@
                 navigator.clipboard.writeText(
                  'kD[asKgc%ydC'
                       +
-                     'mysqldump -u yousabte_workspace -p --complete-insert yousabte_workspace > yousabte_workspace_export.sql\n' +
                     '\n'
+                      +
+                     'mysqldump -u yousabte_workspace -p --complete-insert yousabte_workspace > yousabte_workspace_export.sql\n' 
                    
                 );
                 toastNow();
