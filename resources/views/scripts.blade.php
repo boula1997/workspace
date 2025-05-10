@@ -1196,7 +1196,7 @@
                     if (clickCount === 1) {
                         singleClickTimer = setTimeout(() => {
                             if (clickCount === 1) {
-                                clickCount = 0;
+                                clickCoufnt = 0;
                                 let id = $(this).attr('id');
                                 let url = "{{ route('website.toggle', [':id']) }}".replace(
                                     ':id', id);
@@ -1204,6 +1204,7 @@
                             } else if (clickCount === 2) {
                                 clickCount = 0;
                                 let id = $(this).attr('id');
+
                                 let url = "{{ route('website.dbltoggle', [':id']) }}"
                                     .replace(':id', id);
                                 handleEvent(id, url, 2); // Pass 2 for double click
@@ -1241,7 +1242,7 @@
                                         .addClass('bg-secondary');
                                 }
                             } else if (eventType === 3) {
-                                if (data['status'] == 3) {
+                                if (data['deal'] == 0) {
                                     $('#' + id).removeClass(
                                         'bg-secondary bg-warning bg-success').addClass(
                                         'bg-danger');

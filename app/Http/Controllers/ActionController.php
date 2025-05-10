@@ -990,10 +990,10 @@ if ($request->action == '28') {
         $website->update(['status' => 0]);
     }
     if (request()->routeIs('website.trpltoggle')) {
-      if ($website->appearance == 0)
-        $website->update(['appearance' => 1]);
+      if ($website->deal == 0)
+        $website->update(['deal' => 1]);
       else
-        $website->update(['appearance' => 0]);
+        $website->update(['deal' => 0]);
     }
     if (request()->routeIs('website.toggle')) {
       if ($website->status == 0)
@@ -1002,7 +1002,7 @@ if ($request->action == '28') {
         $website->update(['status' => 0]);
     }
 
-    return response()->json(['success' => trans('general.sent_successfully'), 'status' => $website->status]);
+    return response()->json(['success' => trans('general.sent_successfully'), 'status' => $website->status,'deal' => $website->deal]);
   }
 
   public function updatePosts(Request $request){
