@@ -279,9 +279,6 @@
                 </div>
                 <div class="row">
                     <div class="mt-2" id="pendingWebsites">
-                        <p>Choose websites you will work on today <span class="text-danger">Red</span>:Dealing <span
-                                class="text-success">Green</span>:Finance <span
-                                class="text-warning">Yellow</span>:Working on</p>
                         <div class="website-container d-flex flex-wrap">
                             @foreach (websites() as $website)
                                 <p id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
@@ -293,8 +290,6 @@
                                     class="text-secondary fas fa-copy"></i>
                             @endforeach
                         </div>
-                        <button type="button" class="btn btn-outline-success w-100" id="amDone">I am
-                            done!</button>
                     </div>
                 </div>
                 <div class="row">
@@ -416,7 +411,12 @@
                             <div class="form-group mt-2">
                                 <input class=d-inline" value="" type="checkbox" name="showActiveWebsites"
                                     id="showActiveWebsites">
-                                <p class="d-inline pointer-cursor">Show Websites</p>
+                                <p class="d-inline pointer-cursor">Show Active Websites</p>
+                            </div>
+                            <div class="form-group mt-2">
+                                <input class=d-inline" value="" type="checkbox" name="showPendingWebsites"
+                                    id="showPendingWebsites">
+                                <p class="d-inline pointer-cursor">Show Pending Websites</p>
                             </div>
                                 <div class="form-group mt-2">
                                     <input class=d-inline" value="" type="checkbox" name="showReferences"

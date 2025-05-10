@@ -96,7 +96,8 @@
                         <h4>Methodologies</h4>
                             <li>Edit first methodology: when adding or removing attributes do it first in edit.blade.php to
                                 avoid any poring filling data or validations issues and if no entered modules add them from
-                                database through ready insert and chatgpt to fill data inside insert </li>
+                                database through ready insert and chatgpt to fill data inside insert</li>
+                            <li>realtime changes code methodology: to avoid distraction use file in git mode to see where you ediited very easily and reach when you stopped</li>
                     </div>
                 @endif
 

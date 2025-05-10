@@ -222,7 +222,7 @@ function yousabEmails()
                 $totalRest = $projects->sum(function ($project) {
                     return rest($project);
                 });
-    
+
                 $body .= '<tr style="font-weight:bold; background-color:#f0f0f0;">
                 <td>Total</td>
                 <td>' . htmlspecialchars($totalCost, ENT_QUOTES, 'UTF-8') . '</td>
