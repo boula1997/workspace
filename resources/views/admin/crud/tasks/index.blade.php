@@ -34,7 +34,7 @@
                                             <div class="col-md-6 d-flex justify-content-start">
                                                 @if (request()->route('taskType')=="task")
                                                     <h1 class="card-title fw-bold">@lang('general.tasks') (You can order rows by
-                                                        dragging from first column)</h1>
+                                                        dragging from third column)</h1>
                                                 @elseif(request()->route('taskType')=="alltasks")
                                                     <h1 class="card-title fw-bold">@lang('general.alltasks')</h1>
                                                 @else
