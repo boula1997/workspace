@@ -262,7 +262,8 @@
                                 class="text-warning">Yellow</span>:Working on</p>
                         <div class="website-container d-flex flex-wrap">
                             @foreach (websites() as $website)
-                            @if( $website->status>0)
+                            @if( $website->status>0 && $website->deal==1)
+                            
                                 <p id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
                                     class="{{ $website->deal ? ($website->status == 0 ? 'bg-secondary' : ($website->status == 1 ? 'bg-warning' : ($website->status == 2 ? 'bg-success' : 'bg-warning'))) : 'bg-danger' }}  hover-cursor mx-1 text-nowrap text-back">
                                     {{ $website->title }}</p>
@@ -281,13 +282,15 @@
                     <div class="mt-2" id="pendingWebsites">
                         <div class="website-container d-flex flex-wrap">
                             @foreach (websites() as $website)
-                                <p id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
-                                    class="{{ $website->deal ? ($website->status == 0 ? 'bg-secondary' : ($website->status == 1 ? 'bg-warning' : ($website->status == 2 ? 'bg-success' : 'bg-warning'))) : 'bg-danger' }}  hover-cursor mx-1 text-nowrap text-back">
-                                    {{ $website->title }}</p>
+                                 @if($website->status==0)
+                                    <p id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
+                                        class="{{ $website->deal ? ($website->status == 0 ? 'bg-secondary' : ($website->status == 1 ? 'bg-warning' : ($website->status == 2 ? 'bg-success' : 'bg-warning'))) : 'bg-danger' }}  hover-cursor mx-1 text-nowrap text-back">
+                                        {{ $website->title }}</p>
 
-                                <i style="cursor: pointer;" content="{{ $website->codeLinks }}"
-                                    websiteId="{{ $website->id }}"
-                                    class="text-secondary fas fa-copy"></i>
+                                    <i style="cursor: pointer;" content="{{ $website->codeLinks }}"
+                                        websiteId="{{ $website->id }}"
+                                        class="text-secondary fas fa-copy"></i>
+                                    @endif
                             @endforeach
                         </div>
                     </div>

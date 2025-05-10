@@ -922,10 +922,10 @@ if ($request->action == '28') {
         $website->update(['status' => 0]);
     }
     if (request()->routeIs('website.trpltoggle')) {
-      if ($website->status == 0)
-        $website->update(['status' => 3]);
+      if ($website->appearance == 0)
+        $website->update(['appearance' => 1]);
       else
-        $website->update(['status' => 0]);
+        $website->update(['appearance' => 0]);
     }
     if (request()->routeIs('website.toggle')) {
       if ($website->status == 0)

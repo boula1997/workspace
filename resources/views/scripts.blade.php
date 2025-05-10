@@ -707,7 +707,8 @@
 
 
         $(document).ready(function() {
-            $('#allWebsites').hide();
+            $('#activeWebsites').hide();
+            $('#pendingWebsites').hide();
             $('#allRefrences').hide();
             $('#allRoutes').hide();
             showSelectedActionInputs();
@@ -1374,7 +1375,8 @@
             $('input[name="startYourWork"]').on('change', function(e) {
                 if ($(this).is(':checked')) {
                     $('#amDone').show();
-                    $('#allWebsites').show();
+                    $('#activeWebsites').show();
+                    $('#pendingWebsites').show();
                     $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
                         .each(
                             function() {
@@ -1386,7 +1388,8 @@
 
                 } else {
 
-                    $('#allWebsites').hide();
+                    $('#activeWebsites').hide();
+                    $('#pendingWebsites').hide();
                     $('#startTimeInput').hide();
                     $('#startTimeCheck').hide();
                     showSelectedActionInputs();
@@ -1396,7 +1399,8 @@
             $('#amDone').on('click', function() {
                 $('#startTimeCheck').show();
                 $('#startTimeInput').show();
-                $('#allWebsites').hide();
+                $('#activeWebsites').hide();
+                $('#pendingWebsites').hide();
             });
 
             $('input[name="showSurvey"]').on('change', function(e) {
