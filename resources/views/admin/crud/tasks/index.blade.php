@@ -779,41 +779,43 @@
                     window.matchMedia("(max-width: 768px)").matches;
             }
 
-            $(function() {
-                var table = $("#example1").DataTable({
-                    "responsive": true,
-                    "lengthChange": false,
-                    "autoWidth": false,
-                    "paging": false,
-                    "searching": true,
-                    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                    "rowReorder": {
-                        selector: "td:third-child"
-                    },
-                    "order": [
-                        [2, "desc"]
-                    ], // Default ordering by ID
-                    "columnDefs": [{
-                        "targets": 1, // Assuming title is the second column
-                        "orderable": true,
-                        "type": "custom-title-sort"
-                    }]
-                });
+$(function () {
+    var table = $("#example1").DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "paging": false,
+        "searching": true,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+        "rowReorder": {
+            selector: "td:nth-child(3)" // 👈 Select third column for dragging
+        },
+        "order": [
+            [2, "desc"] // 👈 Default ordering by third column (index 2)
+        ],
+        "columnDefs": [{
+            "targets": 2, // 👈 Custom sort on third column
+            "orderable": true,
+            "type": "custom-title-sort"
+        }]
+    });
 
-                table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-                // Custom sorting function
-                $.fn.dataTable.ext.type.order['custom-title-sort-pre'] = function(data) {
-                    if (data.startsWith("Doing some task") || data.startsWith("Updating tasks")) {
-                        return "AAA" + data; // Forces it to be at the top
-                    }
-                    return "ZZZ" + data; // Push others lower
-                };
+    // Custom sorting function
+    $.fn.dataTable.ext.type.order['custom-title-sort-pre'] = function (data) {
+        if (data.startsWith("Doing some task") || data.startsWith("Updating tasks")) {
+            return "AAA" + data; // Forces it to be at the top
+        }
+        return "ZZZ" + data; // Push others lower
+    };
 
-                table.order([
-                    [1, "asc"]
-                ]).draw(); // Reapply sorting
-            });
+    // Apply initial sort on third column
+    table.order([
+        [2, "asc"]
+    ]).draw();
+});
+
 
 
 
