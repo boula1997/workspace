@@ -788,10 +788,10 @@
                     "searching": true,
                     "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
                     "rowReorder": {
-                        selector: "td:first-child"
+                        selector: "td:third-child"
                     },
                     "order": [
-                        [0, "desc"]
+                        [2, "desc"]
                     ], // Default ordering by ID
                     "columnDefs": [{
                         "targets": 1, // Assuming title is the second column
