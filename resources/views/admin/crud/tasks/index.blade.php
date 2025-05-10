@@ -144,10 +144,10 @@
                                                         <th>
                                                             {{ __('general.title') }}
                                                         </th>
+                                                        <th>{{ __('general.project') }}</th>
                                                         <th>{{ __('general.level') }}</th>
                                                         {{-- <th>{{ __('general.counter') }}</th> --}}
                                                         <th>{{ __('general.piority') }}</th>
-                                                        <th>{{ __('general.project') }}</th>
                                                         <th>{{ __('general.employees') }}</th>
                                                         <th>{{ __('general.actions') }}</th>
                                                         <th class="d-none">{{ __('general.select') }}</th>
@@ -166,6 +166,8 @@
                                                                 {{ $task->title }}
                                                             </td>
 
+                                                            <td>{{ isset($task->project->title) ? $task->project->title : 'None' }}
+                                                            </td>
                                                             <td class="toggleLevel" style="cursor: pointer"
                                                                 id="{{ $task->id }}">
                                                                 {{ $task->level ? 'mobile' : 'pc' }}
@@ -178,8 +180,6 @@
                                                             <td class="togglePiority" style="cursor: pointer"
                                                                 id="{{ $task->id }}">
                                                                 {{ $task->piority ? 'Important' : 'Normal' }}</td>
-                                                            <td>{{ isset($task->project->title) ? $task->project->title : 'None' }}
-                                                            </td>
                                                             <td>{{ taskEmployees($task->title) }}</td>
 
                                                             <td>
