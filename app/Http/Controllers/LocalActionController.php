@@ -925,7 +925,7 @@ if ($request->action == '28') {
       if ($website->deal == 0)
         $website->update(['deal' => 1]);
       else
-        $website->update(['deal' => 0]);
+        $website->update(['deal' => 0,"status"=>0]);
     }
     if (request()->routeIs('website.toggle')) {
       if ($website->status == 0)
