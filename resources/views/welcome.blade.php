@@ -256,7 +256,29 @@
             <form method="post" id="form" action="{{ route('actions.store') }}">
                 @csrf
                 <div class="row">
-                    <div class="mt-2" id="allWebsites">
+                    <div class="mt-2" id="activeWebsites">
+                        <p>Choose websites you will work on today <span class="text-danger">Red</span>:Dealing <span
+                                class="text-success">Green</span>:Finance <span
+                                class="text-warning">Yellow</span>:Working on</p>
+                        <div class="website-container d-flex flex-wrap">
+                            @foreach (websites() as $website)
+                            @if( $website->status>0)
+                                <p id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
+                                    class="{{ $website->deal ? ($website->status == 0 ? 'bg-secondary' : ($website->status == 1 ? 'bg-warning' : ($website->status == 2 ? 'bg-success' : 'bg-warning'))) : 'bg-danger' }}  hover-cursor mx-1 text-nowrap text-back">
+                                    {{ $website->title }}</p>
+
+                                <i style="cursor: pointer;" content="{{ $website->codeLinks }}"
+                                    websiteId="{{ $website->id }}"
+                                    class="text-secondary fas fa-copy"></i>
+                                    @endif
+                            @endforeach
+                        </div>
+                        <button type="button" class="btn btn-outline-success w-100" id="amDone">I am
+                            done!</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mt-2" id="pendingWebsites">
                         <p>Choose websites you will work on today <span class="text-danger">Red</span>:Dealing <span
                                 class="text-success">Green</span>:Finance <span
                                 class="text-warning">Yellow</span>:Working on</p>
@@ -279,9 +301,12 @@
                     <div class="mt-2" id="allRefrences">
                         <div class="website-container d-flex flex-wrap">
                             @foreach (References() as $refrnce)
+                            @if( $website->status==0)
+
                                 <button type="button" content="{{ $refrnce->codeLinks }}" id="{{ $refrnce->id }}"
                                     title="1click:yellow 2click:green 3click:red"
                                     class="reference btn {{ $refrnce->status == 0 ? 'btn-outline-warning' : ($refrnce->status == 1 ? 'btn-outline-warning' : 'btn-success') }}  hover-cursor mx-1 text-nowrap m-2">{{ $refrnce->title }}</button>
+                                    @endif
                             @endforeach
                         </div>
                     </div>
@@ -389,8 +414,8 @@
                             </div>
                             @if (boula())
                             <div class="form-group mt-2">
-                                <input class=d-inline" value="" type="checkbox" name="showWebsites"
-                                    id="showWebsites">
+                                <input class=d-inline" value="" type="checkbox" name="showActiveWebsites"
+                                    id="showActiveWebsites">
                                 <p class="d-inline pointer-cursor">Show Websites</p>
                             </div>
                                 <div class="form-group mt-2">

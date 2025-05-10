@@ -1315,15 +1315,26 @@
                 showSelectedActionInputs();
             });
 
-            $('input[name="showWebsites"]').on('change', function(e) {
+            $('input[name="showActiveWebsites"]').on('change', function(e) {
                 $('#amDone').hide();
 
                 if ($(this).is(':checked')) {
-                    $('#allWebsites').show();
+                    $('#activeWebsites').show();
 
                 } else {
 
-                    $('#allWebsites').hide();
+                    $('#activeWebsites').hide();
+                }
+            });
+            $('input[name="showPendingWebsites"]').on('change', function(e) {
+                $('#amDone').hide();
+
+                if ($(this).is(':checked')) {
+                    $('#pendingWebsites').show();
+
+                } else {
+
+                    $('#pendingWebsites').hide();
                 }
             });
             $('input[name="showReferences"]').on('change', function(e) {
