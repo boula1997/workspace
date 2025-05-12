@@ -1170,10 +1170,10 @@
                 $('#showForm').show().attr('placeholder', 'Enter showForm');
             }
 
-            $('input[name="lastTimeDate"]').show().attr('required', false);
+            $('input[name="lastTimeDate"]').show().attr('required', true);
             $('input[name="startTimeInput"]').hide().attr('required', false);
             $('#showForm').on('click', function(e) {
-                $('input[name="lastTimeDate"]').show().attr('required', false);
+                $('input[name="lastTimeDate"]').show().attr('required', true);
                 $('input[name="startTimeInput"]').hide().attr('required', false);
                 $('#formBody').show().attr('placeholder', 'Enter formBody');
                 $(this).hide().attr('required', false);
