@@ -141,9 +141,10 @@
             $('#selectTables').hide();
             $('#updatedatQueries').hide();
 
-            $('#updatedatButton').on('click',function(e){
+            $('#updatedatButton').on('click', function(e) {
 
-            $('#updatedatQueries').toggle();}
+                    $('#updatedatQueries').toggle();
+                }
 
             );
 
@@ -811,328 +812,328 @@
             });
         }
 
-            function showSelectedActionInputs() {
-                // Get the selected action once
-                const selectedAction = localStorage.getItem('selectAction');
-                
-                // Common operations
-                const hideAllInputs = () => {
-                    $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
-                        .each(function() {
-                            if ($(this).attr('type') !== 'checkbox') {
-                                $(this).hide().attr('required', false);
-                            } else {
-                                $(this).removeAttr('checked');
-                            }
-                        });
+        function showSelectedActionInputs() {
+            // Get the selected action once
+            const selectedAction = localStorage.getItem('selectAction');
 
-                };
-                
-                // Common elements
-                const $flagInput = $('#flaginput');
-                const $stack = $('#stack');
-                const $textarea = $('#textarea');
-                const $selectedDBname = $('#selectedDBname');
-                const $selectedStack = $('#stack');
-                const $websites = $('#websites');
-                
-                // Hide everything by default
-                hideAllInputs();
-                $textarea.hide().attr('required', false);
-                $selectedDBname.hide().attr('required', false);
-                $websites.addClass('d-none');
-                $flagInput.hide().attr('required', false);
-                $stack.hide().attr('required', false);
-                
-                // Action configurations
-                const actionConfigs = {
-                    'create new module(or Open newly added module edit first methodology to avoid filling data)': {
-                        show: ['name', 'rname', 'attribute', 'tablename', 'module', 'type'],
-                        placeholders: {
-                            name: 'current module name',
-                            rname: 'need to create module name',
-                            attribute: 'Add attributes',
-                            tablename: 'ex: tablename1,tablename2',
-                            module: 'need to create module name',
-                            type: 'Select attributes types'
-                        },
-                        showSpecial: () => {
-                            $flagInput.show().attr('placeholder', 'Flag');
-                            $selectedDBname.show().attr('required', true);
-                            $selectedStack.show();
-                        },
-                        checkboxHandling: () => {
-                            $('#refrencePlural').attr('checked', false);
-                            $('input[name="plural"').hide().attr('required', false);
-                        }
-                    },
-                    'Delete multible module': {
-                        show: ['name'],
-                        placeholders: {
-                            name: 'Enter name'
-                        },
-                        showSpecial: () => {
-                            $flagInput.show().attr('placeholder', 'Enter flag');
-                            $stack.show().attr('placeholder', 'Enter stack');
-                            $('#searchRefrences').attr('checked', false);
-                        }
-                    },
-                    'Rename module': {
-                        show: ['name', 'rname', 'attribute', 'module', 'type'],
-                        placeholders: {
-                            name: 'Enter name',
-                            rname: 'Enter rname',
-                            attribute: 'Enter attribute',
-                            module: 'Enter module',
-                            type: 'Enter type'
-                        },
-                        showSpecial: () => {
-                            $flagInput.show().attr('placeholder', 'Enter flaginput');
-                            $stack.show().attr('placeholder', 'Enter stack');
-                            $selectedDBname.show().attr('required', true);
-                        },
-                        checkboxHandling: () => {
-                            $('#refrencePlural').attr('checked', false);
-                            $('input[name="plural"').hide().attr('required', false);
-                        }
-                    },
-                    'Open multible modules': {
-                        show: ['name', 'attribute', 'module', 'type'],
-                        placeholders: {
-                            name: 'Enter name',
-                            attribute: 'Enter attribute',
-                            module: 'Enter module',
-                            type: 'Enter type'
-                        },
-                        showSpecial: () => {
-                            $flagInput.show().attr('placeholder', 'Enter flag');
-                            $stack.show().attr('placeholder', 'Enter stack');
-                           $selectedDBname.show().attr('required', true);
-                        }
-                    },
-                    'Reblace word in module': {
-                        show: ['name', 'word', 'replaceWord'],
-                        placeholders: {
-                            name: 'Enter name',
-                            word: 'Enter word',
-                            replaceWord: 'Enter replaceWord'
-                        },
-                        showSpecial: () => {
-                            $flagInput.show().attr('placeholder', 'Enter flaginput');
-                        }
-                    },
-                    'Get files with size bigger than': {
-                        show: ['size'],
-                        placeholders: {
-                            size: 'Enter size'
-                        }
-                    },
-                    'copy multible modules using repo': {
-                        show: ['name', 'repolink', 'projectrepolink'],
-                        placeholders: {
-                            name: 'Enter name',
-                            repolink: 'Enter repo link',
-                            projectrepolink: 'Enter project repo link'
-                        },
-                        showSpecial: () => {
-                            $flagInput.show().attr('placeholder', 'Enter flag');
-                        }
-                    },
-                    'translate all attributes': {
-                        showSpecial: () => {
-                            $selectedDBname.show().attr('required', true);
-                        }
-                    },
-                    'Search all attributes at once': {
-                        show: ['startingOrderLetter'],
-                        placeholders: {
-                            startingOrderLetter: 'ex: 3,4,5'
-                        },
-                        showSpecial: () => {
-                            $selectedDBname.show().attr('required', true);
-                        }
-                    },
-                    'search project modules': {
-                        show: ['startingOrderLetter'],
-                        placeholders: {
-                            startingOrderLetter: 'ex: 3,4,5'
-                        },
-                        showSpecial: () => {
-                            $selectedDBname.show().attr('required', true);
-                        }
-                    },
-                    'Show or Delete project images': {
-                        show: ['startingOrderLetter'],
-                        placeholders: {
-                            startingOrderLetter: 'ex: 3,4,5'
-                        },
-                        showSpecial: () => {
-                            $selectedDBname.show().attr('required', true);
-                        }
-                    },
-                    'desc database': {
-                        show: ['startingOrderLetter'],
-                        placeholders: {
-                            startingOrderLetter: 'ex: 3,4,5'
-                        },
-                        showSpecial: () => {
-                            $selectedDBname.show().attr('required', true);
-                        }
-                    },
-                    'Prebare multible modules to work on': {
-                        show: ['name'],
-                        placeholders: {
-                            name: 'Enter name'
-                        },
-                        showSpecial: () => {
-                            $flagInput.show().attr('placeholder', 'Enter flaginput');
-                            $selectedDBname.show().attr('required', true);
-                        }
-                    },
-                    'translate untranslated words': {
-                        showSpecial: () => {
-                            $selectedDBname.show().attr('required', true);
-                        }
-                    },
-                    'Add new template link': {
-                        showSpecial: () => {
-                            $selectedDBname.show().attr('required', true);
-                        }
-                    },
-                    'Add new googlead link': {
-                        showSpecial: () => {
-                            $selectedDBname.show().attr('required', true);
-                        }
-                    },
-                    'React post': {
-                        show: ['templateName', 'projectrepolink', 'word', 'attribute', 'module', 'type'],
-                        placeholders: {
-                            templateName: 'insert component name',
-                            projectrepolink: 'insert attribute name',
-                            word: 'enter endpoint',
-                            attribute: 'add attributes',
-                            module: 'need to create module',
-                            type: 'add attributes types'
-                        },
-                        showSpecial: () => {
-                            $stack.show().attr('placeholder', 'Select stack');
-                        }
-                    },
-                    'React get': {
-                        show: ['templateName', 'word'],
-                        placeholders: {
-                            templateName: 'insert component name',
-                            word: 'enter endpoint'
-                        }
-                    },
-                    'Ajax get': {
-                        show: ['module'],
-                        placeholders: {
-                            module: 'attribute name'
-                        }
-                    },
-                    'Ajax post': {
-                        show: ['module'],
-                        placeholders: {
-                            module: 'route name'
-                        }
-                    },
-                    'checkout multible module': {
-                        show: ['name', 'commit'],
-                        placeholders: {
-                            name: 'Enter repo link',
-                            commit: 'Enter commit'
-                        },
-                        showSpecial: () => {
-                            $flagInput.show().attr('placeholder', 'Enter flag');
-                        }
-                    },
-                    'Open Shared Module Files': {
-                        showSpecial: () => {
-                            $selectedDBname.show().attr('required', true);
-                        }
-                    },
-                    'add script': {
-                        showTextarea: true,
-                        placeholder: 'ex: keyword1, keyword2, keyword3'
-                    },
-                    'auto attributes (edit first methodology to avoid filling data)': {
-                        show: ['attribute', 'tablename', 'module', 'type'],
-                        placeholders: {
-                            attribute: 'add attributes',
-                            tablename: 'ex: tablename1,tablename2',
-                            module: 'need to create module',
-                            type: 'add attributes types'
-                        },
-                        showSpecial: () => {
-                            $selectedDBname.show().attr('required', true);
-                            $stack.show().attr('placeholder', 'Select stack');
-                        },
-                        showTextarea: false
-                    },
-                    'get multible scripts': {
-                        showTextarea: true,
-                        placeholder: 'ex: keyword1, keyword2, keyword3',
-                        checkboxHandling: () => {
-                            $('#projectContent').attr('checked', false);
-                        }
-                    },
-                    'add module': {
-                        showTextarea: true,
-                        placeholder: 'ex: keyword1, keyword2, keyword3',
-                        checkboxHandling: () => {
-                            $('#projectContent').attr('checked', false);
-                        }
-                    },
-                    'get multible modules': {
-                        showTextarea: true,
-                        placeholder: 'ex:keyword1,keyword2,keyword3'
-                    },
-                    'Open Websites': {
-                        showSpecial: () => {
-                            $websites.removeClass('d-none');
-                        }
-                    },
-                    'Servers Hostings and git default': {},
-                    'Image Workspace': {},
-                    'flags manager': {},
-                    'Get Stats': {},
-                    'Select the required action': {}
-                };
-                
-                // Handle the selected action
-                if (actionConfigs[selectedAction]) {
-                    const config = actionConfigs[selectedAction];
-                    
-                    // Show regular inputs
-                    if (config.show) {
-                        config.show.forEach(inputName => {
-                            $(`input[name="${inputName}"]`)
-                                .show()
-                                .attr('placeholder', config.placeholders[inputName]);
-                        });
-                    }
-                    
-                    // Show textarea if needed
-                    if (config.showTextarea !== undefined) {
-                        if (config.showTextarea) {
-                            $textarea.show().attr('placeholder', config.placeholder);
+            // Common operations
+            const hideAllInputs = () => {
+                $("input:not([name='start']):not([name='search']):not([name='start']):not([name='replaceTerm']):not([name='queryCommand']):not([name='showScripts']):not(.noHide)")
+                    .each(function() {
+                        if ($(this).attr('type') !== 'checkbox') {
+                            $(this).hide().attr('required', false);
                         } else {
-                            $textarea.hide().attr('required', false);
+                            $(this).removeAttr('checked');
                         }
+                    });
+
+            };
+
+            // Common elements
+            const $flagInput = $('#flaginput');
+            const $stack = $('#stack');
+            const $textarea = $('#textarea');
+            const $selectedDBname = $('#selectedDBname');
+            const $selectedStack = $('#stack');
+            const $websites = $('#websites');
+
+            // Hide everything by default
+            hideAllInputs();
+            $textarea.hide().attr('required', false);
+            $selectedDBname.hide().attr('required', false);
+            $websites.addClass('d-none');
+            $flagInput.hide().attr('required', false);
+            $stack.hide().attr('required', false);
+
+            // Action configurations
+            const actionConfigs = {
+                'create new module(or Open newly added module edit first methodology to avoid filling data)': {
+                    show: ['name', 'rname', 'attribute', 'tablename', 'module', 'type'],
+                    placeholders: {
+                        name: 'current module name',
+                        rname: 'need to create module name',
+                        attribute: 'Add attributes',
+                        tablename: 'ex: tablename1,tablename2',
+                        module: 'need to create module name',
+                        type: 'Select attributes types'
+                    },
+                    showSpecial: () => {
+                        $flagInput.show().attr('placeholder', 'Flag');
+                        $selectedDBname.show().attr('required', true);
+                        $selectedStack.show();
+                    },
+                    checkboxHandling: () => {
+                        $('#refrencePlural').attr('checked', false);
+                        $('input[name="plural"').hide().attr('required', false);
                     }
-                    
-                    // Execute special show operations
-                    if (config.showSpecial) {
-                        config.showSpecial();
+                },
+                'Delete multible module': {
+                    show: ['name'],
+                    placeholders: {
+                        name: 'Enter name'
+                    },
+                    showSpecial: () => {
+                        $flagInput.show().attr('placeholder', 'Enter flag');
+                        $stack.show().attr('placeholder', 'Enter stack');
+                        $('#searchRefrences').attr('checked', false);
                     }
-                    
-                    // Handle checkbox operations
-                    if (config.checkboxHandling) {
-                        config.checkboxHandling();
+                },
+                'Rename module': {
+                    show: ['name', 'rname', 'attribute', 'module', 'type'],
+                    placeholders: {
+                        name: 'Enter name',
+                        rname: 'Enter rname',
+                        attribute: 'Enter attribute',
+                        module: 'Enter module',
+                        type: 'Enter type'
+                    },
+                    showSpecial: () => {
+                        $flagInput.show().attr('placeholder', 'Enter flaginput');
+                        $stack.show().attr('placeholder', 'Enter stack');
+                        $selectedDBname.show().attr('required', true);
+                    },
+                    checkboxHandling: () => {
+                        $('#refrencePlural').attr('checked', false);
+                        $('input[name="plural"').hide().attr('required', false);
+                    }
+                },
+                'Open multible modules': {
+                    show: ['name', 'attribute', 'module', 'type'],
+                    placeholders: {
+                        name: 'Enter name',
+                        attribute: 'Enter attribute',
+                        module: 'Enter module',
+                        type: 'Enter type'
+                    },
+                    showSpecial: () => {
+                        $flagInput.show().attr('placeholder', 'Enter flag');
+                        $stack.show().attr('placeholder', 'Enter stack');
+                        $selectedDBname.show().attr('required', true);
+                    }
+                },
+                'Reblace word in module': {
+                    show: ['name', 'word', 'replaceWord'],
+                    placeholders: {
+                        name: 'Enter name',
+                        word: 'Enter word',
+                        replaceWord: 'Enter replaceWord'
+                    },
+                    showSpecial: () => {
+                        $flagInput.show().attr('placeholder', 'Enter flaginput');
+                    }
+                },
+                'Get files with size bigger than': {
+                    show: ['size'],
+                    placeholders: {
+                        size: 'Enter size'
+                    }
+                },
+                'copy multible modules using repo': {
+                    show: ['name', 'repolink', 'projectrepolink'],
+                    placeholders: {
+                        name: 'Enter name',
+                        repolink: 'Enter repo link',
+                        projectrepolink: 'Enter project repo link'
+                    },
+                    showSpecial: () => {
+                        $flagInput.show().attr('placeholder', 'Enter flag');
+                    }
+                },
+                'translate all attributes': {
+                    showSpecial: () => {
+                        $selectedDBname.show().attr('required', true);
+                    }
+                },
+                'Search all attributes at once': {
+                    show: ['startingOrderLetter'],
+                    placeholders: {
+                        startingOrderLetter: 'ex: 3,4,5'
+                    },
+                    showSpecial: () => {
+                        $selectedDBname.show().attr('required', true);
+                    }
+                },
+                'search project modules': {
+                    show: ['startingOrderLetter'],
+                    placeholders: {
+                        startingOrderLetter: 'ex: 3,4,5'
+                    },
+                    showSpecial: () => {
+                        $selectedDBname.show().attr('required', true);
+                    }
+                },
+                'Show or Delete project images': {
+                    show: ['startingOrderLetter'],
+                    placeholders: {
+                        startingOrderLetter: 'ex: 3,4,5'
+                    },
+                    showSpecial: () => {
+                        $selectedDBname.show().attr('required', true);
+                    }
+                },
+                'desc database': {
+                    show: ['startingOrderLetter'],
+                    placeholders: {
+                        startingOrderLetter: 'ex: 3,4,5'
+                    },
+                    showSpecial: () => {
+                        $selectedDBname.show().attr('required', true);
+                    }
+                },
+                'Prebare multible modules to work on': {
+                    show: ['name'],
+                    placeholders: {
+                        name: 'Enter name'
+                    },
+                    showSpecial: () => {
+                        $flagInput.show().attr('placeholder', 'Enter flaginput');
+                        $selectedDBname.show().attr('required', true);
+                    }
+                },
+                'translate untranslated words': {
+                    showSpecial: () => {
+                        $selectedDBname.show().attr('required', true);
+                    }
+                },
+                'Add new template link': {
+                    showSpecial: () => {
+                        $selectedDBname.show().attr('required', true);
+                    }
+                },
+                'Add new googlead link': {
+                    showSpecial: () => {
+                        $selectedDBname.show().attr('required', true);
+                    }
+                },
+                'React post': {
+                    show: ['templateName', 'projectrepolink', 'word', 'attribute', 'module', 'type'],
+                    placeholders: {
+                        templateName: 'insert component name',
+                        projectrepolink: 'insert attribute name',
+                        word: 'enter endpoint',
+                        attribute: 'add attributes',
+                        module: 'need to create module',
+                        type: 'add attributes types'
+                    },
+                    showSpecial: () => {
+                        $stack.show().attr('placeholder', 'Select stack');
+                    }
+                },
+                'React get': {
+                    show: ['templateName', 'word'],
+                    placeholders: {
+                        templateName: 'insert component name',
+                        word: 'enter endpoint'
+                    }
+                },
+                'Ajax get': {
+                    show: ['module'],
+                    placeholders: {
+                        module: 'attribute name'
+                    }
+                },
+                'Ajax post': {
+                    show: ['module'],
+                    placeholders: {
+                        module: 'route name'
+                    }
+                },
+                'checkout multible module': {
+                    show: ['name', 'commit'],
+                    placeholders: {
+                        name: 'Enter repo link',
+                        commit: 'Enter commit'
+                    },
+                    showSpecial: () => {
+                        $flagInput.show().attr('placeholder', 'Enter flag');
+                    }
+                },
+                'Open Shared Module Files': {
+                    showSpecial: () => {
+                        $selectedDBname.show().attr('required', true);
+                    }
+                },
+                'add script': {
+                    showTextarea: true,
+                    placeholder: 'ex: keyword1, keyword2, keyword3'
+                },
+                'auto attributes (edit first methodology to avoid filling data)': {
+                    show: ['attribute', 'tablename', 'module', 'type'],
+                    placeholders: {
+                        attribute: 'add attributes',
+                        tablename: 'ex: tablename1,tablename2',
+                        module: 'need to create module',
+                        type: 'add attributes types'
+                    },
+                    showSpecial: () => {
+                        $selectedDBname.show().attr('required', true);
+                        $stack.show().attr('placeholder', 'Select stack');
+                    },
+                    showTextarea: false
+                },
+                'get multible scripts': {
+                    showTextarea: true,
+                    placeholder: 'ex: keyword1, keyword2, keyword3',
+                    checkboxHandling: () => {
+                        $('#projectContent').attr('checked', false);
+                    }
+                },
+                'add module': {
+                    showTextarea: true,
+                    placeholder: 'ex: keyword1, keyword2, keyword3',
+                    checkboxHandling: () => {
+                        $('#projectContent').attr('checked', false);
+                    }
+                },
+                'get multible modules': {
+                    showTextarea: true,
+                    placeholder: 'ex:keyword1,keyword2,keyword3'
+                },
+                'Open Websites': {
+                    showSpecial: () => {
+                        $websites.removeClass('d-none');
+                    }
+                },
+                'Servers Hostings and git default': {},
+                'Image Workspace': {},
+                'flags manager': {},
+                'Get Stats': {},
+                'Select the required action': {}
+            };
+
+            // Handle the selected action
+            if (actionConfigs[selectedAction]) {
+                const config = actionConfigs[selectedAction];
+
+                // Show regular inputs
+                if (config.show) {
+                    config.show.forEach(inputName => {
+                        $(`input[name="${inputName}"]`)
+                            .show()
+                            .attr('placeholder', config.placeholders[inputName]);
+                    });
+                }
+
+                // Show textarea if needed
+                if (config.showTextarea !== undefined) {
+                    if (config.showTextarea) {
+                        $textarea.show().attr('placeholder', config.placeholder);
+                    } else {
+                        $textarea.hide().attr('required', false);
                     }
                 }
+
+                // Execute special show operations
+                if (config.showSpecial) {
+                    config.showSpecial();
+                }
+
+                // Handle checkbox operations
+                if (config.checkboxHandling) {
+                    config.checkboxHandling();
+                }
             }
+        }
 
 
         $(document).ready(function(e) {
@@ -1697,7 +1698,7 @@
                 contentType: false,
                 processData: false,
                 success: (response) => {
-                    response.data.forEach((boula,index) => {
+                    response.data.forEach((boula, index) => {
                         console.log('boula', response);
                         $('#jsonResult').append(
                             `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}'>show ${boula.id ?? index}</button>`
@@ -1741,58 +1742,33 @@
                 let today = $('#data').attr('today');
                 let tomorrow = $('#data').attr('tomorrow');
 
-                // Prevent modal from closing when clicking "Yes" or "No" buttons
                 $('#yes, #no').on('click', function(e) {
-                    e.preventDefault();
+                    e.preventDefault(); // prevent default button behavior
 
-
-                    // Custom logic for Yes button
-                    if ($(this).attr('id') === 'yes') {
-                        $('input[name="showSurvey"]').removeAttr('checked');
+                    if (this.id === 'yes') {
+                        $('input[name="showSurvey"]').prop('checked', false);
                         localStorage.setItem('tomorrow', tomorrow);
                         $('#showSurvey').click();
-                        // Close the modal
-                        $('#surveyModal').modal('hide');
+                        $('#surveyModal').modal('hide'); // hide modal for "Yes"
                     }
 
-                    // Custom logic for No button
-                    if ($(this).attr('id') === 'no') {
-                        e.stopPropagation();
-                        $('input[name="showSurvey"]').removeAttr('checked');
+                    if (this.id === 'no') {
+                        e.stopPropagation(); // stop bubbling
+                        $('input[name="showSurvey"]').prop('checked', false);
                         localStorage.setItem('tomorrow', tomorrow);
-                        $('input[name="lastTimeDate"]').show().attr('placeholder',
-                            'Enter lastTimeDate');
-                        $('#showSurvey').click();
+                        $('input[name="lastTimeDate"]').show().attr('placeholder', 'Enter lastTimeDate');
 
-                        // Keep the modal open
-                        $('#surveyModal').modal('show');
+                        // DO NOT try to re-show the modal here — it's already open
+                        // Instead, just avoid hiding it
                     }
-
-                    var targetDate =
-                        "{{ activeDeadline()['deadline'] }}"; // Ensure this is in 'YYYY-MM-DD' format
-                    var targetTitile =
-                        "{{ activeDeadline()['action'] }}"; // Ensure this is in 'YYYY-MM-DD' format
-
-                    $(document).ready(function() {
-                        function getRemainingDays(targetDate) {
-                            var target = new Date(targetDate);
-                            var today = new Date();
-                            today.setHours(0, 0, 0, 0); // Reset time to avoid time differences
-
-                            var timeDiff = target.getTime() - today.getTime();
-                            var daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-                            return daysRemaining >= 0 ? daysRemaining : 0; // Ensure no negative values
-                        }
-
-                    });
-
                 });
+
 
 
                 $('#surveyModal').modal({
                     backdrop: 'static',
-                    keyboard: false
+                    keyboard: false,
+                    show: true // optional: auto-show
                 });
 
 
@@ -1823,7 +1799,8 @@
                     console.log("Remaining days: " + targetTitile + remainingDays);
                     alert(remainingDays + " days remaining" + 'to ' + targetTitile);
                     alert("Check important tasks email!");
-                    alert("Move Tasks dashboard page to new desktop to avoid closing it and enjoy speack tasks features");
+                    alert(
+                        "Move Tasks dashboard page to new desktop to avoid closing it and enjoy speack tasks features");
                     $('#surveyModal').modal('show');
 
                 }
@@ -2113,7 +2090,7 @@
 
 
                         if (status) {
-                            data.queryData.forEach((boula,index) => {
+                            data.queryData.forEach((boula, index) => {
                                 alert($('#table').closest('.count'));
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
@@ -2140,7 +2117,7 @@
                             });
                         } else {
 
-                            data.data.forEach((boula,index) => {
+                            data.data.forEach((boula, index) => {
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
                                     `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}'>show ${boula.id ?? index}</button>`
@@ -2251,7 +2228,7 @@
                     datatype: 'JSON',
                     success: function(data) {
                         console.log(data);
-                        data.data.forEach((boula,index) => {
+                        data.data.forEach((boula, index) => {
                             console.log('boula', boula);
                             $('#jsonResult').append(
                                 `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}'>show ${boula.id ?? index}</button>`
@@ -2309,28 +2286,29 @@
                             $('#' + table).text('(' + data.count + ')' + ' ' + data
                                 .latestUpdatedAt);
                             $('#queryCommand').val(data
-                            .insertString); // FIXED: Use `.val()` for textarea
+                                .insertString); // FIXED: Use `.val()` for textarea
 
-                            data.data.forEach((boula,index) => {
+                            data.data.forEach((boula, index) => {
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
                                     `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}'>show ${boula.id ?? index}</button>`
                                 );
-                                if ('btn' + boula.id ?? index == localStorage.getItem(
+                                if ('btn' + boula.id ?? index == localStorage
+                                    .getItem(
                                         'openedQueryId'))
                                     $('#jsonResult').append(
                                         `<div class="col-md-3" id="id${boula.id ?? index}">`
-                                        );
+                                    );
                                 else
                                     $('#jsonResult').append(
                                         `<div class="col-md-3 d-none" id="id${boula.id ?? index}">`
-                                        );
+                                    );
 
                                 Object.entries(boula).forEach(element => {
                                     $(`#id${boula.id ?? index}`).append(
                                         $("<p>").text(JSON
                                             .stringify(element)
-                                            ) // Ensure safe text rendering
+                                        ) // Ensure safe text rendering
                                     );
                                 });
                                 $('#jsonResult').append("<hr>");
