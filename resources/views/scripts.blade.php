@@ -1790,7 +1790,10 @@
                 });
 
 
-
+                $('#surveyModal').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
 
 
                 $('#lastTimeDate').on('change', function(e) {
