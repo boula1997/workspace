@@ -341,7 +341,10 @@
                                                 <p>Was the last time <span
                                                         class="text-white">{{ setting()->last_time }}
                                                         ({{ getTimeAgo(setting()->last_time) }})</span>?</p>
-                                                <button id="yes" class="btn btn-success">Yes</button>
+
+                                                      {{--                                                 <button id="yes" class="btn btn-success">Yes</button> --}}
+
+
                                                 <button id="no" type="button"
                                                     class="btn btn-danger">No</button>
                                                 <input type="date" id="lastTimeDate" class="form-control w-25"
