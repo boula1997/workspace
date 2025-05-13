@@ -52,15 +52,15 @@ class TaskController extends Controller
             $employeeIds = isset($request->employees) ? $request->employees : [];
 
             // Determine status based on route
-            if (request()->route('taskType')=="finishedTasks") {
+            if (request()->query('taskType')=="finishedTasks") {
                 $status = [1];
-            } elseif (request()->route('taskType')=="tasks") {
+            } elseif (request()->query('taskType')=="tasks") {
                 $status = [0];
             } else {
                 $status = [0, 1];
             }
 
-            dd(request()->route('taskType'));
+            dd(request()->query('taskType'));
 
             // Fetch tasks based on user permissions
             if (auth()->user()->email != "nessimboula@gmail.com") {
@@ -114,7 +114,7 @@ class TaskController extends Controller
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects', 'projectIds', 'employeeIds'))
             ->with([
                 'i' => (request()->input('page', 1) - 1) * 5,
-                'taskType' => request()->route('taskType'), // for example
+                'taskType' => request()->query('taskType'), // for example
             ]);
         } catch (Exception $e) {
             dd($e->getMessage());
@@ -233,7 +233,7 @@ class TaskController extends Controller
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects', 'projectIds', 'employeeIds'))
             ->with([
                 'i' => (request()->input('page', 1) - 1) * 5,
-                'taskType' => request()->route('taskType'), // for example
+                'taskType' => request()->query('taskType'), // for example
             ]);
         } elseif ($action == 'reassign') {
             foreach ($tasks as $task) {
@@ -294,7 +294,7 @@ class TaskController extends Controller
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects', 'projectIds', 'employeeIds'))
             ->with([
                 'i' => (request()->input('page', 1) - 1) * 5,
-                'taskType' => request()->route('taskType'), // for example
+                'taskType' => request()->query('taskType'), // for example
             ]);
         } elseif ($action == 'delete') {
             $tasks = Task::whereIn('id', $taskIds)->get();
@@ -346,7 +346,7 @@ class TaskController extends Controller
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects', 'projectIds', 'employeeIds'))
             ->with([
                 'i' => (request()->input('page', 1) - 1) * 5,
-                'taskType' => request()->route('taskType'), // for example
+                'taskType' => request()->query('taskType'), // for example
             ]);
         } else if ($action == 'filterProject') {
 
