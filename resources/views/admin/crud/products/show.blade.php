@@ -41,6 +41,8 @@
                                         </div>
                                     </div>
 
+                                    <!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.brand')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $product->brand }}</p> </div> </div> </div>
+
                                 </div>
                                 <br>
                                 <br>
@@ -67,6 +69,20 @@
                                     <img src="{{ $product->image }}" class="w-50">
                                 </div>
                             </div>
+
+
+                            <!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.hdd')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $product->hdd }}</p> </div> </div> </div>
+
+<!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.ssd')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $product->ssd }}</p> </div> </div> </div>
+
+<!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.ram')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $product->ram }}</p> </div> </div> </div>
+
+<!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.processor')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $product->processor }}</p> </div> </div> </div>
+
+<!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.generation')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $product->generation }}</p> </div> </div> </div>
+
+<!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.screenCard')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $product->screenCard }}</p> </div> </div> </div>
+
 
                             <div class="col-md-6">
                                 <div class="mb-5 bg-light p-3 rounded h-100">

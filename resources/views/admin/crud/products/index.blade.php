@@ -38,6 +38,19 @@
                                                 <th>#</th>
                                                 <th>@lang('general.image')</th>
                                                 <th>@lang('general.title')</th>
+                                                <th>{{__('general.brand')}}</th>
+
+<th>{{__('general.hdd')}}</th>
+
+<th>{{__('general.ssd')}}</th>
+
+<th>{{__('general.ram')}}</th>
+
+<th>{{__('general.processor')}}</th>
+
+<th>{{__('general.generation')}}</th>
+
+<th>{{__('general.screenCard')}}</th>
                                                 <th class="th-controls">@lang('general.controls')</th>
                                             </tr>
                                         </thead>
@@ -48,6 +61,19 @@
                                                     <td><img width="100" height="100" src="{{ $product->image }}"
                                                             alt="{{ $product->title }}"></td>
                                                     <td>{{ $product->title }}</td>
+                                                    <td>{{ $product->brand }}</td>
+
+<td>{{ $product->hdd }}</td>
+
+<td>{{ $product->ssd }}</td>
+
+<td>{{ $product->ram }}</td>
+
+<td>{{ $product->processor }}</td>
+
+<td>{{ $product->generation }}</td>
+
+<td>{{ $product->screenCard }}</td>
                                                     <td>
                                                         @include('admin.components.controls', [
                                                             'route' => 'products',

@@ -26,10 +26,24 @@ class ProductRequest extends FormRequest
         $rules = [
             'image' =>  $image ,
             'icon' =>  'required' ,
+
+'hdd' => 'required',
+
+'ssd' => 'required',
+
+'ram' => 'required',
+
+'processor' => 'required',
+
+'generation' => 'required',
+
+'screenCard' => 'required',
         ];
         foreach (config('translatable.locales') as $locale) {
             $rules += [$locale . '.title' => ['required', 'string']];
             $rules += [$locale . '.description' => ['required']];
+            $rules += [$locale . '.brand' => ['required', 'string']];
+
         }
         return  $rules;
     }

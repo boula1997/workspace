@@ -52,6 +52,9 @@
                                 </div>
 
 
+                                <div class="form-group"> <label>{{__('general.brand')}} - @lang('general.' . $locale)<span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="{{ $locale . '[brand]' }}" placeholder="{{__('general.brand')}}" class="form-control @error('brand') invalid @enderror pl-1 min-h-40px @error($locale . '.brand') is-invalid @enderror" value="{{ old($locale . '.brand',$product->brand) }}"> </div> </div>
+
+
 
                                 <div class="col-form-group">
                                     <label>@lang('general.description')(@lang('general.' . $locale))<span class="text-danger">*</span></label>
@@ -72,6 +75,20 @@
             <div class="card card-custom">
                 <div class="card-body mb-5">
                     <div class="row">
+
+
+                    <!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.hdd')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="number" name="hdd" placeholder="{{__('general.hdd')}}" class="form-control pl-1 min-h-40px @error('hdd') is-invalid @enderror" value="{{ old('hdd', $product->hdd) }}"> </div> </div> </div>
+
+<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.ssd')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="number" name="ssd" placeholder="{{__('general.ssd')}}" class="form-control pl-1 min-h-40px @error('ssd') is-invalid @enderror" value="{{ old('ssd', $product->ssd) }}"> </div> </div> </div>
+
+<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.ram')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="number" name="ram" placeholder="{{__('general.ram')}}" class="form-control pl-1 min-h-40px @error('ram') is-invalid @enderror" value="{{ old('ram', $product->ram) }}"> </div> </div> </div>
+
+<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.processor')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="processor" placeholder="{{__('general.processor')}}" class="form-control pl-1 min-h-40px @error('processor') is-invalid @enderror" value="{{ old('processor', $product->processor) }}"> </div> </div> </div>
+
+<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.generation')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="generation" placeholder="{{__('general.generation')}}" class="form-control pl-1 min-h-40px @error('generation') is-invalid @enderror" value="{{ old('generation', $product->generation) }}"> </div> </div> </div>
+
+<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.screenCard')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="screenCard" placeholder="{{__('general.screenCard')}}" class="form-control pl-1 min-h-40px @error('screenCard') is-invalid @enderror" value="{{ old('screenCard', $product->screenCard) }}"> </div> </div> </div>
+
 
                         <div class="col-md-6">
                             @include('admin.components.image', [
