@@ -252,6 +252,25 @@ function yousabEmails()
             $body .= '</tbody></table>';
             $body .= '</body></html>';
 
+            $dealingProjects = Project::where('deal', 0)->get();
+
+            // Add the dealing on projects table
+$body .= '<h2>Dealing on Projects</h2>';
+$body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
+$body .= '<thead><tr><th>Project Title</th><th>Cost</th><th>Payed</th><th>Rest</th></tr></thead><tbody>';
+
+foreach ($dealingProjects as $project) {
+    $body .= '<tr>
+                <td>' . htmlspecialchars($project->title, ENT_QUOTES, 'UTF-8') . '</td>
+                <td>' . htmlspecialchars($project->cost ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
+                <td>' . htmlspecialchars($project->payed ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
+                <td>' . htmlspecialchars(rest($project) ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
+              </tr>';
+}
+
+$body .= '</tbody></table><br>';
+
+
 
             // Add Flat Todo Reference (codeLinks)
             if (!empty($flat->codeLinks)) {
