@@ -60,6 +60,8 @@ class TaskController extends Controller
                 $status = [0, 1];
             }
 
+            dd($status);
+
             // Fetch tasks based on user permissions
             if (auth()->user()->email != "nessimboula@gmail.com") {
                 $tasks = $this->task
