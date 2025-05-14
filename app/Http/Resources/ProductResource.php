@@ -19,8 +19,15 @@ class ProductResource extends JsonResource
             "image" => $this->image,
             "icon" => $this->icon,
             "title" => $this->title,
+            "brand" => $this->brand,
             "subtitle" => $this->subtitle,
             "description" => $this->description,
+            "description" => $this->description,
+            "processor" => $this->processor,
+            "ram" => $this->ram,
+            "screenCard" => $this->screenCard,
+            "ssd" => $this->ssd,
+            "hdd" => $this->hdd,
         ];
     }
 }

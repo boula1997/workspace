@@ -5,8 +5,8 @@
             /* Ensures it stays fixed */
             bottom: 20px !important;
             /* Distance from bottom */
-            right: 20px !important;
-            /* Distance from right */
+            left: 20px !important;
+            /* Distance from left */
             z-index: 9999 !important;
             /* Keeps it above other elements */
             width: 60px;
@@ -31,7 +31,6 @@
             height: 40px;
         }
     </style>
-
 
     @if (App::environment('local'))
         <!-- Start button WhatsApp -->

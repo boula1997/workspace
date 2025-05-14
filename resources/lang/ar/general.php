@@ -200,6 +200,9 @@ return [
 "$1" => "$1", // No translation needed for a variable.
 
 
+
+
+
 "keywords_updated" => "تم تحديث الكلمات المفتاحية",
 "allfollowups" => "جميع المتابعات",
 "followups" => "المتابعات",
