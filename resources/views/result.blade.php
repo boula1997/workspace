@@ -189,7 +189,7 @@
             </div>
         @endforeach
         <hr class="text-white fw-bold">
-        <p>Translate the right side to arabic and french</p>
+        <p>Translate the right side to arabic and french and english to put them in ar.php en.php fr.php</p>
         @foreach ($resultsTranslation as $result)
             @if (!str_contains($result->key, ' '))
                 <p>"{{ $result->key }}" =>
@@ -416,7 +416,7 @@
                 </div>
             @endforeach
             <hr class="text-white fw-bold">
-        <p>Translate the right side to arabic and french</p>
+        <p>Translate the right side to arabic and french and english to put them in ar.php en.php fr.php</p>
             @foreach ($resultsTranslation as $result)
                 @if (!str_contains($result->key, ' '))
                     <p>"{{ $result->key }}" =>
@@ -586,7 +586,7 @@
             </div>
         @endforeach
         <hr class="text-white fw-bold">
-        <p>Translate the right side to arabic and french</p>
+        <p>Translate the right side to arabic and french and english to put them in ar.php en.php fr.php</p>
         @foreach ($resultsTranslation as $result)
             @if (!str_contains($result->key, ' '))
                 <p>"{{ $result->key }}" =>
@@ -849,7 +849,7 @@
         <p>cls</p>
         <p>cls</p>
         <hr class="text-white fw-bold">
-        <p>Translate the right side to arabic and french</p>
+        <p>Translate the right side to arabic and french and english to put them in ar.php en.php fr.php</p>
         @foreach ($results as $result)
             @if (!str_contains($result->key, ' '))
                 <p>"{{ $result->key }}" =>
