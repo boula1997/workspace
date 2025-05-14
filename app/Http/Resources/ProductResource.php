@@ -24,7 +24,7 @@ class ProductResource extends JsonResource
             "brand" => $this->brand,
             "subtitle" => $this->subtitle,
             "description" => $this->description,
-            "description" => $this->description,
+            "generation" => $this->generation,
             "processor" => $this->processor,
             "ram" => $this->ram,
             "screenCard" => $this->screenCard,
