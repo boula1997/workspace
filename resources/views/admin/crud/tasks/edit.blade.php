@@ -42,9 +42,8 @@
                     </div>
                     <div class="row">
                         {{-- Multi Select Input Edit --}}
-                        <div class="form-group row"> <label
-                                class="col-form-label">{{ __('general.employees') }}</label>
-                            <div class="col-lg-4 col-md-9 col-sm-12"> <select class="form-control selectpicker"
+                        <div class="form-group row"> <label class="col-form-label">{{ __('general.employees') }}</label>
+                            <div class="col-lg-4 col-md-9 col-sm-12"> <select class="form-control selectpicker select2"
                                     id="multiSelect1" multiple="multiple" data-live-search="true" name="employees[]">
                                     <option value="">{{ __('general.select') }}</option>
                                     @foreach ($employees as $employee)
@@ -59,7 +58,7 @@
                         <div class="col-md-6">
                             <div class="mb-3"> <label for=""
                                     class="form-label">{{ __('general.project') }}</label> <select
-                                    class="form-select form-select-lg" name="project_id" id="project">
+                                    class="form-select form-select-lg select2" name="project_id" id="project">
                                     <option value="">{{ __('general.select') }}</option>
                                     @foreach ($projects as $project)
                                         <option value="{{ $project->id }}"
@@ -69,7 +68,17 @@
                                 </select> </div>
                         </div>
 
-                        {{-- Checkbox Input --}} <div class="col-md-6 ps-4"> <div class="form-group"> <div class="form-group"> <div class="form-check form-switch"> <input class="form-check-input" @checked(old('level',$task->level)) type="checkbox" id="level" name="level" value="1"> <label class="form-check-label" for="level">{{ __('general.mobile') }} <span class="text-danger"> * </span></label> </div> </div> </div> </div>
+                        {{-- Checkbox Input --}} <div class="col-md-6 ps-4">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <div class="form-check form-switch"> <input class="form-check-input"
+                                            @checked(old('level', $task->level)) type="checkbox" id="level" name="level"
+                                            value="1"> <label class="form-check-label"
+                                            for="level">{{ __('general.mobile') }} <span class="text-danger"> *
+                                            </span></label> </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer mb-5">
                         <button type="submit"
@@ -96,6 +105,21 @@
                         theme: "monokai"
                     });
                 })
+            </script>
+
+            <script>
+                $('#project').select2({
+                placeholder: "Select a project",
+                allowClear: true
+                });
+                });
+            </script>
+            <script>
+                $('#multiSelect1').select2({
+                placeholder: "Select projects",
+                allowClear: true
+                });
+                });
             </script>
         @endpush
     @endsection
