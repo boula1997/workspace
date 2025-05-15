@@ -118,14 +118,14 @@ Route::group(['middleware' => ['apiLocalization','cors']], function () {
     
     
 });
-Route::get('/task/create', [TaskController::class, 'create']);
+Route::get('/apptask/create', [TaskController::class, 'create']);
 
 
 
 Route::post('/newsletter', [NewsletterController::class, 'store']);
 Route::post('/message', [MessageController::class, 'store']);
 
-Route::post('/task/store', [TaskController::class, 'store']);
+Route::post('/apptask/store', [TaskController::class, 'store']);
 Route::post('/complain',[ComplainController::class,'store']);
 Route::put('/complain/{id}',[ComplainController::class,'update']);
 Route::delete('/complain/{id}',[ComplainController::class,'delete']);
