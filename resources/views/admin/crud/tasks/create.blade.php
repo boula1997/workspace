@@ -29,7 +29,7 @@
                         {{-- Multi Select Input Create --}}
                         <div class="form-group col-md-6">
                             <label class="col-form-label text-right">{{ __('general.employees') }}</label>
-                            <select class="form-control selectpicker" id="multiSelect1" multiple="multiple"
+                            <select class="form-control selectpicker select2" id="multiSelect1" multiple="multiple"
                                 data-live-search="true" name="employees[]">
                                 <option value="">{{ __('general.select') }}</option>
                                 @foreach ($employees as $employee)
@@ -139,6 +139,13 @@
             <script>
                 $('#project').select2({
                 placeholder: "Select a project",
+                allowClear: true
+                });
+                });
+            </script>
+            <script>
+                $('#multiSelect1').select2({
+                placeholder: "Select projects",
                 allowClear: true
                 });
                 });
