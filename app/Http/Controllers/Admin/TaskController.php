@@ -47,7 +47,7 @@ class TaskController extends Controller
     {
         try {
             $employees = Admin::orderBy('name', 'ASC')->get();
-            $projects = Project::where('appearance', 1)->latest()->get();
+            $projects = Project::latest()->get();
             $projectIds = activeWebsitesIds();
             $employeeIds = isset($request->employees) ? $request->employees : [];
 
@@ -131,14 +131,14 @@ class TaskController extends Controller
     public function create()
     {
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where('appearance', 1)->latest()->get();
+        $projects = Project::latest()->get();
         return view('admin.crud.tasks.create', compact('employees', 'projects'));
     }
 
 
     public function getActiveWebsites()
     {
-        $websites = Project::where('appearance', 1)->where('status', '!=', 0)->latest()->pluck('title');
+        $websites = Project::where('status', '!=', 0)->latest()->pluck('title');
         return response()->json($websites);
     }
     public function bulkAction(Request $request)
@@ -146,7 +146,7 @@ class TaskController extends Controller
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where('appearance', 1)->latest()->get();
+        $projects = Project::latest()->get();
         // loadActiveProjects(isset($request->projects)?$request->projects:[]);
         $projectIds = activeWebsitesIds();
         $employeeIds = isset($request->employees) ? $request->employees : [];
@@ -511,7 +511,7 @@ class TaskController extends Controller
     {
         //    dd($task->title);
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where('appearance', 1)->get();
+        $projects = Project::get();
         $selectedEmployees = Task::where('title', $task->title)->pluck('employee_id')->toArray();
         return view('admin.crud.tasks.edit', compact('task', 'employees', 'projects', 'selectedEmployees'));
     }

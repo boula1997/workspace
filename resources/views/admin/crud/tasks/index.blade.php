@@ -802,18 +802,7 @@ $(function () {
 
     table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-    // Custom sorting function
-    $.fn.dataTable.ext.type.order['custom-title-sort-pre'] = function (data) {
-        if (data.startsWith("Doing some task") || data.startsWith("Updating tasks")) {
-            return "AAA" + data; // Forces it to be at the top
-        }
-        return "ZZZ" + data; // Push others lower
-    };
 
-    // Apply initial sort on third column
-    table.order([
-        [2, "asc"]
-    ]).draw();
 });
 
 
