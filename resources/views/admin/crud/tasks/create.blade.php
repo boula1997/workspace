@@ -17,7 +17,8 @@
                             <div class="form-group"> <label>{{ __('general.title') }} <span class="text-danger"> *
                                     </span></label>
                                 <div class="input-group">
-                                                <textarea name="title" id="titlearea" class="form-control @error('title') is-invalid @enderror" placeholder="ex:task1+task2+task3+task4" id="" cols="30" rows="5" >{{ old('title') }}</textarea>
+                                    <textarea name="title" id="titlearea" class="form-control @error('title') is-invalid @enderror"
+                                        placeholder="ex:task1+task2+task3+task4" id="" cols="30" rows="5">{{ old('title') }}</textarea>
 
                                 </div>
                             </div>
@@ -26,36 +27,46 @@
 
 
                         {{-- Multi Select Input Create --}}
-                         <div class="form-group col-md-6"> 
-                            <label
-                                class="col-form-label text-right">{{ __('general.employees') }}</label>
-                                <select class="form-control selectpicker"
-                                    id="multiSelect1" multiple="multiple" data-live-search="true" name="employees[]">
-                                    <option value="">{{ __('general.select') }}</option>
-                                    @foreach ($employees as $employee)
-                                        <option value="{{ $employee->id }}"
-                                            {{ collect(old('employees'))->contains($employee->id) ? 'selected' : '' }}>
-                                            {{ $employee->name }}</option>
-                                    @endforeach
-                                </select> 
+                        <div class="form-group col-md-6">
+                            <label class="col-form-label text-right">{{ __('general.employees') }}</label>
+                            <select class="form-control selectpicker" id="multiSelect1" multiple="multiple"
+                                data-live-search="true" name="employees[]">
+                                <option value="">{{ __('general.select') }}</option>
+                                @foreach ($employees as $employee)
+                                    <option value="{{ $employee->id }}"
+                                        {{ collect(old('employees'))->contains($employee->id) ? 'selected' : '' }}>
+                                        {{ $employee->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
-                        {{-- Dynamic Select Input --}} 
+                        {{-- Dynamic Select Input --}}
                         <div class="col-md-6">
                             <div class="mb-3"> <label for=""
-                                    class="form-label">{{ __('general.project') }}</label> <select
-                                    class="form-select form-select-lg" name="project_id" id="project">
+                                    class="form-label">{{ __('general.project') }}</label>
+                                <select class="form-select form-select-lg" name="project_id" id="project">
                                     <option value="">{{ __('general.select') }}</option>
                                     @foreach ($projects as $project)
                                         <option value="{{ $project->id }}"
                                             {{ old('project_id') == $project->id ? 'selected' : '' }}>
                                             {{ $project->title }} </option>
                                     @endforeach
-                                </select> </div>
+                                </select>
+                            </div>
                         </div>
 
-                        {{-- Checkbox Input --}} 
-                        <div class="col-md-6 ps-4"> <div class="form-group"> <div class="form-group"> <div class="form-check form-switch"> <input class="form-check-input" @checked(old('level')) type="checkbox" id="level" name="level" value="1"> <label class="form-check-label" for="level">{{ __('general.mobile') }} <span class="text-danger"> * </span></label> </div> </div> </div> </div>
+                        {{-- Checkbox Input --}}
+                        <div class="col-md-6 ps-4">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <div class="form-check form-switch"> <input class="form-check-input"
+                                            @checked(old('level')) type="checkbox" id="level" name="level"
+                                            value="1"> <label class="form-check-label"
+                                            for="level">{{ __('general.mobile') }} <span class="text-danger"> *
+                                            </span></label> </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer mb-5">
                         <button type="submit"
@@ -71,48 +82,46 @@
 
 
         @push('scripts')
-
-        <script>
-
-        $(document).ready(function() {
-            // Check if there is a title value in local storage and set it to the input field
-            if (localStorage.getItem('title')) {
-                $('textarea[name="title"]').val(localStorage.getItem('title'));
-            }
-
-            // Save the title to local storage whenever it changes
-            $('#titlearea').on('input', function() {
-                localStorage.setItem('title', $(this).val());
-            });
-        });
-
-
-            $(document).ready(function() {
-                // Retrieve the search value from localStorage
-                let searchValue = localStorage.getItem('searchValue') || '';
-        
-                // Select option in "projects" dropdown based on searchValue (using "contains" logic)
-                $('#project option').each(function() {
-                    if ($(this).text().toLowerCase().includes(searchValue.toLowerCase())) {
-                        $(this).prop('selected', true);
-                        return false; // stop after first match
+            <script>
+                $(document).ready(function() {
+                    // Check if there is a title value in local storage and set it to the input field
+                    if (localStorage.getItem('title')) {
+                        $('textarea[name="title"]').val(localStorage.getItem('title'));
                     }
+
+                    // Save the title to local storage whenever it changes
+                    $('#titlearea').on('input', function() {
+                        localStorage.setItem('title', $(this).val());
+                    });
                 });
-        
-                // Select option in "employees" dropdown if text contains "Boula"
-                if(searchValue.toLowerCase().includes('aloo')){
-                    $('#multiSelect1 option').each(function() {
-                        if ($(this).text().toLowerCase().includes('boula')) {
+
+
+                $(document).ready(function() {
+                    // Retrieve the search value from localStorage
+                    let searchValue = localStorage.getItem('searchValue') || '';
+
+                    // Select option in "projects" dropdown based on searchValue (using "contains" logic)
+                    $('#project option').each(function() {
+                        if ($(this).text().toLowerCase().includes(searchValue.toLowerCase())) {
                             $(this).prop('selected', true);
+                            return false; // stop after first match
                         }
                     });
-                }
-        
-                // Refresh selectpicker to reflect selections in UI (if using Bootstrap selectpicker)
-                $('#multiSelect1').selectpicker('refresh');
-                $('#project').selectpicker('refresh');
-            });
-        </script>
+
+                    // Select option in "employees" dropdown if text contains "Boula"
+                    if (searchValue.toLowerCase().includes('aloo')) {
+                        $('#multiSelect1 option').each(function() {
+                            if ($(this).text().toLowerCase().includes('boula')) {
+                                $(this).prop('selected', true);
+                            }
+                        });
+                    }
+
+                    // Refresh selectpicker to reflect selections in UI (if using Bootstrap selectpicker)
+                    $('#multiSelect1').selectpicker('refresh');
+                    $('#project').selectpicker('refresh');
+                });
+            </script>
 
 
             <script>
@@ -126,6 +135,13 @@
                         theme: "monokai"
                     });
                 })
+            </script>
+            <script>
+                $('#project').select2({
+                placeholder: "Select a project",
+                allowClear: true
+                });
+                });
             </script>
         @endpush
 
