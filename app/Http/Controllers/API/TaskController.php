@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\TaskRequest;
+use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
 use App\Models\Admin;
@@ -48,7 +49,7 @@ class TaskController extends Controller
         $projects = Project::where('appearance', 1)->latest()->get();
 
         $data=[
-            "projects"=>$projects,
+            "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
         ];
 
