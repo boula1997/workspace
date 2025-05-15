@@ -115,15 +115,17 @@ Route::group(['middleware' => ['apiLocalization','cors']], function () {
 
     Route::get('/portfolios', [PortfolioController::class, 'index']);
     Route::get('/portfolio/{id}', [PortfolioController::class, 'show']);
-
-
+    
+    
 });
+Route::get('/task/create', [TaskController::class, 'create']);
 
 
 
 Route::post('/newsletter', [NewsletterController::class, 'store']);
 Route::post('/message', [MessageController::class, 'store']);
 
+Route::post('/task/store', [TaskController::class, 'store']);
 Route::post('/complain',[ComplainController::class,'store']);
 Route::put('/complain/{id}',[ComplainController::class,'update']);
 Route::delete('/complain/{id}',[ComplainController::class,'delete']);

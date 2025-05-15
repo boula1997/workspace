@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\TaskRequest;
 use App\Http\Resources\TaskResource;
+use App\Models\Project;
+use App\Models\Admin;
 use App\Models\Task;
 use Exception;
 use Illuminate\Http\Request;
@@ -35,6 +38,50 @@ class TaskController extends Controller
         } catch (Exception $e) {
 
             return failedResponse($e->getMessage());
+        }
+    }
+
+
+    public function create()
+    {
+        $employees = Admin::orderBy('name', 'ASC')->get();
+        $projects = Project::where('appearance', 1)->latest()->get();
+
+        $data=[
+            "projects"=>$projects,
+            "employees"=>$employees,
+        ];
+
+        return successResponse($data);
+    }
+
+
+    public function store(TaskRequest $request)
+    {
+        try {
+
+
+            $titles = explode('+', $request->title);
+            foreach ($titles as $title) {
+                foreach ($request->employees as $employee) {
+                    Task::create([
+                        'title' => $title,
+                        'employee_id' => $employee,
+                        'project_id' => $request->project_id,
+
+                    ]);
+                }
+            }
+
+
+            $data=[];
+
+            return successResponse($data);
+
+
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return redirect()->back()->with(['error' => __('general.something_wrong')]);
         }
     }
 }
