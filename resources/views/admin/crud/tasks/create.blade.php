@@ -44,7 +44,7 @@
                         <div class="col-md-6">
                             <div class="mb-3"> <label for=""
                                     class="form-label">{{ __('general.project') }}</label>
-                                <select class="form-select form-select-lg" name="project_id" id="project">
+                                <select class="form-select form-select-lg select2" name="project_id" id="project">
                                     <option value="">{{ __('general.select') }}</option>
                                     @foreach ($projects as $project)
                                         <option value="{{ $project->id }}"
