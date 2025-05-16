@@ -131,7 +131,7 @@ class TaskController extends Controller
     public function create()
     {
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::latest()->get();
+        $projects = Project::where("status","!=",0)->latest()->get();
         return view('admin.crud.tasks.create', compact('employees', 'projects'));
     }
 
