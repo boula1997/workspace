@@ -158,6 +158,7 @@ class TaskController extends Controller
         } else {
             $status = [0, 1];
         }
+        
 
 
         if (!isset($request->employees) && $action == 'assign')
@@ -307,7 +308,7 @@ class TaskController extends Controller
             }
             ;
 
-
+           dd($status);
             $tasks = Task::whereIn('status',$status)->whereIn('project_id', $request->projects)
                 ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
