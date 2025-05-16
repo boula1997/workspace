@@ -51,6 +51,8 @@ class TaskController extends Controller
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
+            "last_time"=>setting()->last_time . ''.getTimeAgo(setting()->last_time),
+
         ];
 
         return successResponse($data);
