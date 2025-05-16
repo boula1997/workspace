@@ -51,7 +51,7 @@ class TaskController extends Controller
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
-            "last_time"=>setting()->last_time . ' '.getTimeAgo(setting()->last_time),
+            "last_time"=>setting()->last_time . ' '.getTimeAgo(setting()->last_time).'Allowed in'. date('Y-m-d', strtotime(setting()->last_time . ' + 4 days')),
 
         ];
 
