@@ -86,7 +86,7 @@
                                                     <select class="form-control select2 bg-dark" id="multiSelectProjects"
                                                         multiple="multiple" name="projects[]">
                                                         @foreach ($projects as $project)
-                                                            <option @selected($loop->index==0) value="{{ $project->id }}"
+                                                            <option  value="{{ $project->id }}"
                                                                 {{ collect(old('projects', []))->contains($project->id) ? 'selected' : '' }}>
                                                                 {{ $project->title }}
                                                             </option>
