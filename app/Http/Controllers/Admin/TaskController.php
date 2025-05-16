@@ -308,7 +308,6 @@ class TaskController extends Controller
             }
             ;
 
-           dd($request->projects);
             $tasks = Task::whereIn('status',$status)->whereIn('project_id', $request->projects)
                 ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
