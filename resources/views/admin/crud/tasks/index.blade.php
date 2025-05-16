@@ -99,7 +99,7 @@
 
                                                     {{-- Dynamic Select Input for Projects --}}
                                                         <select class="form-control select2 bg-dark" name="taskType" id="taskTypeSelect">
-                                                            <option value="tasks">tasks</option>
+                                                            <option value="tasks" selected>tasks</option>
                                                             <option value="finishedTasks">finishedTasks</option>
                                                             <option value="allTasks">allTasks</option>
                                                         </select>
