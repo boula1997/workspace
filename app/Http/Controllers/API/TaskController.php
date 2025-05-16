@@ -46,7 +46,7 @@ class TaskController extends Controller
     public function create()
     {
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where("status","!=",0)->latest()->get();
+        $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
 
         $data=[
             "projects"=>ProjectResource::collection($projects),
