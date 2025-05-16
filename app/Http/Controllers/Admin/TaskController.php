@@ -303,7 +303,7 @@ class TaskController extends Controller
                 if ($task->status == 1)
                     Task::where('title', $task->title)->update(['status' => !$task->status]);
                 else
-                    Task::where('title', $task->title)->where('employee_id', auth()->user()->id)->update(['status' => !$task->status]);
+                    Task::where('title', $task->title)->update(['status' => !$task->status]);
                 clearTasks($task->title);
             }
             ;
