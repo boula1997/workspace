@@ -307,7 +307,7 @@ class TaskController extends Controller
                 clearTasks($task->title);
             }
             ;
-            if(iseet($request->projects))
+            if(isset($request->projects))
             $tasks = Task::whereIn('status',$status)->whereIn('project_id', $request->projects)
                 ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
