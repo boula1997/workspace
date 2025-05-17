@@ -32,10 +32,10 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-md-6 d-flex justify-content-start">
-                                                @if (request()->route('taskType')=="task")
+                                                @if (request()->route('taskType') == 'task')
                                                     <h1 class="card-title fw-bold">@lang('general.tasks') (You can order rows by
                                                         dragging from third column)</h1>
-                                                @elseif(request()->route('taskType')=="alltasks")
+                                                @elseif(request()->route('taskType') == 'alltasks')
                                                     <h1 class="card-title fw-bold">@lang('general.alltasks')</h1>
                                                 @else
                                                     <h1 class="card-title fw-bold">@lang('general.finishedTasks')</h1>
@@ -58,7 +58,9 @@
                                             </button>
 
                                         </div>
-                             <form action="{{ route('tasks.bulkAction', ['taskType' => request()->route('taskType')]) }}" method="POST">
+                                        <form
+                                            action="{{ route('tasks.bulkAction', ['taskType' => request()->route('taskType')]) }}"
+                                            method="POST">
 
                                             @csrf
                                             <div class="row d-flex align-items-center thisForm">
@@ -86,7 +88,7 @@
                                                     <select class="form-control select2 bg-dark" id="multiSelectProjects"
                                                         multiple="multiple" name="projects[]">
                                                         @foreach ($projects as $project)
-                                                            <option  value="{{ $project->id }}"
+                                                            <option value="{{ $project->id }}"
                                                                 {{ collect(old('projects', []))->contains($project->id) ? 'selected' : '' }}>
                                                                 {{ $project->title }}
                                                             </option>
@@ -98,11 +100,12 @@
                                                         class="col-form-label text-right">{{ __('general.type') }}</label>
 
                                                     {{-- Dynamic Select Input for Projects --}}
-                                                        <select class="form-control select2 bg-dark" name="taskType" id="taskTypeSelect">
-                                                            <option value="tasks" selected>tasks</option>
-                                                            <option value="finishedTasks">finishedTasks</option>
-                                                            <option value="allTasks">allTasks</option>
-                                                        </select>
+                                                    <select class="form-control select2 bg-dark" name="taskType"
+                                                        id="taskTypeSelect">
+                                                        <option value="tasks" selected>tasks</option>
+                                                        <option value="finishedTasks">finishedTasks</option>
+                                                        <option value="allTasks">allTasks</option>
+                                                    </select>
                                                 </div>
 
 
@@ -276,7 +279,7 @@
     @push('scripts')
 
         <script>
-            $(document).ready(function () {
+            $(document).ready(function() {
                 var $select = $('#taskTypeSelect');
                 var savedValue = localStorage.getItem('taskType');
 
@@ -284,7 +287,7 @@
                     $select.val(savedValue).trigger('change'); // set value AND trigger change event
                 }
 
-                $select.on('change', function () {
+                $select.on('change', function() {
                     localStorage.setItem('taskType', $(this).val());
                 });
             });
@@ -293,31 +296,31 @@
 
 
 
-    <script>
-        $(document).ready(function () {
-            // Get selected project IDs from localStorage
-            let storedProjects = localStorage.getItem('selectedProjects');
+        <script>
+            $(document).ready(function() {
+                // Get selected project IDs from localStorage
+                let storedProjects = localStorage.getItem('selectedProjects');
 
-            if (storedProjects) {
-                let selectedIds = JSON.parse(storedProjects); // convert to array
+                if (storedProjects) {
+                    let selectedIds = JSON.parse(storedProjects); // convert to array
 
-                // Set the selected values in the select2 element
-                $('#multiSelectProjects').val(selectedIds).trigger('change');
-            }
+                    // Set the selected values in the select2 element
+                    $('#multiSelectProjects').val(selectedIds).trigger('change');
+                }
 
-            // Save selection on change
-            $('#multiSelectProjects').on('change', function () {
-                let selected = $(this).val(); // get array of selected values
-                localStorage.setItem('selectedProjects', JSON.stringify(selected));
+                // Save selection on change
+                $('#multiSelectProjects').on('change', function() {
+                    let selected = $(this).val(); // get array of selected values
+                    localStorage.setItem('selectedProjects', JSON.stringify(selected));
+                });
+
+                // Initialize select2 (optional if already initialized)
+                $('#multiSelectProjects').select2();
             });
-
-            // Initialize select2 (optional if already initialized)
-            $('#multiSelectProjects').select2();
-        });
-    </script>
+        </script>
 
 
-        
+
         <script>
             $(document).on('click', '.deleteTask', function() {
                 // Get the closest table row to the clicked button and remove it
@@ -779,31 +782,29 @@
                     window.matchMedia("(max-width: 768px)").matches;
             }
 
-$(function () {
-    var table = $("#example1").DataTable({
-        "responsive": true,
-        "lengthChange": false,
-        "autoWidth": false,
-        "paging": false,
-        "searching": true,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-        "rowReorder": {
-            selector: "td:nth-child(3)" // 👈 Select third column for dragging
-        },
-        "order": [
-            [2, "desc"] // 👈 Default ordering by third column (index 2)
-        ],
-        "columnDefs": [{
-            "targets": 2, // 👈 Custom sort on third column
-            "orderable": true,
-            "type": "custom-title-sort"
-        }]
-    });
+            $(function() {
+                var table = $("#example1").DataTable({
+                    "responsive": true,
+                    "lengthChange": false,
+                    "autoWidth": false,
+                    "paging": false,
+                    "searching": true,
+                    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                     rowReorder: true,
+                    "order": [
+                        [2, "desc"] // 👈 Default ordering by third column (index 2)
+                    ],
+                    "columnDefs": [{
+                        "targets": 2, // 👈 Custom sort on third column
+                        "orderable": true,
+                        "type": "custom-title-sort"
+                    }]
+                });
 
-    table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+                table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
 
-});
+            });
 
 
 
@@ -827,10 +828,10 @@ $(function () {
         </script>
 
         <script>
-$(document).ready(function() {
-    setTimeout(function() {
-        $('#readAllTitles').click();
-    }, 10000); // 10000 milliseconds = 10 seconds
-});
-</script>
+            $(document).ready(function() {
+                setTimeout(function() {
+                    $('#readAllTitles').click();
+                }, 10000); // 10000 milliseconds = 10 seconds
+            });
+        </script>
     @endpush
