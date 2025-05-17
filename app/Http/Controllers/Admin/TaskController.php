@@ -213,19 +213,19 @@ class TaskController extends Controller
                 // Append active websites as new tasks with unique incremental IDs
                 foreach ($websites as $key => $value) {
                     $lastTaskId++; // Increment ID for each new website task
-                    $tasks->push((object) [
-                        'id' => $lastTaskId,
-                        'title' => 'Doing some task or updating tasks for ' . $value,
-                        'keywords' => null,
-                        'status' => 0,
-                        'employee_id' => 1,
-                        'project_id' => 3,
-                        'counter' => 20,
-                        'level' => 0,
-                        'piority' => 0,
-                        'created_at' => null,
-                        'updated_at' => null
-                    ]);
+                    // $tasks->push((object) [
+                    //     'id' => $lastTaskId,
+                    //     'title' => 'Doing some task or updating tasks for ' . $value,
+                    //     'keywords' => null,
+                    //     'status' => 0,
+                    //     'employee_id' => 1,
+                    //     'project_id' => 3,
+                    //     'counter' => 20,
+                    //     'level' => 0,
+                    //     'piority' => 0,
+                    //     'created_at' => null,
+                    //     'updated_at' => null
+                    // ]);
                 }
             }
 
@@ -275,19 +275,19 @@ class TaskController extends Controller
                 // Append active websites as new tasks with unique incremental IDs
                 foreach ($websites as $key => $value) {
                     $lastTaskId++; // Increment ID for each new website task
-                    $tasks->push((object) [
-                        'id' => $lastTaskId,
-                        'title' => 'Doing some task or updating tasks for ' . $value,
-                        'keywords' => null,
-                        'status' => 0,
-                        'employee_id' => 1,
-                        'project_id' => 3,
-                        'counter' => 20,
-                        'level' => 0,
-                        'piority' => 0,
-                        'created_at' => null,
-                        'updated_at' => null
-                    ]);
+                    // $tasks->push((object) [
+                    //     'id' => $lastTaskId,
+                    //     'title' => 'Doing some task or updating tasks for ' . $value,
+                    //     'keywords' => null,
+                    //     'status' => 0,
+                    //     'employee_id' => 1,
+                    //     'project_id' => 3,
+                    //     'counter' => 20,
+                    //     'level' => 0,
+                    //     'piority' => 0,
+                    //     'created_at' => null,
+                    //     'updated_at' => null
+                    // ]);
                 }
             }
 
@@ -334,19 +334,19 @@ class TaskController extends Controller
                 // Append active websites as new tasks with unique incremental IDs
                 foreach ($websites as $key => $value) {
                     $lastTaskId++; // Increment ID for each new website task
-                    $tasks->push((object) [
-                        'id' => $lastTaskId,
-                        'title' => 'Doing some task or updating tasks for ' . $value,
-                        'keywords' => null,
-                        'status' => 0,
-                        'employee_id' => 1,
-                        'project_id' => 3,
-                        'counter' => 20,
-                        'level' => 0,
-                        'piority' => 0,
-                        'created_at' => null,
-                        'updated_at' => null
-                    ]);
+                    // $tasks->push((object) [
+                    //     'id' => $lastTaskId,
+                    //     'title' => 'Doing some task or updating tasks for ' . $value,
+                    //     'keywords' => null,
+                    //     'status' => 0,
+                    //     'employee_id' => 1,
+                    //     'project_id' => 3,
+                    //     'counter' => 20,
+                    //     'level' => 0,
+                    //     'piority' => 0,
+                    //     'created_at' => null,
+                    //     'updated_at' => null
+                    // ]);
                 }
             }
 
@@ -375,19 +375,19 @@ class TaskController extends Controller
                 // Append active websites as new tasks with unique incremental IDs
                 foreach ($websites as $key => $value) {
                     $lastTaskId++; // Increment ID for each new website task
-                    $tasks->push((object) [
-                        'id' => $lastTaskId,
-                        'title' => 'Doing some task or updating tasks for ' . $value,
-                        'keywords' => null,
-                        'status' => 0,
-                        'employee_id' => 1,
-                        'project_id' => 3,
-                        'counter' => 20,
-                        'level' => 0,
-                        'piority' => 0,
-                        'created_at' => null,
-                        'updated_at' => null
-                    ]);
+                    // $tasks->push((object) [
+                    //     'id' => $lastTaskId,
+                    //     'title' => 'Doing some task or updating tasks for ' . $value,
+                    //     'keywords' => null,
+                    //     'status' => 0,
+                    //     'employee_id' => 1,
+                    //     'project_id' => 3,
+                    //     'counter' => 20,
+                    //     'level' => 0,
+                    //     'piority' => 0,
+                    //     'created_at' => null,
+                    //     'updated_at' => null
+                    // ]);
                 }
             }
             return view('admin.crud.tasks.index', compact('tasks', 'employees', 'projects', 'type', 'projectIds', 'employeeIds'))
