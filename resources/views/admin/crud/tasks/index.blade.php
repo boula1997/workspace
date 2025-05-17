@@ -784,26 +784,27 @@
 
             $(function() {
                 var table = $("#example1").DataTable({
-                    "responsive": true,
-                    "lengthChange": false,
-                    "autoWidth": false,
-                    "paging": false,
-                    "searching": true,
-                    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                     rowReorder: true,
-                    "order": [
-                        [2, "desc"] // 👈 Default ordering by third column (index 2)
-                    ],
-                    "columnDefs": [{
-                        "targets": 2, // 👈 Custom sort on third column
-                        "orderable": true,
-                        "type": "custom-title-sort"
+                    responsive: true,
+                    lengthChange: false,
+                    autoWidth: false,
+                    paging: false,
+                    searching: true,
+                    buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                    rowReorder: {
+                        selector: 'td:nth-child(3)'
+                    },
+                    columnDefs: [{
+                        targets: 2,
+                        orderable: true
                     }]
                 });
 
                 table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-
+                $('#example1').on('row-reorder', function(e, diff, edit) {
+                    console.log('Row order changed');
+                    console.log(diff);
+                });
             });
 
 
