@@ -481,12 +481,12 @@
                     }
 
                     femaleVoice = voices.find(voice =>
-                            voice.lang.startsWith('ar') && voice.name.toLowerCase().includes('female')
+                            voice.lang.startsWith('en') && voice.name.toLowerCase().includes('female')
                         ) ||
                         voices.find(voice =>
-                            voice.lang.startsWith('ar') && voice.name.includes('Google')
+                            voice.lang.startsWith('en') && voice.name.includes('Google')
                         ) ||
-                        voices.find(voice => voice.lang.startsWith('ar')) ||
+                        voices.find(voice => voice.lang.startsWith('en')) ||
                         voices.find(voice =>
                             voice.lang.startsWith('en') && voice.name.toLowerCase().includes('female')
                         ) ||
