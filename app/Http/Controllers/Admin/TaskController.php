@@ -538,7 +538,7 @@ class TaskController extends Controller
                 Task::create([
                     'title' => $request->title,
                     'employee_id' => $employee,
-                    'project_id' => $task->project_id,
+                    'project_id' => $request->project_id,
                     'keywords' => $task->keywords
                 ]);
             }
