@@ -47,7 +47,7 @@ class TaskController extends Controller
     {
         try {
             $employees = Admin::orderBy('name', 'ASC')->get();
-            $projects = Project::latest()->get();
+            $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
             $projectIds = activeWebsitesIds();
             $employeeIds = isset($request->employees) ? $request->employees : [];
 
@@ -146,7 +146,7 @@ class TaskController extends Controller
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::latest()->get();
+        $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
         // loadActiveProjects(isset($request->projects)?$request->projects:[]);
         $projectIds = activeWebsitesIds();
         $employeeIds = isset($request->employees) ? $request->employees : [];
@@ -519,7 +519,7 @@ class TaskController extends Controller
     {
         //    dd($task->title);
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::get();
+        $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
         $selectedEmployees = Task::where('title', $task->title)->pluck('employee_id')->toArray();
         return view('admin.crud.tasks.edit', compact('task', 'employees', 'projects', 'selectedEmployees'));
     }
