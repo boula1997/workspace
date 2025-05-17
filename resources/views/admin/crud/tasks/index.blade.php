@@ -825,4 +825,12 @@ $(function () {
                 }
             }
         </script>
+
+        <script>
+$(document).ready(function() {
+    setTimeout(function() {
+        $('#readAllTitles').click();
+    }, 10000); // 10000 milliseconds = 10 seconds
+});
+</script>
     @endpush
