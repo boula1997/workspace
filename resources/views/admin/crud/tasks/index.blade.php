@@ -147,10 +147,11 @@
                                                         <th>
                                                             {{ __('general.title') }}
                                                         </th>
+                                                                                                                                          <th>{{ __('general.piority') }}</th>
                                                         <th>{{ __('general.project') }}</th>
                                                         <th>{{ __('general.level') }}</th>
                                                         {{-- <th>{{ __('general.counter') }}</th> --}}
-                                                        <th>{{ __('general.piority') }}</th>
+              
                                                         <th>{{ __('general.employees') }}</th>
                                                         <th>{{ __('general.actions') }}</th>
                                                         <th class="d-none">{{ __('general.select') }}</th>
@@ -171,6 +172,14 @@
 
                                                             <td>{{ isset($task->project->title) ? $task->project->title : 'None' }}
                                                             </td>
+                                                                                                                <td data-title="{{ $task->title }}" class="togglePiority"
+                                                                data-order="{{ $task->piority ? 1 : 0 }}"
+                                                                style="cursor: pointer;
+                                                                    background-color: {{ $task->piority ? 'green' : 'yellow' }};
+                                                                    color: {{ $task->piority ? 'white' : 'black' }};"
+                                                                id="{{ $task->id }}">
+                                                                {{ $task->piority ? 'Active' : 'Pending' }}
+                                                            </td>
                                                             <td class="toggleLevel" style="cursor: pointer"
                                                                 id="{{ $task->id }}">
                                                                 {{ $task->level ? 'mobile' : 'pc' }}
@@ -180,14 +189,7 @@
                                                                 style="cursor: pointer;">
                                                                 {{ $task->counter }}
                                                             </td> --}}
-                                                            <td data-title="{{ $task->title }}" class="togglePiority"
-                                                                data-order="{{ $task->piority ? 1 : 0 }}"
-                                                                style="cursor: pointer;
-                                                                    background-color: {{ $task->piority ? 'green' : 'yellow' }};
-                                                                    color: {{ $task->piority ? 'white' : 'black' }};"
-                                                                id="{{ $task->id }}">
-                                                                {{ $task->piority ? 'Active' : 'Pending' }}
-                                                            </td>
+        
                                                             <td>{{ taskEmployees($task->title) }}</td>
 
                                                             <td>
