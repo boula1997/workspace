@@ -180,7 +180,8 @@
                                                                 style="cursor: pointer;">
                                                                 {{ $task->counter }}
                                                             </td> --}}
-                                                            <td class="togglePiority"   data-order="{{ $task->piority ? 1 : 0 }}"
+                                                            <td 
+                                                            data-title="{{ $task->title }}"  class="togglePiority"   data-order="{{ $task->piority ? 1 : 0 }}"
                                                                 style="cursor: pointer;
                                                                     background-color: {{ $task->piority ? 'green' : 'yellow' }};
                                                                     color: {{ $task->piority ? 'white' : 'black' }};"
@@ -574,30 +575,39 @@
                     repeatCount = 0;
                     clearInterval(readInterval);
 
-                    function readCurrentTitle() {
-                        if (stopReading) {
-                            console.log('Reading stopped.');
-                            clearInterval(readInterval);
-                            return;
-                        }
+                    // Select only titles with active priority (data-order="1")
+const titles = Array.from(document.querySelectorAll('.togglePiority'))
+    .filter(el => el.getAttribute('data-order') === '1');
 
-                        if (repeatCount < 20) {
-                            const currentTitle = titles[titleIndex].getAttribute('data-title');
-                            readText(currentTitle);
-                            repeatCount++;
-                        } else {
-                            titleIndex++;
-                            repeatCount = 0;
-                            if (titleIndex >= titles.length) {
-                                console.log('Finished reading all titles. Restarting...');
-                                titleIndex = 0; // Reset index to restart reading
-                            }
-                        }
-                    }
+function readCurrentTitle() {
+    if (stopReading) {
+        console.log('Reading stopped.');
+        clearInterval(readInterval);
+        return;
+    }
 
-                    readInterval = setInterval(readCurrentTitle, 2 * 60 * 1000);
-                    readCurrentTitle(); // Start reading immediately
-                }
+    if (titles.length === 0) {
+        console.log('No active titles to read.');
+        clearInterval(readInterval);
+        return;
+    }
+
+    if (repeatCount < 20) {
+        const currentTitle = titles[titleIndex].getAttribute('data-title');
+        readText(currentTitle);
+        repeatCount++;
+    } else {
+        titleIndex++;
+        repeatCount = 0;
+        if (titleIndex >= titles.length) {
+            console.log('Finished reading all active titles. Restarting...');
+            titleIndex = 0;
+        }
+    }
+}
+
+readInterval = setInterval(readCurrentTitle, 2 * 60 * 1000);
+readCurrentTitle(); // Start reading immediately
 
 
                 document.getElementById('readAllTitles').addEventListener('click', resumeReadingNow);
