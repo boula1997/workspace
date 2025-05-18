@@ -182,8 +182,8 @@
                                                             </td> --}}
                                                             <td class="togglePiority"
                                                                 style="cursor: pointer;
-    background-color: {{ $task->piority ? 'green' : 'yellow' }};
-    color: {{ $task->piority ? 'white' : 'black' }};"
+                                                                    background-color: {{ $task->piority ? 'green' : 'yellow' }};
+                                                                    color: {{ $task->piority ? 'white' : 'black' }};"
                                                                 id="{{ $task->id }}">
                                                                 {{ $task->piority ? 'Active' : 'Pending' }}
                                                             </td>
@@ -637,62 +637,69 @@
                 });
             });
         </script>
-<script>
-    $(function () {
-        // ✅ Initialize the DataTable once
-        var table = $("#example1").DataTable({
-            responsive: true,
-            lengthChange: false,
-            autoWidth: false,
-            paging: false,
-            searching: true,
-            buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
-            rowReorder: {
-                selector: 'td:nth-child(3)'
-            },
-            columnDefs: [{
-                targets: 2,
-                orderable: true
-            }]
-        });
 
-        table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        <script>
+            $(function() {
+                // ✅ Initialize the DataTable once
+                var table = $("#example1").DataTable({
+                    responsive: true,
+                    lengthChange: false,
+                    autoWidth: false,
+                    paging: false,
+                    searching: true,
+                    buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                    rowReorder: {
+                        selector: 'td:nth-child(3)'
+                    },
+                    columnDefs: [{
+                        targets: 2,
+                        orderable: true
+                    }]
+                });
 
-        $('#example1').on('row-reorder', function (e, diff, edit) {
-            console.log('Row order changed');
-            console.log(diff);
-        });
+                table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-        // ✅ Handle priority toggle clicks
-        $('#example1').on('click', '.togglePiority', function () {
-        alert(400);
-            let self = $(this);
-            let level = self.attr('id');
+                $('#example1').on('row-reorder', function(e, diff, edit) {
+                    console.log('Row order changed');
+                    console.log(diff);
+                });
 
-            $.ajax({
-                url: `{{ route('piority.toggle', '') }}/${level}`,
-                type: 'GET',
-                success: function (response) {
-                    if (self.html().trim() === 'Active') {
-                        self.html('Pending');
-                        self.attr('data-order', 0);
-                        self.css({ 'background-color': 'yellow', 'color': 'black' });
-                    } else {
-                        self.html('Active');
-                        self.attr('data-order', 1);
-                        self.css({ 'background-color': 'green', 'color': 'white' });
-                    }
+                // ✅ Handle priority toggle clicks
+                $('#example1').on('click', '.togglePiority', function() {
+                    alert(400);
+                    let self = $(this);
+                    let level = self.attr('id');
 
-                    // ✅ Update DataTable to reflect changes
-                    table.cell(self).invalidate().draw(false);
-                },
-                error: function (xhr, status, error) {
-                    console.log("Error: " + error);
-                }
+                    $.ajax({
+                        url: `{{ route('piority.toggle', '') }}/${level}`,
+                        type: 'GET',
+                        success: function(response) {
+                            if (self.html().trim() === 'Active') {
+                                self.html('Pending');
+                                self.attr('data-order', 0);
+                                self.css({
+                                    'background-color': 'yellow',
+                                    'color': 'black'
+                                });
+                            } else {
+                                self.html('Active');
+                                self.attr('data-order', 1);
+                                self.css({
+                                    'background-color': 'green',
+                                    'color': 'white'
+                                });
+                            }
+
+                            // ✅ Update DataTable to reflect changes
+                            table.cell(self).invalidate().draw(false);
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("Error: " + error);
+                        }
+                    });
+                });
             });
-        });
-    });
-</script>
+        </script>
 
 
 
@@ -821,7 +828,7 @@
                     window.matchMedia("(max-width: 768px)").matches;
             }
 
-            
+
 
 
 
