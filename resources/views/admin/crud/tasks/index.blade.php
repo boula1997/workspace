@@ -668,49 +668,23 @@
                     console.log(diff);
                 });
 
-$(function() {
-    let table = $("#example1").DataTable({
-        responsive: true,
-        lengthChange: false,
-        autoWidth: false,
-        paging: true,
-        searching: true,
-        ordering: true,
-        rowReorder: {
-            selector: 'td:nth-child(3)'
-        }
-    });
+                $('#sortByPriority').on('click', function() {
+                    var rows = $('#example1 tbody tr').get();
 
-    $('#sortByPriority').on('click', function() {
-        // ✅ Destroy current DataTable with rowReorder
-        table.destroy();
+                    rows.sort(function(a, b) {
+                        // Find the priority cells for both rows
+                        var priorityA = $(a).find('.togglePiority').attr('data-order') || 0;
+                        var priorityB = $(b).find('.togglePiority').attr('data-order') || 0;
 
-        // ✅ Sort rows manually by .togglePiority data-order
-        var rows = $('#example1 tbody tr').get();
+                        // We want Active (1) on top, Pending (0) on bottom
+                        return priorityB - priorityA;
+                    });
 
-        rows.sort(function(a, b) {
-            var priorityA = parseInt($(a).find('.togglePiority').attr('data-order')) || 0;
-            var priorityB = parseInt($(b).find('.togglePiority').attr('data-order')) || 0;
-            return priorityB - priorityA; // Active (1) first
-        });
-
-        $.each(rows, function(index, row) {
-            $('#example1 tbody').append(row);
-        });
-
-        // ✅ Reinitialize DataTable WITHOUT rowReorder
-        table = $('#example1').DataTable({
-            responsive: true,
-            lengthChange: false,
-            autoWidth: false,
-            paging: true,
-            searching: true,
-            ordering: true
-            // 🚫 rowReorder removed
-        });
-    });
-});
-
+                    // Append sorted rows back to tbody
+                    $.each(rows, function(index, row) {
+                        $('#example1 tbody').append(row);
+                    });
+                });
 
 
                 // ✅ Handle priority toggle clicks
