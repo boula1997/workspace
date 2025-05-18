@@ -565,7 +565,8 @@
                 }
 
                 function readTitlesInSequence() {
-                    const titles = document.querySelectorAll('td[data-title]');
+                   const titles = Array.from(document.querySelectorAll('.togglePiority'))
+    .filter(el => el.getAttribute('data-order') === '1');
                     if (titles.length === 0) {
                         console.log('No titles found.');
                         return;
@@ -576,8 +577,7 @@
                     clearInterval(readInterval);
 
                     // Select only titles with active priority (data-order="1")
-const titles = Array.from(document.querySelectorAll('.togglePiority'))
-    .filter(el => el.getAttribute('data-order') === '1');
+
 
 function readCurrentTitle() {
     if (stopReading) {
