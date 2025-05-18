@@ -124,7 +124,7 @@ Route::group(
             Route::post('/tasks/changEmployees', [App\Http\Controllers\Admin\TaskController::class, 'taskChangeEmployee'])->name('tasks.changeEmployee');
 
             Route::post('/tasks/bulk-action', [TaskController::class, 'bulkAction'])->name('tasks.bulkAction');
-           Route::post('/tasks/update-order', [TaskController::class, 'updateOrder'])->name('tasks.updateOrder');
+           
             Route::post('/tasks/finish/delete', [App\Http\Controllers\Admin\TaskController::class, 'tasksDelete'])->name('tasks.finish');
             
             Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

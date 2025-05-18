@@ -523,17 +523,6 @@ class TaskController extends Controller
         $selectedEmployees = Task::where('title', $task->title)->pluck('employee_id')->toArray();
         return view('admin.crud.tasks.edit', compact('task', 'employees', 'projects', 'selectedEmployees'));
     }
-
-    public function updateOrder(Request $request)
-{
-    $order = $request->input('order');
-    
-    foreach ($order as $position => $taskId) {
-        Task::where('id', $taskId)->update(['order_column' => $position]);
-    }
-    
-    return response()->json(['success' => true]);
-}
     /**
      * Update the specified resource in storage.
      *
