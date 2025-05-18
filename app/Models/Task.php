@@ -50,11 +50,7 @@ class Task extends Model
         return $query->orderBy('piority', 'desc');
     }
 
-    protected static function booted()
-    {
-        static::addGlobalScope(new DateFilterScope);
-    }
-    
+
 
     protected static function booted()
     {
