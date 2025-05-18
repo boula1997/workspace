@@ -137,29 +137,29 @@ function yousabEmails()
         if ($admin->email == "nessimboula@gmail.com") {
             // Email details
             $to = $admin->email;
-            $toName = $admin->name; // Use the admin's name dynamically
+            $toName = $admin->name;
             $subject = 'Tasks and Projects Report';
             $flat = Issue::find(80);
+
             // Get high-priority tasks
             $importantTasks = Task::withoutGlobalScope(DateFilterScope::class)
-                ->where('status', 0) // Only pending tasks
-                ->where('piority', 1) // High-priority tasks
+                ->where('status', 0)
+                ->where('piority', 1)
                 ->orderBy('project_id', 'desc')
                 ->get()
                 ->unique('title');
 
             // Get all tasks
             $tasks = Task::withoutGlobalScope(DateFilterScope::class)
-                ->where('status', 0) // Only pending tasks
+                ->where('status', 0)
                 ->orderBy('project_id', 'desc')
                 ->get()
                 ->unique('title');
 
-            // Get all projects
+            // Get all projects and filtered types
             $projects = Project::all();
-
-            // Get projects with fixed = 1
             $fixedProjects = Project::where('fixed', 1)->get();
+            $dealingProjects = Project::where('deal', 0)->get();
 
             // Construct the email content
             $body = '<html lang="en">
@@ -170,136 +170,133 @@ function yousabEmails()
                         <body>
                             <h1>Yousab Tech Report</h1>';
 
-            // Add the high-priority tasks table
+            // Important Tasks
             if ($importantTasks->isNotEmpty()) {
                 $body .= '<h2>⚠️ Important Tasks</h2>';
-                $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-                $body .= '<thead><tr><th>Task</th><th>Project</th></tr></thead><tbody>';
+                $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+                            <thead><tr><th>Task</th><th>Project</th></tr></thead><tbody>';
 
                 foreach ($importantTasks as $task) {
                     $body .= '<tr>
                                 <td>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</td>
                                 <td>' . htmlspecialchars($task->project->title ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
-                            </tr>';
+                              </tr>';
                 }
 
-                $body .= '</tbody></table><br>'; // Add space after the table
+                $body .= '</tbody></table><br>';
             }
 
-            // Add the all-tasks table
+            // All Tasks
             $body .= '<h2>All Tasks</h2>';
-            $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-            $body .= '<thead><tr><th>Task</th><th>Project</th><th>Difficulty</th></tr></thead><tbody>';
+            $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+                        <thead><tr><th>Task</th><th>Project</th><th>Difficulty</th></tr></thead><tbody>';
 
             foreach ($tasks as $task) {
-                $difficulty = $task->level == 1 ? 'Mobile' : 'PC'; // Determine difficulty
+                $difficulty = $task->level == 1 ? 'Mobile' : 'PC';
                 $body .= '<tr>
                             <td>' . htmlspecialchars($task->title, ENT_QUOTES, 'UTF-8') . '</td>
                             <td>' . htmlspecialchars($task->project->title ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
                             <td>' . $difficulty . '</td>
-                        </tr>';
+                          </tr>';
             }
 
             $body .= '</tbody></table><br>';
 
+            // All Projects (if boula)
             if (boula()) {
-                // Add the projects table
                 $body .= '<h2>Projects</h2>';
-                $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-                $body .= '<thead><tr><th>Project Title</th><th>Cost</th><th>Payed</th><th>Rest</th></tr></thead><tbody>';
+                $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+                            <thead><tr><th>Project Title</th><th>Cost</th><th>Payed</th><th>Rest</th></tr></thead><tbody>';
 
                 foreach ($projects as $project) {
-                    if (rest($project) > 0)
+                    if (rest($project) > 0) {
                         $body .= '<tr>
                                     <td>' . htmlspecialchars($project->title, ENT_QUOTES, 'UTF-8') . '</td>
                                     <td>' . htmlspecialchars($project->cost ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
                                     <td>' . htmlspecialchars($project->payed ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
-                                    <td>' . htmlspecialchars(rest($project) ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
+                                    <td>' . htmlspecialchars(rest($project), ENT_QUOTES, 'UTF-8') . '</td>
                                   </tr>';
+                    }
                 }
+
                 $totalCost = $projects->sum('cost');
                 $totalPayed = $projects->sum('payed');
-                $totalRest = $projects->sum(function ($project) {
-                    return rest($project);
-                });
+                $totalRest = $projects->sum(fn($project) => rest($project));
 
                 $body .= '<tr style="font-weight:bold; background-color:#f0f0f0;">
-                <td>Total</td>
-                <td>' . htmlspecialchars($totalCost, ENT_QUOTES, 'UTF-8') . '</td>
-                <td>' . htmlspecialchars($totalPayed, ENT_QUOTES, 'UTF-8') . '</td>
-                <td>' . htmlspecialchars($totalRest, ENT_QUOTES, 'UTF-8') . '</td>
-              </tr>';
+                            <td>Total</td>
+                            <td>' . htmlspecialchars($totalCost, ENT_QUOTES, 'UTF-8') . '</td>
+                            <td>' . htmlspecialchars($totalPayed, ENT_QUOTES, 'UTF-8') . '</td>
+                            <td>' . htmlspecialchars($totalRest, ENT_QUOTES, 'UTF-8') . '</td>
+                          </tr>';
                 $body .= '</tbody></table><br>';
             }
 
-            // Add the fixed projects table
+            // Fixed Projects
             $body .= '<h2>Fixed Projects</h2>';
-            $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-            $body .= '<thead><tr><th>Project Title</th><th>Cost</th><th>Payed</th><th>Rest</th></tr></thead><tbody>';
+            $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+                        <thead><tr><th>Project Title</th><th>Cost</th><th>Payed</th><th>Rest</th></tr></thead><tbody>';
 
             foreach ($fixedProjects as $project) {
                 $body .= '<tr>
                             <td>' . htmlspecialchars($project->title, ENT_QUOTES, 'UTF-8') . '</td>
                             <td>' . htmlspecialchars($project->cost ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
                             <td>' . htmlspecialchars($project->payed ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
-                            <td>' . htmlspecialchars(rest($project) ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
+                            <td>' . htmlspecialchars(rest($project), ENT_QUOTES, 'UTF-8') . '</td>
                           </tr>';
             }
 
+            $body .= '</tbody></table><br>';
 
+            // Dealing Projects
+            $body .= '<h2>Dealing on Projects</h2>';
+            $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+                        <thead><tr><th>Project Title</th><th>Cost</th><th>Payed</th><th>Rest</th></tr></thead><tbody>';
 
+            foreach ($dealingProjects as $project) {
+                $body .= '<tr>
+                            <td>' . htmlspecialchars($project->title, ENT_QUOTES, 'UTF-8') . '</td>
+                            <td>' . htmlspecialchars($project->cost ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
+                            <td>' . htmlspecialchars($project->payed ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
+                            <td>' . htmlspecialchars(rest($project), ENT_QUOTES, 'UTF-8') . '</td>
+                          </tr>';
+            }
 
-            $body .= '</tbody></table>';
-            $body .= '</body></html>';
+            $body .= '</tbody></table><br>';
 
-            $dealingProjects = Project::where('deal', 0)->get();
-
-            // Add the dealing on projects table
-$body .= '<h2>Dealing on Projects</h2>';
-$body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-$body .= '<thead><tr><th>Project Title</th><th>Cost</th><th>Payed</th><th>Rest</th></tr></thead><tbody>';
-
-foreach ($dealingProjects as $project) {
-    $body .= '<tr>
-                <td>' . htmlspecialchars($project->title, ENT_QUOTES, 'UTF-8') . '</td>
-                <td>' . htmlspecialchars($project->cost ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
-                <td>' . htmlspecialchars($project->payed ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
-                <td>' . htmlspecialchars(rest($project) ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>
-              </tr>';
-}
-
-$body .= '</tbody></table><br>';
-
-
-
-            // Add Flat Todo Reference (codeLinks)
+            // Flat Todo Reference
             if (!empty($flat->codeLinks)) {
-                $body .= '<h2>Flat Todo Reference</h2>';
-                $body .= '<ul>';
-
-                $codeLinks = preg_split('/\r\n|\r|\n/', $flat->codeLinks);
-
-                foreach ($codeLinks as $codeLink) {
+                $body .= '<h2>Flat Todo Reference</h2><ul>';
+                foreach (preg_split('/\r\n|\r|\n/', $flat->codeLinks) as $codeLink) {
                     if (trim($codeLink) !== '') {
                         $body .= '<li>' . htmlspecialchars($codeLink, ENT_QUOTES, 'UTF-8') . '</li>';
                     }
                 }
-
                 $body .= '</ul>';
             }
 
+            // Add last_time information
+            $lastTime = setting()->last_time;
+            $ago = getTimeAgo($lastTime);
+            $allowed = date('Y-m-d', strtotime($lastTime . ' + 3 days'));
+
+            $body .= '<h2>⏱ Last Time Info</h2>';
+            $body .= '<p><strong>Last Time:</strong> ' . htmlspecialchars($lastTime, ENT_QUOTES, 'UTF-8') . '</p>';
+            $body .= '<p><strong>Time Ago:</strong> ' . htmlspecialchars($ago, ENT_QUOTES, 'UTF-8') . '</p>';
+            $body .= '<p><strong>Allowed Until:</strong> ' . htmlspecialchars($allowed, ENT_QUOTES, 'UTF-8') . '</p>';
+
             $body .= '</body></html>';
 
-            // Send the email using MailService
+            // Send the email
             $result = MailService::sendMail($to, $toName, $subject, $body);
 
-            // Log the result
             if (!$result) {
                 echo "Failed to send email to {$to}.";
             }
         }
     }
 }
+
 
 
 
