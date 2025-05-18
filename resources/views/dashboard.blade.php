@@ -94,7 +94,7 @@
                 @if (boula())
                     <div class="row">
                         <h4>Methodologies</h4>
-                        <li>Handling and Prebaring day tasks methodology: open tasks on dahsboard and descide what tasks you will work on and order them by dragging and then download an html file of them to avoid losing this prparation. Also you can delete from theses tasks using inspect to easil control them</li>
+                        <li>Handling and Prebaring day tasks methodology: open tasks on dahsboard and descide what tasks you will work on and active them in piority column and sound system will automatically remind you with active of them each 20 mins</li>
                             <li>Edit first methodology: when adding or removing attributes do it first in edit.blade.php to
                                 avoid any poring filling data or validations issues and if no entered modules add them from
                                 database through ready insert and chatgpt to fill data inside insert</li>
