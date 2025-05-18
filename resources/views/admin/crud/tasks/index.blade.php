@@ -180,15 +180,13 @@
                                                                 style="cursor: pointer;">
                                                                 {{ $task->counter }}
                                                             </td> --}}
-<td class="togglePiority"
-    style="cursor: pointer;
-           background-color: {{ $task->piority ? 'green' : 'yellow' }};
-           color: {{ $task->piority ? 'white' : 'black' }};"
-    id="{{ $task->id }}"
-    data-order="{{ $task->piority ? 1 : 0 }}">
-    {{ $task->piority ? 'Active' : 'Pending' }}
-</td>
-
+                                                            <td class="togglePiority"
+                                                                style="cursor: pointer;
+                                                                    background-color: {{ $task->piority ? 'green' : 'yellow' }};
+                                                                    color: {{ $task->piority ? 'white' : 'black' }};"
+                                                                id="{{ $task->id }}">
+                                                                {{ $task->piority ? 'Active' : 'Pending' }}
+                                                            </td>
                                                             <td>{{ taskEmployees($task->title) }}</td>
 
                                                             <td>
@@ -644,33 +642,19 @@
             $(function() {
                 // ✅ Initialize the DataTable once
                 var table = $("#example1").DataTable({
-    responsive: true,
-    lengthChange: false,
-    autoWidth: false,
-    paging: false,
-    searching: true,
-    rowReorder: {
-        selector: 'td:nth-child(3)'
-    },
-    columnDefs: [
-        {
-            targets: 4, // priority column index
-            orderable: true,
-            render: function(data, type, row, meta) {
-                if(type === 'sort' || type === 'type') {
-                    // Sort by data-order attribute (0 or 1)
-                    return $(row[meta.col]).attr('data-order') || 0;
-                }
-                return data; // for display, show actual cell content
-            }
-        },
-        {
-            targets: 2,
-            orderable: true
-        }
-    ]
-});
-
+                    responsive: true,
+                    lengthChange: false,
+                    autoWidth: false,
+                    paging: false,
+                    searching: true,
+                    rowReorder: {
+                        selector: 'td:nth-child(3)'
+                    },
+                    columnDefs: [{
+                        targets: 2,
+                        orderable: true
+                    }]
+                });
 
 
                 $('#example1').on('row-reorder', function(e, diff, edit) {
@@ -679,39 +663,39 @@
                 });
 
                 // ✅ Handle priority toggle clicks
-  $('#example1').on('click', '.togglePiority', function() {
-    let self = $(this);
-    let level = self.attr('id');
+                $('#example1').on('click', '.togglePiority', function() {
+                    let self = $(this);
+                    let level = self.attr('id');
 
-    $.ajax({
-        url: `{{ route('piority.toggle', '') }}/${level}`,
-        type: 'GET',
-        success: function(response) {
-            if (self.html().trim() === 'Active') {
-                self.html('Pending');
-                self.attr('data-order', 0);
-                self.css({
-                    'background-color': 'yellow',
-                    'color': 'black'
+                    $.ajax({
+                        url: `{{ route('piority.toggle', '') }}/${level}`,
+                        type: 'GET',
+                        success: function(response) {
+                            if (self.html().trim() === 'Active') {
+                                self.html('Pending');
+                                self.attr('data-order', 0);
+                                self.css({
+                                    'background-color': 'yellow',
+                                    'color': 'black'
+                                });
+                            } else {
+                                self.html('Active');
+                                self.attr('data-order', 1);
+                                self.css({
+                                    'background-color': 'green',
+                                    'color': 'white'
+                                });
+                            }
+
+                            // ✅ Re-evaluate the whole row to keep sorting/ordering working
+                            let row = table.row(self.closest('tr'));
+                            row.invalidate().draw(false);
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("Error: " + error);
+                        }
+                    });
                 });
-            } else {
-                self.html('Active');
-                self.attr('data-order', 1);
-                self.css({
-                    'background-color': 'green',
-                    'color': 'white'
-                });
-            }
-
-            // Re-draw the table to apply sorting update
-            table.cell(self).invalidate('dom').draw(false);
-        },
-        error: function(xhr, status, error) {
-            console.log("Error: " + error);
-        }
-    });
-});
-
             });
         </script>
 
