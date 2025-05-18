@@ -647,7 +647,6 @@
                     autoWidth: false,
                     paging: false,
                     searching: true,
-                    buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
                     rowReorder: {
                         selector: 'td:nth-child(3)'
                     },
