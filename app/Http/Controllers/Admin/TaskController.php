@@ -69,7 +69,7 @@ class TaskController extends Controller
                         $query->where('email', 'nessimboula@gmail.com');
                     })->where('status',$status)
                     ->orderBy('piority','desc')
-                    ->latest()
+                    
                     
                     ->get()
                     ->unique('title');
@@ -77,7 +77,7 @@ class TaskController extends Controller
                 $tasks = $this->task
                     ->whereIn('status', $status)
                     ->orderBy('piority','desc')
-                    ->latest()
+                    
                     
                     ->get()
                     ->unique('title');
