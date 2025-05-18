@@ -283,7 +283,7 @@ function yousabEmails()
             $body .= '<h2>⏱ Last Time Info</h2>';
             $body .= '<p><strong>Last Time:</strong> ' . htmlspecialchars($lastTime, ENT_QUOTES, 'UTF-8') . '</p>';
             $body .= '<p><strong>Time Ago:</strong> ' . htmlspecialchars($ago, ENT_QUOTES, 'UTF-8') . '</p>';
-            $body .= '<p><strong>Allowed Until:</strong> ' . htmlspecialchars($allowed, ENT_QUOTES, 'UTF-8') . '</p>';
+            $body .= '<p><strong>Allowed in:</strong> ' . htmlspecialchars($allowed, ENT_QUOTES, 'UTF-8') . '</p>';
 
             $body .= '</body></html>';
 
