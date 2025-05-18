@@ -469,106 +469,108 @@
                 }
             });
         </script> --}}
-@if (boula())
-    <script>
-        let femaleVoice = null;
-        let stopReading = false;
-        let titleIndex = 0;
-        let readInterval = null;
-        let repeatCount = 0;
-        let stopTimeout = null;
-        let countdownInterval = null;
-        let remainingTime = 0;
+        @if (boula())
+            <script>
+                let femaleVoice = null;
+                let stopReading = false;
+                let titleIndex = 0;
+                let readInterval = null;
+                let repeatCount = 0;
+                let stopTimeout = null;
+                let countdownInterval = null;
+                let remainingTime = 0;
 
-        function setFemaleVoice() {
-            let voices = speechSynthesis.getVoices();
-            if (voices.length === 0) {
-                console.log("No voices available, retrying...");
-                speechSynthesis.onvoiceschanged = setFemaleVoice;
-                return;
-            }
+                function setFemaleVoice() {
+                    let voices = speechSynthesis.getVoices();
+                    if (voices.length === 0) {
+                        console.log("No voices available, retrying...");
+                        speechSynthesis.onvoiceschanged = setFemaleVoice;
+                        return;
+                    }
 
-            femaleVoice = voices.find(voice =>
-                    voice.lang.startsWith('en') && voice.name.toLowerCase().includes('female')
-                ) ||
-                voices.find(voice =>
-                    voice.lang.startsWith('en') && voice.name.includes('Google')
-                ) ||
-                voices.find(voice => voice.lang.startsWith('en')) ||
-                voices[0];
+                    femaleVoice = voices.find(voice =>
+                            voice.lang.startsWith('en') && voice.name.toLowerCase().includes('female')
+                        ) ||
+                        voices.find(voice =>
+                            voice.lang.startsWith('en') && voice.name.includes('Google')
+                        ) ||
+                        voices.find(voice => voice.lang.startsWith('en')) ||
+                        voices[0];
 
-            console.log('Selected Voice:', femaleVoice ? femaleVoice.name : 'Not found');
-        }
+                    console.log('Selected Voice:', femaleVoice ? femaleVoice.name : 'Not found');
+                }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM fully loaded and parsed.');
-            setTimeout(setFemaleVoice, 200);
-            readTitlesInSequence(); // Start reading
-            document.getElementById('readAllTitles').addEventListener('click', resumeReadingNow);
-            document.getElementById('stopReadingButton').addEventListener('click', stopReadingFor60Minutes);
-        });
+                document.addEventListener('DOMContentLoaded', () => {
+                    console.log('DOM fully loaded and parsed.');
+                    setTimeout(setFemaleVoice, 200);
+                    readTitlesInSequence(); // Start reading
+                    document.getElementById('readAllTitles').addEventListener('click', resumeReadingNow);
+                    document.getElementById('stopReadingButton').addEventListener('click', stopReadingFor60Minutes);
+                });
 
-        function updateButtonCountdown() {
-            const button = document.getElementById('stopReadingButton');
-            if (remainingTime > 0) {
-                remainingTime--;
-                const minutes = Math.floor(remainingTime / 60);
-                const seconds = remainingTime % 60;
-                button.textContent = `Reading resumes in ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            } else {
-                clearInterval(countdownInterval);
-                button.textContent = 'Stop Reading for 60 Minutes';
-            }
-        }
+                function updateButtonCountdown() {
+                    const button = document.getElementById('stopReadingButton');
+                    if (remainingTime > 0) {
+                        remainingTime--;
+                        const minutes = Math.floor(remainingTime / 60);
+                        const seconds = remainingTime % 60;
+                        button.textContent = `Reading resumes in ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                    } else {
+                        clearInterval(countdownInterval);
+                        button.textContent = 'Stop Reading for 60 Minutes';
+                    }
+                }
 
-        function stopReadingFor60Minutes() {
-            stopReading = true;
-            remainingTime = 60 * 60;
-            clearTimeout(stopTimeout);
-            clearInterval(countdownInterval);
+                function stopReadingFor60Minutes() {
+                    stopReading = true;
+                    remainingTime = 60 * 60;
+                    clearTimeout(stopTimeout);
+                    clearInterval(countdownInterval);
 
-            stopTimeout = setTimeout(() => {
-                stopReading = false;
-                console.log('Reading resumed after 60 minutes.');
-            }, 60 * 60 * 1000);
+                    stopTimeout = setTimeout(() => {
+                        stopReading = false;
+                        console.log('Reading resumed after 60 minutes.');
+                    }, 60 * 60 * 1000);
 
-            countdownInterval = setInterval(updateButtonCountdown, 1000);
-            console.log('Reading stopped for 60 minutes.');
-        }
+                    countdownInterval = setInterval(updateButtonCountdown, 1000);
+                    console.log('Reading stopped for 60 minutes.');
+                }
 
 function resumeReadingNow() {
     stopReading = false;
     clearTimeout(stopTimeout);
     clearInterval(countdownInterval);
+    readingLoopActive = false; // allow new loop
     document.getElementById('stopReadingButton').textContent = 'Stop Reading for 60 Minutes';
     console.log('Reading resumed immediately.');
-    speechSynthesis.cancel(); // cancel any ongoing speech
+    speechSynthesis.cancel();
     readTitlesInSequence();
 }
 
 
-        function readText(text) {
-            if (stopReading) {
-                console.log('Reading is currently stopped.');
-                return;
-            }
 
-            speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            if (femaleVoice) {
-                utterance.voice = femaleVoice;
-            }
+                function readText(text) {
+                    if (stopReading) {
+                        console.log('Reading is currently stopped.');
+                        return;
+                    }
 
-            utterance.onstart = () => console.log("Speaking:", text);
-            utterance.onend = () => console.log("Finished speaking:", text);
-            utterance.onerror = (e) => console.error("Speech error:", e);
+                    speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    if (femaleVoice) {
+                        utterance.voice = femaleVoice;
+                    }
 
-            speechSynthesis.speak(utterance);
-        }
+                    utterance.onstart = () => console.log("Speaking:", text);
+                    utterance.onend = () => console.log("Finished speaking:", text);
+                    utterance.onerror = (e) => console.error("Speech error:", e);
+
+                    speechSynthesis.speak(utterance);
+                }
 
 function readTitlesInSequence() {
-    if (stopReading) {
-        console.log('Reading is currently stopped.');
+    if (stopReading || readingLoopActive) {
+        console.log('Reading is currently stopped or already running.');
         return;
     }
 
@@ -581,11 +583,13 @@ function readTitlesInSequence() {
         return;
     }
 
+    readingLoopActive = true; // prevent re-entrance
     let current = 0;
 
     function readNext() {
         if (stopReading) {
             console.log('Reading stopped.');
+            readingLoopActive = false;
             return;
         }
 
@@ -594,7 +598,7 @@ function readTitlesInSequence() {
             setTimeout(() => {
                 current = 0;
                 readNext(); // restart after 1 minute
-            }, 60 * 1000); // 60 seconds
+            }, 60 * 1000);
             return;
         }
 
@@ -607,24 +611,26 @@ function readTitlesInSequence() {
         utterance.onend = () => {
             console.log(`Finished: ${text}`);
             current++;
-            readNext(); // read next title
+            readNext();
         };
 
         utterance.onerror = (e) => {
             console.error("Speech error:", e);
             current++;
-            readNext(); // skip on error
+            readNext();
         };
 
         console.log(`Speaking: ${text}`);
         speechSynthesis.speak(utterance);
     }
 
-    readNext(); // start reading
+    // Cancel any ongoing speech before starting
+    speechSynthesis.cancel();
+    readNext();
 }
 
-    </script>
-@endif
+            </script>
+        @endif
 
 
 
