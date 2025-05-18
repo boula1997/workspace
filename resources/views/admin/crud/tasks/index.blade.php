@@ -664,7 +664,6 @@
 
                 // ✅ Handle priority toggle clicks
                 $('#example1').on('click', '.togglePiority', function() {
-                    alert(400);
                     let self = $(this);
                     let level = self.attr('id');
 
