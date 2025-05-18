@@ -68,16 +68,16 @@ class TaskController extends Controller
                     ->whereDoesntHave('employee', function ($query) {
                         $query->where('email', 'nessimboula@gmail.com');
                     })->where('status',$status)
-                    ->orderBy('piority','desc')
-                    
+                    ->orderBy('z')
+                    ->latest()
                     
                     ->get()
                     ->unique('title');
             } else {
                 $tasks = $this->task
                     ->whereIn('status', $status)
-                    ->orderBy('piority','desc')
-                    
+                    ->orderBy('status')
+                    ->latest()
                     
                     ->get()
                     ->unique('title');
@@ -194,7 +194,7 @@ class TaskController extends Controller
 
 
             $tasks = Task::whereIn('status',$status)->whereIn('project_id', $request->projects)
-                ->orderBy('piority','desc')
+                ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
                  // Limit the results to 300
                 ->get()
@@ -258,7 +258,7 @@ class TaskController extends Controller
 
 
             $tasks = Task::whereIn('status',$status)->whereIn('project_id', $request->projects)
-                ->orderBy('piority','desc')
+                ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
                  // Limit the results to 300
                 ->get()
@@ -309,7 +309,7 @@ class TaskController extends Controller
             ;
             if(isset($request->projects))
             $tasks = Task::whereIn('status',$status)->whereIn('project_id', $request->projects)
-                ->orderBy('piority','desc')
+                ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
                  // Limit the results to 300
                 ->get()
@@ -317,7 +317,7 @@ class TaskController extends Controller
                 
                 else
                 $tasks = Task::whereIn('status',$status)
-                    ->orderBy('piority','desc')
+                    ->orderBy('project_id', 'desc')
                     ->latest('created_at') // Ensure latest tasks by creation date
                      // Limit the results to 300
                     ->get()
@@ -357,7 +357,7 @@ class TaskController extends Controller
             ]);
         } else if ($action == 'filterProject') {
 
-            $tasks = Task::whereIn('project_id', $request->projects)->whereIn('status', $status)->orderBy('piority','desc')->get()->unique('title');
+            $tasks = Task::whereIn('project_id', $request->projects)->whereIn('status', $status)->orderBy('project_id', 'desc')->get()->unique('title');
                 $employees = Admin::orderBy('name', 'ASC')->get();
             $projects = Project::whereHas('tasks', function ($query) {
                 $query->whereNotNull('id'); // Ensures tasks exist
