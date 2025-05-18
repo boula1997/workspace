@@ -479,6 +479,7 @@
                 let stopTimeout = null;
                 let countdownInterval = null;
                 let remainingTime = 0;
+                let readingLoopActive = false;
 
                 function setFemaleVoice() {
                     let voices = speechSynthesis.getVoices();
