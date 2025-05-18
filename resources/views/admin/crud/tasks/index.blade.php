@@ -139,7 +139,7 @@
                                                     </div>
                                                     <div class="mt-2">
 
-                                                    <button type="button" id="sortByPriority">Sort by Priority</button>
+                                                        <button type="button" id="sortByPriority">Sort by Priority</button>
                                                     </div>
 
                                                 </div>
@@ -185,7 +185,8 @@
                                                                 style="cursor: pointer;">
                                                                 {{ $task->counter }}
                                                             </td> --}}
-                                                            <td class="togglePiority"   data-order="{{ $task->piority ? 1 : 0 }}"
+                                                            <td class="togglePiority"
+                                                                data-order="{{ $task->piority ? 1 : 0 }}"
                                                                 style="cursor: pointer;
                                                                     background-color: {{ $task->piority ? 'green' : 'yellow' }};
                                                                     color: {{ $task->piority ? 'white' : 'black' }};"
@@ -668,22 +669,24 @@
                 });
 
                 $('#sortByPriority').on('click', function() {
-    var rows = $('#example1 tbody tr').get();
+                    // If DataTable is active, destroy it to remove rowReorder
+                    if ($.fn.DataTable.isDataTable('#example1')) {
+                        $('#example1').DataTable().destroy();
+                    }
 
-    rows.sort(function(a, b) {
-        // Find the priority cells for both rows
-        var priorityA = $(a).find('.togglePiority').attr('data-order') || 0;
-        var priorityB = $(b).find('.togglePiority').attr('data-order') || 0;
+                    var rows = $('#example1 tbody tr').get();
 
-        // We want Active (1) on top, Pending (0) on bottom
-        return priorityB - priorityA; 
-    });
+                    rows.sort(function(a, b) {
+                        var priorityA = $(a).find('.togglePiority').attr('data-order') || 0;
+                        var priorityB = $(b).find('.togglePiority').attr('data-order') || 0;
+                        return priorityB - priorityA;
+                    });
 
-    // Append sorted rows back to tbody
-    $.each(rows, function(index, row) {
-        $('#example1 tbody').append(row);
-    });
-});
+                    $.each(rows, function(index, row) {
+                        $('#example1 tbody').append(row);
+                    });
+                });
+
 
 
                 // ✅ Handle priority toggle clicks
