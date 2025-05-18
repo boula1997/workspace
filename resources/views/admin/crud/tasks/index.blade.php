@@ -599,7 +599,7 @@
                             setTimeout(() => {
                                 current = 0;
                                 readNext(); // restart after 1 minute
-                            }, 2 * 60 * 1000);
+                            }, 20 * 60 * 1000);
                             return;
                         }
 
