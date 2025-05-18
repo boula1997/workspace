@@ -29,7 +29,7 @@
 
      </div>
     
-     <p class="text-secondary"><i>{{ date('Y-m-d', strtotime($last->last_time . ' + 4 days')) }} </i></p>
+     <p class="text-secondary"><i>{{ date('Y-m-d', strtotime($last->last_time . ' + 3 days')) }} </i></p>
     @foreach ($data as $item)
         {{-- @if ($item->last_time == '2024-03-08')
             <p title="{{ $item->created_at }}" class="text-danger">{{ $item->last_time }}</p>
