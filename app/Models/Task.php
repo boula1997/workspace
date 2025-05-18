@@ -44,6 +44,16 @@ class Task extends Model
     {
         return $this->status != 0 ? 0 : $value;
     }
+
+      public function scopeOrderedByPiority($query)
+    {
+        return $query->orderBy('piority', 'desc');
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new DateFilterScope);
+    }
     
 
     protected static function booted()
