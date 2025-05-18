@@ -536,14 +536,16 @@
             console.log('Reading stopped for 60 minutes.');
         }
 
-        function resumeReadingNow() {
-            stopReading = false;
-            clearTimeout(stopTimeout);
-            clearInterval(countdownInterval);
-            document.getElementById('stopReadingButton').textContent = 'Stop Reading for 60 Minutes';
-            console.log('Reading resumed immediately.');
-            readTitlesInSequence();
-        }
+function resumeReadingNow() {
+    stopReading = false;
+    clearTimeout(stopTimeout);
+    clearInterval(countdownInterval);
+    document.getElementById('stopReadingButton').textContent = 'Stop Reading for 60 Minutes';
+    console.log('Reading resumed immediately.');
+    speechSynthesis.cancel(); // cancel any ongoing speech
+    readTitlesInSequence();
+}
+
 
         function readText(text) {
             if (stopReading) {
@@ -564,44 +566,63 @@
             speechSynthesis.speak(utterance);
         }
 
-        function readTitlesInSequence() {
-            titleIndex = 0;
-            repeatCount = 0;
-            clearInterval(readInterval);
+function readTitlesInSequence() {
+    if (stopReading) {
+        console.log('Reading is currently stopped.');
+        return;
+    }
 
-            const titles = Array.from(document.querySelectorAll('.togglePiority'))
-                .filter(el => el.getAttribute('data-order') === '1');
+    const titles = Array.from(document.querySelectorAll('.togglePiority'))
+        .filter(el => el.getAttribute('data-order') === '1')
+        .map(el => el.getAttribute('data-title'));
 
-            function readCurrentTitle() {
-                if (stopReading) {
-                    console.log('Reading stopped.');
-                    clearInterval(readInterval);
-                    return;
-                }
+    if (titles.length === 0) {
+        console.log('No active titles to read.');
+        return;
+    }
 
-                if (titles.length === 0) {
-                    console.log('No active titles to read.');
-                    clearInterval(readInterval);
-                    return;
-                }
+    let current = 0;
 
-                if (repeatCount < 20) {
-                    const currentTitle = titles[titleIndex].getAttribute('data-title');
-                    readText(currentTitle);
-                    repeatCount++;
-                } else {
-                    titleIndex++;
-                    repeatCount = 0;
-                    if (titleIndex >= titles.length) {
-                        console.log('Finished reading all active titles. Restarting...');
-                        titleIndex = 0;
-                    }
-                }
-            }
-
-            readInterval = setInterval(readCurrentTitle, 2 * 60 * 1000);
-            readCurrentTitle();
+    function readNext() {
+        if (stopReading) {
+            console.log('Reading stopped.');
+            return;
         }
+
+        if (current >= titles.length) {
+            console.log('All titles read. Waiting 60 seconds...');
+            setTimeout(() => {
+                current = 0;
+                readNext(); // restart after 1 minute
+            }, 60 * 1000); // 60 seconds
+            return;
+        }
+
+        const text = titles[current];
+        const utterance = new SpeechSynthesisUtterance(text);
+        if (femaleVoice) {
+            utterance.voice = femaleVoice;
+        }
+
+        utterance.onend = () => {
+            console.log(`Finished: ${text}`);
+            current++;
+            readNext(); // read next title
+        };
+
+        utterance.onerror = (e) => {
+            console.error("Speech error:", e);
+            current++;
+            readNext(); // skip on error
+        };
+
+        console.log(`Speaking: ${text}`);
+        speechSynthesis.speak(utterance);
+    }
+
+    readNext(); // start reading
+}
+
     </script>
 @endif
 
