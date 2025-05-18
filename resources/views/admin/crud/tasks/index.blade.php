@@ -137,6 +137,11 @@
                                                             {{ __('general.filter_projects') }}
                                                         </button>
                                                     </div>
+                                                    <div class="mt-2">
+
+                                                    <button id="sortByPriority">Sort by Priority</button>
+                                                    </div>
+
                                                 </div>
 
                                             </div>
@@ -180,7 +185,7 @@
                                                                 style="cursor: pointer;">
                                                                 {{ $task->counter }}
                                                             </td> --}}
-                                                            <td class="togglePiority"
+                                                            <td class="togglePiority"   data-order="{{ $task->piority ? 1 : 0 }}"
                                                                 style="cursor: pointer;
                                                                     background-color: {{ $task->piority ? 'green' : 'yellow' }};
                                                                     color: {{ $task->piority ? 'white' : 'black' }};"
@@ -661,6 +666,25 @@
                     console.log('Row order changed');
                     console.log(diff);
                 });
+
+                $('#sortByPriority').on('click', function() {
+    var rows = $('#example1 tbody tr').get();
+
+    rows.sort(function(a, b) {
+        // Find the priority cells for both rows
+        var priorityA = $(a).find('.togglePiority').attr('data-order') || 0;
+        var priorityB = $(b).find('.togglePiority').attr('data-order') || 0;
+
+        // We want Active (1) on top, Pending (0) on bottom
+        return priorityB - priorityA; 
+    });
+
+    // Append sorted rows back to tbody
+    $.each(rows, function(index, row) {
+        $('#example1 tbody').append(row);
+    });
+});
+
 
                 // ✅ Handle priority toggle clicks
                 $('#example1').on('click', '.togglePiority', function() {
