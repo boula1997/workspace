@@ -6,7 +6,7 @@
             .fullscreen-mode .navbar,
             .fullscreen-mode .card-header .btn,
             .fullscreen-mode .content-wrapper .thisForm>*:not(.container) {
-                display: none !important;
+                display: none !Active;
             }
         </style>
 
@@ -182,7 +182,7 @@
                                                             </td> --}}
                                                             <td class="togglePiority" style="cursor: pointer"
                                                                 id="{{ $task->id }}">
-                                                                {{ $task->piority ? 'Important' : 'Normal' }}</td>
+                                                                {{ $task->piority ? 'Active' : 'Pending' }}</td>
                                                             <td>{{ taskEmployees($task->title) }}</td>
 
                                                             <td>
@@ -644,10 +644,10 @@
                     type: 'GET', // HTTP method
                     success: function(response) {
                         // Toggle the HTML content based on current value
-                        if (self.html() == 'Important') {
-                            self.html('Normal');
+                        if (self.html() == 'Active') {
+                            self.html('Pending');
                         } else {
-                            self.html('Important');
+                            self.html('Active');
                         }
                         console.log(response); // Log the success response
                     },
