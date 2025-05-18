@@ -565,20 +565,15 @@
                 }
 
                 function readTitlesInSequence() {
-                                       // Select only titles with active priority (data-order="1")
-const titles = Array.from(document.querySelectorAll('.togglePiority'))
-    .filter(el => el.getAttribute('data-order') === '1');
-    
-                    if (titles.length === 0) {
-                        console.log('No titles found.');
-                        return;
-                    }
+
 
                     titleIndex = 0;
                     repeatCount = 0;
                     clearInterval(readInterval);
 
-
+                    // Select only titles with active priority (data-order="1")
+const titles = Array.from(document.querySelectorAll('.togglePiority'))
+    .filter(el => el.getAttribute('data-order') === '1');
 
 function readCurrentTitle() {
     if (stopReading) {
