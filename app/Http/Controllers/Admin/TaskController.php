@@ -67,14 +67,12 @@ public function index(Request $request)
                 ->whereDoesntHave('employee', function ($query) {
                     $query->where('email', 'nessimboula@gmail.com');
                 })
-                ->orderBy('piority', 'desc')
                 ->latest()
                 ->get()
                 ->unique('title');
         } else {
             $tasks = $this->task->orderedByPiority()
                 ->whereIn('status', $status)
-                ->orderBy('piority', 'desc')
                 ->latest()
                 ->get()
                 ->unique('title');
@@ -188,7 +186,6 @@ public function index(Request $request)
 
 
             $tasks = Task::orderedByPiority()->whereIn('status',$status)->whereIn('project_id', $request->projects)
-                ->orderBy('project_id', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
                  // Limit the results to 300
                 ->get()
@@ -252,9 +249,6 @@ public function index(Request $request)
 
 
             $tasks = Task::orderedByPiority()->whereIn('status',$status)->whereIn('project_id', $request->projects)
-                ->orderBy('project_id', 'desc')
-                ->latest('created_at') // Ensure latest tasks by creation date
-                 // Limit the results to 300
                 ->get()
                 ->unique('title');
 
@@ -303,17 +297,11 @@ public function index(Request $request)
             ;
             if(isset($request->projects))
             $tasks = Task::orderedByPiority()->whereIn('status',$status)->whereIn('project_id', $request->projects)
-                ->orderBy('project_id', 'desc')
-                ->latest('created_at') // Ensure latest tasks by creation date
-                 // Limit the results to 300
                 ->get()
                 ->unique('title');
                 
                 else
                 $tasks = Task::orderedByPiority()->whereIn('status',$status)
-                    ->orderBy('project_id', 'desc')
-                    ->latest('created_at') // Ensure latest tasks by creation date
-                     // Limit the results to 300
                     ->get()
                     ->unique('title');
 
@@ -351,7 +339,7 @@ public function index(Request $request)
             ]);
         } else if ($action == 'filterProject') {
 
-            $tasks = Task::orderedByPiority()->whereIn('project_id', $request->projects)->whereIn('status', $status)->orderBy('project_id', 'desc')->get()->unique('title');
+            $tasks = Task::orderedByPiority()->whereIn('project_id', $request->projects)->whereIn('status', $status)->get()->unique('title');
                 $employees = Admin::orderBy('name', 'ASC')->get();
             $projects = Project::whereHas('tasks', function ($query) {
                 $query->whereNotNull('id'); // Ensures tasks exist
