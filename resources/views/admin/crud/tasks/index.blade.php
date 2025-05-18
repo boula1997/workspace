@@ -687,8 +687,9 @@
                                 });
                             }
 
-                            // ✅ Update DataTable to reflect changes
-                            table.cell(self).invalidate().draw(false);
+                            // ✅ Re-evaluate the whole row to keep sorting/ordering working
+                            let row = table.row(self.closest('tr'));
+                            row.invalidate().draw(false);
                         },
                         error: function(xhr, status, error) {
                             console.log("Error: " + error);
