@@ -637,36 +637,40 @@
                 });
             });
         </script>
-        <script>
-            $('.togglePiority').on('click', function(e) {
-                let self = $(this); // The clicked cell
-                let level = self.attr('id'); // The ID
+<script>
 
-                $.ajax({
-                    url: `{{ route('piority.toggle', '') }}/${level}`,
-                    type: 'GET',
-                    success: function(response) {
-                        if (self.html().trim() == 'Active') {
-                            self.html('Pending');
-                            self.css({
-                                'background-color': 'yellow',
-                                'color': 'black'
-                            });
-                        } else {
-                            self.html('Active');
-                            self.css({
-                                'background-color': 'green',
-                                'color': 'white'
-                            });
-                        }
-                        console.log(response);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log("Error: " + error);
-                    }
-                });
-            });
-        </script>
+    let table = $('#example1').DataTable(); // Reference to your DataTable
+
+    $('.togglePiority').on('click', function () {
+        let self = $(this);
+        let level = self.attr('id');
+
+        $.ajax({
+            url: `{{ route('piority.toggle', '') }}/${level}`,
+            type: 'GET',
+            success: function (response) {
+                // Toggle content and styles
+                if (self.html().trim() == 'Active') {
+                    self.html('Pending');
+                    self.attr('data-order', 0);
+                    self.css({ 'background-color': 'yellow', 'color': 'black' });
+                } else {
+                    self.html('Active');
+                    self.attr('data-order', 1);
+                    self.css({ 'background-color': 'green', 'color': 'white' });
+                }
+
+                // Inform DataTables of the change
+                let cell = table.cell(self);
+                cell.invalidate().draw(false);
+            },
+            error: function (xhr, status, error) {
+                console.log("Error: " + error);
+            }
+        });
+    });
+</script>
+
 
 
 
