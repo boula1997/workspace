@@ -139,7 +139,7 @@
                                                     </div>
                                                     <div class="mt-2">
 
-                                                    <button id="sortByPriority">Sort by Priority</button>
+                                                    <button type="button" id="sortByPriority">Sort by Priority</button>
                                                     </div>
 
                                                 </div>
