@@ -180,9 +180,13 @@
                                                                 style="cursor: pointer;">
                                                                 {{ $task->counter }}
                                                             </td> --}}
-                                                            <td class="togglePiority" style="cursor: pointer"
+                                                            <td class="togglePiority"
+                                                                style="cursor: pointer;
+    background-color: {{ $task->piority ? 'green' : 'yellow' }};
+    color: {{ $task->piority ? 'white' : 'black' }};"
                                                                 id="{{ $task->id }}">
-                                                                {{ $task->piority ? 'Active' : 'Pending' }}</td>
+                                                                {{ $task->piority ? 'Active' : 'Pending' }}
+                                                            </td>
                                                             <td>{{ taskEmployees($task->title) }}</td>
 
                                                             <td>
@@ -633,30 +637,37 @@
                 });
             });
         </script>
-
         <script>
             $('.togglePiority').on('click', function(e) {
-                let self = $(this); // Reference to the clicked element
-                let level = self.attr('id'); // Get the level ID
+                let self = $(this); // The clicked cell
+                let level = self.attr('id'); // The ID
 
                 $.ajax({
-                    url: `{{ route('piority.toggle', '') }}/${level}`, // Generate the correct route
-                    type: 'GET', // HTTP method
+                    url: `{{ route('piority.toggle', '') }}/${level}`,
+                    type: 'GET',
                     success: function(response) {
-                        // Toggle the HTML content based on current value
-                        if (self.html() == 'Active') {
+                        if (self.html().trim() == 'Active') {
                             self.html('Pending');
+                            self.css({
+                                'background-color': 'yellow',
+                                'color': 'black'
+                            });
                         } else {
                             self.html('Active');
+                            self.css({
+                                'background-color': 'green',
+                                'color': 'white'
+                            });
                         }
-                        console.log(response); // Log the success response
+                        console.log(response);
                     },
                     error: function(xhr, status, error) {
-                        console.log("Error: " + error); // Log the error
+                        console.log("Error: " + error);
                     }
                 });
             });
         </script>
+
 
 
 
