@@ -1,1 +1,2 @@
 [10-Mar-2025 12:37:10 Africa/Cairo] PHP Fatal error:  Trait "App\Models\MorphFiles" not found in /home3/yousabte/public_html/workspace/app/Models/Project.php on line 13
+[18-May-2025 17:02:09 Africa/Cairo] PHP Fatal error:  Cannot redeclare App\Models\Task::booted() in /home3/yousabte/public_html/workspace/app/Models/Task.php on line 59
