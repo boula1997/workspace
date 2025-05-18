@@ -637,40 +637,40 @@
                 });
             });
         </script>
-<script>
+        <script>
+            $('.togglePiority').on('click', function() {
+                let self = $(this);
+                let level = self.attr('id');
 
-    let table = $('#example1').DataTable(); // Reference to your DataTable
+                $.ajax({
+                    url: `{{ route('piority.toggle', '') }}/${level}`,
+                    type: 'GET',
+                    success: function(response) {
+                        if (self.html().trim() == 'Active') {
+                            self.html('Pending');
+                            self.attr('data-order', 0);
+                            self.css({
+                                'background-color': 'yellow',
+                                'color': 'black'
+                            });
+                        } else {
+                            self.html('Active');
+                            self.attr('data-order', 1);
+                            self.css({
+                                'background-color': 'green',
+                                'color': 'white'
+                            });
+                        }
 
-    $('.togglePiority').on('click', function () {
-        let self = $(this);
-        let level = self.attr('id');
-
-        $.ajax({
-            url: `{{ route('piority.toggle', '') }}/${level}`,
-            type: 'GET',
-            success: function (response) {
-                // Toggle content and styles
-                if (self.html().trim() == 'Active') {
-                    self.html('Pending');
-                    self.attr('data-order', 0);
-                    self.css({ 'background-color': 'yellow', 'color': 'black' });
-                } else {
-                    self.html('Active');
-                    self.attr('data-order', 1);
-                    self.css({ 'background-color': 'green', 'color': 'white' });
-                }
-
-                // Inform DataTables of the change
-                let cell = table.cell(self);
-                cell.invalidate().draw(false);
-            },
-            error: function (xhr, status, error) {
-                console.log("Error: " + error);
-            }
-        });
-    });
-</script>
-
+                        // ✅ Safely update DataTable
+                        table.cell(self).invalidate().draw(false);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("Error: " + error);
+                    }
+                });
+            });
+        </script>
 
 
 
