@@ -656,7 +656,6 @@
                     }]
                 });
 
-                table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
                 $('#example1').on('row-reorder', function(e, diff, edit) {
                     console.log('Row order changed');
