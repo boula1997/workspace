@@ -638,37 +638,61 @@
             });
         </script>
 <script>
-    let table = $('#example1').DataTable(); // Reference to your DataTable
-
-    $('.togglePiority').on('click', function () {
-        let self = $(this);
-        let level = self.attr('id');
-
-        $.ajax({
-            url: `{{ route('piority.toggle', '') }}/${level}`,
-            type: 'GET',
-            success: function (response) {
-                // Toggle content and styles
-                if (self.html().trim() == 'Active') {
-                    self.html('Pending');
-                    self.attr('data-order', 0);
-                    self.css({ 'background-color': 'yellow', 'color': 'black' });
-                } else {
-                    self.html('Active');
-                    self.attr('data-order', 1);
-                    self.css({ 'background-color': 'green', 'color': 'white' });
-                }
-
-                // Inform DataTables of the change
-                let cell = table.cell(self);
-                cell.invalidate().draw(false);
+    $(function () {
+        // ✅ Initialize the DataTable once
+        var table = $("#example1").DataTable({
+            responsive: true,
+            lengthChange: false,
+            autoWidth: false,
+            paging: false,
+            searching: true,
+            buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
+            rowReorder: {
+                selector: 'td:nth-child(3)'
             },
-            error: function (xhr, status, error) {
-                console.log("Error: " + error);
-            }
+            columnDefs: [{
+                targets: 2,
+                orderable: true
+            }]
+        });
+
+        table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+        $('#example1').on('row-reorder', function (e, diff, edit) {
+            console.log('Row order changed');
+            console.log(diff);
+        });
+
+        // ✅ Handle priority toggle clicks
+        $('#example1').on('click', '.togglePiority', function () {
+            let self = $(this);
+            let level = self.attr('id');
+
+            $.ajax({
+                url: `{{ route('piority.toggle', '') }}/${level}`,
+                type: 'GET',
+                success: function (response) {
+                    if (self.html().trim() === 'Active') {
+                        self.html('Pending');
+                        self.attr('data-order', 0);
+                        self.css({ 'background-color': 'yellow', 'color': 'black' });
+                    } else {
+                        self.html('Active');
+                        self.attr('data-order', 1);
+                        self.css({ 'background-color': 'green', 'color': 'white' });
+                    }
+
+                    // ✅ Update DataTable to reflect changes
+                    table.cell(self).invalidate().draw(false);
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error: " + error);
+                }
+            });
         });
     });
 </script>
+
 
 
 
@@ -796,31 +820,7 @@
                     window.matchMedia("(max-width: 768px)").matches;
             }
 
-            $(function() {
-                var table = $("#example1").DataTable({
-                    responsive: true,
-                    lengthChange: false,
-                    autoWidth: false,
-                    paging: false,
-                    searching: true,
-                    buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                    rowReorder: {
-                        selector: 'td:nth-child(3)'
-                    },
-                    columnDefs: [{
-                        targets: 2,
-                        orderable: true
-                    }]
-                });
-
-                table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-
-                $('#example1').on('row-reorder', function(e, diff, edit) {
-                    console.log('Row order changed');
-                    console.log(diff);
-                });
-            });
-
+            
 
 
 
