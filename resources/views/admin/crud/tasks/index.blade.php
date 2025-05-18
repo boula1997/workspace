@@ -537,16 +537,16 @@
                     console.log('Reading stopped for 60 minutes.');
                 }
 
-function resumeReadingNow() {
-    stopReading = false;
-    clearTimeout(stopTimeout);
-    clearInterval(countdownInterval);
-    readingLoopActive = false; // allow new loop
-    document.getElementById('stopReadingButton').textContent = 'Stop Reading for 60 Minutes';
-    console.log('Reading resumed immediately.');
-    speechSynthesis.cancel();
-    readTitlesInSequence();
-}
+                function resumeReadingNow() {
+                    stopReading = false;
+                    clearTimeout(stopTimeout);
+                    clearInterval(countdownInterval);
+                    readingLoopActive = false; // allow new loop
+                    document.getElementById('stopReadingButton').textContent = 'Stop Reading for 60 Minutes';
+                    console.log('Reading resumed immediately.');
+                    speechSynthesis.cancel();
+                    readTitlesInSequence();
+                }
 
 
 
@@ -569,67 +569,66 @@ function resumeReadingNow() {
                     speechSynthesis.speak(utterance);
                 }
 
-function readTitlesInSequence() {
-    if (stopReading || readingLoopActive) {
-        console.log('Reading is currently stopped or already running.');
-        return;
-    }
+                function readTitlesInSequence() {
+                    if (stopReading || readingLoopActive) {
+                        console.log('Reading is currently stopped or already running.');
+                        return;
+                    }
 
-    const titles = Array.from(document.querySelectorAll('.togglePiority'))
-        .filter(el => el.getAttribute('data-order') === '1')
-        .map(el => el.getAttribute('data-title'));
+                    const titles = Array.from(document.querySelectorAll('.togglePiority'))
+                        .filter(el => el.getAttribute('data-order') === '1')
+                        .map(el => el.getAttribute('data-title'));
 
-    if (titles.length === 0) {
-        console.log('No active titles to read.');
-        return;
-    }
+                    if (titles.length === 0) {
+                        console.log('No active titles to read.');
+                        return;
+                    }
 
-    readingLoopActive = true; // prevent re-entrance
-    let current = 0;
+                    readingLoopActive = true; // prevent re-entrance
+                    let current = 0;
 
-    function readNext() {
-        if (stopReading) {
-            console.log('Reading stopped.');
-            readingLoopActive = false;
-            return;
-        }
+                    function readNext() {
+                        if (stopReading) {
+                            console.log('Reading stopped.');
+                            readingLoopActive = false;
+                            return;
+                        }
 
-        if (current >= titles.length) {
-            console.log('All titles read. Waiting 60 seconds...');
-            setTimeout(() => {
-                current = 0;
-                readNext(); // restart after 1 minute
-            }, 60 * 1000);
-            return;
-        }
+                        if (current >= titles.length) {
+                            console.log('All titles read. Waiting 60 seconds...');
+                            setTimeout(() => {
+                                current = 0;
+                                readNext(); // restart after 1 minute
+                            }, 2 * 60 * 1000);
+                            return;
+                        }
 
-        const text = titles[current];
-        const utterance = new SpeechSynthesisUtterance(text);
-        if (femaleVoice) {
-            utterance.voice = femaleVoice;
-        }
+                        const text = titles[current];
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        if (femaleVoice) {
+                            utterance.voice = femaleVoice;
+                        }
 
-        utterance.onend = () => {
-            console.log(`Finished: ${text}`);
-            current++;
-            readNext();
-        };
+                        utterance.onend = () => {
+                            console.log(`Finished: ${text}`);
+                            current++;
+                            readNext();
+                        };
 
-        utterance.onerror = (e) => {
-            console.error("Speech error:", e);
-            current++;
-            readNext();
-        };
+                        utterance.onerror = (e) => {
+                            console.error("Speech error:", e);
+                            current++;
+                            readNext();
+                        };
 
-        console.log(`Speaking: ${text}`);
-        speechSynthesis.speak(utterance);
-    }
+                        console.log(`Speaking: ${text}`);
+                        speechSynthesis.speak(utterance);
+                    }
 
-    // Cancel any ongoing speech before starting
-    speechSynthesis.cancel();
-    readNext();
-}
-
+                    // Cancel any ongoing speech before starting
+                    speechSynthesis.cancel();
+                    readNext();
+                }
             </script>
         @endif
 
