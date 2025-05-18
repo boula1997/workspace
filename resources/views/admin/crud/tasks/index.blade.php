@@ -639,24 +639,22 @@
         </script>
 
         <script>
-$(function() {
-    // Initialize DataTable with proper rowReorder configuration
-    var table = $("#example1").DataTable({
-        responsive: true,
-        lengthChange: false,
-        autoWidth: false,
-        paging: false,
-        searching: true,
-        rowReorder: {
-            selector: 'td:nth-child(3)', // The column to drag from
-            update: false // Don't automatically update the table
-        },
-        columnDefs: [{
-            targets: [0, 7, 8], // Columns that shouldn't be reorderable
-            orderable: false
-        }]
-    });
-});
+            $(function() {
+                // ✅ Initialize the DataTable once
+                var table = $("#example1").DataTable({
+                    responsive: true,
+                    lengthChange: false,
+                    autoWidth: false,
+                    paging: false,
+                    searching: true,
+                    rowReorder: {
+                        selector: 'td:nth-child(3)'
+                    },
+                    columnDefs: [{
+                        targets: 2,
+                        orderable: true
+                    }]
+                });
 
 
                 $('#example1').on('row-reorder', function(e, diff, edit) {
@@ -664,70 +662,41 @@ $(function() {
                     console.log(diff);
                 });
 
-                
-
                 // ✅ Handle priority toggle clicks
-// Handle priority toggle clicks
-$('#example1').on('click', '.togglePiority', function() {
-    let self = $(this);
-    let taskId = self.attr('id');
-    let row = table.row(self.closest('tr'));
-    
-    $.ajax({
-        url: `{{ route('piority.toggle', '') }}/${taskId}`,
-        type: 'GET',
-        success: function(response) {
-            // Toggle the display values
-            if (self.html().trim() === 'Active') {
-                self.html('Pending');
-                self.attr('data-order', 0);
-                self.css({
-                    'background-color': 'yellow',
-                    'color': 'black'
+                $('#example1').on('click', '.togglePiority', function() {
+                    let self = $(this);
+                    let level = self.attr('id');
+
+                    $.ajax({
+                        url: `{{ route('piority.toggle', '') }}/${level}`,
+                        type: 'GET',
+                        success: function(response) {
+                            if (self.html().trim() === 'Active') {
+                                self.html('Pending');
+                                self.attr('data-order', 0);
+                                self.css({
+                                    'background-color': 'yellow',
+                                    'color': 'black'
+                                });
+                            } else {
+                                self.html('Active');
+                                self.attr('data-order', 1);
+                                self.css({
+                                    'background-color': 'green',
+                                    'color': 'white'
+                                });
+                            }
+
+                            // ✅ Re-evaluate the whole row to keep sorting/ordering working
+                            let row = table.row(self.closest('tr'));
+                            row.invalidate().draw(false);
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("Error: " + error);
+                        }
+                    });
                 });
-            } else {
-                self.html('Active');
-                self.attr('data-order', 1);
-                self.css({
-                    'background-color': 'green',
-                    'color': 'white'
-                });
-            }
-            
-            // Invalidate the row and redraw
-            row.invalidate().draw(false);
-        },
-        error: function(xhr, status, error) {
-            console.log("Error: " + error);
-        }
-    });
-});
             });
-
-
-            // Handle row reordering
-$('#example1').on('row-reorder.dt', function(e, details, edit) {
-    // Collect the new order of task IDs
-    var newOrder = [];
-    details.nodes().each(function() {
-        newOrder.push($(this).find('td:first').text()); // Get task ID from first column
-    });
-    
-    // Send AJAX request to update order
-    $.ajax({
-        url: '{{ route("tasks.updateOrder") }}',
-        method: 'POST',
-        data: {
-            order: newOrder
-        },
-        success: function(response) {
-            console.log('Order updated successfully');
-        },
-        error: function(xhr, status, error) {
-            console.error('Error updating order:', error);
-        }
-    });
-});
         </script>
 
 
