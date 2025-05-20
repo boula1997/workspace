@@ -655,11 +655,8 @@
                     type: 'GET', // HTTP method
                     success: function(response) {
                         // Toggle the HTML content based on current value
-                        if (self.html() == 'mobile') {
-                            self.html('mobile');
-                        } else {
-                            self.html('pc');
-                        }
+                            self.html(response.level);
+   
                         console.log(response); // Log the success response
                     },
                     error: function(xhr, status, error) {

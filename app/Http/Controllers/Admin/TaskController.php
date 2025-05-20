@@ -463,7 +463,7 @@ class TaskController extends Controller
 
 
 
-            return response()->json(['success' => __('general.changed_successfully')]);
+           return response()->json(['data' => $task->level == 0 ? 'mobile' : 'pc']);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
