@@ -71,6 +71,7 @@ class TaskController extends Controller
                         'title' => $title,
                         'employee_id' => $employee,
                         'project_id' => $request->project_id,
+                        'piority' => $request->piority,
 
                     ]);
                 }
