@@ -656,9 +656,9 @@
                     success: function(response) {
                         // Toggle the HTML content based on current value
                         if (self.html() == 'mobile') {
-                            self.html('pc');
-                        } else {
                             self.html('mobile');
+                        } else {
+                            self.html('pc');
                         }
                         console.log(response); // Log the success response
                     },
