@@ -539,7 +539,9 @@ class TaskController extends Controller
                     'title' => $request->title,
                     'employee_id' => $employee,
                     'project_id' => $request->project_id,
-                    'keywords' => $task->keywords
+                    'keywords' => $task->keywords,
+                    'piority' => $request->piority,
+
                 ]);
             }
             $task->delete();

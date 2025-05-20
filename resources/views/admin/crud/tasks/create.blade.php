@@ -60,9 +60,9 @@
                             <div class="form-group">
                                 <div class="form-group">
                                     <div class="form-check form-switch"> <input class="form-check-input"
-                                            @checked(old('level')) type="checkbox" id="level" name="level"
+                                            @checked(old('piority')) type="checkbox" id="piority" name="piority"
                                             value="1"> <label class="form-check-label"
-                                            for="level">{{ __('general.mobile') }} <span class="text-danger"> *
+                                            for="piority">{{ __('general.piority') }} <span class="text-danger"> *
                                             </span></label> </div>
                                 </div>
                             </div>
