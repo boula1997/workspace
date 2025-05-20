@@ -655,7 +655,7 @@
                     type: 'GET', // HTTP method
                     success: function(response) {
                         // Toggle the HTML content based on current value
-                            self.html(response.level);
+                            self.html(response.data);
    
                         console.log(response); // Log the success response
                     },
