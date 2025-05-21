@@ -666,6 +666,7 @@
 
                             <p class="text-warning">windows+prntscrren - ctrl+v in whatsapp methodology</p>
                             <hr>
+                            <p class="text-warning">We can open expo app on browser</p>
                             <p class="text-warning">Note:keep mobile out during working hours to avoid distractions</p>
                             <p>Note: when search for a migration use _migrationname to easily find it</p>
                             <p>Note: Enable debug tool in laravel by APP_DEBUG=true in .env file</p>
