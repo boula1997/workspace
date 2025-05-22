@@ -325,9 +325,11 @@
 
                 <div class="mt-2">
                     {{-- <h1 class="text-center">Automation</h1> --}}
+                                                        @if (boula())
                     <div>
                         <div class="modal fade" id="surveyModal" data-bs-backdrop="static" data-bs-keyboard="false"
                             tabindex="-1" aria-labelledby="tasksModalLabel" aria-hidden="true">
+                            
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -335,7 +337,6 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-                                    @if (boula())
                                         <div class="modal-body">
                                             <div>
                                                 <p>Was the last time <span
@@ -348,11 +349,11 @@
                                                     name="lastTimeDate">
                                             </div>
                                         </div>
-                                    @endif
                                 </div>
                             </div>
                         </div>
                     </div>
+                                    @endif
 
 
 
