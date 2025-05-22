@@ -68,7 +68,6 @@ class TaskController extends Controller
                     ->whereDoesntHave('employee', function ($query) {
                         $query->where('email', 'nessimboula@gmail.com');
                     })->where('status',$status)
-                    ->orderBy('z')
                     ->latest()
                     
                     ->get()
