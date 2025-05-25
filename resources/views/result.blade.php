@@ -1148,7 +1148,7 @@
                     <div>
                         <span style="cursor: pointer;">
                             SELECT CONCAT(
-                            'SELECT * FROM wS8_actionscheduler_actions WHERE ',
+                            'SELECT * FROM {{$table->TABLE_NAME}} WHERE ',
                             GROUP_CONCAT(CONCAT('`', COLUMN_NAME, '` LIKE ''%5 Stars%''') SEPARATOR ' OR ')
                             )
                             FROM INFORMATION_SCHEMA.COLUMNS
