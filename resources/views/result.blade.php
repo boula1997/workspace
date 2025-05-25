@@ -1143,6 +1143,26 @@
             <div id="selectTables">
                 <input type="number" class="noHide" id="timeInput" value="5">
                 <input type="text" class="noHide" placeholder="insert a coulmn to import and export" id="columnInput" value="">
+                <h3 class="text-warining">Search Selects</h3>
+                @foreach ($tables as $table)
+                    <div>
+                        <span style="cursor: pointer;" content="SELECT * FROM {{ $table->TABLE_NAME }} WHERE (created_at >= NOW() - INTERVAL 5 MINUTE) OR (updated_at >= NOW() - INTERVAL 5 MINUTE) \G;" 
+                            table="{{ $table->TABLE_NAME }}"
+                            class="toggleRelation clickable-text-db">
+                            SELECT * FROM {{ $table->TABLE_NAME }} WHERE (created_at >= NOW() - INTERVAL 5 MINUTE) OR (updated_at >= NOW() - INTERVAL 5 MINUTE) \G;
+
+                            SELECT CONCAT(
+                                'SELECT * FROM {{ $table->TABLE_NAME }} WHERE ',
+                                GROUP_CONCAT(COLUMN_NAME, " LIKE '%5 Stars%' SEPARATOR ' OR ')
+                                )
+                                FROM INFORMATION_SCHEMA.COLUMNS
+                                WHERE TABLE_NAME = {{ $table->TABLE_NAME }}
+                                AND TABLE_SCHEMA = {{ $dbname}};
+                        </span>
+                    </div>
+                @endforeach
+                <span>cls</span>
+                <h3 class="text-warining">Interval Selects</h3>
                 @foreach ($tables as $table)
                     <div>
                         <span style="cursor: pointer;" content="SELECT * FROM {{ $table->TABLE_NAME }} WHERE (created_at >= NOW() - INTERVAL 5 MINUTE) OR (updated_at >= NOW() - INTERVAL 5 MINUTE) \G;" 
