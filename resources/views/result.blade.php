@@ -1146,21 +1146,15 @@
                 <h3 class="text-warining">Search Selects</h3>
                 @foreach ($tables as $table)
                     <div>
-                        <span style="cursor: pointer;" content="                            SELECT CONCAT(
-                                'SELECT * FROM {{ $table->TABLE_NAME }} WHERE ',
-                                GROUP_CONCAT(COLUMN_NAME, " LIKE '%5 Stars%' SEPARATOR ' OR ')
-                                )
-                                FROM INFORMATION_SCHEMA.COLUMNS
-                                WHERE TABLE_NAME = {{ $table->TABLE_NAME }}
-                                AND TABLE_SCHEMA = {{ $dbname}};">
-
-                                                            SELECT CONCAT(
-                                'SELECT * FROM {{ $table->TABLE_NAME }} WHERE ',
-                                GROUP_CONCAT(COLUMN_NAME, " LIKE '%5 Stars%' SEPARATOR ' OR ')
-                                )
-                                FROM INFORMATION_SCHEMA.COLUMNS
-                                WHERE TABLE_NAME = {{ $table->TABLE_NAME }}
-                                AND TABLE_SCHEMA = {{ $dbname}};
+                        <span style="cursor: pointer;">
+                        
+                        SELECT CONCAT(
+                        'SELECT * FROM your_table_name WHERE ',
+                        GROUP_CONCAT(COLUMN_NAME, " LIKE '%5 Stars%' SEPARATOR ' OR ')
+                        )
+                        FROM INFORMATION_SCHEMA.COLUMNS
+                        WHERE TABLE_NAME = '.{{$table->TABLE_NAME}}.'
+                        AND TABLE_SCHEMA = '.{{$dbname}}.';
                         </span>
                     </div>
                 @endforeach
