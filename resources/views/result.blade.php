@@ -1146,12 +1146,15 @@
                 <h3 class="text-warining">Search Selects</h3>
                 @foreach ($tables as $table)
                     <div>
-                        <span style="cursor: pointer;" content="SELECT * FROM {{ $table->TABLE_NAME }} WHERE (created_at >= NOW() - INTERVAL 5 MINUTE) OR (updated_at >= NOW() - INTERVAL 5 MINUTE) \G;" 
-                            table="{{ $table->TABLE_NAME }}"
-                            class="toggleRelation clickable-text-db">
-                            SELECT * FROM {{ $table->TABLE_NAME }} WHERE (created_at >= NOW() - INTERVAL 5 MINUTE) OR (updated_at >= NOW() - INTERVAL 5 MINUTE) \G;
+                        <span style="cursor: pointer;" content="                            SELECT CONCAT(
+                                'SELECT * FROM {{ $table->TABLE_NAME }} WHERE ',
+                                GROUP_CONCAT(COLUMN_NAME, " LIKE '%5 Stars%' SEPARATOR ' OR ')
+                                )
+                                FROM INFORMATION_SCHEMA.COLUMNS
+                                WHERE TABLE_NAME = {{ $table->TABLE_NAME }}
+                                AND TABLE_SCHEMA = {{ $dbname}};">
 
-                            SELECT CONCAT(
+                                                            SELECT CONCAT(
                                 'SELECT * FROM {{ $table->TABLE_NAME }} WHERE ',
                                 GROUP_CONCAT(COLUMN_NAME, " LIKE '%5 Stars%' SEPARATOR ' OR ')
                                 )
