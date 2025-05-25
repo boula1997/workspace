@@ -1147,14 +1147,13 @@
                 @foreach ($tables as $table)
                     <div>
                         <span style="cursor: pointer;">
-
-                        SELECT CONCAT(
-                        'SELECT * FROM your_table_name WHERE ',
-                        GROUP_CONCAT(COLUMN_NAME, " LIKE '%5 Stars%' SEPARATOR ' OR ')
-                        )
-                        FROM INFORMATION_SCHEMA.COLUMNS
-                        WHERE TABLE_NAME = '{{$table->TABLE_NAME}}'
-                        AND TABLE_SCHEMA = '{{$dbname}}';
+                            SELECT CONCAT(
+                            'SELECT * FROM wS8_actionscheduler_actions WHERE ',
+                            GROUP_CONCAT(CONCAT('`', COLUMN_NAME, '` LIKE ''%5 Stars%''') SEPARATOR ' OR ')
+                            )
+                            FROM INFORMATION_SCHEMA.COLUMNS
+                            WHERE TABLE_NAME = '{{$table->TABLE_NAME}}'
+                            AND TABLE_SCHEMA = '{{$dbname}}';
                         </span>
                     </div>
                 @endforeach
