@@ -1002,7 +1002,7 @@ if ($request->action == '28') {
         $website->update(['status' => 0]);
     }
 
-    return response()->json(['success' => trans('general.sent_successfully'), 'status' => $website->status,'deal' => $website->deal]);
+    return response()->json(['success' => trans('general.sent_successfully'), 'status' => $website->status,"cost"=>$website->cost]);
   }
 
   public function updatePosts(Request $request){

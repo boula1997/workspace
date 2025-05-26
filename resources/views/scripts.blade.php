@@ -1194,10 +1194,9 @@
                 $(this).on("click", function(event) {
                     clickCount++;
 
-                    if (clickCount === 1) {
                         singleClickTimer = setTimeout(() => {
                             if (clickCount === 1) {
-                                clickCoufnt = 0;
+                                clickCount = 0;
                                 let id = $(this).attr('id');
                                 let url = "{{ route('website.toggle', [':id']) }}".replace(
                                     ':id', id);
@@ -1211,13 +1210,6 @@
                                 handleEvent(id, url, 2); // Pass 2 for double click
                             }
                         }, 400); // Adjust delay as needed (milliseconds)
-                    } else if (clickCount === 3) {
-                        clearTimeout(singleClickTimer);
-                        clickCount = 0;
-                        let id = $(this).attr('id');
-                        let url = "{{ route('website.trpltoggle', [':id']) }}".replace(':id', id);
-                        handleEvent(id, url, 3); // Pass 3 for triple click
-                    }
                 });
 
                 function handleEvent(id, url, eventType) {
@@ -1235,23 +1227,18 @@
                                         .addClass('bg-secondary');
                                 }
                             } else if (eventType === 2) {
-                                if (data['status'] == 2) {
-                                    $('#' + id).removeClass('bg-secondary bg-warning bg-danger')
+                                if (data['status'] == 2 && data.cost==0) {
+                                    $('#' + id).removeClass('bg-secondary bg-warning bg-success')
+                                        .addClass('bg-danger');
+                                }else if(data['status'] == 2 && data.cost!=0){
+                                    $('#' + id).removeClass('bg-danger bg-warning bg-success')
                                         .addClass('bg-success');
-                                } else {
+                                }
+                                 else {
                                     $('#' + id).removeClass('bg-success bg-warning bg-danger')
                                         .addClass('bg-secondary');
                                 }
-                            } else if (eventType === 3) {
-                                if (data['deal'] == 0) {
-                                    $('#' + id).removeClass(
-                                        'bg-secondary bg-warning bg-success').addClass(
-                                        'bg-danger');
-                                } else {
-                                    $('#' + id).removeClass('bg-danger bg-warning bg-success')
-                                        .addClass('bg-secondary');
-                                }
-                            }
+                            } 
                             toastNow();
                         },
                         error: function(reject) {
