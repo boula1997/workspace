@@ -59,6 +59,10 @@
         /* White text */
     }
 
+    .bg-success{
+    
+    color:white !important;
+    }
     /* Placeholder text */
     .select2-container--default .select2-selection--single .select2-selection__placeholder {
         color: #aaa;
