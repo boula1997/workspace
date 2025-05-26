@@ -30,9 +30,13 @@ class Project extends Model
     {
         return  count($this->files)>0?$this->files:["default.jpg"];
     }
+    
     public function getImageAttribute()
     {
         return  count($this->files)>0?$this->files[0]->url:["default.jpg"];
     }
-
+    public function getDealAttribute()
+    {
+        return  $this->status==2&&$this->cost==0?0:1;
+    }
 }
