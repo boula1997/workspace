@@ -150,7 +150,10 @@
                                                                                       
                                                         <th>{{ __('general.project') }}</th>
                                                                                                                                               <th>{{ __('general.piority') }}</th>
+                                                            @if(boula())
+
                                                         <th>{{ __('general.level') }}</th>
+                                                        @endif
                                                         {{-- <th>{{ __('general.counter') }}</th> --}}
               
                                                         <th>{{ __('general.employees') }}</th>
@@ -181,10 +184,12 @@
                                                                 id="{{ $task->id }}">
                                                                 {{ $task->piority ? 'Active' : 'Pending' }}
                                                             </td>
+                                                            @if(boula())
                                                             <td class="toggleLevel" style="cursor: pointer"
                                                                 id="{{ $task->id }}">
                                                                 {{ $task->level ? 'Bed' : 'Office' }}
                                                             </td>
+                                                            @endif
                                                             {{-- <td class="counter" data-task-id="{{ $task->id }}"
                                                                 data-counter="{{ $task->counter }}"
                                                                 style="cursor: pointer;">
