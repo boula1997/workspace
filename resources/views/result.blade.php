@@ -1066,7 +1066,7 @@
                 <div class="d-flex">
                                 <button id="runQueryBtn" class="btn btn-primary">Run Query in New Tab</button>
             
-             <p>{{$dbname}}</p>
+             <p class="mx-5">{{$dbname}}</p>
                 </div>
             <div class="row mb-2 mt-5">
                 <form method="post" class="d-flex" id="queryForm">
