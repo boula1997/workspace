@@ -161,6 +161,35 @@ function yousabEmails()
             $fixedProjects = Project::where('fixed', 1)->get();
             $dealingProjects = Project::where('deal', 0)->get();
 
+
+              // Get expired free hosting projects
+            $expiredProjects = Project::where('created_at', '<', now()->subYears(2))->get();
+
+            // Construct the email content
+            $body = '<html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <title>Yousab Tech Report</title>
+                        </head>
+                        <body>
+                            <h1>Yousab Tech Report</h1>';
+
+            // Add Expired Free Hosting section
+            if ($expiredProjects->isNotEmpty()) {
+                $body .= '<h2>🚨 Expired Free Hosting</h2>';
+                $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+                            <thead><tr><th>Project Title</th><th>Created At</th></tr></thead><tbody>';
+
+                foreach ($expiredProjects as $project) {
+                    $body .= '<tr>
+                                <td>' . htmlspecialchars($project->title, ENT_QUOTES, 'UTF-8') . '</td>
+                                <td>' . htmlspecialchars($project->created_at->format('Y-m-d'), ENT_QUOTES, 'UTF-8') . '</td>
+                              </tr>';
+                }
+
+                $body .= '</tbody></table><br>';
+            }
+
             // Construct the email content
             $body = '<html lang="en">
                         <head>
