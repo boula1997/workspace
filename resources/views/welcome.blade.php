@@ -186,13 +186,14 @@
 
         <div id="formBody" class="mt-5">
             <div class="text-white text-center">{{ startAndEndTime(settingFirst()->startTime)[0] }} -
-                {{ startAndEndTime(settingFirst()->startTime)[1] }}</div>
-                    @if (boula())
-            <div  >
-                <p class="text-warning" id="deadline">{{activeDeadline()["deadline"]}}  {{activeDeadline()["action"]}}</p>
-    
+                {{ startAndEndTime(settingFirst()->startTime)[1] }}
+            
+                            @if (boula())
+                    <p class="text-warning" id="deadline">{{activeDeadline()["deadline"]}}  {{activeDeadline()["action"]}}</p>
+        
+                @endif
             </div>
-            @endif
+
              
 
             <div>
