@@ -2832,6 +2832,20 @@
             });
         </script>
     @endif
+ 
+@if (activeDeadline()["deadline"] === now()->toDateString())
+    <script>
+        $(document).ready(function () {
+            setInterval(function () {
+                $("#deadline").css("visibility", function (_, visibility) {
+                    return visibility === "visible" ? "hidden" : "visible";
+                });
+            }, 1000);
+        });
+    </script>
+@endif
+
+
 
 
 

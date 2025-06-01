@@ -182,9 +182,18 @@
             </div>
         @endif
 
+
+
         <div id="formBody" class="mt-5">
             <div class="text-white text-center">{{ startAndEndTime(settingFirst()->startTime)[0] }} -
                 {{ startAndEndTime(settingFirst()->startTime)[1] }}</div>
+                    @if (boula())
+            <div  >
+                <p class="text-warning" id="deadline">{{activeDeadline()["deadline"]}}  {{activeDeadline()["action"]}}</p>
+    
+            </div>
+            @endif
+             
 
             <div>
                 <div class="modal fade" id="tasksModal" tabindex="-1" aria-labelledby="tasksModalLabel"
