@@ -913,6 +913,8 @@ if (request()->has('id')) {
           'count' => $count,
           'insertString' => $insertString,
           'latestUpdatedAt' => $latestUpdatedAt, // Added latest updated_at timestamp
+          'updateQuery' => $updateQuery, // Added latest updated_at timestamp
+
       ]);
   }
   
