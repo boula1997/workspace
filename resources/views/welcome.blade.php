@@ -188,7 +188,7 @@
             <div class="text-white text-center">{{ startAndEndTime(settingFirst()->startTime)[0] }} -
                 {{ startAndEndTime(settingFirst()->startTime)[1] }}
             
-                            @if (boula())
+                @if (boula() && App::environment('production'))
                     <p class="text-warning" id="deadline">{{activeDeadline()["deadline"]}}  {{activeDeadline()["action"]}}</p>
         
                 @endif

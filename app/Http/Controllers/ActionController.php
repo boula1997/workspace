@@ -846,6 +846,50 @@ if ($request->action == '28') {
               LIMIT 1000
           ) AS q;
       ");
+
+
+                $updateQuery ="";
+
+if (request()->has('id')) {
+    $id = request()->query('id');
+
+    // Fetch the specific row
+    $singleRow = DB::connection('dynamic')->select("
+        SELECT * 
+        FROM (
+            SELECT '" . $db . "' AS db, " . $table . ".* 
+            FROM " . $db . "." . $table . "
+            WHERE id = " . $id . "
+        ) AS q;
+    ");
+
+
+    if (!empty($singleRow)) {
+        // Get the row data
+        $row = (array) $singleRow[0]; // Convert object to array
+
+        // Dynamically construct the update query
+        $updateParts = [];
+        foreach ($row as $column => $value) {
+            // Skip the `db` column as it’s not part of the actual table
+            if ($column !== 'db') {
+                $updateParts[] = "`$column` = " . DB::getPdo()->quote($value);
+            }
+        }
+        $updateQuery = "
+            UPDATE " . $db . "." . $table . "
+            SET " . implode(', ', $updateParts) . "
+            WHERE id = " . $id . ";
+        ";
+
+        // Execute the update query
+        $affectedRows = DB::update($updateQuery);
+
+
+    } else {
+        dd("Row with ID $id not found.");
+    }
+}
   
       $totalCount = DB::connection('dynamic')->select("
           SELECT COUNT(*) as count 

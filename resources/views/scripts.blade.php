@@ -1688,7 +1688,7 @@
                     response.data.forEach((boula, index) => {
                         console.log('boula', response);
                         $('#jsonResult').append(
-                            `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}'>show ${boula.id ?? index}</button>`
+                            `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>show ${boula.id ?? index}</button>`
                         );
 
                         if ('btn' + boula.id ?? index == localStorage.getItem(
@@ -2049,6 +2049,7 @@
 
 
             $(document).on('click', '.showRow', function() {
+                let id=$(this).attr('rowId');
                 $('#allResults').text('Show All');
                 $('#allResults').removeClass('d-none');
                 $('#refresh').removeClass('d-none');
@@ -2070,7 +2071,7 @@
 
                 $.ajax({
                     type: "Get",
-                    url: localStorage.getItem('url'),
+                    url: localStorage.getItem('url')+`?id=${id}`,
                     datatype: 'JSON',
                     success: function(data) {
                         console.log(data);
@@ -2081,7 +2082,7 @@
                                 alert($('#table').closest('.count'));
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}'>show ${boula.id ?? index}</button>`
+                                    `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>show ${boula.id ?? index}</button>`
                                 );
 
                                 if ('btn' + boula.id ?? index == localStorage.getItem(
@@ -2104,10 +2105,15 @@
                             });
                         } else {
 
+                            $('#queryCommand').val(function (index, currentValue) {
+                                return currentValue + '\n' + data.updateQuery; // Appends with a newline
+                            });
                             data.data.forEach((boula, index) => {
+
+
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}'>show ${boula.id ?? index}</button>`
+                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>show ${boula.id ?? index}</button>`
                                 );
 
                                 if ('btn' + boula.id ?? index == localStorage.getItem(
@@ -2218,7 +2224,7 @@
                         data.data.forEach((boula, index) => {
                             console.log('boula', boula);
                             $('#jsonResult').append(
-                                `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}'>show ${boula.id ?? index}</button>`
+                                `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>show ${boula.id ?? index}</button>`
 
                             );
                             if ('btn' + boula.id ?? index == localStorage.getItem(
@@ -2272,13 +2278,14 @@
                         success: function(data) {
                             $('#' + table).text('(' + data.count + ')' + ' ' + data
                                 .latestUpdatedAt);
-                            $('#queryCommand').val(data
-                                .insertString); // FIXED: Use `.val()` for textarea
+                                $('#queryCommand').val(function (index, currentValue) {
+                                    return currentValue + '\n' + data.insertString; // Appends with a newline
+                                });
 
                             data.data.forEach((boula, index) => {
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}'>show ${boula.id ?? index}</button>`
+                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}'rowId='${boula.id}'>show ${boula.id ?? index}</button>`
                                 );
                                 if ('btn' + boula.id ?? index == localStorage
                                     .getItem(
