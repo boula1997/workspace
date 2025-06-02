@@ -1688,7 +1688,7 @@
                     response.data.forEach((boula, index) => {
                         console.log('boula', response);
                         $('#jsonResult').append(
-                            `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25 btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
+                            `<button class='w-25  btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25  btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
                         );
 
                         if ('btn' + boula.id ?? index == localStorage.getItem(
@@ -2082,7 +2082,7 @@
                                 alert($('#table').closest('.count'));
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25 btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
+                                    `<button class='w-25  btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25  btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
                                 );
 
                                 if ('btn' + boula.id ?? index == localStorage.getItem(
@@ -2116,7 +2116,7 @@
 
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25 btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
+                                    `<button class='w-25  btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25  btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
                                 );
 
                                 if ('btn' + boula.id ?? index == localStorage.getItem(
@@ -2188,7 +2188,7 @@
                                 alert($('#table').closest('.count'));
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25 btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
+                                    `<button class='w-25  btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25  btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
                                 );
 
                                 if ('btn' + boula.id ?? index == localStorage.getItem(
@@ -2222,7 +2222,7 @@
 
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25 btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
+                                    `<button class='w-25  btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25  btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
                                 );
 
                                 if ('btn' + boula.id ?? index == localStorage.getItem(
@@ -2333,7 +2333,7 @@
                         data.data.forEach((boula, index) => {
                             console.log('boula', boula);
                             $('#jsonResult').append(
-                                `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25 btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
+                                `<button class='w-25  btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25  btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
 
                             );
                             if ('btn' + boula.id ?? index == localStorage.getItem(
@@ -2394,7 +2394,7 @@
                             data.data.forEach((boula, index) => {
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}'rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25 btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
+                                    `<button class='w-25  btn btn-outline-secondary showRow' id='btn${boula.id ?? index}'rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25  btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
                                 );
                                 if ('btn' + boula.id ?? index == localStorage
                                     .getItem(
