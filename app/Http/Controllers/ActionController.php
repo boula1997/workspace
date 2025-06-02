@@ -855,12 +855,9 @@ if (request()->has('id')) {
 
     // Fetch the specific row
     $singleRow = DB::connection('dynamic')->select("
-        SELECT * 
-        FROM (
-            SELECT '" . $db . "' AS db, " . $table . ".* 
-            FROM " . $db . "." . $table . "
+            SELECT '* 
+            FROM " . $table . "
             WHERE id = " . $id . "
-        ) AS q;
     ");
 
 
