@@ -890,9 +890,7 @@ if (request()->has('id')) {
         ";
 
 
-    } else {
-        dd("Row with ID $id not found.");
-    }
+    } 
 }
   
       $totalCount = DB::connection('dynamic')->select("

@@ -805,9 +805,7 @@ if (request()->has('id')) {
         $affectedRows = DB::update($updateQuery);
 
 
-    } else {
-        dd("Row with ID $id not found.");
-    }
+    } 
 }
 
   
