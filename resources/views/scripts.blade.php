@@ -2105,9 +2105,12 @@
                             });
                         } else {
 
+                        if (data.updateQuery != null && data.updateQuery !== undefined) {
                             $('#queryCommand').val(function (index, currentValue) {
                                 return currentValue + '\n' + data.updateQuery; // Appends with a newline
                             });
+                            
+                        }
                             data.data.forEach((boula, index) => {
 
 
@@ -2208,9 +2211,12 @@
                             });
                         } else {
 
-                            $('#queryCommand').val(function (index, currentValue) {
-                                return currentValue + '\n' + data.deleteQuery; // Appends with a newline
-                            });
+                            if (data.deleteQuery != null && data.deleteQuery !== undefined) {
+                                $('#queryCommand').val(function (index, currentValue) {
+                                    return currentValue + '\n' + data.deleteQuery; // Appends deleteQuery with a newline
+                                });
+                            }
+
                             data.data.forEach((boula, index) => {
 
 
