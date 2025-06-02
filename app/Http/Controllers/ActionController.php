@@ -795,7 +795,6 @@ if ($request->action == '28') {
       $dbName = isset($credential->db_name) ? $credential->db_name : 'automation';
       $dbUser = isset($credential->db_username) ? $credential->db_username : 'root';
       $dbPass = isset($credential->db_password) ? $credential->db_password : '';
-      dd(500);
       // Temporarily configure the database connection
       config([
           'database.connections.dynamic' => [
