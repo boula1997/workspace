@@ -753,7 +753,7 @@ if ($request->action == '28') {
   
       // Fetch table data and count
       $data = DB::select("
-            SELECT '* 
+            SELECT * 
             FROM " . $table . "
             WHERE id = " . $id . "
       ");
