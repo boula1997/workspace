@@ -753,9 +753,13 @@ if ($request->action == '28') {
   
       // Fetch table data and count
       $data = DB::select("
-            SELECT * 
-            FROM " . $table . "
-            WHERE id = " . $id . "
+          SELECT * 
+          FROM (
+              SELECT '" . $db . "' AS db, " . $table . ".* 
+              FROM " . $db . "." . $table . "
+              ORDER BY updated_at DESC
+              LIMIT 1000
+          ) AS q;
       ");
           $updateQuery ="";
 
