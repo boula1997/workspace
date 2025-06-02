@@ -2153,7 +2153,6 @@
             });
 
             $(document).on('click', '.deleteRow', function() {
-                alert(500);
                 let id=$(this).attr('rowId');
                 $('#allResults').text('Show All');
                 $('#allResults').removeClass('d-none');
