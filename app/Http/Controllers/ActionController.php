@@ -849,8 +849,16 @@ if ($request->action == '28') {
 
                 $updateQuery ="";
 
+
 if (request()->has('id')) {
     $id = request()->query('id');
+
+    if (request()->has('delete')) {
+        DB::connection('dynamic')
+            ->table($table)
+            ->where('id', $id)
+            ->delete();
+     }
 
     // Fetch the specific row
     $singleRow = DB::connection('dynamic')->select("

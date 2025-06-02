@@ -1688,7 +1688,7 @@
                     response.data.forEach((boula, index) => {
                         console.log('boula', response);
                         $('#jsonResult').append(
-                            `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>show ${boula.id ?? index}</button>`
+                            `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>show ${boula.id ?? index}</button>  <button class='w-25 btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>delete ${boula.id ?? index}</button>`
                         );
 
                         if ('btn' + boula.id ?? index == localStorage.getItem(
@@ -2082,7 +2082,7 @@
                                 alert($('#table').closest('.count'));
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>show ${boula.id ?? index}</button>`
+                                    `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>show ${boula.id ?? index}</button>  <button class='w-25 btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>delete ${boula.id ?? index}</button>`
                                 );
 
                                 if ('btn' + boula.id ?? index == localStorage.getItem(
@@ -2113,7 +2113,111 @@
 
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>show ${boula.id ?? index}</button>`
+                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>show ${boula.id ?? index}</button>  <button class='w-25 btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>delete ${boula.id ?? index}</button>`
+                                );
+
+                                if ('btn' + boula.id ?? index == localStorage.getItem(
+                                        'openedQueryId'))
+                                    $('#jsonResult').append(
+                                        `<div class="col-md-3" id="id${boula.id ?? index}">`
+                                    );
+                                else
+                                    $('#jsonResult').append(
+                                        `<div class="col-md-3 d-none" id="id${boula.id ?? index}">`
+                                    );
+                                Object.entries(boula).forEach(element => {
+                                    $(`#id${boula.id ?? index}`).append(
+                                        $("<p>").text(JSON.stringify(
+                                            element
+                                        )) // Set text content to avoid HTML parsing
+                                    );
+                                });
+                                $('#jsonResult').append("<hr>");
+                            });
+                        }
+
+
+                    },
+                    error: function(reject) {
+                        console.log(reject);
+                    }
+                });
+
+                localStorage.setItem('openedQueryId', $(this).attr('id'));
+                if ($(this).next().hasClass('d-none')) {
+                    $(".showRow").each(function() {
+                        $(this).next().addClass('d-none');
+                    });
+                    $(this).next().removeClass('d-none');
+                }
+            });
+
+            $(document).on('click', '.deleteRow', function() {
+                alert(500);
+                let id=$(this).attr('rowId');
+                $('#allResults').text('Show All');
+                $('#allResults').removeClass('d-none');
+                $('#refresh').removeClass('d-none');
+                // $(this).scrollIntoView({ behavior: 'smooth', block: 'start' });
+                $('.deleteRow').next().addClass('d-none');
+                $(this).next().removeClass('d-none');
+                $('html, body').animate({
+                    scrollTop: $(this).next().offset().top - 50
+                }, 1000);
+
+                $('#jsonResult').empty();
+                let db = $("#dbname").attr('dbname');
+                let table = $(this).attr('table');
+                let url = "{{ route('db.data', [':db', ':table', ':query']) }}";
+                let status = false;
+
+                if ($(this).hasClass('exec'))
+                    status = true;
+
+                $.ajax({
+                url: localStorage.getItem('url')+`?id=${id}`+`&delete=${id}`,
+                    datatype: 'JSON',
+                    success: function(data) {
+                        console.log(data);
+
+
+                        if (status) {
+                            data.queryData.forEach((boula, index) => {
+                                alert($('#table').closest('.count'));
+                                console.log('boula', boula);
+                                $('#jsonResult').append(
+                                    `<button class='w-25 btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>show ${boula.id ?? index}</button>  <button class='w-25 btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>delete ${boula.id ?? index}</button>`
+                                );
+
+                                if ('btn' + boula.id ?? index == localStorage.getItem(
+                                        'openedQueryId'))
+                                    $('#jsonResult').append(
+                                        `<div class="col-md-3" id="id${boula.id ?? index}">`
+                                    );
+                                else
+                                    $('#jsonResult').append(
+                                        `<div class="col-md-3 d-none" id="id${boula.id ?? index}">`
+                                    );
+                                Object.entries(boula).forEach(element => {
+                                    $(`#id${boula.id ?? index}`).append(
+                                        $("<p>").text(JSON.stringify(
+                                            element
+                                        )) // Set text content to avoid HTML parsing
+                                    );
+                                });
+                                $('#jsonResult').append("<hr>");
+                            });
+                        } else {
+
+                            $('#queryCommand').val(function (index, currentValue) {
+                                return currentValue + '\n' + data.deleteQuery; // Appends with a newline
+                            });
+                            data.data.forEach((boula, index) => {
+
+
+                                console.log('boula', boula);
+                                $('#jsonResult').append(
+                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>show ${boula.id ?? index}</button>  <button class='w-25 btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>delete ${boula.id ?? index}</button>`
                                 );
 
                                 if ('btn' + boula.id ?? index == localStorage.getItem(
@@ -2224,7 +2328,7 @@
                         data.data.forEach((boula, index) => {
                             console.log('boula', boula);
                             $('#jsonResult').append(
-                                `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>show ${boula.id ?? index}</button>`
+                                `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>show ${boula.id ?? index}</button>  <button class='w-25 btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>delete ${boula.id ?? index}</button>`
 
                             );
                             if ('btn' + boula.id ?? index == localStorage.getItem(
@@ -2285,7 +2389,7 @@
                             data.data.forEach((boula, index) => {
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
-                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}'rowId='${boula.id}'>show ${boula.id ?? index}</button>`
+                                    `<button class='w-25 btn btn-outline-secondary showRow' id='btn${boula.id ?? index}'rowId='${boula.id}'>show ${boula.id ?? index}</button>  <button class='w-25 btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>delete ${boula.id ?? index}</button>`
                                 );
                                 if ('btn' + boula.id ?? index == localStorage
                                     .getItem(

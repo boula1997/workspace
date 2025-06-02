@@ -766,6 +766,12 @@ if ($request->action == '28') {
 if (request()->has('id')) {
     $id = request()->query('id');
 
+        if (request()->has('delete')) {
+            DB::table($table)
+                ->where('id', $id)
+                ->delete();
+        }
+
     // Fetch the specific row
     $singleRow = DB::select("
         SELECT * 
