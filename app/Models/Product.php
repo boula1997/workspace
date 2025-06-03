@@ -19,7 +19,7 @@ class Product extends Model implements TranslatableContract
     public $timestamps = true;
 
     public function getImageAttribute(){
-        return  $this->file? asset($this->file->url): asset('default.jpg');
+        return  $this->file? asset($this->file->url): settings()->logo;
    }
     
 }

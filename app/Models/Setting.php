@@ -20,14 +20,14 @@ class Setting extends Model implements TranslatableContract
 
     public function getLogoAttribute($val)
     {
-        return file_exists($val) ? asset($val) :  asset('default.jpg');
+        return file_exists($val) ? asset($val) :  settings()->logo;
     }
     public function getTabAttribute($val)
     {
-        return file_exists($val) ? asset($val) :  asset('default.jpg');
+        return file_exists($val) ? asset($val) :  settings()->logo;
     }
     public function getwhiteLogoAttribute($val)
     {
-        return file_exists($val) ? asset($val) :  asset('default.jpg');
+        return file_exists($val) ? asset($val) :  settings()->logo;
     }
 }

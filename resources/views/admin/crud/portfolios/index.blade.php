@@ -47,7 +47,7 @@
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td><img width="100" height="100"
-                                                            src="{{ isset($portfolio->images[0]->url)?$portfolio->images[0]->url:asset('default.jpg') }}"
+                                                            src="{{ isset($portfolio->images[0]->url)?$portfolio->images[0]->url:settings()->logo }}"
                                                             alt="{{ $portfolio->title }}"></td>
                                                     <td>{{ $portfolio->title }}</td>
                                                     <td>
