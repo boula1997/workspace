@@ -96,4 +96,19 @@ class TaskController extends Controller
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
         }
     }
+
+        public function togglePiority($id)
+    {
+        try {
+            // Find and toggle the level for the given task ID
+            $task = Task::find($id);
+            $task->where('title', $task->title)->update(['piority' => !$task->piority]);
+
+
+
+            return response()->json(['success' => __('general.changed_successfully')]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
 }
