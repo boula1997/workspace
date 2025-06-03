@@ -48,7 +48,7 @@ class TaskController extends Controller
         $employees = Admin::orderBy('name', 'ASC')->get();
         $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
 
-        $tasks = Task::where("status",0)->orderBy('active', 'desc')
+        $tasks = Task::where("status",0)->orderBy('piority', 'desc')
                 ->latest('created_at') // Ensure latest tasks by creation date
                  // Limit the results to 300
                 ->get()
