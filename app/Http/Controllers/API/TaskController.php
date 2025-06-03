@@ -120,7 +120,7 @@ class TaskController extends Controller
 
 
 
-            return response()->json(['success' => __('general.changed_successfully')]);
+            return response()->json(['success' => __('general.deleted_successfully')]);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
