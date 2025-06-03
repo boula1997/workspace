@@ -48,11 +48,13 @@ class TaskController extends Controller
         $employees = Admin::orderBy('name', 'ASC')->get();
         $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
 
-        $tasks = Task::where("status",0)->orderBy('piority', 'desc')
-                ->latest('created_at') // Ensure latest tasks by creation date
-                 // Limit the results to 300
-                ->get()
-                ->unique('title');
+ $tasks = Task::where("status", 0)
+    ->orderBy('project_id', 'asc') // Order by project first
+    ->orderBy('piority', 'desc') // Then by priority (descending)
+    ->latest('created_at') // Then by creation date (latest first)
+    ->take(300) // Limit to 300 tasks
+    ->get()
+    ->unique('title'); // Remove duplicate tasks by title
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
