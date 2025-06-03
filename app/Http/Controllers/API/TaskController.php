@@ -48,9 +48,15 @@ class TaskController extends Controller
         $employees = Admin::orderBy('name', 'ASC')->get();
         $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
 
+        $tasks = Task::where("status",0)->orderBy('active', 'desc')
+                ->latest('created_at') // Ensure latest tasks by creation date
+                 // Limit the results to 300
+                ->get()
+                ->unique('title');
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
+            "tasks"=>$tasks,
             "last_time"=>setting()->last_time . ' '.getTimeAgo(setting()->last_time).' Allowed in: '. date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
 
         ];
