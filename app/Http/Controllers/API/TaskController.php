@@ -111,4 +111,18 @@ class TaskController extends Controller
             return response()->json(['error' => $e->getMessage()]);
         }
     }
+        public function toggleStatus($id)
+    {
+        try {
+            // Find and toggle the level for the given task ID
+            $task = Task::find($id);
+            $task->where('title', $task->title)->update(['status' => !$task->status]);
+
+
+
+            return response()->json(['success' => __('general.changed_successfully')]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
 }
