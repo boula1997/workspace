@@ -134,5 +134,5 @@ Route::post('/vaccancy',[VaccancyController::class,'store']);
 Route::put('/vaccancy/{id}',[VaccancyController::class,'update']);
 Route::delete('/vaccancy/{id}',[VaccancyController::class,'delete']);
 
-Route::get('piority/toggle/{id}', [App\Http\Controllers\Admin\TaskController::class, 'togglePiority'])->name('piority.toggle');
+Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
 
