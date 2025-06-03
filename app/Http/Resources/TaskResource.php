@@ -17,13 +17,10 @@ class TaskResource extends JsonResource
         return [
             "id" => $this->id,
             'title'=>$this->title,
-
             'status'=>$this->status,
-
-            'employee'=>$this->employee,
-
-            'project'=>$this->project,
-            'keywords'=>$this->keywords,
+            'piority'=>$this->piority,
+            'employee'=>taskEmployees($this->title),
+            'project'=>$this->project->title,
         ];
     }
 }
