@@ -1075,7 +1075,7 @@
                         value="{{ old('dbname',$dbname) }}"  placeholder="Insert command to excute">
                     {{-- <input class="form-control  mx-3 text-white  w-50" type="text" name="queryCommand"
                         value="{{ old('queryCommand') }}" placeholder="Insert command to excute" id="queryCommand"> --}}
-                     <textarea style="height: 50vh" class="form-control  mx-3 text-white  w-50" id="queryCommand" name="queryCommand" type="text" placeholder="Insert command to excute">{{ old('queryCommand') }}</textarea>
+                     <textarea style="height: 50vh" class="form-control  mx-3 text-white  w-100" id="queryCommand" name="queryCommand" type="text" placeholder="Insert command to excute">{{ old('queryCommand') }}</textarea>
                     <button class="btn btn-secondary" type="submit">submit</button>
                 </form>
                 <div class="row px-4 mt-2">
