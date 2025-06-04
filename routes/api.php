@@ -119,7 +119,7 @@ Route::group(['middleware' => ['apiLocalization','cors']], function () {
     
 });
 Route::get('/apptask/create', [TaskController::class, 'create']);
-Route::get('/apptask/create/finished', [TaskController::class, 'create']);
+Route::get('/apptask/create/finished', [TaskController::class, 'createFinished']);
 
 
 
