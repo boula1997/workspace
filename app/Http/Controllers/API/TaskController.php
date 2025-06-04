@@ -116,8 +116,9 @@ class TaskController extends Controller
         try {
             // Find and toggle the level for the given task ID
             $task = Task::find($id);
-            $task=$task->where('title', $task->title)->update(['status' => !$task->status]);
+            $task->where('title', $task->title)->update(['status' => !$task->status]);
 
+            $task = Task::find($id);
 
              return successResponse($task);
             return response()->json(['success' => __('general.deleted_successfully')]);
