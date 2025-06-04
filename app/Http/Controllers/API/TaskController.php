@@ -66,6 +66,29 @@ class TaskController extends Controller
         return successResponse($data);
     }
 
+    public function createFinished()
+    {
+        $employees = Admin::orderBy('name', 'ASC')->get();
+        $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
+
+        $tasks = Task::where("status", 1)
+            ->orderBy('piority', 'desc') // Then by priority (descending)
+            ->orderBy('project_id', 'asc') // Order by project first
+            ->latest('created_at') // Then by creation date (latest first)
+            ->take(300) // Limit to 300 tasks
+            ->get()
+            ->unique('title'); // Remove duplicate tasks by title
+        $data=[
+            "projects"=>ProjectResource::collection($projects),
+            "employees"=>$employees,
+            "tasks"=>TaskResource::collection($tasks),
+            "last_time"=>setting()->last_time . ' '.getTimeAgo(setting()->last_time).' Allowed in: '. date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
+
+        ];
+
+        return successResponse($data);
+    }
+
 
     public function store(TaskRequest $request)
     {
