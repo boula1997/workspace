@@ -119,7 +119,7 @@ class TaskController extends Controller
             $task->where('title', $task->title)->update(['status' => !$task->status]);
 
 
-
+             return successResponse($task );
             return response()->json(['success' => __('general.deleted_successfully')]);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
