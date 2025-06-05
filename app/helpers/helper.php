@@ -163,7 +163,7 @@ function yousabEmails()
 
 
             // Get expired free hosting projects
-            $expiredProjects = Project::where('created_at', '<', now()->subYears(2))->get();
+            $expiredProjects = Project::where("isHosted",1)->where('created_at', '<', now()->subYears(2))->get();
             
             
             // Construct the email content
