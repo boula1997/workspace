@@ -59,7 +59,7 @@ class TaskController extends Controller
             "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
             "tasks"=>TaskResource::collection($tasks),
-            "last_time"=>setting()->last_time . ' '.getTimeAgo(setting()->last_time).' Allowed in: '. date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')).activeDeadline()["deadline"].activeDeadline()["action"],
+            "last_time"=>setting()->last_time . ' '.getTimeAgo(setting()->last_time).' Allowed in: '. date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')).' & '.activeDeadline()["action"].' '.activeDeadline()["deadline"],
 
         ];
 
