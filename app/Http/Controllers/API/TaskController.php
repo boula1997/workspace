@@ -51,7 +51,7 @@ class TaskController extends Controller
         $tasks = Task::where("status", 0)
             ->orderBy('piority', 'desc') // Then by priority (descending)
             ->orderBy('project_id', 'asc') // Order by project first
-            ->latest('created_at') // Then by creation date (latest first)
+            ->latest('updated_at') // Then by creation date (latest first)
             ->take(300) // Limit to 300 tasks
             ->get()
             ->unique('title'); // Remove duplicate tasks by title
@@ -74,7 +74,7 @@ class TaskController extends Controller
         $tasks = Task::where("status", 1)
             ->orderBy('piority', 'desc') // Then by priority (descending)
             ->orderBy('project_id', 'asc') // Order by project first
-            ->latest('created_at') // Then by creation date (latest first)
+            ->latest('updated_at') // Then by creation date (latest first)
             ->take(300) // Limit to 300 tasks
             ->get()
             ->unique('title'); // Remove duplicate tasks by title
