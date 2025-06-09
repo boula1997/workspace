@@ -75,7 +75,14 @@ class TaskController extends Controller
         $endOfMonth = $date->copy()->endOfMonth();
 
         // Query the fees for the specific month
-        $monthFees = Fee::whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+        $avgFees = Fee::whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+
+        $incomeFees = Fee::where('amount', '>', 0)
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
+        $outcomeFees = Fee::where('amount', '<', 0)
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->sum('amount');
         
         // Query all fees
         $allFees = Fee::sum('amount');
@@ -92,7 +99,9 @@ class TaskController extends Controller
         // Prepare data for the response
         $data = [
             "projects" => ProjectResource::collection($selectedProjects),
-            "monthFees" => $monthFees,
+            "avgFees" => $avgFees,
+            "incomeFees" => $incomeFees,
+            "outcomeFees" => $outcomeFees,
             "allFees" => $allFees,
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time) . "\n" .
                 'Allowed in: ' . date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')) . "\n" .
