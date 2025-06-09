@@ -70,7 +70,7 @@ class TaskController extends Controller
     public function stats($date = null)
     {
         // Use today's date if none is provided
-        $date = $date ? Carbon::parse($date) : Carbon::now();
+        $date = request()->query('date') ? Carbon::parse(request()->query('date')) : Carbon::now();
         $startOfMonth = $date->copy()->startOfMonth();
         $endOfMonth = $date->copy()->endOfMonth();
 
