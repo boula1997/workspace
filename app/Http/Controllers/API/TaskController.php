@@ -67,10 +67,10 @@ class TaskController extends Controller
 
         return successResponse($data);
     }
-    public function stats(Request $request)
+    public function stats($date = null)
     {
         // Use today's date if none is provided
-        $date = $request->has("date") ? Carbon::parse($date) : Carbon::now();
+        $date = $date ? Carbon::parse($date) : Carbon::now();
         $startOfMonth = $date->copy()->startOfMonth();
         $endOfMonth = $date->copy()->endOfMonth();
 
