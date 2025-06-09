@@ -85,7 +85,9 @@ class TaskController extends Controller
             ->sum('amount');
         
         // Query all fees
-        $allFees = Fee::sum('amount');
+        $allavgFees = Fee::sum('amount');
+        $allincomeFees = Fee::where("amount",">",0)->sum('amount');
+        $alloutcomeFees = Fee::where("amount","<",0)->sum('amount');
 
         // Retrieve the latest projects
         $projects = Project::latest()->get();
@@ -103,7 +105,8 @@ class TaskController extends Controller
             "avgFees" => $avgFees,
             "incomeFees" => $incomeFees,
             "outcomeFees" => $outcomeFees,
-            "allFees" => $allFees,
+            "allavgFees" => $allavgFees,
+            "alloutcomeFees" => $alloutcomeFees,
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time) . "\n" .
                 'Allowed in: ' . date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')) . "\n" .
                 activeDeadline()["action"] . "\n" . activeDeadline()["deadline"],
