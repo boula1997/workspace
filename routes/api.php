@@ -123,7 +123,7 @@ Route::get('/apptask/create/finished', [TaskController::class, 'createFinished']
 
 
 
-Route::post('/stats', [TaskController::class, 'stats']);
+Route::get('/stats', [TaskController::class, 'stats']);
 
 Route::post('/newsletter', [NewsletterController::class, 'store']);
 Route::post('/message', [MessageController::class, 'store']);
