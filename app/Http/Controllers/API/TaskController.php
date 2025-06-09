@@ -89,12 +89,13 @@ class TaskController extends Controller
 
         // Retrieve the latest projects
         $projects = Project::latest()->get();
-        $selectedProjects = [];
-        foreach ($projects as $project) {
-            if (rest($project) > 0) {
-                $selectedProjects[] = $project;
-            }
-        }
+
+    // Filter and sort projects by rest
+    $selectedProjects = $projects->filter(function ($project) {
+        return rest($project) > 0; // Include only projects with positive rest
+    })->sortByDesc(function ($project) {
+        return rest($project); // Sort by rest in descending order
+    });
 
         // Prepare data for the response
         $data = [
