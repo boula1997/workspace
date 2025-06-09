@@ -107,6 +107,7 @@ class TaskController extends Controller
             "outcomeFees" => $outcomeFees,
             "allavgFees" => $allavgFees,
             "alloutcomeFees" => $alloutcomeFees,
+            "allincomeFees" => $allincomeFees,
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time) . "\n" .
                 'Allowed in: ' . date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')) . "\n" .
                 activeDeadline()["action"] . "\n" . activeDeadline()["deadline"],
