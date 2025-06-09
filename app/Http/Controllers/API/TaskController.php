@@ -96,7 +96,7 @@ public function stats(Request $request)
 
     // Prepare data for the response
     $data = [
-        "projects" => ProjectResource::collection($projects),
+        "projects" => ProjectResource::collection($selectedProjects),
         "monthFees" => $monthFees,
         "currentMonthFees" => $currentMonthFees,
         "allFees" => $allFees,
