@@ -19,7 +19,7 @@ class ProjectResource extends JsonResource
             'title' => $this->title,
             'status' => $this->status,
             'rest' => rest($this),
-'lastPayed' => optional($this->feeses->where('amount', '>', 0)->last())->created_at?->format('Y-m-d'),
+'lastPayed' => optional($this->feeses->where('amount', '>', 0)->last())->created_at?->format('d-m-Y'),
 
         ];
     }
