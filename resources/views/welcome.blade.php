@@ -834,12 +834,6 @@
                             </code>
                             <br>
                             <hr class="text-white">
-                            <p title="auto fill password">Pa$$w0rd!</p>
-                            <br>
-                            <hr class="text-white">
-                            <p title="Pa$$w0rd!">"$2y$10$KGRWYA9/eCPF5rwZ0vx4GevysNBDNrvlVtmsxiSTDRhtLeExnnoXi"</p>
-                            <br>
-                            <hr class="text-white">
 
                             <code>
                                 &#123;
@@ -913,6 +907,12 @@
                             <p>php artisan migrate:fresh</p>
                             <p>start http://localhost/phpmyadmin/index.php?route=/</p>
                             <p>cls</p>
+                            <br>
+                            <hr class="text-white">
+                            <p title="Pa$$w0rd!">"$2y$10$KGRWYA9/eCPF5rwZ0vx4GevysNBDNrvlVtmsxiSTDRhtLeExnnoXi"</p>
+                            <br>
+                            <hr class="text-white">
+                            <p title="auto fill password">Pa$$w0rd!</p>
                             <br>
                             <hr class="text-white">
                             <p>git add .</p>
