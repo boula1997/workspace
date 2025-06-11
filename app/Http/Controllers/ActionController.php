@@ -684,6 +684,64 @@ class ActionController extends Controller
 
     return view('welcome', compact('action','results', 'content', 'flag'));
 }
+  if ($request->action == '30') {
+    $action = "ReactNative post";
+    $baseUrl = $request->dbname;
+    $component = $request->templateName;
+    $function = $request->repolink;
+    $attribute = $request->projectrepolink;
+    $clientUrl = $request->commit;
+    $endpoint = $request->word;
+
+    // Fetch the issue data
+    $issue = Issue::where('title', 'ReactNative post')->first();
+    $content = $issue->codeLinks;
+
+    // Replace the specific URL with $baseUrl
+    $content = str_replace('https://yousab-tech.com/academy/public/api/', $baseUrl, $content);
+    $content = str_replace('ContactUs', $component, $content);
+    $content = str_replace('message', '/'.$endpoint, $content);
+    $content = str_replace('demo', $attribute, $content);
+    
+    $attributes = explode(',', $request->attribute);
+    $types = explode(',', $request->type);
+    $replaceWords = ['undefined', 'Undefined'];
+    $replacementWords = ['attribute', 'Attribute'];
+    $module = $request->module;
+    $results = [];
+    $titles = ["index1", "index2", "create", "edit", "show", "resource", "request", "model", "seeder", "migration","dropMigration",'json'];
+
+        foreach ($attributes as $key => $value) {
+          if (isset($types[$key])) {
+              $type = $types[$key];
+              
+              foreach ($titles as $title) {
+                  $script = Sample::where('stack',$request->stack)->where('type', $type)->where('title', $title)->first();
+                  if (!isset($script)) {
+                      $script = Sample::where('stack',$request->stack)->where('type', 'all')->where('title', $title)->first();
+                  }
+                  if (!isset($script)) {
+                      $script = Sample::where('stack',$request->stack)->where('title', $title)->first();
+                  }
+  
+                  // Replace placeholders in the script with the corresponding name and module
+                  $tempScript = str_replace($replaceWords, [$value, ucfirst($value)], isset($script)?$script->script:'');
+                  $finalScript = str_replace('module', $module, $tempScript);
+  
+                  $results[] = [
+                      'script_name' => isset($script)?$script->title:'', // Assuming each script has a title attribute
+                      'results' => [$finalScript]
+                  ];
+              }
+          }
+      }
+      // Sort results by 'script_name'
+      usort($results, function ($a, $b) {
+          return strcmp($a['script_name'], $b['script_name']);
+      });
+
+    return view('welcome', compact('action','results', 'content', 'flag'));
+}
 
 if ($request->action == '29') {
   $action = "Ajax post";
@@ -725,6 +783,25 @@ if ($request->action == '28') {
 
     // Fetch the issue data
     $issue = Issue::where('title', 'React get')->first();
+    $content = $issue->codeLinks;
+
+    // Replace the specific URL with $baseUrl
+    $content = str_replace('https://yousab-tech.com/academy/public/api', $baseUrl, $content);
+    $content = str_replace('Courses', $component, $content);
+    $content = str_replace('courses', $endpoint, $content);
+    $results=[];
+    return view('welcome', compact('action','results','content', 'flag'));
+}
+  if ($request->action == '31') {
+    $action = "ReactNative get";
+    $baseUrl = $request->dbname;
+    $component = $request->templateName;
+    $function = $request->repolink;
+    $clientUrl = $request->commit;
+    $endpoint = $request->word;
+
+    // Fetch the issue data
+    $issue = Issue::where('title', 'ReactNative get')->first();
     $content = $issue->codeLinks;
 
     // Replace the specific URL with $baseUrl

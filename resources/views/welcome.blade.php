@@ -403,6 +403,8 @@
                                     <option value="13">translate untranslated words</option>
                                     <option value="25">React post</option>
                                     <option value="26">React get</option>
+                                    <option value="30">ReactNative post</option>
+                                    <option value="31">ReactNative get</option>
                                     <option value="28">Ajax get</option>
                                     <option value="29">Ajax post</option>
                                     {{-- <option value="22">Open Websites</option> --}}

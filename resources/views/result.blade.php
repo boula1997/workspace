@@ -1453,6 +1453,25 @@
         @endif
     </div>
     <div>
+        @if ($action == 'ReactNative post')
+            {{-- <h4 class="text-warning">{{ $scriptResult['script_name'] }}</h4> --}}
+            <div>
+                <pre>{{ $content }}</pre>
+            </div>
+
+            @foreach ($results as $scriptResult)
+            {{-- <h4 class="text-warning">{{ $scriptResult['script_name'] }}</h4> --}}
+            <div>
+                @foreach ($scriptResult['results'] as $result)
+                    {{ $result }}
+                @endforeach
+                <br>
+                <br>
+            </div>
+        @endforeach
+        @endif
+    </div>
+    <div>
         @if ($action == 'Ajax post')
             {{-- <h4 class="text-warning">{{ $scriptResult['script_name'] }}</h4> --}}
             <div>
@@ -1470,6 +1489,14 @@
     </div>
     <div>
         @if ($action == 'React get')
+            {{-- <h4 class="text-warning">{{ $scriptResult['script_name'] }}</h4> --}}
+            <div>
+                <pre>{{ $content }}</pre>
+            </div>
+        @endif
+    </div>
+    <div>
+        @if ($action == 'ReactNative get')
             {{-- <h4 class="text-warning">{{ $scriptResult['script_name'] }}</h4> --}}
             <div>
                 <pre>{{ $content }}</pre>

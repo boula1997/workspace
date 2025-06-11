@@ -1026,6 +1026,27 @@
                         word: 'enter endpoint'
                     }
                 },
+                'ReactNative post': {
+                    show: ['templateName', 'projectrepolink', 'word', 'attribute', 'module', 'type'],
+                    placeholders: {
+                        templateName: 'insert component name',
+                        projectrepolink: 'insert attribute name',
+                        word: 'enter endpoint',
+                        attribute: 'add attributes',
+                        module: 'need to create module',
+                        type: 'add attributes types'
+                    },
+                    showSpecial: () => {
+                        $stack.show().attr('placeholder', 'Select stack');
+                    }
+                },
+                'ReactNative get': {
+                    show: ['templateName', 'word'],
+                    placeholders: {
+                        templateName: 'insert component name',
+                        word: 'enter endpoint'
+                    }
+                },
                 'Ajax get': {
                     show: ['module'],
                     placeholders: {
