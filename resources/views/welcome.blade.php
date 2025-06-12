@@ -892,23 +892,9 @@
                             <p>request()->segment(count(request()->segments()))</p>
                             <br>
                             <hr class="text-white">
-                            <p>@echo off</p>
-                            <p>rem Save the current working directory</p>
-                            <p>set CURRENT_DIR=%cd%</p>
-                            <p>rem Navigate to the automation project directory</p>
-                            <p>cd /d E:\xampp\htdocs\automation</p>
-                            <p>rem Run the export databases script</p>
-                            <p>call export_each_database.bat</p>
-                            <p>git add .</p>
-                            <p>git commit -m "commit"</p>
-                            <p>git pull origin main</p>
-                            <p>git push origin main</p>
-                            <p>rem Return to the original directory</p>
-                            <p>cd /d %CURRENT_DIR%</p>
-                            <p>rem Run Laravel migrate fresh with seed in the erp project directory</p>
-                            <p>php artisan migrate:fresh</p>
-                            <p>start http://localhost/phpmyadmin/index.php?route=/</p>
-                            <p>cls</p>
+                            <p>rm -rf node_modules</p>
+                            <p>rm package-lock.json yarn.lock</p>
+                            <p>npm intstall</p>
                             <br>
                             <hr class="text-white">
                             <p title="Pa$$w0rd!">"$2y$10$KGRWYA9/eCPF5rwZ0vx4GevysNBDNrvlVtmsxiSTDRhtLeExnnoXi"</p>
