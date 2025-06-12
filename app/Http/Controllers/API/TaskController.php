@@ -125,8 +125,6 @@ class TaskController extends Controller
         $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
 
         $tasks = Task::where("status", 1)
-            ->orderBy('piority', 'desc') // Then by priority (descending)
-            ->orderBy('project_id', 'asc') // Order by project first
             ->latest('updated_at') // Then by creation date (latest first)
             ->take(300) // Limit to 300 tasks
             ->get()
