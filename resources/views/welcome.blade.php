@@ -862,7 +862,6 @@
                             </code>
                             <br>
                             <hr class="text-white">
-
                             <p>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</p>
                             <br>
                             <hr class="text-white">
@@ -870,23 +869,6 @@
                             <br>
                             <hr class="text-white">
                             <p>ssh yousabte@192.185.41.219 -p2222</p>
-                            <br>
-                            <hr class="text-white">
-
-                            <p>cd %USERPROFILE%\Desktop</p>
-                            <p>start postman</p>
-                            <p>start WNetWatcher</p>
-                            <p> cd /d E:/xampp/mysql/bin</p>
-                            <p> mysqldump -u root -p --no-create-info --ignore-table=automation.migrations automation >
-                                "E:/xampp/htdocs/workspace/exported_databases/automation.sql</p>
-                            <p>cd /d E:\xampp\htdocs\automation</p>
-                            <p>git add .</p>
-                            <p>git commit -m "commit"</p>
-                            <p>git pull origin main</p>
-                            <p>git push origin main</p>
-                            <p>start http://127.0.0.1:9000/</p>
-                            <p>php artisan ser --port=9000</p>
-                            <p>cls</p>
                             <br>
                             <hr class="text-white">
                             <p>request()->segment(count(request()->segments()))</p>
