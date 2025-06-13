@@ -877,6 +877,7 @@
                             <p>rm -rf node_modules</p>
                             <p>rm package-lock.json yarn.lock</p>
                             <p>npm install</p>
+                            <p>npx expo-doctor</p>
                             <br>
                             <hr class="text-white">
                             <p title="Pa$$w0rd!">"$2y$10$KGRWYA9/eCPF5rwZ0vx4GevysNBDNrvlVtmsxiSTDRhtLeExnnoXi"</p>
