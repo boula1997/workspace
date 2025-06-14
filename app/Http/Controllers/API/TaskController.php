@@ -104,8 +104,8 @@ class TaskController extends Controller
 
             // All-time stats
             $allavgFees = Fee::sum('amount');
-            $allincomeFees = Fee::where("amount", ">", 0)->sum('amount');
-            $alloutcomeFees = Fee::where("amount", "<", 0)->sum('amount');
+            $allincomeFees = Fee::where("amount", ">", 0)->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+            $alloutcomeFees = Fee::where("amount", "<", 0)->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
 
             // Retrieve and filter projects
             $projects = Project::latest()->get();
