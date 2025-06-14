@@ -89,7 +89,12 @@ class TaskController extends Controller
                     ->whereBetween('created_at', [$startOfCurrentMonth, $endOfCurrentMonth])
                     ->sum('amount');
 
+                $monthlyOutcome = Fee::where('amount', '>', 0)
+                    ->whereBetween('created_at', [$startOfCurrentMonth, $endOfCurrentMonth])
+                    ->sum('amount');
+
                 $monthlyIncomeArray[] = $monthlyIncome; // You can round() if needed
+                $monthlyOutcomeArray[] = $monthlyOutcome; // You can round() if needed
             }
 
             // Monthly stats for selected month
@@ -117,6 +122,7 @@ class TaskController extends Controller
                 "alloutcomeFees" => $alloutcomeFees,
                 "allincomeFees" => $allincomeFees,
                 "monthlyIncomeArray" => $monthlyIncomeArray,
+                "monthlyOutcomeArray" => $monthlyOutcomeArray,
                 "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time) . "\n" .
                     'Allowed in: ' . date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')) . "\n" .
                     activeDeadline()["action"] . "\n" . activeDeadline()["deadline"],
