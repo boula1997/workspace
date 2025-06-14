@@ -80,8 +80,8 @@ class TaskController extends Controller
             // Initialize monthly income array
             $monthlyIncomeArray = [];
 
-            $yeartotalIncome=0;
-            $yeartotalOutcome=0;
+            $yearTotalIncome=0;
+            $yearTotalOutcome=0;
             // Loop through each month (1 to 12)
             for ($month = 1; $month <= 12; $month++) {
                 $startOfCurrentMonth = Carbon::createFromDate($year, $month, 1)->startOfMonth();
@@ -96,9 +96,9 @@ class TaskController extends Controller
                     ->sum('amount');
 
                 $monthlyIncomeArray[] = $monthlyIncome; // You can round() if needed
-                $yeartotalIncome+= $monthlyIncome; // You can round() if needed
+                $yearTotalIncome+= $monthlyIncome; // You can round() if needed
                 $monthlyOutcomeArray[] = $monthlyOutcome*-1; // You can round() if needed
-                $yeartotalOutcome+= $monthlyOutcome; // You can round() if needed
+                $yearTotalOutcome+= $monthlyOutcome; // You can round() if needed
             }
 
             // Monthly stats for selected month
@@ -124,9 +124,9 @@ class TaskController extends Controller
                 "outcomeFees" => $outcomeFees,
                 "allavgFees" => $allavgFees,
                 "alloutcomeFees" => $alloutcomeFees,
-                "yearallincomeFees" => $yearallincomeFees,
-                "yeartotalIncome" => $yeartotalIncome,
-                "totalOutcome" => $totalOutcome,
+                "allincomeFees" => $allincomeFees,
+                "yearTotalIncome" => $yearTotalIncome,
+                "yearTotalOutcome" => $yearTotalOutcome,
                 "monthlyIncomeArray" => $monthlyIncomeArray,
                 "monthlyOutcomeArray" => $monthlyOutcomeArray,
                 "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time) . "\n" .
