@@ -89,7 +89,7 @@ class TaskController extends Controller
                     ->whereBetween('created_at', [$startOfCurrentMonth, $endOfCurrentMonth])
                     ->sum('amount');
 
-                $monthlyOutcome = Fee::where('amount', '>', 0)
+                $monthlyOutcome = Fee::where('amount', '<', 0)
                     ->whereBetween('created_at', [$startOfCurrentMonth, $endOfCurrentMonth])
                     ->sum('amount');
 
