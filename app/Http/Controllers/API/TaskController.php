@@ -67,54 +67,64 @@ class TaskController extends Controller
 
         return successResponse($data);
     }
-    public function stats($date = null)
-    {
-        // Use today's date if none is provided
-        $date = request()->query('date') ? Carbon::parse(request()->query('date')) : Carbon::now();
-        $startOfMonth = $date->copy()->startOfMonth();
-        $endOfMonth = $date->copy()->endOfMonth();
+        public function stats($date = null)
+        {
+            // Use today's date if none is provided
+            $date = request()->query('date') ? Carbon::parse(request()->query('date')) : Carbon::now();
+            $startOfMonth = $date->copy()->startOfMonth();
+            $endOfMonth = $date->copy()->endOfMonth();
 
-        // Query the fees for the specific month
-        $avgFees = Fee::whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+            // Extract the year from the selected date
+            $year = $date->year;
 
-        $incomeFees = Fee::where('amount', '>', 0)
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->sum('amount');
-        $outcomeFees = Fee::where('amount', '<', 0)
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->sum('amount');
-        
-        // Query all fees
-        $allavgFees = Fee::sum('amount');
-        $allincomeFees = Fee::where("amount",">",0)->sum('amount');
-        $alloutcomeFees = Fee::where("amount","<",0)->sum('amount');
+            // Initialize monthly income array
+            $monthlyIncomeArray = [];
 
-        // Retrieve the latest projects
-        $projects = Project::latest()->get();
+            // Loop through each month (1 to 12)
+            for ($month = 1; $month <= 12; $month++) {
+                $startOfCurrentMonth = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+                $endOfCurrentMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth();
 
-    // Filter and sort projects by rest
-    $selectedProjects = $projects->filter(function ($project) {
-        return rest($project) > 0; // Include only projects with positive rest
-    })->sortByDesc(function ($project) {
-        return rest($project); // Sort by rest in descending order
-    });
+                $monthlyIncome = Fee::where('amount', '>', 0)
+                    ->whereBetween('created_at', [$startOfCurrentMonth, $endOfCurrentMonth])
+                    ->sum('amount');
 
-        // Prepare data for the response
-        $data = [
-            "projects" => ProjectResource::collection($selectedProjects),
-            "avgFees" => $avgFees,
-            "incomeFees" => $incomeFees,
-            "outcomeFees" => $outcomeFees,
-            "allavgFees" => $allavgFees,
-            "alloutcomeFees" => $alloutcomeFees,
-            "allincomeFees" => $allincomeFees,
-            "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time) . "\n" .
-                'Allowed in: ' . date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')) . "\n" .
-                activeDeadline()["action"] . "\n" . activeDeadline()["deadline"],
-        ];
+                $monthlyIncomeArray[] = $monthlyIncome; // You can round() if needed
+            }
 
-        return successResponse($data);
-    }
+            // Monthly stats for selected month
+            $avgFees = Fee::whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+            $incomeFees = Fee::where('amount', '>', 0)->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+            $outcomeFees = Fee::where('amount', '<', 0)->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+
+            // All-time stats
+            $allavgFees = Fee::sum('amount');
+            $allincomeFees = Fee::where("amount", ">", 0)->sum('amount');
+            $alloutcomeFees = Fee::where("amount", "<", 0)->sum('amount');
+
+            // Retrieve and filter projects
+            $projects = Project::latest()->get();
+            $selectedProjects = $projects->filter(fn($project) => rest($project) > 0)
+                                        ->sortByDesc(fn($project) => rest($project));
+
+            // Prepare response data
+            $data = [
+                "projects" => ProjectResource::collection($selectedProjects),
+                "avgFees" => $avgFees,
+                "incomeFees" => $incomeFees,
+                "outcomeFees" => $outcomeFees,
+                "allavgFees" => $allavgFees,
+                "alloutcomeFees" => $alloutcomeFees,
+                "allincomeFees" => $allincomeFees,
+                "monthlyIncomeArray" => $monthlyIncomeArray,
+                "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time) . "\n" .
+                    'Allowed in: ' . date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')) . "\n" .
+                    activeDeadline()["action"] . "\n" . activeDeadline()["deadline"],
+            ];
+
+            return successResponse($data);
+        }
+
 
 
 
