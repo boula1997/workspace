@@ -96,7 +96,7 @@ class TaskController extends Controller
                     ->whereBetween('created_at', [$startOfCurrentMonth, $endOfCurrentMonth])
                     ->sum('amount');
 
-                      $monthlyProjects = Project::whereBetween('created_at', [$startOfCurrentMonth, $endOfCurrentMonth])->count();
+                      $monthlyProjects = Project::whereBetween('created_at', [$startOfCurrentMonth, $endOfCurrentMonth])->where("cost",">",0)->count();
 
                 $monthlyIncomeArray[] = $monthlyIncome; // You can round() if needed
                 $yearTotalIncome+= $monthlyIncome; // You can round() if needed
