@@ -98,7 +98,7 @@ class TaskController extends Controller
                 $monthlyIncomeArray[] = $monthlyIncome; // You can round() if needed
                 $yearTotalIncome+= $monthlyIncome; // You can round() if needed
                 $monthlyOutcomeArray[] = $monthlyOutcome*-1; // You can round() if needed
-                $yearTotalOutcome+= $monthlyOutcome; // You can round() if needed
+                $yearTotalOutcome+= $monthlyOutcome*-1; // You can round() if needed
             }
 
             // Monthly stats for selected month
