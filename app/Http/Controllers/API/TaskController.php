@@ -82,6 +82,7 @@ class TaskController extends Controller
 
             $yearTotalIncome=0;
             $yearTotalOutcome=0;
+            $monthlyProjectsArray = [];
             // Loop through each month (1 to 12)
             for ($month = 1; $month <= 12; $month++) {
                 $startOfCurrentMonth = Carbon::createFromDate($year, $month, 1)->startOfMonth();
@@ -95,10 +96,13 @@ class TaskController extends Controller
                     ->whereBetween('created_at', [$startOfCurrentMonth, $endOfCurrentMonth])
                     ->sum('amount');
 
+                      $monthlyProjects = Project::whereBetween('created_at', [$startOfCurrentMonth, $endOfCurrentMonth])->count();
+
                 $monthlyIncomeArray[] = $monthlyIncome; // You can round() if needed
                 $yearTotalIncome+= $monthlyIncome; // You can round() if needed
                 $monthlyOutcomeArray[] = $monthlyOutcome*-1; // You can round() if needed
                 $yearTotalOutcome+= $monthlyOutcome*-1; // You can round() if needed
+                    $monthlyProjectsArray[] = $monthlyProjects; // Add this line
             }
 
             // Monthly stats for selected month
@@ -129,6 +133,7 @@ class TaskController extends Controller
                 "yearTotalOutcome" => $yearTotalOutcome,
                 "monthlyIncomeArray" => $monthlyIncomeArray,
                 "monthlyOutcomeArray" => $monthlyOutcomeArray,
+                "monthlyProjectsArray" => $monthlyProjectsArray,
                 "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time) . "\n" .
                     'Allowed in: ' . date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')) . "\n" .
                     activeDeadline()["action"] . "\n" . activeDeadline()["deadline"],
