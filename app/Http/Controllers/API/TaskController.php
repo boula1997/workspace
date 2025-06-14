@@ -124,7 +124,7 @@ class TaskController extends Controller
                 "outcomeFees" => $outcomeFees,
                 "allavgFees" => $allavgFees,
                 "alloutcomeFees" => $alloutcomeFees,
-                "allincomeFees" => $allincomeFees,
+                "allincomeFees" => $allincomeFees*-1,
                 "yearTotalIncome" => $yearTotalIncome,
                 "yearTotalOutcome" => $yearTotalOutcome,
                 "monthlyIncomeArray" => $monthlyIncomeArray,
