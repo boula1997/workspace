@@ -795,10 +795,11 @@
                     <div class="row mt-5">
                         <p class="text-warning">Always use poweshell because it has memeory</p>
                         <div class="col-md-6">
+
+                            <p class="text-warning">Pined Clipboard elements</p>
                             <p title="auto fill password">http://127.0.0.1:8000/</p>
                             <br>
                             <hr class="text-white">
-                            <p class="text-warning">Pined Clipboard elements</p>
                             <code>
                                 if (App::environment('local')) {
                                 Route::get(&#39;routes&#39;, function () {
