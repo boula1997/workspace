@@ -48,7 +48,7 @@ class TaskController extends Controller
     public function create()
     {
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
+        $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","desc")->get();
 
         $tasks = Task::where("status", 0)
             ->orderBy('piority', 'desc') // Then by priority (descending)
@@ -149,7 +149,7 @@ class TaskController extends Controller
     public function createFinished()
     {
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
+        $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","desc")->get();
 
         $tasks = Task::where("status", 1)
             ->latest('updated_at') // Then by creation date (latest first)
