@@ -801,47 +801,52 @@ if ($request->action == '28') {
   /**
    * Display the specified resource.
    */
-  public function show($db, $table, $query)
-  {
-      // Switch to the requested database
-      DB::statement('USE ' . $db);
-  
-      // Execute the query if provided
-      $queryData = ($query !== "null" && $query !== "") ? DB::select($query) : null;
-  
-      // Retrieve table columns and their data types
-      $columns = DB::select("
-          SELECT COLUMN_NAME, DATA_TYPE
-          FROM INFORMATION_SCHEMA.COLUMNS
-          WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-      ", [$db, $table]);
-  
-      // Exclude specific columns
-      $excludedColumns = ['created_at', 'updated_at', 'id'];
-      $filteredColumns = collect($columns)->filter(function ($column) use ($excludedColumns) {
-          return !in_array($column->COLUMN_NAME, $excludedColumns);
-      });
-  
-      // Construct the INSERT INTO string
-      $attributes = $filteredColumns->pluck('COLUMN_NAME')->implode(',');
-      $datatypes = $filteredColumns->pluck('DATA_TYPE')->implode(',');
-  
-      $insertString = "INSERT INTO $table ($attributes) VALUES ($datatypes);";
-  
-      // Fetch table data and count
-      $data = DB::select("
-          SELECT * 
-          FROM (
-              SELECT '" . $db . "' AS db, " . $table . ".* 
-              FROM " . $db . "." . $table . "
-              ORDER BY updated_at DESC
-              LIMIT 1000
-          ) AS q;
-      ");
-          $updateQuery ="";
+public function show($db, $table, $query)
+{
+    // Switch to the requested database
+    DB::statement('USE ' . $db);
 
-if (request()->has('id')) {
-    $id = request()->query('id');
+    // Execute the query if provided
+    $queryData = ($query !== "null" && $query !== "") ? DB::select($query) : null;
+
+    // Retrieve table columns and their data types
+    $columns = DB::select("
+        SELECT COLUMN_NAME, DATA_TYPE
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+    ", [$db, $table]);
+
+    // Exclude specific columns
+    $excludedColumns = ['created_at', 'updated_at', 'id'];
+    $filteredColumns = collect($columns)->filter(function ($column) use ($excludedColumns) {
+        return !in_array($column->COLUMN_NAME, $excludedColumns);
+    });
+
+    // Construct the INSERT INTO string
+    $attributes = $filteredColumns->pluck('COLUMN_NAME')->implode(',');
+    $datatypes = $filteredColumns->pluck('DATA_TYPE')->implode(',');
+
+    $insertString = "INSERT INTO $table ($attributes) VALUES ($datatypes);";
+
+    // ✅ Step: Get all column names and sort them alphabetically
+    $allColumnNames = collect($columns)->pluck('COLUMN_NAME')->sort()->values();
+    $orderedColumnList = $allColumnNames->map(fn($col) => "`$col`")->implode(', ');
+
+    // ✅ Use ordered columns in your query instead of *
+    $data = DB::select("
+        SELECT * 
+        FROM (
+            SELECT '" . $db . "' AS db, $orderedColumnList 
+            FROM " . $db . "." . $table . "
+            ORDER BY updated_at DESC
+            LIMIT 1000
+        ) AS q;
+    ");
+
+    $updateQuery = "";
+
+    if (request()->has('id')) {
+        $id = request()->query('id');
 
         if (request()->has('delete')) {
             DB::table($table)
@@ -849,65 +854,57 @@ if (request()->has('id')) {
                 ->delete();
         }
 
-    // Fetch the specific row
-    $singleRow = DB::select("
-        SELECT * 
-        FROM (
-            SELECT '" . $db . "' AS db, " . $table . ".* 
-            FROM " . $db . "." . $table . "
-            WHERE id = " . $id . "
-        ) AS q;
-    ");
+        // Fetch the specific row
+        $singleRow = DB::select("
+            SELECT * 
+            FROM (
+                SELECT '" . $db . "' AS db, $orderedColumnList 
+                FROM " . $db . "." . $table . "
+                WHERE id = " . $id . "
+            ) AS q;
+        ");
 
+        if (!empty($singleRow)) {
+            $row = (array) $singleRow[0]; // Convert object to array
 
-    if (!empty($singleRow)) {
-        // Get the row data
-        $row = (array) $singleRow[0]; // Convert object to array
-
-        // Dynamically construct the update query
-        $updateParts = [];
-        foreach ($row as $column => $value) {
-            // Skip the `db` column as it’s not part of the actual table
-            if ($column !== 'db') {
-                $updateParts[] = "`$column` = " . DB::getPdo()->quote($value);
+            $updateParts = [];
+            foreach ($row as $column => $value) {
+                if ($column !== 'db') {
+                    $updateParts[] = "`$column` = " . DB::getPdo()->quote($value);
+                }
             }
+
+            $updateQuery = "
+                UPDATE " . $db . "." . $table . "
+                SET " . implode(', ', $updateParts) . "
+                WHERE id = " . $id . ";
+            ";
         }
-        $updateQuery = "
-            UPDATE " . $db . "." . $table . "
-            SET " . implode(', ', $updateParts) . "
-            WHERE id = " . $id . ";
-        ";
+    }
 
+    $totalCount = DB::select("
+        SELECT COUNT(*) as count 
+        FROM " . $db . "." . $table . ";
+    ");
+    $count = $totalCount[0]->count;
 
-    } 
+    $latestUpdatedAt = DB::select("
+        SELECT MAX(updated_at) as latest_updated_at 
+        FROM " . $db . "." . $table . ";
+    ");
+    $latestUpdatedAt = $latestUpdatedAt[0]->latest_updated_at ?? null;
+
+    return response()->json([
+        'success' => trans('general.sent_successfully'),
+        'data' => $data,
+        'queryData' => $queryData,
+        'count' => $count,
+        'insertString' => $insertString,
+        'latestUpdatedAt' => $latestUpdatedAt,
+        'updateQuery' => $updateQuery,
+    ]);
 }
 
-  
-      $totalCount = DB::select("
-          SELECT COUNT(*) as count 
-          FROM " . $db . "." . $table . ";
-      ");
-  
-      $count = $totalCount[0]->count;
-  
-      // Fetch the latest updated_at value
-      $latestUpdatedAt = DB::select("
-          SELECT MAX(updated_at) as latest_updated_at 
-          FROM " . $db . "." . $table . ";
-      ");
-  
-      $latestUpdatedAt = $latestUpdatedAt[0]->latest_updated_at ?? null;
-  
-      return response()->json([
-          'success' => trans('general.sent_successfully'),
-          'data' => $data,
-          'queryData' => $queryData,
-          'count' => $count,
-          'insertString' => $insertString,
-          'latestUpdatedAt' => $latestUpdatedAt, // Added latest updated_at timestamp
-          'updateQuery' => $updateQuery, // Added latest updated_at timestamp
-      ]);
-  }
   
   
   

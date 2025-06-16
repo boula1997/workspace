@@ -864,138 +864,128 @@ if ($request->action == '28') {
   /**
    * Display the specified resource.
    */
-  public function show($db, $table, $query)
-  {
-      $credential = DBCredential::where('db_name', $db)->first();
-  
-      $dbHost = '127.0.0.1';
-      $dbName = isset($credential->db_name) ? $credential->db_name : 'automation';
-      $dbUser = isset($credential->db_username) ? $credential->db_username : 'root';
-      $dbPass = isset($credential->db_password) ? $credential->db_password : '';
-      // Temporarily configure the database connection
-      config([
-          'database.connections.dynamic' => [
-              'driver' => 'mysql',
-              'host' => $dbHost,
-              'database' => $dbName,
-              'username' => $dbUser,
-              'password' => $dbPass,
-              'charset' => 'utf8mb4',
-              'collation' => 'utf8mb4_unicode_ci',
-          ],
-      ]);
-  
-      // Use the dynamic connection
-      DB::purge('dynamic');
-      DB::reconnect('dynamic');
-      DB::connection('dynamic')->statement('USE ' . $db);
-  
-      // Execute the query if provided
-      $queryData = ($query !== "null" && $query !== "") ? DB::connection('dynamic')->select($query) : null;
-  
-      // Fetch column names and data types, excluding specific columns
-      $columns = DB::connection('dynamic')->select("
-          SELECT COLUMN_NAME, DATA_TYPE
-          FROM INFORMATION_SCHEMA.COLUMNS
-          WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-      ", [$db, $table]);
-  
-      // Exclude specific columns
-      $excludedColumns = ['created_at', 'updated_at', 'id'];
-      $filteredColumns = collect($columns)->filter(function ($column) use ($excludedColumns) {
-          return !in_array($column->COLUMN_NAME, $excludedColumns);
-      });
-  
-      // Construct the INSERT INTO string
-      $attributes = $filteredColumns->pluck('COLUMN_NAME')->implode(',');
-      $datatypes = $filteredColumns->pluck('DATA_TYPE')->implode(',');
-  
-      $insertString = "INSERT INTO $table ($attributes) VALUES ($datatypes);";
-  
-      // Retrieve data and count
-      $data = DB::connection('dynamic')->select("
-          SELECT * 
-          FROM (
-              SELECT '" . $db . "' AS db, " . $table . ".* 
-              FROM " . $db . "." . $table . "
-              ORDER BY updated_at DESC
-              LIMIT 1000
-          ) AS q;
-      ");
+public function show($db, $table, $query)
+{
+    $credential = DBCredential::where('db_name', $db)->first();
 
+    $dbHost = '127.0.0.1';
+    $dbName = isset($credential->db_name) ? $credential->db_name : 'automation';
+    $dbUser = isset($credential->db_username) ? $credential->db_username : 'root';
+    $dbPass = isset($credential->db_password) ? $credential->db_password : '';
 
-                $updateQuery ="";
+    config([
+        'database.connections.dynamic' => [
+            'driver' => 'mysql',
+            'host' => $dbHost,
+            'database' => $dbName,
+            'username' => $dbUser,
+            'password' => $dbPass,
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+    ]);
 
+    DB::purge('dynamic');
+    DB::reconnect('dynamic');
+    DB::connection('dynamic')->statement('USE ' . $db);
 
-if (request()->has('id')) {
-    $id = request()->query('id');
+    $queryData = ($query !== "null" && $query !== "") ? DB::connection('dynamic')->select($query) : null;
 
-    if (request()->has('delete')) {
-        DB::connection('dynamic')
-            ->table($table)
-            ->where('id', $id)
-            ->delete();
-     }
+    $columns = DB::connection('dynamic')->select("
+        SELECT COLUMN_NAME, DATA_TYPE
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+    ", [$db, $table]);
 
-    // Fetch the specific row
-    $singleRow = DB::connection('dynamic')->select("
+    $excludedColumns = ['created_at', 'updated_at', 'id'];
+    $filteredColumns = collect($columns)->filter(function ($column) use ($excludedColumns) {
+        return !in_array($column->COLUMN_NAME, $excludedColumns);
+    });
+
+    $attributes = $filteredColumns->pluck('COLUMN_NAME')->implode(',');
+    $datatypes = $filteredColumns->pluck('DATA_TYPE')->implode(',');
+
+    $insertString = "INSERT INTO $table ($attributes) VALUES ($datatypes);";
+
+    // ✅ NEW: Alphabetically sort all columns
+    $allColumnNames = collect($columns)->pluck('COLUMN_NAME')->sort()->values();
+    $orderedColumnList = $allColumnNames->map(fn($col) => "`$col`")->implode(', ');
+
+    // ✅ Updated data query using sorted column list
+    $data = DB::connection('dynamic')->select("
         SELECT * 
         FROM (
-            SELECT '" . $db . "' AS db, " . $table . ".* 
+            SELECT '" . $db . "' AS db, $orderedColumnList 
             FROM " . $db . "." . $table . "
-            WHERE id = " . $id . "
+            ORDER BY updated_at DESC
+            LIMIT 1000
         ) AS q;
     ");
 
+    $updateQuery = "";
 
-    if (!empty($singleRow)) {
-        // Get the row data
-        $row = (array) $singleRow[0]; // Convert object to array
+    if (request()->has('id')) {
+        $id = request()->query('id');
 
-        // Dynamically construct the update query
-        $updateParts = [];
-        foreach ($row as $column => $value) {
-            // Skip the `db` column as it’s not part of the actual table
-            if ($column !== 'db') {
-                $updateParts[] = "`$column` = " . DB::getPdo()->quote($value);
-            }
+        if (request()->has('delete')) {
+            DB::connection('dynamic')
+                ->table($table)
+                ->where('id', $id)
+                ->delete();
         }
-        $updateQuery = "
-            UPDATE " . $db . "." . $table . "
-            SET " . implode(', ', $updateParts) . "
-            WHERE id = " . $id . ";
-        ";
 
+        // ✅ Use same ordered column list here
+        $singleRow = DB::connection('dynamic')->select("
+            SELECT * 
+            FROM (
+                SELECT '" . $db . "' AS db, $orderedColumnList 
+                FROM " . $db . "." . $table . "
+                WHERE id = " . $id . "
+            ) AS q;
+        ");
 
-    } 
+        if (!empty($singleRow)) {
+            $row = (array) $singleRow[0];
+
+            $updateParts = [];
+            foreach ($row as $column => $value) {
+                if ($column !== 'db') {
+                    $updateParts[] = "`$column` = " . DB::getPdo()->quote($value);
+                }
+            }
+
+            $updateQuery = "
+                UPDATE " . $db . "." . $table . "
+                SET " . implode(', ', $updateParts) . "
+                WHERE id = " . $id . ";
+            ";
+        }
+    }
+
+    $totalCount = DB::connection('dynamic')->select("
+        SELECT COUNT(*) as count 
+        FROM " . $db . "." . $table . ";
+    ");
+
+    $count = $totalCount[0]->count;
+
+    $latestUpdatedAt = DB::connection('dynamic')->select("
+        SELECT MAX(updated_at) as latest_updated_at 
+        FROM " . $db . "." . $table . ";
+    ");
+    $latestUpdatedAt = $latestUpdatedAt[0]->latest_updated_at ?? null;
+
+    return response()->json([
+        'success' => trans('general.sent_successfully'),
+        'data' => $data,
+        'queryData' => $queryData,
+        'count' => $count,
+        'insertString' => $insertString,
+        'latestUpdatedAt' => $latestUpdatedAt,
+        'updateQuery' => $updateQuery,
+    ]);
 }
-  
-      $totalCount = DB::connection('dynamic')->select("
-          SELECT COUNT(*) as count 
-          FROM " . $db . "." . $table . ";
-      ");
-  
-      $count = $totalCount[0]->count;
-  
-      // Fetch the latest updated_at value
-      $latestUpdatedAt = DB::connection('dynamic')->select("
-          SELECT MAX(updated_at) as latest_updated_at 
-          FROM " . $db . "." . $table . ";
-      ");
-  
-      $latestUpdatedAt = $latestUpdatedAt[0]->latest_updated_at ?? null;
-  
-      return response()->json([
-          'success' => trans('general.sent_successfully'),
-          'data' => $data,
-          'queryData' => $queryData,
-          'count' => $count,
-          'insertString' => $insertString,
-          'latestUpdatedAt' => $latestUpdatedAt, // Added latest updated_at timestamp
-          'updateQuery' => $updateQuery, // Added latest updated_at timestamp
 
-      ]);
-  }
   
   
   
