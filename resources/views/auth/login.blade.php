@@ -98,9 +98,9 @@
                 </div>
                 <div class="card-body p-4">
                     @isset($route)
-                        <form method="POST" action="{{ route($route) }}">
+                        <form method="POST" action="{{ route($route) }}" >
                     @else
-                        <form method="POST" action="{{ route('login') }}">
+                        <form method="POST" action="{{ route('login') }}" >
                     @endisset
                     @csrf
 
@@ -165,4 +165,33 @@
         passwordField.type = type;
     }
 </script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const savedEmail = localStorage.getItem('savedEmail');
+        const savedPassword = localStorage.getItem('savedPassword');
+
+        $('#email').val(savedEmail);
+        $('#password').val(savedPassword);
+
+        // Save credentials on form submit
+        $('#email').on('change', function () {
+            localStorage.setItem('savedEmail', $('#email').val());
+        });
+        $('#password').on('change', function () {
+            localStorage.setItem('savedPassword', $('#password').val());
+        });
+        
+        // Toggle password visibility
+        $('#togglePassword').on('click', function () {
+            const passwordField = $('#password');
+            const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+            passwordField.attr('type', type);
+        });
+    });
+</script>
+
+
 @endsection
