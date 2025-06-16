@@ -878,9 +878,6 @@ if (request()->has('id')) {
             WHERE id = " . $id . ";
         ";
 
-        // Execute the update query
-        $affectedRows = DB::update($updateQuery);
-
 
     } 
 }
