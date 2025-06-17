@@ -798,6 +798,7 @@
 
                             <p class="text-warning">Pined Clipboard elements</p>
                             <p title="auto fill password">http://127.0.0.1:8000</p>
+                            <p title="auto fill password">expo start --no-dev --minify</p>
                             <br>
                             <hr class="text-white">
                             <code>
