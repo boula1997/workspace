@@ -966,7 +966,7 @@ public function show($db, $table, $query)
         SELECT COUNT(*) as count 
         FROM " . $db . "." . $table . ";
     ");
-
+    
     $count = $totalCount[0]->count;
 
     $latestUpdatedAt = DB::connection('dynamic')->select("
