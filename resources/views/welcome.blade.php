@@ -800,7 +800,7 @@
                             <p title="auto fill password">http://127.0.0.1:8000</p>
                                          <br>
                             <hr class="text-white">
-                            <p title="auto fill password">expo start --no-dev --minify</p>
+                            <p title="auto fill password">npx expo start --no-dev --minify</p>
                             <br>
                             <hr class="text-white">
                             <code>
