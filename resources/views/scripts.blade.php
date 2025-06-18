@@ -1684,11 +1684,16 @@
         })
         $(document).on('submit', '#queryForm', function(e) {
             e.preventDefault();
-            $('#allResults').removeClass('d-none');
-            $('#allResults').text('Show All');
-            $('#refresh').removeClass('d-none');
-            $('#addFormStyle').attr('style', 'margin-left: 900px !important;');
-            $('#jsonResult').empty();
+
+            let queryValue = $('textarea[name="queryCommand"]').val().toLowerCase();
+
+            if(queryValue.includes('select')){
+                $('#allResults').removeClass('d-none');
+                $('#allResults').text('Show All');
+                $('#refresh').removeClass('d-none');
+                $('#addFormStyle').attr('style', 'margin-left: 900px !important;');
+                $('#jsonResult').empty();
+            }
             let formData = new FormData(this);
             console.log(formData)
             localStorage.setItem('query', $('input[name="queryCommand"]').val());
