@@ -61,7 +61,7 @@ class TaskController extends Controller
             ->unique('title'); // Remove duplicate tasks by title
         $data=[
             "projects"=>ProjectResource::collection($projects),
-            "issues"=>IssueResource::collection($issues),
+            "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
             "tasks"=>TaskResource::collection($tasks),
             "last_time"=>setting()->last_time . ' '.getTimeAgo(setting()->last_time). "\n" .'Allowed in: '. date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')). "\n".activeDeadline()["action"]."\n".activeDeadline()["deadline"],
