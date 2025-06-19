@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\TaskRequest;
 use App\Http\Resources\ProjectResource;
+use App\Http\Resources\IssueResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
 use App\Models\Issue;
