@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('settings', function (Blueprint $table) {
-            $table->addColumn("reqType")->nullable();
-            $table->addColumn("reqValue")->nullable();
+            $table->string("reqType")->nullable();
+            $table->integer("reqValue")->nullable();
         });
     }
 
