@@ -209,7 +209,7 @@ class TaskController extends Controller
            if(isset($request->project_id))
                 $result=Project::find($request->project_id);
             else if(isset($request->refrence_id))
-                $result=Project::find($request->project_id);
+                $result=Issue::find($request->refrence_id);
             else
             $result=[];
 
