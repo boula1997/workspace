@@ -7,6 +7,7 @@ use App\Http\Requests\API\TaskRequest;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
+use App\Models\Issue;
 use App\Models\Admin;
 use App\Models\Fee;
 use App\Models\Task;
@@ -49,6 +50,7 @@ class TaskController extends Controller
     {
         $employees = Admin::orderBy('name', 'ASC')->get();
         $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
+        $issues = Issue::orderBy("title","asc")->get();
 
         $tasks = Task::where("status", 0)
             ->orderBy('piority', 'desc') // Then by priority (descending)
@@ -59,6 +61,7 @@ class TaskController extends Controller
             ->unique('title'); // Remove duplicate tasks by title
         $data=[
             "projects"=>ProjectResource::collection($projects),
+            "issues"=>IssueResource::collection($issues),
             "employees"=>$employees,
             "tasks"=>TaskResource::collection($tasks),
             "last_time"=>setting()->last_time . ' '.getTimeAgo(setting()->last_time). "\n" .'Allowed in: '. date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')). "\n".activeDeadline()["action"]."\n".activeDeadline()["deadline"],
