@@ -201,6 +201,29 @@ class TaskController extends Controller
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
         }
     }
+    public function refpro(Request $request)
+    {
+        try {
+
+
+           if(isset($request->project_id))
+                $result=Project::find($request->project_id);
+            else if(isset($request->refrence_id))
+                $result=Project::find($request->project_id);
+            else
+            $result=[];
+
+
+            $data=["result"=>$result->codeLinks];
+
+            return successResponse($data);
+
+
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return redirect()->back()->with(['error' => __('general.something_wrong')]);
+        }
+    }
 
         public function togglePiority($id)
     {
