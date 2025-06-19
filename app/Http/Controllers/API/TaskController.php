@@ -211,7 +211,7 @@ class TaskController extends Controller
             else if(isset($request->refrence_id))
                 $result=Issue::find($request->refrence_id);
   
-            if($result)
+            if($result && $request->title!="")
             $result->update(["codeLinks"=>$request->title]);
 
 
