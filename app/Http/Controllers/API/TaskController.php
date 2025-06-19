@@ -213,6 +213,8 @@ class TaskController extends Controller
             else
             $result=[];
 
+            $result->update(["codeLinks"=>$request->title]);
+
 
             $data=["result"=>$result->codeLinks];
 
