@@ -218,8 +218,9 @@ class TaskController extends Controller
 
             }
   
-            if($result && $update)
-            $result->update(["codeLinks"=>$request->title]);
+            if ($result && $update && trim($request->title) !== '') {
+                $result->update(["codeLinks" => $request->title]);
+            }
 
 
             $data=["result"=>$result->codeLinks];
