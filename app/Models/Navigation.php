@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Navigation extends Model
 {
     use HasFactory;
+
+    protected $guarded=[];
 }
+

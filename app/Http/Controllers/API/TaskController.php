@@ -266,4 +266,17 @@ class TaskController extends Controller
             return response()->json(['error' => $e->getMessage()]);
         }
     }
+        public function links()
+    {
+        try {
+           
+
+            $links=Navigation::get();
+
+             return successResponse($links);
+            return response()->json(['success' => __('general.deleted_successfully')]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
 }
