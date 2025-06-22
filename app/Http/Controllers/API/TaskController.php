@@ -205,6 +205,7 @@ class TaskController extends Controller
     {
         try {
          $update=false;
+         $action=false;
 
            if(isset($request->project_id)){
                 $update=$request->project_id==setting()->reqValue && setting()->reqType=="project";
@@ -219,11 +220,13 @@ class TaskController extends Controller
             }
   
             if ($result && $update && trim($request->title) !== '') {
+
                 $result->update(["codeLinks" => $request->title]);
+                $action=true;
             }
 
 
-            $data=["result"=>$result->codeLinks];
+            $data=["result"=>$result->codeLinks,"action"=>$action];
 
             return successResponse($data);
 
