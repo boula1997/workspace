@@ -51,7 +51,7 @@ class TaskController extends Controller
     public function create()
     {
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where('title', 'NOT LIKE', '%aloo%')->where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
+        $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
         $issues = Issue::orderBy("title","asc")->get();
 
         $tasks = Task::where("status", 0)
