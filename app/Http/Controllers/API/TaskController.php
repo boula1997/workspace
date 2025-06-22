@@ -50,7 +50,7 @@ class TaskController extends Controller
     public function create()
     {
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
+        $projects = Project::where('title', 'NOT LIKE', '%aloo%')->where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
         $issues = Issue::orderBy("title","asc")->get();
 
         $tasks = Task::where("status", 0)
@@ -120,7 +120,7 @@ class TaskController extends Controller
             $alloutcomeFees = Fee::where("amount", "<", 0)->sum('amount');
 
             // Retrieve and filter projects
-            $projects = Project::latest()->get();
+            $projects = Project::where('title', 'NOT LIKE', '%aloo%')->latest()->get();
             $selectedProjects = $projects->filter(fn($project) => rest($project) > 0)
                                         ->sortByDesc(fn($project) => rest($project));
 
@@ -153,7 +153,7 @@ class TaskController extends Controller
     public function createFinished()
     {
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
+        $projects = Project::where('title', 'NOT LIKE', '%aloo%')->where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
 
         $tasks = Task::where("status", 1)
             ->latest('updated_at') // Then by creation date (latest first)
