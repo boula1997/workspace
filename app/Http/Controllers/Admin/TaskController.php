@@ -130,7 +130,7 @@ class TaskController extends Controller
     public function create()
     {
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
+        $projects = Project::where('title', 'NOT LIKE', '%aloo%')->where("status","!=",0)->orWhere("deal",0)->latest()->get();
         return view('admin.crud.tasks.create', compact('employees', 'projects'));
     }
 
@@ -145,7 +145,7 @@ class TaskController extends Controller
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
+        $projects = Project::where('title', 'NOT LIKE', '%aloo%')->where("status","!=",0)->orWhere("deal",0)->latest()->get();
         // loadActiveProjects(isset($request->projects)?$request->projects:[]);
         $projectIds = activeWebsitesIds();
         $employeeIds = isset($request->employees) ? $request->employees : [];
@@ -358,7 +358,7 @@ class TaskController extends Controller
 
             $tasks = Task::whereIn('project_id', $request->projects)->whereIn('status', $status)->orderBy('project_id', 'desc')->get()->unique('title');
                 $employees = Admin::orderBy('name', 'ASC')->get();
-            $projects = Project::whereHas('tasks', function ($query) {
+            $projects = Project::where('title', 'NOT LIKE', '%aloo%')->whereHas('tasks', function ($query) {
                 $query->whereNotNull('id'); // Ensures tasks exist
             })->orderBy('title', 'ASC')->get();
             $type = $request->route_name;
@@ -518,7 +518,7 @@ class TaskController extends Controller
     {
         //    dd($task->title);
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
+        $projects = Project::where('title', 'NOT LIKE', '%aloo%')->where("status","!=",0)->orWhere("deal",0)->latest()->get();
         $selectedEmployees = Task::where('title', $task->title)->pluck('employee_id')->toArray();
         return view('admin.crud.tasks.edit', compact('task', 'employees', 'projects', 'selectedEmployees'));
     }
