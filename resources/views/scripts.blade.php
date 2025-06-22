@@ -2988,6 +2988,31 @@
 @endif
 
 
+<script>
+$(document).ready(function () {
+    // Get the "action" query parameter from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const actionParam = urlParams.get('action');
+
+    if (actionParam) {
+        // Loop through each option in the select
+        $('#selectAction option').each(function () {
+            const optionText = $(this).text().trim().toLowerCase();
+            const actionText = actionParam.toLowerCase();
+
+            if (optionText.includes(actionText)) {
+                $(this).prop('selected', true);
+
+                // Trigger the change event on the select
+                $('#selectAction').trigger('change');
+                return false; // Break loop once matched
+            }
+        });
+    }
+});
+</script>
+
+
 
 
 
