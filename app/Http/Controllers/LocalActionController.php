@@ -984,18 +984,22 @@ public function show($db, $table, $query)
   {
     try {
       $result = DB::statement('use automation');
-      $query=Query::where('title',$request->queryCommand)->first();
-      if(!isset($query))
-      $query=Query::create([
-        'title'=>$request->queryCommand
-      ]);
-      $queries=Query::latest()->take(100)->get()->unique('title');
-      $queryTitles=$queries->pluck('title')->toArray();
-      $result = DB::statement('use ' . $request->dbname . '');
-      $data = DB::select($request->queryCommand);
-      return response()->json(['success' => "Done Successfully", 'data' => $data,'query'=>$request->queryCommand]);
+      $queryCommands=explode('++', $request->queryCommand);
+       foreach($queryCommands as $queryCommand){
+
+         $query=Query::where('title',$queryCommand)->first();
+         if(!isset($query))
+         $query=Query::create([
+           'title'=>$queryCommand
+         ]);
+         $queries=Query::latest()->take(100)->get()->unique('title');
+         $queryTitles=$queries->pluck('title')->toArray();
+         $result = DB::statement('use ' . $request->dbname . '');
+         $data = DB::select($queryCommand);
+       }
+      return response()->json(['success' => "Done Successfully", 'data' => $data,'query'=>$queryCommand]);
     } catch (\Exception $e) {
-      return response()->json(['success' => $e->getMessage(), 'data' => [],'query'=>$request->queryCommand]);
+      return response()->json(['success' => $e->getMessage(), 'data' => [],'query'=>$queryCommand]);
     }
   }
 
