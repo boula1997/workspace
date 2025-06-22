@@ -2133,7 +2133,7 @@
 
                         if (data.updateQuery != null && data.updateQuery !== undefined) {
                             $('#queryCommand').val(function (index, currentValue) {
-                                return currentValue + '\n' + data.updateQuery; // Appends with a newline
+                                return currentValue + '\n' +'++'+ data.updateQuery; // Appends with a newline
                             });
                             
                         }
