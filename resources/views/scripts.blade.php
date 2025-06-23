@@ -1693,6 +1693,12 @@
                 $('#refresh').removeClass('d-none');
                 $('#addFormStyle').attr('style', 'margin-left: 900px !important;');
                 $('#jsonResult').empty();
+
+                let queryValue2 = $('textarea[name="queryCommand"]').val().toLowerCase().trim();
+                // Try to extract table name using regex
+                let tableMatch = queryValue.match(/from\s+([^\s;]+)/i);
+                let table = tableMatch ? tableMatch[1] : null;
+                
             }
             let formData = new FormData(this);
             console.log(formData)
