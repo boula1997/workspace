@@ -994,7 +994,7 @@ public function show($db, $table, $query)
          ]);
          $queries=Query::latest()->take(100)->get()->unique('title');
          $queryTitles=$queries->pluck('title')->toArray();
-         $result = DB::statement('use webapp');
+         $result = DB::statement('use '.$request->dbname.'');
          $data = DB::select($queryCommand);
        }
       return response()->json(['success' => "Done Successfully", 'data' => $data,'query'=>$queryCommand]);

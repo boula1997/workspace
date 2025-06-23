@@ -1696,7 +1696,7 @@
             }
             let formData = new FormData(this);
             console.log(formData)
-            localStorage.setItem('query', $('input[name="queryCommand"]').val());
+            localStorage.setItem('query', null);
             let db = $("#dbname").attr('dbname');
             let table = $('#table').attr('table');
             let url = "{{ route('db.data', [':db', ':table', ':query']) }}";
@@ -2103,7 +2103,7 @@
                         console.log(data);
 
 
-                        if (status) {
+                        if (false) {
                             data.queryData.forEach((boula, index) => {
                                 alert($('#table').closest('.count'));
                                 console.log('boula', boula);
@@ -2130,7 +2130,7 @@
                                 $('#jsonResult').append("<hr>");
                             });
                         } else {
-
+                       
                         if (data.updateQuery != null && data.updateQuery !== undefined) {
                             $('#queryCommand').val(function (index, currentValue) {
                                 return currentValue + '\n' +'++'+ data.updateQuery; // Appends with a newline
@@ -2206,7 +2206,12 @@
                 url: localStorage.getItem('url')+`?id=${id}`+`&delete=${id}`,
                     datatype: 'JSON',
                     success: function(data) {
-                        console.log(data);
+                                                if (data.updateQuery != null && data.updateQuery !== undefined) {
+                            $('#queryCommand').val(function (index, currentValue) {
+                                return currentValue + '\n' +'++'+ data.updateQuery; // Appends with a newline
+                            });
+                            
+                        }
 
 
                         if (status) {
@@ -2355,7 +2360,12 @@
                     url: localStorage.getItem('url', url),
                     datatype: 'JSON',
                     success: function(data) {
-                        console.log(data);
+                                               if (data.updateQuery != null && data.updateQuery !== undefined) {
+                            $('#queryCommand').val(function (index, currentValue) {
+                                return currentValue + '\n' +'++'+ data.updateQuery; // Appends with a newline
+                            });
+                            
+                        }
                         data.data.forEach((boula, index) => {
                             console.log('boula', boula);
                             $('#jsonResult').append(
@@ -2416,6 +2426,13 @@
                                 $('#queryCommand').val(function (index, currentValue) {
                                     return currentValue + '\n' + data.insertString; // Appends with a newline
                                 });
+
+                                                        if (data.updateQuery != null && data.updateQuery !== undefined) {
+                            $('#queryCommand').val(function (index, currentValue) {
+                                return currentValue + '\n' +'++'+ data.updateQuery; // Appends with a newline
+                            });
+                            
+                        }
 
                             data.data.forEach((boula, index) => {
                                 console.log('boula', boula);
