@@ -1704,10 +1704,9 @@
             console.log(formData)
             localStorage.setItem('query', null);
             let db = $("#dbname").attr('dbname');
-            let table = $('#table').attr('table');
+           
             let url = "{{ route('db.data', [':db', ':table', ':query']) }}";
             url = url.replace(':db', db);
-            url = url.replace(':table', table);
             url = url.replace(':query', localStorage.getItem('query'));
             localStorage.setItem('url', url);
             $.ajax({
