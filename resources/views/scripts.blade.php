@@ -1711,7 +1711,7 @@
             url = url.replace(':db', db);
                 alert(table);
 
-            url = url.replace(':table', localstorage.getItem('table'));
+            url = url.replace(':table', localStorage.getItem('table'));
             url = url.replace(':query', localStorage.getItem('query'));
             localStorage.setItem('url', url);
             $.ajax({
