@@ -1698,7 +1698,7 @@
                 // Try to extract table name using regex
                 let tableMatch = queryValue.match(/from\s+([^\s;]+)/i);
                 let table = tableMatch ? tableMatch[1] : null;
-                alert(table);
+                localStorage.setItem('table',table);
                 
             }
 
@@ -1711,7 +1711,7 @@
             url = url.replace(':db', db);
                 alert(table);
 
-            url = url.replace(':table', table);
+            url = url.replace(':table', localstorage.getItem('table'));
             url = url.replace(':query', localStorage.getItem('query'));
             localStorage.setItem('url', url);
             $.ajax({
@@ -2419,10 +2419,11 @@
                     $('#jsonResult').empty();
                     let db = $("#dbname").attr('dbname');
                     let table = $(this).attr('table');
+                    localStorage.setItem('table',table);
                     let count = $(this).closest('.count');
                     let url = "{{ route('db.data', [':db', ':table', ':query']) }}"
                     url = url.replace(':db', db);
-                    url = url.replace(':table', table);
+                    url = url.replace(':table', localStorage.getItem('table'));
                     url = url.replace(':query', localStorage.getItem('query'));
                     localStorage.setItem('url', url);
 
