@@ -1698,8 +1698,10 @@
                 // Try to extract table name using regex
                 let tableMatch = queryValue.match(/from\s+([^\s;]+)/i);
                 let table = tableMatch ? tableMatch[1] : null;
+                alert(table);
                 
             }
+
             let formData = new FormData(this);
             console.log(formData)
             localStorage.setItem('query', null);
@@ -1707,6 +1709,9 @@
            
             let url = "{{ route('db.data', [':db', ':table', ':query']) }}";
             url = url.replace(':db', db);
+                alert(table);
+
+            url = url.replace(':table', table);
             url = url.replace(':query', localStorage.getItem('query'));
             localStorage.setItem('url', url);
             $.ajax({
