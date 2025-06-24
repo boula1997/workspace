@@ -312,7 +312,7 @@ class TaskController extends Controller
 
             $deadline=Deadline::find($request->id);
             if($request->action=="update")
-                $deadline->update(["deadline"=>$request->deadline]);
+                $deadline->update(["date"=>$request->deadline]);
             else if($request->action=="delete");
                 $deadline->delete();
 
