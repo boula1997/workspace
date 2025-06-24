@@ -295,7 +295,7 @@ class TaskController extends Controller
         try {
            
 
-            $deadlines=Deadline::latest()->get();
+            $deadlines=Deadline::orderBy("date","asc")->get();
 
              return successResponse($deadlines);
 
@@ -316,7 +316,7 @@ class TaskController extends Controller
             else if($request->action=="delete")
                 $deadline->delete();
 
-            $deadlines=Deadline::latest()->get();
+            $deadlines=Deadline::orderBy("date","asc")->get();
 
 
             $data=["deadlines"=>$deadlines,"action"=>$request->action];
