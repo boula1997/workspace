@@ -275,7 +275,21 @@ class TaskController extends Controller
             $links=Navigation::get();
 
              return successResponse($links);
-            return response()->json(['success' => __('general.deleted_successfully')]);
+
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+
+        public function deadlines()
+    {
+        try {
+           
+
+            $deadlines=Deadline::get();
+
+             return successResponse($deadlines);
+
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
