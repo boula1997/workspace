@@ -1709,7 +1709,6 @@
            
             let url = "{{ route('db.data', [':db', ':table', ':query']) }}";
             url = url.replace(':db', db);
-                alert(table);
 
             url = url.replace(':table', localStorage.getItem('table'));
             url = url.replace(':query', localStorage.getItem('query'));
@@ -2096,7 +2095,7 @@
                     scrollTop: $(this).next().offset().top - 50
                 }, 1000);
 
-                $('#jsonResult').empty();
+                // $('#jsonResult').empty();
                 let db = $("#dbname").attr('dbname');
                 let table = $(this).attr('table');
                 let url = "{{ route('db.data', [':db', ':table', ':query']) }}";
@@ -2115,7 +2114,6 @@
 
                         if (false) {
                             data.queryData.forEach((boula, index) => {
-                                alert($('#table').closest('.count'));
                                 console.log('boula', boula);
                                 $('#jsonResult').append(
                                     `<button class='w-25  btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25  btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
@@ -2147,32 +2145,32 @@
                             });
                             
                         }
-                            data.data.forEach((boula, index) => {
+                            // data.data.forEach((boula, index) => {
 
 
-                                console.log('boula', boula);
-                                $('#jsonResult').append(
-                                    `<button class='w-25  btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25  btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
-                                );
+                            //     console.log('boula', boula);
+                            //     $('#jsonResult').append(
+                            //         `<button class='w-25  btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25  btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
+                            //     );
 
-                                if ('btn' + boula.id ?? index == localStorage.getItem(
-                                        'openedQueryId'))
-                                    $('#jsonResult').append(
-                                        `<div class="col-md-3" id="id${boula.id ?? index}">`
-                                    );
-                                else
-                                    $('#jsonResult').append(
-                                        `<div class="col-md-3 d-none" id="id${boula.id ?? index}">`
-                                    );
-                                Object.entries(boula).forEach(element => {
-                                    $(`#id${boula.id ?? index}`).append(
-                                        $("<p>").text(JSON.stringify(
-                                            element
-                                        )) // Set text content to avoid HTML parsing
-                                    );
-                                });
-                                $('#jsonResult').append("<hr>");
-                            });
+                            //     if ('btn' + boula.id ?? index == localStorage.getItem(
+                            //             'openedQueryId'))
+                            //         $('#jsonResult').append(
+                            //             `<div class="col-md-3" id="id${boula.id ?? index}">`
+                            //         );
+                            //     else
+                            //         $('#jsonResult').append(
+                            //             `<div class="col-md-3 d-none" id="id${boula.id ?? index}">`
+                            //         );
+                            //     Object.entries(boula).forEach(element => {
+                            //         $(`#id${boula.id ?? index}`).append(
+                            //             $("<p>").text(JSON.stringify(
+                            //                 element
+                            //             )) // Set text content to avoid HTML parsing
+                            //         );
+                            //     });
+                            //     $('#jsonResult').append("<hr>");
+                            // });
                         }
 
 
@@ -2203,7 +2201,7 @@
                     scrollTop: $(this).next().offset().top - 50
                 }, 1000);
 
-                $('#jsonResult').empty();
+                // $('#jsonResult').empty();
                 let db = $("#dbname").attr('dbname');
                 let table = $(this).attr('table');
                 let url = "{{ route('db.data', [':db', ':table', ':query']) }}";
@@ -2216,40 +2214,40 @@
                 url: localStorage.getItem('url')+`?id=${id}`+`&delete=${id}`,
                     datatype: 'JSON',
                     success: function(data) {
-                                                if (data.updateQuery != null && data.updateQuery !== undefined) {
-                            $('#queryCommand').val(function (index, currentValue) {
-                                return currentValue + '\n' +'++'+ data.updateQuery; // Appends with a newline
-                            });
+                        //                         if (data.updateQuery != null && data.updateQuery !== undefined) {
+                        //     $('#queryCommand').val(function (index, currentValue) {
+                        //         return currentValue + '\n' +'++'+ data.updateQuery; // Appends with a newline
+                        //     });
                             
-                        }
+                        // }
 
 
                         if (status) {
-                            data.queryData.forEach((boula, index) => {
-                                alert($('#table').closest('.count'));
-                                console.log('boula', boula);
-                                $('#jsonResult').append(
-                                    `<button class='w-25  btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25  btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
-                                );
+                            // data.queryData.forEach((boula, index) => {
+                            //     alert($('#table').closest('.count'));
+                            //     console.log('boula', boula);
+                            //     $('#jsonResult').append(
+                            //         `<button class='w-25  btn btn-outline-secondary showRow exec' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25  btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
+                            //     );
 
-                                if ('btn' + boula.id ?? index == localStorage.getItem(
-                                        'openedQueryId'))
-                                    $('#jsonResult').append(
-                                        `<div class="col-md-3" id="id${boula.id ?? index}">`
-                                    );
-                                else
-                                    $('#jsonResult').append(
-                                        `<div class="col-md-3 d-none" id="id${boula.id ?? index}">`
-                                    );
-                                Object.entries(boula).forEach(element => {
-                                    $(`#id${boula.id ?? index}`).append(
-                                        $("<p>").text(JSON.stringify(
-                                            element
-                                        )) // Set text content to avoid HTML parsing
-                                    );
-                                });
-                                $('#jsonResult').append("<hr>");
-                            });
+                            //     if ('btn' + boula.id ?? index == localStorage.getItem(
+                            //             'openedQueryId'))
+                            //         $('#jsonResult').append(
+                            //             `<div class="col-md-3" id="id${boula.id ?? index}">`
+                            //         );
+                            //     else
+                            //         $('#jsonResult').append(
+                            //             `<div class="col-md-3 d-none" id="id${boula.id ?? index}">`
+                            //         );
+                            //     Object.entries(boula).forEach(element => {
+                            //         $(`#id${boula.id ?? index}`).append(
+                            //             $("<p>").text(JSON.stringify(
+                            //                 element
+                            //             )) // Set text content to avoid HTML parsing
+                            //         );
+                            //     });
+                            //     $('#jsonResult').append("<hr>");
+                            // });
                         } else {
 
                             if (data.deleteQuery != null && data.deleteQuery !== undefined) {
@@ -2258,32 +2256,32 @@
                                 });
                             }
 
-                            data.data.forEach((boula, index) => {
+                            // data.data.forEach((boula, index) => {
 
 
-                                console.log('boula', boula);
-                                $('#jsonResult').append(
-                                    `<button class='w-25  btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25  btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
-                                );
+                            //     console.log('boula', boula);
+                            //     $('#jsonResult').append(
+                            //         `<button class='w-25  btn btn-outline-secondary showRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Update ${boula.id ?? index}</button>  <button class='w-25  btn btn-outline-danger deleteRow' id='btn${boula.id ?? index}' rowId='${boula.id}'>Delete ${boula.id ?? index}</button>`
+                            //     );
 
-                                if ('btn' + boula.id ?? index == localStorage.getItem(
-                                        'openedQueryId'))
-                                    $('#jsonResult').append(
-                                        `<div class="col-md-3" id="id${boula.id ?? index}">`
-                                    );
-                                else
-                                    $('#jsonResult').append(
-                                        `<div class="col-md-3 d-none" id="id${boula.id ?? index}">`
-                                    );
-                                Object.entries(boula).forEach(element => {
-                                    $(`#id${boula.id ?? index}`).append(
-                                        $("<p>").text(JSON.stringify(
-                                            element
-                                        )) // Set text content to avoid HTML parsing
-                                    );
-                                });
-                                $('#jsonResult').append("<hr>");
-                            });
+                            //     if ('btn' + boula.id ?? index == localStorage.getItem(
+                            //             'openedQueryId'))
+                            //         $('#jsonResult').append(
+                            //             `<div class="col-md-3" id="id${boula.id ?? index}">`
+                            //         );
+                            //     else
+                            //         $('#jsonResult').append(
+                            //             `<div class="col-md-3 d-none" id="id${boula.id ?? index}">`
+                            //         );
+                            //     Object.entries(boula).forEach(element => {
+                            //         $(`#id${boula.id ?? index}`).append(
+                            //             $("<p>").text(JSON.stringify(
+                            //                 element
+                            //             )) // Set text content to avoid HTML parsing
+                            //         );
+                            //     });
+                            //     $('#jsonResult').append("<hr>");
+                            // });
                         }
 
 
