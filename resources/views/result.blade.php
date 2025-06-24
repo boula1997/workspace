@@ -1305,8 +1305,8 @@
                     @foreach ($results as $result)
                         <div class="d-none hilightResult" array="{{ json_encode($array) }}"></div>
                         <pre class="text-white  resultContent">
-                    {!! htmlspecialchars($result->codeLinks) !!}
-                </pre>
+                            {!! htmlspecialchars($result->codeLinks) !!}
+                        </pre>
                         <form method="post" id="{{ $result->id }}"
                             class="{{ $action == 'get multible scripts' ? 'script' : 'module' }}">
                             @csrf
@@ -1351,8 +1351,8 @@
                     @foreach ($results as $result)
                         <div class="d-none hilightResult" array="{{ json_encode($array) }}"></div>
                         <pre class="text-white  resultContent">
-                    {{ htmlspecialchars($result->script) }}
-                </pre>
+                            {{ htmlspecialchars($result->script) }}
+                        </pre>
                         <form method="post" id="{{ $result->id }}"
                             class="{{ $action == 'get multible scripts' ? 'script' : 'module' }}">
                             @csrf
