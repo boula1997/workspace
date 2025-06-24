@@ -325,8 +325,7 @@ class TaskController extends Controller
 
 
         } catch (Exception $e) {
-            dd($e->getMessage());
-            return redirect()->back()->with(['error' => __('general.something_wrong')]);
+            return failedResponse($e->getMessage());
         }
     }
 }
