@@ -67,7 +67,10 @@ class TaskController extends Controller
             "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
             "tasks"=>TaskResource::collection($tasks),
-            "last_time"=>setting()->last_time . ' '.getTimeAgo(setting()->last_time). "\n" .'Allowed in: '. date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')). "\n".activeDeadline()["action"]."\n".activeDeadline()["deadline"],
+                "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
+                "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
+                "deadlineAction"=>activeDeadline()["action"],
+                "deadlineDate"=>activeDeadline()["deadline"],
 
         ];
 
@@ -168,7 +171,10 @@ class TaskController extends Controller
             "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
             "tasks"=>TaskResource::collection($tasks),
-            "last_time"=>setting()->last_time . ' '.getTimeAgo(setting()->last_time).' Allowed in: '. date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
+                "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
+                "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
+                "deadlineAction"=>activeDeadline()["action"],
+                "deadlineDate"=>activeDeadline()["deadline"],
 
         ];
 
