@@ -143,3 +143,6 @@ Route::get('/links', [TaskController::class, 'links'])->name('links');
 Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
 Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
 
+Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
+
+

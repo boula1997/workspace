@@ -140,10 +140,12 @@ class TaskController extends Controller
                 "monthlyIncomeArray" => $monthlyIncomeArray,
                 "monthlyOutcomeArray" => $monthlyOutcomeArray,
                 "monthlyProjectsArray" => $monthlyProjectsArray,
-                "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time) . "\n" .
-                    'Allowed in: ' . date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')) . "\n" .
-                    activeDeadline()["action"] . "\n" . activeDeadline()["deadline"],
+                "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
+                "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
+                "deadlineAction"=>activeDeadline()["action"],
+                "deadlineDate"=>activeDeadline()["deadline"],
             ];
+
 
             return successResponse($data);
         }
@@ -293,6 +295,28 @@ class TaskController extends Controller
 
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+
+
+        public function updateDeadline(Request $request)
+    {
+        try {
+
+
+            $deadline-Deadline::find($request->id);
+            $deadline->update(["deadline"=>$request->deadline]);
+            $deadlines=Deadline::get();
+
+
+            $data=["deadlines"=>$deadlines];
+
+            return successResponse($data);
+
+
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return redirect()->back()->with(['error' => __('general.something_wrong')]);
         }
     }
 }
