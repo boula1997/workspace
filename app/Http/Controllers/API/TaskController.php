@@ -11,6 +11,7 @@ use App\Models\Project;
 use App\Models\Issue;
 use App\Models\Fee;
 use App\Models\Admin;
+use App\Models\Deadline;
 use App\Models\Navigation;
 use App\Models\Task;
 use Exception;
