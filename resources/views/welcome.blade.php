@@ -480,11 +480,7 @@
                                 <input class=" d-inline" type="checkbox" name="linkPHP" id="linkPHP">
                                 <p class="d-inline pointer-cursor">get links out of php files</p>
                             </div>
-                            <div class="form-group mt-2">
-                                <input class=" d-inline" type="checkbox" name="searchRefrences"
-                                    id="searchRefrences">
-                                <p class="d-inline pointer-cursor">Search in Refrences</p>
-                            </div>
+ 
                             <div class="form-group mt-2">
                                 <input class=" d-inline" value="{{ old('refrence') }}" type="checkbox"
                                     name="refrence" id="refrencePlural">

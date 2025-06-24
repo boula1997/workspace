@@ -512,21 +512,29 @@ class LocalActionController extends Controller
         $action = "get multible scripts";
         $array = explode(',', $request->script);
         $searchRefrences=false;
-        if(isset(request()->searchRefrences)){
-          
-          $searchRefrences=true;
-          foreach ($array as $item) {
-            $sql[] = "codeLinks  LIKE '%" . $item . "%'";
-          }
-          $results = DB::select("select * from issues where " . implode(" AND ", $sql) . "order by id desc;");
-        }
-        else{
-          foreach ($array as $item) {
-            $sql[] = "script LIKE '%" . $item . "%'";
-          }
+if (true) {
 
-          $results = DB::select("select * from scripts where " . implode(" AND ", $sql) . "order by id desc;");
-        }
+    $searchRefrences = true;
+    $sql = [];
+
+    foreach ($array as $item) {
+        $sql[] = "codeLinks LIKE '%" . $item . "%'";
+    }
+
+    $query = implode(" AND ", $sql);
+
+    // Issues and Projects already have `codeLinks` column
+    $issues = DB::select("SELECT *, 'issue' as source FROM issues WHERE $query ORDER BY id DESC");
+    $projects = DB::select("SELECT *, 'project' as source FROM projects WHERE $query ORDER BY id DESC");
+
+    // Scripts have 'script' column, alias it as 'codeLinks'
+    $scripts = DB::select("SELECT *, script as codeLinks, 'script' as source FROM scripts WHERE " . implode(" AND ", array_map(function($item) {
+        return "script LIKE '%$item%'";
+    }, $array)) . " ORDER BY id DESC");
+
+    // Merge all
+    $results = array_merge($issues, $projects, $scripts);
+}
         return view('welcome', compact('results', 'action', 'array','searchRefrences'));
       }
     }

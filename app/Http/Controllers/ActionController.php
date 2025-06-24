@@ -530,7 +530,7 @@ class ActionController extends Controller
         $action = "get multible scripts";
         $array = explode(',', $request->script);
         $searchRefrences=false;
-if (isset(request()->searchRefrences)) {
+if (true) {
 
     $searchRefrences = true;
     $sql = [];
@@ -554,13 +554,6 @@ if (isset(request()->searchRefrences)) {
     $results = array_merge($issues, $projects, $scripts);
 }
 
-        else{
-          foreach ($array as $item) {
-            $sql[] = "script LIKE '%" . $item . "%'";
-          }
-
-          $results = DB::select("select * from scripts where " . implode(" AND ", $sql) . "order by id desc;");
-        }
         return view('welcome', compact('results', 'action', 'array','searchRefrences'));
       }
     }
