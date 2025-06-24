@@ -295,7 +295,7 @@ class TaskController extends Controller
         try {
            
 
-            $deadlines=Deadline::get();
+            $deadlines=Deadline::latest()->get();
 
              return successResponse($deadlines);
 
@@ -311,11 +311,16 @@ class TaskController extends Controller
 
 
             $deadline-Deadline::find($request->id);
-            $deadline->update(["deadline"=>$request->deadline]);
-            $deadlines=Deadline::get();
+             dd($deadline);
+            if($request->action=="update")
+                $deadline->update(["deadline"=>$request->deadline]);
+            else if($request->action=="delete");
+                $deadline->delete();
+
+            $deadlines=Deadline::latest()->get();
 
 
-            $data=["deadlines"=>$deadlines];
+            $data=["deadlines"=>$deadlines,"action"=>$request->action];
 
             return successResponse($data);
 
