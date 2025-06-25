@@ -106,6 +106,7 @@ class TaskController extends Controller
                     ->sum('amount');
 
                       $monthlyProjects = Project::whereBetween('created_at', [$startOfCurrentMonth, $endOfCurrentMonth])->where("cost",">",0)->count();
+                      $allProjects = Project::where("cost",">",0)->count();
 
                 $monthlyIncomeArray[] = $monthlyIncome; // You can round() if needed
                 $yearTotalIncome+= $monthlyIncome; // You can round() if needed
@@ -143,6 +144,7 @@ class TaskController extends Controller
                 "monthlyIncomeArray" => $monthlyIncomeArray,
                 "monthlyOutcomeArray" => $monthlyOutcomeArray,
                 "monthlyProjectsArray" => $monthlyProjectsArray,
+                "allProjects" => $$allProjects,
                 "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
                 "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
                 "deadlineAction"=>activeDeadline()["action"],
