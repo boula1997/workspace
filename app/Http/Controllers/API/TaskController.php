@@ -144,7 +144,7 @@ class TaskController extends Controller
                 "monthlyIncomeArray" => $monthlyIncomeArray,
                 "monthlyOutcomeArray" => $monthlyOutcomeArray,
                 "monthlyProjectsArray" => $monthlyProjectsArray,
-                "allProjects" => $$allProjects,
+                "allProjects" => $allProjects,
                 "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
                 "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
                 "deadlineAction"=>activeDeadline()["action"],
