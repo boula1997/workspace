@@ -267,7 +267,7 @@
                 </div>
             </div>
             @endforeach --}}
-            <form method="get" id="form" action="{{ route('actions.store') }}">
+            <form method="get" id="form" action="{{ route('get.action') }}">
                 @csrf
                 <div class="row">
                     <div class="mt-2" id="activeWebsites">
