@@ -144,5 +144,6 @@ Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines'
 Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
 
 Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
+Route::get('/last/{date}', 'App\Http\Controllers\ActionController@lastUpdate')->name('last.update');
 
 
