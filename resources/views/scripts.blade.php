@@ -3021,22 +3021,37 @@ $(document).ready(function () {
     const actionParam = urlParams.get('action');
 
     if (actionParam) {
-        // Loop through each option in the select
+        const actionText = actionParam.toLowerCase();
+
+        // Try to select the option in the dropdown
         $('#selectAction option').each(function () {
             const optionText = $(this).text().trim().toLowerCase();
-            const actionText = actionParam.toLowerCase();
 
             if (optionText.includes(actionText)) {
                 $(this).prop('selected', true);
-
-                // Trigger the change event on the select
                 $('#selectAction').trigger('change');
                 return false; // Break loop once matched
+            }
+        });
+
+        // Automatically check checkboxes if the action matches their name or nearby label
+        $('input[type="checkbox"]').each(function () {
+            const checkboxName = $(this).attr('name')?.toLowerCase();
+            const checkboxId = $(this).attr('id')?.toLowerCase();
+            const labelText = $(this).next('p').text().trim().toLowerCase();
+
+            if (
+                checkboxName?.includes(actionText) ||
+                checkboxId?.includes(actionText) ||
+                labelText.includes(actionText)
+            ) {
+                $(this).click();
             }
         });
     }
 });
 </script>
+
 
 
 
