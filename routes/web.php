@@ -136,7 +136,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
     if (App::environment('local')) {
         Route::resource('actions', LocalActionController::class);
 
-        Route::get('/getAction', 'App\Http\Controllers\LocalActionController@store')->name('get.action');
+        Route::post('/postAction', 'App\Http\Controllers\LocalActionController@store')->name('post.action');
         
         Route::get('/data/{db}/{table}/{query}', 'App\Http\Controllers\LocalActionController@show')->name('db.data');
         Route::get('/last/{date}', 'App\Http\Controllers\LocalActionController@lastUpdate')->name('last.update');
