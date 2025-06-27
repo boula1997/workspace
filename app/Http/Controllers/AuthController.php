@@ -68,30 +68,34 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request){
-    	$validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|string|min:6',
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-        
-        $token = auth('api')->attempt($validator->validated());
-        // dd(50);
-        if($token === false){
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-        $user = auth('api')->user();
-        if ($user->status == 0) {
-            return response()->json(['error' => 'Invalid Credentials'], 401);
-        }
-        return $this->createNewToken($token);
+public function login(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email',
+        'password' => 'required|string|min:6',
+    ]);
 
-
-
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
     }
+
+    // ✅ Use the 'admin_api' guard
+    if (!$token = auth('admin_api')->attempt($validator->validated())) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    $admin = auth('admin_api')->user();
+
+    if ($admin->status == 0) {
+        return response()->json(['error' => 'Account disabled'], 401);
+    }
+
+    return $this->createNewToken($token);
+}
+
     /**
      * Register a User.
      *
