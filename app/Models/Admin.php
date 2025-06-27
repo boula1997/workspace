@@ -10,48 +10,46 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Model;
+use Tymon\JWTAuth\Contracts\JWTSubject; // <-- ADD THIS
 
-class Admin extends Authenticatable
+class Admin extends Authenticatable implements JWTSubject // <-- IMPLEMENT INTERFACE
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, MorphFile;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
     public function getImageAttribute()
     {
-        return  $this->file?asset($this->file->url): settings()->logo;
+        return $this->file ? asset($this->file->url) : settings()->logo;
     }
 
-    public function tasks(){
-        return $this->hasMany(Task::class,'employee_id');
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'employee_id');
+    }
+
+    // ✅ ADD THESE METHODS REQUIRED BY JWTSubject
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey(); // usually 'id'
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }
