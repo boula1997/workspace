@@ -80,12 +80,12 @@ public function login(Request $request)
         return response()->json($validator->errors(), 422);
     }
 
-    // ✅ Use the 'admin_api' guard
-    if (!$token = auth('admin_api')->attempt($validator->validated())) {
+    // ✅ Use the 'admin' guard
+    if (!$token = auth('admin')->attempt($validator->validated())) {
         return response()->json(['error' => 'Unauthorized'], 401);
     }
 
-    $admin = auth('admin_api')->user();
+    $admin = auth('admin')->user();
 
     if ($admin->status == 0) {
         return response()->json(['error' => 'Account disabled'], 401);
