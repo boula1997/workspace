@@ -27,6 +27,7 @@ use App\Http\Controllers\API\TeamController;
 use App\Http\Controllers\API\VaccancyController;
 use App\Http\Requests\API\ComplainRequest;
 use App\Http\Requests\API\VaccancyRequest;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +64,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Route::post('store/newsletter', 'CNewsletterController@store');
 Route::group(['middleware' => ['apiLocalization','cors']], function () {
+    Route::post('/login', [AuthController::class, 'login']);
     Route::get('/services', [ServiceController::class, 'index']);
     Route::get('/service/{id}', [ServiceController::class, 'show']);
     Route::get('/testimonials', [TestimonialController::class, 'index']);
