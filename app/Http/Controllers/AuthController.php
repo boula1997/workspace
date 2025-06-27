@@ -80,16 +80,14 @@ public function login(Request $request)
         return response()->json($validator->errors(), 422);
     }
 
-    // ✅ Use the 'admin' guard
-    if (!$token = auth('admin')->attempt($validator->validated())) {
+    // Use 'admin-api' guard for JWT
+    if (!$token = auth('admin-api')->attempt($validator->validated())) {
         return response()->json(['error' => 'Unauthorized'], 401);
     }
 
-    $admin = auth('admin')->user();
-
-
     return $this->createNewToken($token);
 }
+
 
     /**
      * Register a User.
@@ -154,7 +152,7 @@ public function login(Request $request)
      * @return \Illuminate\Http\JsonResponse
      */
     public function refresh() {
-        return $this->createNewToken(auth('api')->refresh());
+        return $this->createNewToken(auth('admin_api')->refresh());
     }
 
     public function checkToken(Request $request)
@@ -183,14 +181,16 @@ public function login(Request $request)
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function createNewToken($token){
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 3600,
-            'user' => auth('api')->user()
-        ]);
-    }
+protected function createNewToken($token)
+{
+    return response()->json([
+        'access_token' => $token,
+        'token_type' => 'bearer',
+        'expires_in' => auth('admin-api')->factory()->getTTL() * 60,
+        'user' => auth('admin-api')->user(),
+    ]);
+}
+
 
     public function updateUser(UserRequest $request){
         try {

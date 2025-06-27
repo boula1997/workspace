@@ -50,6 +50,11 @@ return [
             'provider' => 'admins',
             'hash' => false,
         ],
+            'admin-api' => [               // <-- Add this guard for admin JWT API
+        'driver' => 'jwt',
+        'provider' => 'admins',
+        'hash' => false,
+    ],
     ],
 
     /*
