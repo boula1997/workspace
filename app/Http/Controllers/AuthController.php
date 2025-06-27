@@ -68,8 +68,6 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 public function login(Request $request)
 {
