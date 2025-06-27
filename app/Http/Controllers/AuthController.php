@@ -87,9 +87,6 @@ public function login(Request $request)
 
     $admin = auth('admin')->user();
 
-    if ($admin->status == 0) {
-        return response()->json(['error' => 'Account disabled'], 401);
-    }
 
     return $this->createNewToken($token);
 }
