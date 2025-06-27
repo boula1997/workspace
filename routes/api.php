@@ -44,108 +44,38 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Route::get('faqs', 'FaqController@index');
-// Route::get('faqs/{id}', 'FaqController@show');
-// Route::get('processes', 'ProcessController@index');
-// Route::get('processes/{id}', 'ProcessController@show');
-// Route::get('partners', 'PartnerController@index');
-// Route::get('partners/{id}', 'PartnerController@show');
-// Route::get('counters', 'CounterController@index');
-// Route::get('counter/{id}', 'CounterController@show');
-// Route::get('contacts', 'ContactController@index');
-// Route::get('contact/{id}', 'ContactController@show');
-// Route::get('settings', 'SettingController@index');
-// Route::get('setting/{id}', 'SettingController@show');
-// Route::get('portfolios', 'PortfolioController@index');
-// Route::get('portfolio/{id}', 'PortfolioController@show');
-// Route::get('pages', 'PageController@index');
-// Route::get('page/{id}', 'PageController@show');
-// Route::post('store/message', 'CMessageController@store');
 
-// Route::post('store/newsletter', 'CNewsletterController@store');
 Route::group(['middleware' => ['apiLocalization','cors']], function () {
     Route::post('/login', [AuthController::class, 'login']);
-    Route::get('/services', [ServiceController::class, 'index']);
-    Route::get('/service/{id}', [ServiceController::class, 'show']);
-    Route::get('/testimonials', [TestimonialController::class, 'index']);
-    Route::get('/testimonial/{id}', [TestimonialController::class, 'show']);
-    Route::get('/processes', [ProcessController::class, 'index']);
-    Route::get('/categories', [CategoryController::class, 'index']);
-    Route::get('/category/{id}', [CategoryController::class, 'show']);
-    Route::get('/products', [ProductController::class, 'index']);
-    Route::get('/product/{id}', [ProductController::class, 'show']);
-    Route::get('/process/{id}', [ProcessController::class, 'show']);
-
-    Route::get('/faqs', [FaqController::class, 'index']);
-    Route::get('/faq/{id}', [FaqController::class, 'show']);
-
-    Route::get('/complains', [ComplainController::class, 'index']);
-    Route::get('/complain/{id}', [ComplainController::class, 'show']);
-
-    Route::get('/vaccancies',[VaccancyController::class,'index']);
-    Route::get('/vaccancy/{id}',[VaccancyController::class,'show']);
-
-    Route::get('/partners', [PartnerController::class, 'index']);
-    Route::get('/partner/{id}', [PartnerController::class, 'show']);
-    Route::get('/teams', [TeamController::class, 'index']);
-    Route::get('/team/{id}', [TeamController::class, 'show']);
-
-    Route::get('/partners', [PartnerController::class, 'index']);
-    Route::get('/partner/{id}', [PartnerController::class, 'show']);
-
-    Route::get('/counters', [CounterController::class, 'index']);
-    Route::get('/counter/{id}', [CounterController::class, 'show']);
-    Route::get('/contacts', [ContactController::class, 'index']);
-    Route::get('/contact/{id}', [ContactController::class, 'show']);
-    
-    Route::get('/settings', [SettingController::class, 'index']);
-    Route::get('/historys', [HistoryController::class, 'index']);
-    Route::get('/accountants', [AccountantController::class, 'index']);
-    Route::get('/accountant/{id}', [AccountantController::class, 'show']);
-    Route::get('/history/{id}', [HistoryController::class, 'show']);
-    
-    Route::get('/projects', [ProjectController::class, 'index']);
-    Route::get('/project/{id}', [ProjectController::class, 'show']);
-    Route::get('/tasks', [TaskController::class, 'index']);
-    Route::get('/task/{id}', [TaskController::class, 'show']);
-    Route::get('/pages', [PageController::class, 'index']);
-    Route::get('/page/{id}', [PageController::class, 'show']);
-    Route::get('/followups', [FollowupController::class, 'index']);
-    Route::get('/followup/{id}', [FollowupController::class, 'show']);
-    Route::get('/fees', [FeeController::class, 'index']);
-    Route::get('/fee/{id}', [FeeController::class, 'show']);
-
-    Route::get('/portfolios', [PortfolioController::class, 'index']);
-    Route::get('/portfolio/{id}', [PortfolioController::class, 'show']);
     
     
 });
-Route::get('/apptask/create', [TaskController::class, 'create']);
-Route::get('/apptask/create/finished', [TaskController::class, 'createFinished']);
 
 
 
-Route::get('/stats', [TaskController::class, 'stats']);
 
-Route::post('/newsletter', [NewsletterController::class, 'store']);
-Route::post('/message', [MessageController::class, 'store']);
 
-Route::post('/apptask/store', [TaskController::class, 'store']);
-Route::post('/apptask/refpro', [TaskController::class, 'refpro']);
-Route::post('/complain',[ComplainController::class,'store']);
-Route::put('/complain/{id}',[ComplainController::class,'update']);
-Route::delete('/complain/{id}',[ComplainController::class,'delete']);
 
-Route::post('/vaccancy',[VaccancyController::class,'store']);
-Route::put('/vaccancy/{id}',[VaccancyController::class,'update']);
-Route::delete('/vaccancy/{id}',[VaccancyController::class,'delete']);
 
-Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
-Route::get('/links', [TaskController::class, 'links'])->name('links');
-Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
+
+
+
+
+
+Route::middleware('auth:admin-api')->group(function () {
+   Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
 Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
 
 Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
+Route::get('/apptask/create', [TaskController::class, 'create']);
+Route::get('/apptask/create/finished', [TaskController::class, 'createFinished']);
+Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
+Route::post('/apptask/store', [TaskController::class, 'store']);
+Route::post('/apptask/refpro', [TaskController::class, 'refpro']);
+Route::get('/stats', [TaskController::class, 'stats']);
+Route::get('/links', [TaskController::class, 'links'])->name('links');
 Route::get('/last/{date}', 'App\Http\Controllers\ActionController@lastUpdate')->name('last.update');
+
+});
 
 
