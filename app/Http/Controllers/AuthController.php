@@ -188,7 +188,7 @@ public function login(Request $request)
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 3600,
-            'user' => new UserResource(auth('api')->user())
+            'user' => auth('api')->user()
         ]);
     }
 
