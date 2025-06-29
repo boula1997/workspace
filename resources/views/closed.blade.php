@@ -19,7 +19,13 @@
     </style>
 </head>
 <body>
-    <h1>Our website is available from 11 AM to 7 PM daily.</h1>
-    <p>Please come back during our business hours.</p>
+    <h1>We're currently closed.</h1>
+    <p>Our business hours are:</p>
+    <ul style="list-style: none; padding: 0;">
+        <li>Sunday to Thursday: 11 AM – 7 PM</li>
+        <li>Friday: 6 AM – 2 PM</li>
+        <li>Saturday: Closed</li>
+    </ul>
+    <p>Please visit us during those hours.</p>
 </body>
 </html>
