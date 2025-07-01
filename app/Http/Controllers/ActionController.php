@@ -1291,7 +1291,7 @@ public function show($db, $table, $query)
         $currentDate = Carbon::now()->format('Y-m-d');
         $startDate = Carbon::parse($setting->startTime)->format('Y-m-d');
         $setting->update(['startTime'=>$validated['startTime']]);
-        yousabEmails();
+        // yousabEmails();
         return response()->json(['success' => true]);
 
     }
