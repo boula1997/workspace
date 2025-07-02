@@ -1,3 +1,6 @@
 [10-Mar-2025 12:37:10 Africa/Cairo] PHP Fatal error:  Trait "App\Models\MorphFiles" not found in /home3/yousabte/public_html/workspace/app/Models/Project.php on line 13
 [18-May-2025 17:02:09 Africa/Cairo] PHP Fatal error:  Cannot redeclare App\Models\Task::booted() in /home3/yousabte/public_html/workspace/app/Models/Task.php on line 59
 [27-Jun-2025 18:48:51 Africa/Cairo] PHP Fatal error:  Trait "App\Http\Controllers\Illuminate\Http\Request" not found in /home3/yousabte/public_html/workspace/app/Http/Controllers/AuthController.php on line 56
+[29-Jun-2025 02:28:12 Africa/Cairo] PHP Fatal error:  Cannot declare class BusinessHoursMiddleware, because the name is already in use in /home3/yousabte/public_html/workspace/app/Http/Middleware/BusinessHoursMiddleware.php on line 7
+[29-Jun-2025 02:28:53 Africa/Cairo] PHP Fatal error:  Cannot declare class BusinessHoursMiddleware, because the name is already in use in /home3/yousabte/public_html/workspace/app/Http/Middleware/BusinessHoursMiddleware.php on line 7
+[29-Jun-2025 02:30:48 Africa/Cairo] PHP Fatal error:  Cannot declare class BusinessHoursMiddleware, because the name is already in use in /home3/yousabte/public_html/workspace/app/Http/Middleware/BusinessHoursMiddleware.php on line 7
