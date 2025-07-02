@@ -157,7 +157,7 @@
         </div>
     </div>
 </div>
-
+@include('navIcon')
 <script>
     function togglePassword() {
         const passwordField = document.getElementById("password");
