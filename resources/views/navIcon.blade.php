@@ -1,36 +1,32 @@
 @if (auth()->user() && boula())
-    <style>
-        .whats {
-            position: fixed !important;
-            /* Ensures it stays fixed */
-            bottom: 20px !important;
-            /* Distance from bottom */
-            left: 20px !important;
-            /* Distance from left */
-            z-index: 9999 !important;
-            /* Keeps it above other elements */
-            width: 60px;
-            height: 60px;
-            background-color: #1cce3a;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 2px 2px 5px #b0afaf, -2px -2px 5px #b0afaf;
-            cursor: pointer;
-            transition: transform 0.3s ease-in-out;
-        }
+<style>
+    .whats {
+        position: fixed !important;
+        top: 50% !important; /* Center vertically */
+        left: 20px !important; /* Distance from left */
+        transform: translateY(-50%); /* Adjust for element height */
+        z-index: 9999 !important;
+        width: 60px;
+        height: 60px;
+        background-color: unset;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 2px 2px 5px #b0afaf, -2px -2px 5px #b0afaf;
+        cursor: pointer;
+        transition: transform 0.3s ease-in-out;
+    }
 
-        .whats:hover {
-            transform: scale(1.1);
-            /* Zoom effect on hover */
-        }
+    .whats:hover {
+        transform: translateY(-50%) scale(1.1); /* Maintain center on hover */
+    }
 
-        .whats img {
-            width: 40px;
-            height: 40px;
-        }
-    </style>
+    .whats img {
+        width: 40px;
+        height: 40px;
+    }
+</style>
+
 
     @if (App::environment('local'))
         <!-- Start button WhatsApp -->
