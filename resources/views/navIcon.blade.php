@@ -1,10 +1,10 @@
 <style>
     .whats {
-        position: fixed;
-        top: 50%;
-        right: 2px;
+        position: fixed !important;
+        top: 50% !important;
+        right: 2px !important;
         transform: translateY(-50%);
-        z-index: 9999;
+        z-index: 9999 !important;
         width: 60px;
         height: 60px;
         background-color: unset;
@@ -28,17 +28,19 @@
     /* Hide on screens smaller than 768px */
     @media (max-width: 768px) {
         .whats {
-            display: none;
+            display: none !important;
         }
     }
 </style>
 
-@php
-    $whatsAppUrl = App::environment('local')
-        ? 'http://localhost/workspace/public/en/'
-        : 'https://yousab-tech.com/workspace/public/en/';
-@endphp
-
-<a id="whats" class="whats" href="{{ $whatsAppUrl }}" target="_blank" aria-label="WhatsApp">
-    <img src="https://cdn3.iconfinder.com/data/icons/social-media-logos-flat-colorful/2048/5302_-_Whatsapp-512.png" alt="WhatsApp Icon">
-</a>
+@if (App::environment('local'))
+    <a id="whats" class="whats" href="https://yousab-tech.com/workspace/public/en/">
+        <img src="https://cdn3.iconfinder.com/data/icons/social-media-logos-flat-colorful/2048/5302_-_Whatsapp-512.png"
+            alt="WhatsApp">
+    </a>
+@else
+    <a id="whats" class="whats" href="http://localhost/workspace/public/en/">
+        <img src="https://cdn3.iconfinder.com/data/icons/social-media-logos-flat-colorful/2048/5302_-_Whatsapp-512.png"
+            alt="WhatsApp">
+    </a>
+@endif
