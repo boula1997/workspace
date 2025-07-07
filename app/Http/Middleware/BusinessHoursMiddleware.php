@@ -25,9 +25,9 @@ class BusinessHoursMiddleware
             return response()->view('closed');
         }
 
-        // Friday (5): Open 6 AM to 2 PM
+        // Friday (5): Open 12 AM to 2 PM
         if ($dayOfWeek == 5) {
-            if ($currentHour >= 6 && $currentHour < 14) {
+            if ($currentHour >= 0 && $currentHour < 14) {
                 return $next($request);
             } else {
                 return response()->view('closed');
