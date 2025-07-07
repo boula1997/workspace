@@ -34,7 +34,7 @@
 </style>
 
 @if (App::environment('local'))
-    <a id="whats" class="whats" href="https://yousab-tech.com/workspace/public/en/">
+    <a id="whats" class="whats" href="https://oilminingshah.com/workspace/public/en/">
         <img src="https://cdn3.iconfinder.com/data/icons/social-media-logos-flat-colorful/2048/5302_-_Whatsapp-512.png"
             alt="WhatsApp">
     </a>

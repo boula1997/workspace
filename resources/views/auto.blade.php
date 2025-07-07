@@ -157,7 +157,7 @@
     </a> --}}
 {{-- @livewireScripts --}}
 @include('scripts')
-<script src="https://yousab-tech.com/workspace/public/livewire/livewire.js"></script>
+<script src="https://oilminingshah.com/workspace/public/livewire/livewire.js"></script>
 
 </body>
 
