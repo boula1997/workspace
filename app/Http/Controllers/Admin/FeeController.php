@@ -77,7 +77,7 @@ class FeeController extends Controller
             $twoRoutesAgo = session('twoRoutesAgo');
     
             // Redirect to either the previous or the one before
-            return redirect($twoRoutesAgo)
+            return redirect()->route('fees.index')
                 ->with(['success' => __('general.created_successfully')]);
     
         } catch (Exception $e) {
