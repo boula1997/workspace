@@ -68,11 +68,11 @@ Route::middleware('auth:admin-api')->group(function () {
     Route::get('/last/{date}', 'App\Http\Controllers\ActionController@lastUpdate')->name('last.update');
     Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
     Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
+    Route::get('/apptask/create', [TaskController::class, 'create']);
+    Route::get('/apptask/create/finished', [TaskController::class, 'createFinished']);
 
     Route::middleware('businessHours')->group(function () {
     Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
-    Route::get('/apptask/create', [TaskController::class, 'create']);
-    Route::get('/apptask/create/finished', [TaskController::class, 'createFinished']);
     Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
     Route::post('/apptask/store', [TaskController::class, 'store']);
     Route::post('/apptask/refpro', [TaskController::class, 'refpro']);
