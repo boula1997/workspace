@@ -70,11 +70,11 @@ Route::middleware('auth:admin-api')->group(function () {
     Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
     Route::get('/apptask/create', [TaskController::class, 'create']);
     Route::get('/apptask/create/finished', [TaskController::class, 'createFinished']);
+    Route::post('/apptask/store', [TaskController::class, 'store']);
 
     Route::middleware('businessHours')->group(function () {
     Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
     Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
-    Route::post('/apptask/store', [TaskController::class, 'store']);
     Route::post('/apptask/refpro', [TaskController::class, 'refpro']);
 });
 
