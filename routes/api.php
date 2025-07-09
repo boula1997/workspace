@@ -76,9 +76,6 @@ Route::middleware('businessHours')->group(function () {
     Route::get('/last/{date}', 'App\Http\Controllers\ActionController@lastUpdate')->name('last.update');
     Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
     Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
-
-    
-
 });
 
 
