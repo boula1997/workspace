@@ -321,10 +321,10 @@ $totalCost = $selectedProjects->sum('cost');
 
 
             $deadline=Deadline::find($request->id);
-            if($request->action=="update")
-                $deadline->update(["date"=>$request->date]);
-            else if($request->action=="delete")
+             if($request->action=="delete")
                 $deadline->delete();
+            else if(isset($request->date))
+                $deadline->update(["date"=>$request->date]);
 
             $deadlines=Deadline::orderBy("date","asc")->get();
 
