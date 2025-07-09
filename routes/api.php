@@ -48,9 +48,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['middleware' => ['apiLocalization','cors']], function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout']);
-
-    
-    
 });
 
 
@@ -64,7 +61,7 @@ Route::group(['middleware' => ['apiLocalization','cors']], function () {
 
 
 
-Route::middleware('auth:admin-api')->group(function () {
+Route::middleware(['auth:admin-api','businessHours'])->group(function () {
    Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
 Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
 
