@@ -1305,7 +1305,7 @@
                     @foreach ($results as $result)
                         <div class="d-none hilightResult" array="{{ json_encode($array) }}"></div>
                         <pre class="text-white  resultContent">
-                            {!! htmlspecialchars($result->codeLinks) !!}
+                            {{ htmlspecialchars($result->codeLinks) }}
                         </pre>
                         <form method="post" id="{{ $result->id }}"
                             class="{{ $action == 'get multible scripts' ? 'script' : 'module' }}">
