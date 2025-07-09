@@ -224,31 +224,35 @@ $totalCost = $selectedProjects->sum('cost');
     public function refpro(Request $request)
     {
         try {
-         $update=false;
-         $action=false;
 
-           if(isset($request->project_id)){
-                $update=$request->project_id==setting()->reqValue && setting()->reqType=="project";
-               $result=Project::find($request->project_id);
-               setting()->update(["reqType"=>"project","reqValue"=>$request->project_id]);
-           }
-            else if(isset($request->refrence_id)){
-                $update=$request->refrence_id==setting()->reqValue && setting()->reqType=="refrence";
-                $result=Issue::find($request->refrence_id);
-               setting()->update(["reqType"=>"refrence","reqValue"=>$request->refrence_id]);
+            if(isWithinWorkingHours()){
 
+                $update=false;
+                $action=false;
+       
+                  if(isset($request->project_id)){
+                       $update=$request->project_id==setting()->reqValue && setting()->reqType=="project";
+                      $result=Project::find($request->project_id);
+                      setting()->update(["reqType"=>"project","reqValue"=>$request->project_id]);
+                  }
+                   else if(isset($request->refrence_id)){
+                       $update=$request->refrence_id==setting()->reqValue && setting()->reqType=="refrence";
+                       $result=Issue::find($request->refrence_id);
+                      setting()->update(["reqType"=>"refrence","reqValue"=>$request->refrence_id]);
+       
+                   }
+         
+                   if ($result && $update && trim($request->title) !== '') {
+       
+                       $result->update(["codeLinks" => $request->title]);
+                       $action=true;
+                   }
+       
+       
+                   $data=["result"=>$result->codeLinks,"action"=>$action];
+       
+                   return successResponse($data);
             }
-  
-            if ($result && $update && trim($request->title) !== '') {
-
-                $result->update(["codeLinks" => $request->title]);
-                $action=true;
-            }
-
-
-            $data=["result"=>$result->codeLinks,"action"=>$action];
-
-            return successResponse($data);
 
 
         } catch (Exception $e) {

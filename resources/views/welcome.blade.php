@@ -110,7 +110,7 @@
     <div class="container">
 
 
-        @if (boula())
+        @if (boula() && isWithinWorkingHours())
             <div class="allModals">
                 @foreach (posts() as $post)
                     <div class="modal fade" id="postModal{{ $post->id }}" tabindex="-1"
@@ -146,7 +146,7 @@
             </div>
         @endif
 
-        @if (boula())
+        @if (boula() && isWithinWorkingHours())
             <div class="allReferences">
                 @foreach (References() as $refrnce)
                     <div class="modal fade" id="referenceModal{{ $refrnce->id }}" tabindex="-1"
@@ -339,7 +339,7 @@
 
                 <div class="mt-2">
                     {{-- <h1 class="text-center">Automation</h1> --}}
-                                                        @if (boula())
+            @if (boula())
                     <div>
                         <div class="modal fade" id="surveyModal" data-bs-backdrop="static" data-bs-keyboard="false"
                             tabindex="-1" aria-labelledby="tasksModalLabel" aria-hidden="true">

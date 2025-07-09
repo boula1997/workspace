@@ -974,6 +974,34 @@ function boula()
 }
 
 
+function isWithinWorkingHours(){
+      date_default_timezone_set('Africa/Cairo');
+
+        $dayOfWeek = date('w'); // 0 (Sunday) to 6 (Saturday)
+        $currentHour = (int) date('G'); // 24-hour format without leading zeros
+
+        if ($dayOfWeek == 6) {
+            // Saturday: Closed all day
+            return false;
+        }
+
+        if ($dayOfWeek == 5) {
+            // Friday: Open 12 AM to 2 PM
+            if ($currentHour < 14) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        // Sunday to Thursday: Open 11 AM to 7 PM
+        if ($currentHour >= 11 && $currentHour < 19) {
+            return true;
+        }
+
+        return false;
+}
+
 function databases()
 {
     if (App::environment('local'))
