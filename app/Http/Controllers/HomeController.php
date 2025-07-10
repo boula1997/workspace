@@ -12,6 +12,8 @@ use App\Models\Counter;
 use App\Models\Faq;
 use App\Models\Setting;
 use App\Models\Partner;
+use App\Models\Project;
+use App\Models\Issue;
 use Exception;
 
 class HomeController extends Controller
@@ -78,6 +80,30 @@ class HomeController extends Controller
             $videos = $this->video->get();
 
             return view('videos', compact( 'videos'));
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return redirect()->back()->with(['error' => __('general.something_wrong')]);
+        }
+    }
+    public function refrence($id)
+    {
+        try {
+            $refrence = Issue::find($id);
+
+            return successResponse($refrence);
+
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return redirect()->back()->with(['error' => __('general.something_wrong')]);
+        }
+    }
+    public function project($id)
+    {
+        try {
+            $project = Project::find($id);
+
+            return successResponse($project);
+
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);

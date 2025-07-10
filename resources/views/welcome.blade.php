@@ -128,8 +128,8 @@
                                     <div class="modal-body">
                                         <div>
                                             <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                            <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="5"
-                                                style="height:100vh !important">{{ isset($post->codeLinks) ? $post->codeLinks : '' }}</textarea>
+                                            <textarea class="form-control  summernote" name="codeLinks" id="textareapost{{$post->id}}" cols="30" rows="5"
+                                                style="height:100vh !important"></textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -164,8 +164,8 @@
                                     <div class="modal-body">
                                         <div>
                                             <input type="hidden" name="issue_id" value="{{ $refrnce->id }}">
-                                            <textarea class="form-control  summernote" name="codeLinks" id="" cols="30" rows="5"
-                                                style="height:100vh !important">{{ isset($refrnce->codeLinks) ? $refrnce->codeLinks : '' }}</textarea>
+                                            <textarea class="form-control  summernote" name="codeLinks" id="textarearef{{$refrnce->id}}" cols="30" rows="5"
+                                                style="height:100vh !important"></textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">

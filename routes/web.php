@@ -141,6 +141,8 @@ Route::group(['middleware' => ['auth:admin']], function () {
         Route::get('/data/{db}/{table}/{query}', 'App\Http\Controllers\LocalActionController@show')->name('db.data');
         Route::get('/last/{date}', 'App\Http\Controllers\LocalActionController@lastUpdate')->name('last.update');
         Route::get('/website/{id}', 'App\Http\Controllers\LocalActionController@websiteToggle')->name('website.toggle');
+        Route::get('/refrence/{id}', 'App\Http\Controllers\HomeController@refrence')->name('home.refrence');
+        Route::get('/project/{id}', 'App\Http\Controllers\HomeController@project')->name('home.project');
         
         Route::get('/websitedbl/{id}', 'App\Http\Controllers\LocalActionController@websiteToggle')->name('website.dbltoggle');
         Route::get('/websitetrpl/{id}', 'App\Http\Controllers\LocalActionController@websiteToggle')->name('website.trpltoggle');

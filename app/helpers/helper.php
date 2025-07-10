@@ -975,6 +975,7 @@ function boula()
 
 
 function isWithinWorkingHours(){
+    return true;
       date_default_timezone_set('Africa/Cairo');
 
         $dayOfWeek = date('w'); // 0 (Sunday) to 6 (Saturday)
@@ -995,7 +996,7 @@ function isWithinWorkingHours(){
         }
 
         // Sunday to Thursday: Open 11 AM to 7 PM
-        if ($currentHour >= 11 && $currentHour < 19) {
+        if ($currentHour >= 10 && $currentHour < 19) {
             return true;
         }
 

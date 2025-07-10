@@ -629,12 +629,41 @@
 
     <script>
         $(document).on('click', '.fa-copy', function() {
-            $('#postModal' + $(this).attr('websiteId')).modal('show');
+            let id=$(this).attr('websiteId');
+            $.ajax({
+                url: `project/${id}`, // The route with the product ID
+                type: 'GET',                   // HTTP method
+                success: function(response) {
+                    // Handle success response
+                    $('#textareapost'+id).val(response.data.codeLinks);
+                    // You can update your HTML here with the product data
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.log("Error: " + error);
+                }
+            });
+            $('#postModal' + id).modal('show');
         });
     </script>
     <script>
         $(document).on('click', '.reference', function() {
-            $('#referenceModal' + $(this).attr('id')).modal('show');
+            let id=$(this).attr('id');
+            $.ajax({
+                url: `refrence/${id}`, // The route with the product ID
+                type: 'GET',                   // HTTP method
+                success: function(response) {
+                    // Handle success response
+                    $('#textarearef'+id).val(response.data.codeLinks);
+
+                    // You can update your HTML here with the product data
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.log("Error: " + error);
+                }
+            });
+            $('#referenceModal' + id).modal('show');
         });
     </script>
     <script>
