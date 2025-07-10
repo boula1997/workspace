@@ -25,8 +25,8 @@ class BusinessHoursMiddleware
             return response()->view('closed');
         }
 
-        if ($dayOfWeek == 5) {
-            // Friday: Open 12 AM to 2 PM
+        if ($dayOfWeek == 5 || $dayOfWeek == 1) {
+            // Friday & Sunday: Open 12 AM to 2 PM
             if ($currentHour < 19) {
                 return $next($request); 
             } else {
@@ -34,7 +34,7 @@ class BusinessHoursMiddleware
             }
         }
 
-        // Sunday to Thursday: Open 11 AM to 7 PM
+        // Monday to Thursday: Open 11 AM to 7 PM
         if ($currentHour >= 11 && $currentHour < 19) {
             return $next($request);
         }

@@ -377,11 +377,11 @@
                             <div class="form-group mt-2">
 
                                 <select name="action" class="form-control  text-white " id="selectAction">
+                                <option value="">Select the required action</option>
                                 <option value="16">get multible scripts</option>
                                 <option value="12">desc database</option>
 
                                 @if (isWithinWorkingHours())   
-                                <option value="">Select the required action</option>
                                 <option class="" value="15">add script</option>
                                 <option class="" value="15">add module</option>
                                 <option value="23">auto attributes (edit first methodology to avoid filling data)</option>
