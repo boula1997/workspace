@@ -60,6 +60,7 @@ Route::group(['middleware' => ['apiLocalization','cors']], function () {
 
 
 
+Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
 
 Route::middleware('auth:admin-api')->group(function () {
     
@@ -67,7 +68,6 @@ Route::middleware('auth:admin-api')->group(function () {
     Route::get('/links', [TaskController::class, 'links'])->name('links');
     Route::get('/last/{date}', 'App\Http\Controllers\ActionController@lastUpdate')->name('last.update');
     Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
-    Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
     Route::get('/apptask/create', [TaskController::class, 'create']);
     Route::get('/apptask/create/finished', [TaskController::class, 'createFinished']);
     Route::post('/apptask/store', [TaskController::class, 'store']);
