@@ -62,8 +62,10 @@ class TaskController extends Controller
             ->take(300) // Limit to 300 tasks
             ->get()
             ->unique('title'); // Remove duplicate tasks by title
+
             if(!isWithinWorkingHours())
             $tasks=[];
+        
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "refrences"=>IssueResource::collection($issues),
