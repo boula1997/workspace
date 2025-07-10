@@ -58,7 +58,7 @@ Route::group(
 
 
 
-        Route::group(['prefix' => 'dashboard'], function () {
+        Route::group(['prefix' => 'dashboard', 'middleware' => 'businessHours'], function () {
             Auth::routes();
             // cancel login and register for front temporarly
             Route::get('/login', function () {

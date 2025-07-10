@@ -375,42 +375,45 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mt-2">
+
                                 <select name="action" class="form-control  text-white " id="selectAction">
-                                    <option value="">Select the required action</option>
-                                    <option class="" value="15">add script</option>
-                                    <option class="" value="15">add module</option>
-                                    <option value="23">auto attributes (edit first methodology to avoid filling data)</option>
-                                    <option value="0">create new module(or Open newly added module edit first methodology to avoid filling data)</option>
-                                    <option value="14">checkout multible module</option>
-                                    <option value="6">copy multible modules using repo</option>
-                                    <option value="12">desc database</option>
-                                    <option value="1">Delete multible module</option>
-                                    <option value="19">flags manager</option>
-                                    <option value="16">get multible scripts</option>
-                                    <option value="16">get multible modules</option>
-                                    <option class="{{ boula() ? '' : 'myTab' }}" value="21">Get Stats</option>
-                                    <option value="4">Get files with size bigger than</option>
-                                    <option value="18">Image Workspace</option>
-                                    <option value="3">Open multible modules</option>
-                                    <option value="11">Open Shared Module Files</option>
-                                    <option value="9">Prebare multible modules to work on</option>
-                                    <option value="2">Rename module</option>
-                                    <option value="20">Reblace word in module</option>
-                                    <option value="5">Show or Delete project images</option>
-                                    <option value="8">Search all attributes at once</option>
-                                    <option value="10">search project modules</option>
-                                    <option value="7">translate all attributes</option>
-                                    <option value="13">translate untranslated words</option>
-                                    <option value="25">React post</option>
-                                    <option value="26">React get</option>
-                                    <option value="30">ReactNative post</option>
-                                    <option value="31">ReactNative get</option>
-                                    <option value="28">Ajax get</option>
-                                    <option value="29">Ajax post</option>
-                                    {{-- <option value="22">Open Websites</option> --}}
-                                    {{-- <option value="17">Servers Hostings and git default</option> --}}
-                                    {{-- <option value="24">Add new template link</option>
-                                    <option value="27">Add new googlead link</option> --}}
+                                @if (isWithinWorkingHours())   
+                                <option value="">Select the required action</option>
+                                <option class="" value="15">add script</option>
+                                <option class="" value="15">add module</option>
+                                <option value="23">auto attributes (edit first methodology to avoid filling data)</option>
+                                <option value="0">create new module(or Open newly added module edit first methodology to avoid filling data)</option>
+                                <option value="14">checkout multible module</option>
+                                <option value="6">copy multible modules using repo</option>
+                                <option value="12">desc database</option>
+                                <option value="1">Delete multible module</option>
+                                <option value="19">flags manager</option>
+                                <option value="16">get multible scripts</option>
+                                <option value="16">get multible modules</option>
+                                <option class="{{ boula() ? '' : 'myTab' }}" value="21">Get Stats</option>
+                                <option value="4">Get files with size bigger than</option>
+                                <option value="18">Image Workspace</option>
+                                <option value="3">Open multible modules</option>
+                                <option value="11">Open Shared Module Files</option>
+                                <option value="9">Prebare multible modules to work on</option>
+                                <option value="2">Rename module</option>
+                                <option value="20">Reblace word in module</option>
+                                <option value="5">Show or Delete project images</option>
+                                <option value="8">Search all attributes at once</option>
+                                <option value="10">search project modules</option>
+                                <option value="7">translate all attributes</option>
+                                <option value="13">translate untranslated words</option>
+                                <option value="25">React post</option>
+                                <option value="26">React get</option>
+                                <option value="30">ReactNative post</option>
+                                <option value="31">ReactNative get</option>
+                                <option value="28">Ajax get</option>
+                                <option value="29">Ajax post</option>
+                                {{-- <option value="22">Open Websites</option> --}}
+                                {{-- <option value="17">Servers Hostings and git default</option> --}}
+                                {{-- <option value="24">Add new template link</option>
+                                <option value="27">Add new googlead link</option> --}}
+                                @endif
                                 </select>
                             </div>
 
