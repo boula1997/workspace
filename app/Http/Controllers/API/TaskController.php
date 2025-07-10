@@ -329,7 +329,7 @@ $totalCost = $selectedProjects->sum('cost');
     {
         try {
 
-               dd($request->action);
+               dd($request->action,$request->date);
             $deadline=Deadline::find($request->id);
              if($request->action=="delete")
                 $deadline->delete();
