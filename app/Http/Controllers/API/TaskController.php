@@ -225,7 +225,6 @@ $totalCost = $selectedProjects->sum('cost');
     {
         try {
 
-            if(isWithinWorkingHours()){
 
                 $update=false;
                 $action=false;
@@ -252,7 +251,6 @@ $totalCost = $selectedProjects->sum('cost');
                    $data=["result"=>$result->codeLinks,"action"=>$action];
        
                    return successResponse($data);
-            }
 
 
         } catch (Exception $e) {
