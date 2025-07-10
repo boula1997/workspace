@@ -347,4 +347,22 @@ $totalCost = $selectedProjects->sum('cost');
             return failedResponse($e->getMessage());
         }
     }
+        public function storeDeadline(Request $request)
+    {
+        try {
+
+            $deadline=Deadline::create(["title"=>$request->title,"date"=>$request->date]);
+
+            $deadlines=Deadline::orderBy("date","asc")->get();
+
+
+            $data=["deadlines"=>$deadlines,"action"=>$request->action];
+
+            return successResponse($data);
+
+
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
+    }
 }

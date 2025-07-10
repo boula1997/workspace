@@ -61,6 +61,7 @@ Route::group(['middleware' => ['apiLocalization','cors']], function () {
 
 
 Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
+Route::post('/storeDeadline',[TaskController::class,'storeDeadline']);
 
 Route::middleware('auth:admin-api')->group(function () {
     
