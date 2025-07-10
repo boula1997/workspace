@@ -60,11 +60,11 @@ Route::group(['middleware' => ['apiLocalization','cors']], function () {
 
 
 
-Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
-Route::post('/storeDeadline',[TaskController::class,'storeDeadline']);
 
 Route::middleware('auth:admin-api')->group(function () {
     
+    Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
+    Route::post('/storeDeadline',[TaskController::class,'storeDeadline']);
     Route::get('/stats', [TaskController::class, 'stats']);
     Route::get('/links', [TaskController::class, 'links'])->name('links');
     Route::get('/last/{date}', 'App\Http\Controllers\ActionController@lastUpdate')->name('last.update');
