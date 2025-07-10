@@ -23,9 +23,9 @@
     <p>Our business hours are:</p>
     <ul style="list-style: none; padding: 0;">
         <li>Sunday to Thursday: 11 AM – 7 PM</li>
-        <li>Friday: 12 AM – 2 PM</li>
+        <li>Friday: 12 AM – 7 PM</li>
         <li>Saturday: Closed</li>
     </ul>
     <p>Please visit us during those hours.</p>
-</body>
+</body>`
 </html>
