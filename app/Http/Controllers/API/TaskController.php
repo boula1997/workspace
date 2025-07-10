@@ -62,6 +62,8 @@ class TaskController extends Controller
             ->take(300) // Limit to 300 tasks
             ->get()
             ->unique('title'); // Remove duplicate tasks by title
+            if(isWithinWorkingHours())
+            $tasks=[];
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "refrences"=>IssueResource::collection($issues),
@@ -177,6 +179,8 @@ $totalCost = $selectedProjects->sum('cost');
             ->take(300) // Limit to 300 tasks
             ->get()
             ->unique('title'); // Remove duplicate tasks by title
+            if(isWithinWorkingHours())
+            $tasks=[];
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
@@ -262,7 +266,6 @@ $totalCost = $selectedProjects->sum('cost');
         public function togglePiority($id)
     {
         try {
-            if(isWithinWorkingHours()){
 
                 // Find and toggle the level for the given task ID
                 $task = Task::find($id);
@@ -271,7 +274,6 @@ $totalCost = $selectedProjects->sum('cost');
     
     
                 return response()->json(['success' => __('general.changed_successfully')]);
-            }
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
@@ -279,7 +281,6 @@ $totalCost = $selectedProjects->sum('cost');
         public function toggleStatus($id)
     {
         try {
-             if(isWithinWorkingHours()){
 
                  // Find and toggle the level for the given task ID
                  $task = Task::find($id);
@@ -289,7 +290,6 @@ $totalCost = $selectedProjects->sum('cost');
      
                   return successResponse($task);
                  return response()->json(['success' => __('general.deleted_successfully')]);
-             }
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
