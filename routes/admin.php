@@ -69,6 +69,8 @@ Route::group(
             Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'adminLogin'])->name('admin.login')->middleware('guest:admin');
             Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'showAdminRegisterForm'])->name('admin.register-view');
             Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'createAdmin'])->name('admin.register');
+
+            
              Route::group(['middleware' => 'businessHours'], function () {
 
                  Route::group(['middleware' => ['auth:admin']], function () {
