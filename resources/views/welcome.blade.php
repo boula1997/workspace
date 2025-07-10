@@ -499,6 +499,7 @@
                         </div>
                         <div class="col-md-6">
                             @include('websites')
+                            @if (isWithinWorkingHours()) 
                             <div class="form-group mt-2">
                                 <input value="{{ old('name') }}" type="text" class="form-control   text-white"
                                     name="name" placeholder="name">
@@ -612,6 +613,7 @@
                                     placeholder="ex: keyword1, keyword2, keyword3" cols="30" rows="20"></textarea>
                                 {{-- <input type="text" class="form-control   text-white" name="script" placeholder="Insert script"> --}}
                             </div>
+                            @endif
 
                         </div>
                     </div>
