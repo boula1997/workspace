@@ -985,8 +985,8 @@ function isWithinWorkingHours(){
             return false;
         }
 
-        if ($dayOfWeek == 5 || $dayOfWeek == 1) {
-            // Friday & Sunday: Open 12 AM to 2 PM
+        if ($dayOfWeek == 5 || $dayOfWeek == 0) {
+            // Friday & Sunday: Open 12 AM to 7 PM
             if ($currentHour < 19) {
                 return true;
             } else {
