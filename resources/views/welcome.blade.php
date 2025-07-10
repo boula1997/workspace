@@ -377,6 +377,8 @@
                             <div class="form-group mt-2">
 
                                 <select name="action" class="form-control  text-white " id="selectAction">
+                                <option value="16">get multible scripts</option>
+
                                 @if (isWithinWorkingHours())   
                                 <option value="">Select the required action</option>
                                 <option class="" value="15">add script</option>
@@ -388,7 +390,6 @@
                                 <option value="12">desc database</option>
                                 <option value="1">Delete multible module</option>
                                 <option value="19">flags manager</option>
-                                <option value="16">get multible scripts</option>
                                 <option value="16">get multible modules</option>
                                 <option class="{{ boula() ? '' : 'myTab' }}" value="21">Get Stats</option>
                                 <option value="4">Get files with size bigger than</option>
@@ -499,7 +500,6 @@
                         </div>
                         <div class="col-md-6">
                             @include('websites')
-                            @if (isWithinWorkingHours()) 
                             <div class="form-group mt-2">
                                 <input value="{{ old('name') }}" type="text" class="form-control   text-white"
                                     name="name" placeholder="name">
@@ -613,7 +613,6 @@
                                     placeholder="ex: keyword1, keyword2, keyword3" cols="30" rows="20"></textarea>
                                 {{-- <input type="text" class="form-control   text-white" name="script" placeholder="Insert script"> --}}
                             </div>
-                            @endif
 
                         </div>
                     </div>
