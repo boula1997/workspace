@@ -378,6 +378,7 @@
 
                                 <select name="action" class="form-control  text-white " id="selectAction">
                                 <option value="16">get multible scripts</option>
+                                <option value="12">desc database</option>
 
                                 @if (isWithinWorkingHours())   
                                 <option value="">Select the required action</option>
@@ -387,7 +388,6 @@
                                 <option value="0">create new module(or Open newly added module edit first methodology to avoid filling data)</option>
                                 <option value="14">checkout multible module</option>
                                 <option value="6">copy multible modules using repo</option>
-                                <option value="12">desc database</option>
                                 <option value="1">Delete multible module</option>
                                 <option value="19">flags manager</option>
                                 <option value="16">get multible modules</option>
