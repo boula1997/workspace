@@ -63,8 +63,10 @@ class TaskController extends Controller
             ->get()
             ->unique('title'); // Remove duplicate tasks by title
 
-            if(!isWithinWorkingHours())
-            $tasks=[];
+            if(!isWithinWorkingHours()){
+                $tasks=[];
+                $issues = Issue::where("title","Holly Mass")->orderBy("title","asc")->get();
+            }
         
         $data=[
             "projects"=>ProjectResource::collection($projects),
