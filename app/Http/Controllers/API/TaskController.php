@@ -66,6 +66,7 @@ class TaskController extends Controller
             if(!isWithinWorkingHours()){
                 $tasks=[];
                 $issues = Issue::where("title","Holly Mass")->orderBy("title","asc")->get();
+                $projects=[];
             }
         
         $data=[
