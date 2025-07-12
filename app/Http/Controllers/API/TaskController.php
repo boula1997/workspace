@@ -164,6 +164,7 @@ $totalCost = $selectedProjects->sum('cost');
                 "deadlineDate"=>activeDeadline()["deadline"],
                 "totalRest"=>$totalRest,
                 "totalGained"=>$totalCost-$totalRest,
+                "target"=>setting()->target,
             ];
 
 
