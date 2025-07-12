@@ -71,6 +71,7 @@ Route::middleware('auth:admin-api')->group(function () {
     Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
     Route::get('/apptask/create', [TaskController::class, 'create']);
     Route::get('/apptask/create/finished', [TaskController::class, 'createFinished']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
     
     
     Route::post('/apptask/refpro', [TaskController::class, 'refpro']);
