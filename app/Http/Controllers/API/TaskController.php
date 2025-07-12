@@ -52,8 +52,7 @@ class TaskController extends Controller
     public function create()
     {
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
-        $issues = Issue::orderBy("title","asc")->get();
+
 
         $tasks = Task::where("status", 0)
             ->orderBy('piority', 'desc') // Then by priority (descending)
@@ -68,6 +67,9 @@ class TaskController extends Controller
                 $issues = Issue::where("isOverthinking",0)->orderBy("title","asc")->get();
                 $projects = Project::where("isOverthinking",0)->where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
 
+            }else{
+                $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
+                $issues = Issue::orderBy("title","asc")->get();
             }
         
         $data=[
