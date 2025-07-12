@@ -152,7 +152,7 @@ public function login(Request $request)
      * @return \Illuminate\Http\JsonResponse
      */
     public function refresh() {
-        return $this->createNewToken(auth('admin_api')->refresh());
+        return $this->createNewToken(auth('admin-api')->refresh());
     }
 
     public function checkToken(Request $request)
