@@ -65,8 +65,9 @@ class TaskController extends Controller
 
             if(!isWithinWorkingHours()){
                 $tasks=[];
-                $issues = Issue::where("title","Holly Mass")->orderBy("title","asc")->get();
-                $projects=[];
+                $issues = Issue::where("isOverthinking",0)->orderBy("title","asc")->get();
+                $projects = Project::where("isOverthinking",0)->where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
+
             }
         
         $data=[
@@ -119,7 +120,7 @@ class TaskController extends Controller
                 $yearTotalIncome+= $monthlyIncome; // You can round() if needed
                 $monthlyOutcomeArray[] = $monthlyOutcome*-1; // You can round() if needed
                 $yearTotalOutcome+= $monthlyOutcome*-1; // You can round() if needed
-                    $monthlyProjectsArray[] = $monthlyProjects; // Add this line
+                $monthlyProjectsArray[] = $monthlyProjects; // Add this line
             }
 
             // Monthly stats for selected month
