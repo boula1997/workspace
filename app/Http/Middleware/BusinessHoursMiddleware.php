@@ -17,6 +17,11 @@ class BusinessHoursMiddleware
     {
         date_default_timezone_set('Africa/Cairo');
 
+            // ✅ Allow exception for a specific route
+            if ($request->is('dashboard/fees')) {
+                return $next($request);
+            }
+
         $dayOfWeek = date('w'); // 0 (Sunday) to 6 (Saturday)
         $currentHour = (int) date('G'); // 24-hour format without leading zeros
 
