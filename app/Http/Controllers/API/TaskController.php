@@ -52,22 +52,20 @@ class TaskController extends Controller
     public function create()
     {
         $employees = Admin::orderBy('name', 'ASC')->get();
-
-
-        $tasks = Task::where("status", 0)
-            ->orderBy('piority', 'desc') // Then by priority (descending)
-            ->orderBy('project_id', 'asc') // Order by project first
-            ->latest('updated_at') // Then by creation date (latest first)
-            ->take(300) // Limit to 300 tasks
-            ->get()
-            ->unique('title'); // Remove duplicate tasks by title
-
+        
             if(!isWithinWorkingHours()){
                 $tasks=[];
                 $issues = Issue::where("isOverthinking",0)->orderBy("title","asc")->get();
                 $projects = Project::where("isOverthinking",0)->where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
 
             }else{
+                $tasks = Task::where("status", 0)
+                ->orderBy('piority', 'desc') // Then by priority (descending)
+                ->orderBy('project_id', 'asc') // Order by project first
+                ->latest('updated_at') // Then by creation date (latest first)
+                ->take(300) // Limit to 300 tasks
+                ->get()
+                ->unique('title'); // Remove duplicate tasks by title
                 $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
                 $issues = Issue::orderBy("title","asc")->get();
             }
