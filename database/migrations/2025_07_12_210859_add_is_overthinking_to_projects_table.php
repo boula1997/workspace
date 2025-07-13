@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->boolean("isOverthinking")->default(1);
+            $table->boolean("isOverthinking")->default(0);
         });
     }
 
