@@ -988,7 +988,7 @@ function isWithinWorkingHours(){
 
 
         // Monday to Thursday: Open 11 AM to 7 PM
-        if ($currentHour >= 15 && $currentHour < 19) {
+        if ($currentHour >= 11 && $currentHour < 19) {
             return true;
         }
 
