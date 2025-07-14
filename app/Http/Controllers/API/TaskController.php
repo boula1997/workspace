@@ -69,7 +69,7 @@ class TaskController extends Controller
                 $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
                 $issues = Issue::orderBy("title","asc")->get();
             }
-        
+        if(boula())
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "refrences"=>IssueResource::collection($issues),
@@ -82,6 +82,15 @@ class TaskController extends Controller
                 "deadlineDate"=>activeDeadline()["deadline"],
             ]
 
+        ];
+        
+        else
+        $data=[
+            "projects"=>ProjectResource::collection($projects),
+            "refrences"=>IssueResource::collection($issues),
+            "employees"=>$employees,
+            "tasks"=>TaskResource::collection($tasks),
+            "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
         ];
 
         return successResponse($data);
