@@ -332,7 +332,7 @@ $totalCost = $selectedProjects->sum('cost');
            
 
             $deadlines=Deadline::orderBy("date","asc")->get();
-            if(!boula())
+            if(boula())
              return successResponse($deadlines);
              else
              return successResponse([]);
@@ -368,7 +368,7 @@ $totalCost = $selectedProjects->sum('cost');
         public function storeDeadline(Request $request)
     {
         try {
-
+             if(boula())
             $deadline=Deadline::create(["title"=>$request->title,"date"=>$request->date]);
 
             $deadlines=Deadline::orderBy("date","asc")->get();
