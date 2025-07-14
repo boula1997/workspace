@@ -69,7 +69,7 @@ class TaskController extends Controller
                 $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
                 $issues = Issue::orderBy("title","asc")->get();
             }
-        if(!boula())
+        if(boula())
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "refrences"=>IssueResource::collection($issues),
