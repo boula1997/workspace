@@ -87,7 +87,7 @@ class TaskController extends Controller
         else
         $data=[
             "projects"=>ProjectResource::collection($projects),
-            "refrences"=>IssueResource::collection($issues),
+            // "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
             "tasks"=>TaskResource::collection($tasks),
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
