@@ -75,10 +75,12 @@ class TaskController extends Controller
             "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
             "tasks"=>TaskResource::collection($tasks),
-                "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
+            "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
+            "headings"=>[
                 "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
                 "deadlineAction"=>activeDeadline()["action"],
                 "deadlineDate"=>activeDeadline()["deadline"],
+            ]
 
         ];
 
