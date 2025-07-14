@@ -72,7 +72,7 @@ class TaskController extends Controller
         if(boula())
         $data=[
             "projects"=>ProjectResource::collection($projects),
-            // "refrences"=>IssueResource::collection($issues),
+            "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
             "tasks"=>TaskResource::collection($tasks),
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
@@ -87,7 +87,7 @@ class TaskController extends Controller
         else
         $data=[
             "projects"=>ProjectResource::collection($projects),
-            "refrences"=>IssueResource::collection($issues),
+            // "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
             "tasks"=>TaskResource::collection($tasks),
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
@@ -332,8 +332,10 @@ $totalCost = $selectedProjects->sum('cost');
            
 
             $deadlines=Deadline::orderBy("date","asc")->get();
-
+            if(!boula())
              return successResponse($deadlines);
+             else
+             return successResponse([]);
 
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
