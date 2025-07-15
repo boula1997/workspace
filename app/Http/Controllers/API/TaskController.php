@@ -316,8 +316,10 @@ $totalCost = $selectedProjects->sum('cost');
     {
         try {
            
-
+            if(boula())
             $links=Navigation::get();
+        else
+        $links=[];
 
              return successResponse($links);
 
