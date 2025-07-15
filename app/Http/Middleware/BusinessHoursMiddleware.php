@@ -18,7 +18,7 @@ class BusinessHoursMiddleware
         date_default_timezone_set('Africa/Cairo');
 
             // ✅ Allow exception for a specific route
-            if ($request->routeIs('fees.*')) {
+            if ($request->routeIs('fees.*')||$request->routeIs('projects.*')) {
                 return $next($request);
             }
 
