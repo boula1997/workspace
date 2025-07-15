@@ -75,12 +75,11 @@ Route::middleware('auth:admin-api')->group(function () {
     
     
     Route::post('/apptask/refpro', [TaskController::class, 'refpro']);
-    Route::middleware('businessHours')->group(function () {
-        Route::post('/apptask/store', [TaskController::class, 'store']);
-    
-        Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
-        Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
-    });
+    Route::post('/apptask/store', [TaskController::class, 'store']);
+    Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
+    Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
+    // Route::middleware('businessHours')->group(function () {
+    // });
 });
 
 
