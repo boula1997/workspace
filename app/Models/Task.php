@@ -44,6 +44,10 @@ class Task extends Model
     {
         return $this->status != 0 ? 0 : $value;
     }
+    public function getPiorityAttribute($value)
+    {
+        return $this->project->status == 2 ? 1 : 0;
+    }
     
 
     protected static function booted()
