@@ -312,14 +312,15 @@ $totalCost = $selectedProjects->sum('cost');
             return response()->json(['error' => $e->getMessage()]);
         }
     }
+
         public function links()
     {
         try {
            
             if(boula())
-            $links=Navigation::get();
-        else
-        $links=[];
+             $links=Navigation::get();
+            else
+             $links=[];
 
              return successResponse($links);
 
