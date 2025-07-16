@@ -147,14 +147,20 @@ class TaskController extends Controller
 
             // Retrieve and filter projects
             $projects = Project::where('title', 'NOT LIKE', '%aloo%')->latest()->get();
-$selectedProjects = $projects->filter(fn($project) => rest($project) > 0)
+            $selectedProjects = $projects->filter(fn($project) => rest($project) > 0)
                               ->sortByDesc(fn($project) => rest($project));
 
-// Total of rest
-$totalRest = $selectedProjects->sum(fn($project) => rest($project));
+            // Total of rest
+            $totalRest = $selectedProjects->sum(fn($project) => rest($project));
 
-// Total of project cost
-$totalCost = $selectedProjects->sum('cost');
+            // Total of project cost
+            $totalCost = $selectedProjects->sum('cost');
+
+
+            $contractProjects=Project::where('deal',0)->get();
+            $moneyProjects=Project::where('status',2)->get();
+            $progressProjects=Project::where('status',1)->get();
+            $finishedProjects=Project::where('status',0)->get();
 
             // Prepare response data
             $data = [
@@ -178,6 +184,10 @@ $totalCost = $selectedProjects->sum('cost');
                 "totalRest"=>$totalRest,
                 "totalGained"=>$totalCost-$totalRest,
                 "target"=>setting()->target,
+                "contractProjects"=>count($contractProjects),
+                "moneyProjects"=>count($moneyProjects),
+                "progressProjects"=>count($progressProjects),
+                "finishedProjects"=>count($finishedProjects),
             ];
 
 
