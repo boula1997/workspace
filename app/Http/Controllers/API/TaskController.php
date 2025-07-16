@@ -14,9 +14,12 @@ use App\Models\Admin;
 use App\Models\Deadline;
 use App\Models\Navigation;
 use App\Models\Task;
+use App\Models\DBCredential;
 use Exception;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
 
 class TaskController extends Controller
 {
@@ -426,4 +429,52 @@ class TaskController extends Controller
             return failedResponse($e->getMessage());
         }
     }
+
+
+
+      public function execQuery(Request $request)
+  {
+    try {
+
+        $credential=DBCredential::where('db_name',isset($request->dbname)?$request->dbname:'yousabte_automation')->first();
+        $dbHost = '127.0.0.1';
+        $dbName = isset($credential->db_name)?$credential->db_name:'automation';
+        $dbUser = isset($credential->db_username)?$credential->db_username:'root';
+        $dbPass = isset($credential->db_password)?$credential->db_password:'';
+    
+            // Temporarily configure the database connection
+            config([
+              'database.connections.dynamic' => [
+                  'driver' => 'mysql',
+                  'host' => $dbHost,
+                  'database' => $dbName,
+                  'username' => $dbUser,
+                  'password' => $dbPass,
+                  'charset' => 'utf8mb4',
+                  'collation' => 'utf8mb4_unicode_ci',
+              ],
+          ]);
+    
+              // Use the dynamic connection
+        DB::purge('dynamic');
+        DB::reconnect('dynamic');
+      // $result = DB::connection('dynamic')->statement('use automation');
+      $queryCommands=explode('++', $request->queryCommand);
+      foreach($queryCommands as $queryCommand){
+
+        $query=Query::where('title',$queryCommand)->first();
+        if(!isset($query))
+        $query=Query::create([
+          'title'=>$queryCommand
+        ]);
+        $queries=Query::latest()->take(100)->get()->unique('title');
+        $queryTitles=$queries->pluck('title')->toArray();
+        $result = DB::connection('dynamic')->statement('use ' . $request->dbname . '');
+        $data = DB::connection('dynamic')->select($queryCommand);
+      }
+      return response()->json(['success' => "Done Successfully", 'data' => $data,'query'=>$queryCommand]);
+    } catch (\Exception $e) {
+      return response()->json(['success' => $e->getMessage(), 'data' => [],'query'=>$queryCommand]);
+    }
+  }
 }
