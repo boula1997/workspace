@@ -86,11 +86,14 @@ class TaskController extends Controller
                 $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
                 $issues = Issue::orderBy("title","asc")->get();
             }
+
+            $credentials = DBCredential::get();
         if(boula())
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
+            "credentials"=>$credentials,
             "tasks"=>TaskResource::collection($tasks),
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
             "headings"=>[
