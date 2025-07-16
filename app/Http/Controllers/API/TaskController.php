@@ -441,7 +441,7 @@ class TaskController extends Controller
   {
     try {
 
-        $credential=DBCredential::where('id',$request->id)->first();
+        $credential=DBCredential::where('id',$request->credential_id)->first();
         $dbHost = '127.0.0.1';
         $dbName = isset($credential->db_name)?$credential->db_name:'automation';
         $dbUser = isset($credential->db_username)?$credential->db_username:'root';
