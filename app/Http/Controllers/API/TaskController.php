@@ -52,7 +52,25 @@ class TaskController extends Controller
     public function create()
     {
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $tasks = Task::where("status", 0)
+           // Remove duplicate tasks by title
+
+        
+            if(!isWithinWorkingHours()){
+                        $tasks = Task::where("status", 0)
+            ->whereHas('project', function ($query) {
+                $query->where('status', '!=', 0);
+            })->where("isOverthinking",0)
+            ->orderBy('piority', 'desc')      // First by priority (descending)
+            ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
+            ->latest('updated_at')            // Then by latest update
+            ->take(300)                       // Limit to 300 tasks
+            ->get()
+            ->unique('title');     
+                $issues = Issue::where("isOverthinking",0)->orderBy("title","asc")->get();
+                $projects = Project::where("isOverthinking",0)->where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
+
+            }else{
+          $tasks = Task::where("status", 0)
             ->whereHas('project', function ($query) {
                 $query->where('status', '!=', 0);
             })
@@ -61,16 +79,7 @@ class TaskController extends Controller
             ->latest('updated_at')            // Then by latest update
             ->take(300)                       // Limit to 300 tasks
             ->get()
-            ->unique('title');                // Remove duplicate tasks by title
-
-        
-            if(!isWithinWorkingHours()){
-                // $tasks=[];
-                $issues = Issue::where("isOverthinking",0)->orderBy("title","asc")->get();
-                $projects = Project::where("isOverthinking",0)->where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
-
-            }else{
-  
+            ->unique('title');     
                 $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
                 $issues = Issue::orderBy("title","asc")->get();
             }
@@ -209,7 +218,19 @@ class TaskController extends Controller
         $employees = Admin::orderBy('name', 'ASC')->get();
         $projects = Project::where('title', 'NOT LIKE', '%aloo%')->where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
 
-        $tasks = Task::where("status", 1)
+
+
+            if(!isWithinWorkingHours())
+                              $tasks = Task::where("status", 1)
+            ->whereHas('project', function ($query) {
+                $query->where('status', '!=', 0);
+            })->where("isOverthinking",0)
+            ->latest('updated_at') // Then by latest updated time
+            ->take(300)            // Limit to 300 tasks
+            ->get()
+            ->unique('title');     // Remove duplicate tasks by title
+        else
+                    $tasks = Task::where("status", 1)
             ->whereHas('project', function ($query) {
                 $query->where('status', '!=', 0);
             })
@@ -218,8 +239,6 @@ class TaskController extends Controller
             ->get()
             ->unique('title');     // Remove duplicate tasks by title
 
-            // if(!isWithinWorkingHours())
-            // $tasks=[];
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
