@@ -9,6 +9,7 @@ use App\Http\Resources\IssueResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
 use App\Models\Issue;
+use App\Models\Query;
 use App\Models\Fee;
 use App\Models\Admin;
 use App\Models\Deadline;
