@@ -107,6 +107,7 @@ class TaskController extends Controller
         else
         $data=[
             "projects"=>ProjectResource::collection($projects),
+            "credentials"=>$credentials,
             // "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
             "tasks"=>TaskResource::collection($tasks),
@@ -439,7 +440,7 @@ class TaskController extends Controller
   {
     try {
 
-        $credential=DBCredential::where('db_name',isset($request->dbname)?$request->dbname:'yousabte_automation')->first();
+        $credential=DBCredential::where('id',$request->id)->first();
         $dbHost = '127.0.0.1';
         $dbName = isset($credential->db_name)?$credential->db_name:'automation';
         $dbUser = isset($credential->db_username)?$credential->db_username:'root';
@@ -462,7 +463,7 @@ class TaskController extends Controller
         DB::purge('dynamic');
         DB::reconnect('dynamic');
       // $result = DB::connection('dynamic')->statement('use automation');
-      $queryCommands=explode('++', $request->queryCommand);
+      $queryCommands=explode('++', $request->title);
       foreach($queryCommands as $queryCommand){
 
         $query=Query::where('title',$queryCommand)->first();
@@ -472,7 +473,7 @@ class TaskController extends Controller
         ]);
         $queries=Query::latest()->take(100)->get()->unique('title');
         $queryTitles=$queries->pluck('title')->toArray();
-        $result = DB::connection('dynamic')->statement('use ' . $request->dbname . '');
+        $result = DB::connection('dynamic')->statement('use ' . $credential->db_name . '');
         $data = DB::connection('dynamic')->select($queryCommand);
       }
       return response()->json(['success' => "Done Successfully", 'data' => $data,'query'=>$queryCommand]);
