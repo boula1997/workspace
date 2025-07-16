@@ -161,7 +161,9 @@ class TaskController extends Controller
             $totalCost = $selectedProjects->sum('cost');
 
 
-            $contractProjects=Project::where('deal',0)->get();
+            $contractProjects = Project::where('status', 2)
+            ->where('cost', 0)
+            ->get();
             $moneyProjects=Project::where('status',2)->get();
             $progressProjects=Project::where('status',1)->get();
             $finishedProjects=Project::where('status',0)->get();
