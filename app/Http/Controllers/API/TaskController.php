@@ -437,52 +437,64 @@ class TaskController extends Controller
 
 
 
-      public function execQuery(Request $request)
-  {
-    try {
+public function execQuery(Request $request)
+{
+    DB::beginTransaction(); // Start transaction
 
-        $credential=DBCredential::where('id',$request->credential_id)->first();
+    try {
+        $credential = DBCredential::where('id', $request->credential_id)->first();
         $dbHost = '127.0.0.1';
-        $dbName = isset($credential->db_name)?$credential->db_name:'automation';
-        $dbUser = isset($credential->db_username)?$credential->db_username:'root';
-        $dbPass = isset($credential->db_password)?$credential->db_password:'';
-    
-            // Temporarily configure the database connection
-            config([
-              'database.connections.dynamic' => [
-                  'driver' => 'mysql',
-                  'host' => $dbHost,
-                  'database' => $dbName,
-                  'username' => $dbUser,
-                  'password' => $dbPass,
-                  'charset' => 'utf8mb4',
-                  'collation' => 'utf8mb4_unicode_ci',
-              ],
-          ]);
-    
-              // Use the dynamic connection
+        $dbName = $credential->db_name ?? 'automation';
+        $dbUser = $credential->db_username ?? 'root';
+        $dbPass = $credential->db_password ?? '';
+
+        config([
+            'database.connections.dynamic' => [
+                'driver' => 'mysql',
+                'host' => $dbHost,
+                'database' => $dbName,
+                'username' => $dbUser,
+                'password' => $dbPass,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+            ],
+        ]);
+
         DB::purge('dynamic');
         DB::reconnect('dynamic');
-      // $result = DB::connection('dynamic')->statement('use automation');
-      $queryCommands=explode('++', $request->title);
-      foreach($queryCommands as $queryCommand){
 
-        $query=Query::where('title',$queryCommand)->first();
-        if(!isset($query))
-        $query=Query::create([
-          'title'=>$queryCommand
+        $queryCommands = explode('++', $request->title);
+        $finalResult = [];
+
+        foreach ($queryCommands as $queryCommand) {
+            $query = Query::firstOrCreate(['title' => $queryCommand]);
+
+            DB::connection('dynamic')->statement('use ' . $credential->db_name);
+            $data = DB::connection('dynamic')->select($queryCommand);
+
+            $finalResult[] = [
+                'query' => $queryCommand,
+                'result' => $data,
+            ];
+        }
+
+        DB::commit(); // Commit transaction if everything is fine
+
+        return response()->json([
+            'success' => "Done Successfully",
+            'data' => $finalResult,
         ]);
-        $queries=Query::latest()->take(100)->get()->unique('title');
-        $queryTitles=$queries->pluck('title')->toArray();
-        $result = DB::connection('dynamic')->statement('use ' . $credential->db_name . '');
-        $data = DB::connection('dynamic')->select($queryCommand);
-      }
-     
-       
-      return response()->json(['success' => "Done Successfully", 'data' => $data,'query'=>$queryCommand]);
+
     } catch (\Exception $e) {
-         $data = Query::where('title', 'like', "%{$request->title}%")->latest()->get();
-      return response()->json(['success' => $e->getMessage(), 'data' =>$data,'query'=>$queryCommand]);
+        DB::rollBack(); // Rollback if something goes wrong
+
+        $fallbackData = Query::where('title', 'like', "%{$request->title}%")->latest()->get();
+
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'data' => $fallbackData,
+        ]);
     }
-  }
 }
+
