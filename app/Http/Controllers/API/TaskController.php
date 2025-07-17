@@ -477,10 +477,11 @@ class TaskController extends Controller
         $result = DB::connection('dynamic')->statement('use ' . $credential->db_name . '');
         $data = DB::connection('dynamic')->select($queryCommand);
       }
-      if(count($data)==0)
-        $data = DB::connection('dynamic')->select("select * from queries");
+     
+       
       return response()->json(['success' => "Done Successfully", 'data' => $data,'query'=>$queryCommand]);
     } catch (\Exception $e) {
+         $data = DB::connection('dynamic')->select("select * from queries");
       return response()->json(['success' => $e->getMessage(), 'data' => [],'query'=>$queryCommand]);
     }
   }
