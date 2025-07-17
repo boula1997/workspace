@@ -481,7 +481,7 @@ class TaskController extends Controller
        
       return response()->json(['success' => "Done Successfully", 'data' => $data,'query'=>$queryCommand]);
     } catch (\Exception $e) {
-         $data = Query::latest()->get();
+         $data = Query::where('title', 'like', "%{$request->title}%")->latest()->get();
       return response()->json(['success' => $e->getMessage(), 'data' =>$data,'query'=>$queryCommand]);
     }
   }
