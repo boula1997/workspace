@@ -481,7 +481,7 @@ class TaskController extends Controller
        
       return response()->json(['success' => "Done Successfully", 'data' => $data,'query'=>$queryCommand]);
     } catch (\Exception $e) {
-         $data = DB::connection('dynamic')->select("select * from queries");
+         $data = Query::latest()->get();
       return response()->json(['success' => $e->getMessage(), 'data' => [],'query'=>$queryCommand]);
     }
   }
