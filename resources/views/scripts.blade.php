@@ -787,14 +787,13 @@
                     content = highlightAll(content, word);
                 });
 
-
+                
+                
                 $(this).html(content);
+                $('#searchInput').val(searchWords[0]);
             });
 
-            setTimeout(() => {
-             alert(searchWords[0]);
-                $('#searchInput').val(searchWords[0]);
-            }, 2000);
+
            
         });
 
