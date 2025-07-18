@@ -3122,22 +3122,29 @@ $(document).ready(function () {
         $('html, body').animate({ scrollTop: current.offset().top - 100 }, 300);
     }
 
-    $('#searchInput').on('input', function () {
-        const term = $(this).val().trim();
+
+
+    $('#nextMatch').on('click', function () {
+        const term = $('#searchInput').val().trim();
         $('.resultContent').each(function () {
-            $(this).html($(this).text()); // Reset content
+            $('#searchInput').html($('#searchInput').text()); // Reset content
         });
 
         if (term) highlightMatches(term);
-    });
 
-    $('#nextMatch').on('click', function () {
         if (matches.length === 0) return;
         matchIndex = (matchIndex + 1) % matches.length;
         scrollToMatch();
     });
 
     $('#prevMatch').on('click', function () {
+        const term = $('#searchInput').val().trim();
+        $('.resultContent').each(function () {
+            $('#searchInput').html($('#searchInput').text()); // Reset content
+        });
+
+        if (term) highlightMatches(term);
+
         if (matches.length === 0) return;
         matchIndex = (matchIndex - 1 + matches.length) % matches.length;
         scrollToMatch();
