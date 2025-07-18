@@ -775,7 +775,6 @@
 
                 var arrayData = $(this).siblings('.hilightResult').attr('array');
                 var searchWords = JSON.parse(arrayData);
-                $('#searchInput').val(searchWords);
 
 
                 // Remove existing highlights
