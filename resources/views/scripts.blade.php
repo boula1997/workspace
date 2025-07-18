@@ -792,8 +792,8 @@
             });
 
             setTimeout(() => {
-             alert($('.match-highlight').first().text());
-                $('#searchInput').val($('.match-highlight').first().text());
+             alert(searchWords[0]);
+                $('#searchInput').val(searchWords[0]);
             }, 2000);
            
         });
