@@ -786,6 +786,8 @@
                     content = highlightAll(content, word);
                 });
 
+                $('#searchInput').val(searchWords);
+
                 $(this).html(content);
             });
         });
