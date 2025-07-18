@@ -23,7 +23,7 @@
     <p>Our business hours are:</p>
     <ul style="list-style: none; padding: 0;">
         <li>All week: 11 AM – 7 PM</li>
-        <li>Saturday: Closed</li>
+        <li>Saturday & Friday: Closed</li>
     </ul>
     <p>Please visit us during those hours.</p>
 </body>`

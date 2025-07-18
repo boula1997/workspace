@@ -25,13 +25,13 @@ class BusinessHoursMiddleware
         $dayOfWeek = date('w'); // 0 (Sunday) to 6 (Saturday)
         $currentHour = (int) date('G'); // 24-hour format without leading zeros
 
-        if ($dayOfWeek == 6) {
-            // Saturday: Closed all day
+        if ($dayOfWeek == 6 || $dayOfWeek == 5) {
+            // Saturday and Friday: Closed all day
             return response()->view('closed');
         }
 
 
-        // Monday to Thursday: Open 11 AM to 7 PM
+        // Sunday to Thursday: Open 11 AM to 7 PM
         if ($currentHour >= 11 && $currentHour < 19) {
             return $next($request);
         }
