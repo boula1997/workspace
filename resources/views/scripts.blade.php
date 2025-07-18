@@ -790,8 +790,8 @@
 
                 $(this).html(content);
             });
-
-             $('#searchInput').val( $('.match-highlight').first().text());
+             alert($('.match-highlight').first().text());
+             $('#searchInput').val($('.match-highlight').first().text());
            
         });
 
