@@ -775,6 +775,8 @@
 
                 var arrayData = $(this).siblings('.hilightResult').attr('array');
                 var searchWords = JSON.parse(arrayData);
+                $('#searchInput').val(searchWords);
+
 
                 // Remove existing highlights
                 $(this).find('.highlighted').each(function() {
@@ -786,7 +788,6 @@
                     content = highlightAll(content, word);
                 });
 
-                $('#searchInput').val(searchWords);
 
                 $(this).html(content);
             });
