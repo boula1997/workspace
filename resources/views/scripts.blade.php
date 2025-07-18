@@ -790,8 +790,11 @@
 
                 $(this).html(content);
             });
+
+            setTimeout(() => {
              alert($('.match-highlight').first().text());
-             $('#searchInput').val($('.match-highlight').first().text());
+                $('#searchInput').val($('.match-highlight').first().text());
+            }, 2000);
            
         });
 
