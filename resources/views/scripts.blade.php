@@ -790,6 +790,9 @@
 
                 $(this).html(content);
             });
+
+             $('#searchInput').val( $('.match-highlight').first().text());
+           
         });
 
 
