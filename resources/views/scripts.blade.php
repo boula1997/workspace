@@ -3082,6 +3082,63 @@ $(document).ready(function () {
 </script>
 
 
+<script>
+    let matchIndex = 0;
+    let matches = [];
+
+    function highlightMatches(term) {
+        matches = [];
+        matchIndex = 0;
+
+        $('.resultContent').each(function () {
+            const content = $(this).text();
+            const regex = new RegExp(`(${term})`, 'gi');
+
+            const html = content.replace(regex, (match) => {
+                matches.push(match);
+                return `<mark class="match-highlight">${match}</mark>`;
+            });
+
+            $(this).html(html);
+        });
+
+        scrollToMatch();
+    }
+
+    function scrollToMatch() {
+        $('mark').removeClass('active-match');
+
+        if (matches.length === 0) return;
+
+        const current = $('mark').eq(matchIndex);
+        current.addClass('active-match');
+        $('html, body').animate({ scrollTop: current.offset().top - 100 }, 300);
+    }
+
+    $('#searchInput').on('input', function () {
+        const term = $(this).val().trim();
+        $('.resultContent').each(function () {
+            $(this).html($(this).text()); // Reset content
+        });
+
+        if (term) highlightMatches(term);
+    });
+
+    $('#nextMatch').on('click', function () {
+        if (matches.length === 0) return;
+        matchIndex = (matchIndex + 1) % matches.length;
+        scrollToMatch();
+    });
+
+    $('#prevMatch').on('click', function () {
+        if (matches.length === 0) return;
+        matchIndex = (matchIndex - 1 + matches.length) % matches.length;
+        scrollToMatch();
+    });
+</script>
+
+
+
 
 
 

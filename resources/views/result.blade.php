@@ -1289,6 +1289,16 @@
     </div>
 
     <div>
+        <style>
+    mark.match-highlight {
+        background: yellow;
+        padding: 0 2px;
+    }
+    mark.active-match {
+        background: orange !important;
+    }
+</style>
+
         @if ($action == 'get multible scripts' || $action == 'get multible modules')
             <button class="fixed-top mt-5 btn btn-primary w-50" id="showDeletes">Show Deletes</button>
             {{-- <div class="row fixed-top mt-5 my-5 d-flex justify-content-center">
@@ -1299,6 +1309,12 @@
                     <button class="btn btn-outline-secondary" type="button" id="replaceButton">Replace</button>
                 </form>
             </div> --}}
+
+            <div class="d-flex justify-content-center align-items-center my-3 gap-2">
+                <input type="text" id="searchInput" placeholder="Search..." class="form-control w-25">
+                <button class="btn btn-secondary" id="prevMatch">Prev</button>
+                <button class="btn btn-primary" id="nextMatch">Next</button>
+            </div>
 
             @if ($searchRefrences)
                 <div id="contentToReplace" class="mt-5">
