@@ -1310,7 +1310,7 @@
                 </form>
             </div> --}}
 
-            <div class="d-flex justify-content-center align-items-center my-3 gap-2">
+            <div class="d-flex justify-content-center align-items-center my-3 gap-2 fixed-top">
                 <input type="text" id="searchInput" placeholder="Search..." class="form-control w-25 noHide">
                 <button class="btn btn-secondary" id="prevMatch">Prev</button>
                 <button class="btn btn-primary" id="nextMatch">Next</button>
