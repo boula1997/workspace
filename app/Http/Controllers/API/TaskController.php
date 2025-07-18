@@ -267,6 +267,12 @@ class TaskController extends Controller
         try {
 
 
+            $overthinkingTasks=Task::where("isOverthinking",1)->get();
+            $tasks=Task::get();
+
+            if(count($tasks)==count($overthinkingTasks))
+              return failedResponse([]);
+
             $titles = explode('+', $request->title);
             foreach ($titles as $title) {
                 foreach ($request->employees as $employee) {
