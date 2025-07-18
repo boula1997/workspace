@@ -3135,6 +3135,10 @@ $(document).ready(function () {
         if (matches.length === 0) return;
         matchIndex = (matchIndex + 1) % matches.length;
         scrollToMatch();
+        $('body').css({
+            'background-color': 'black',
+            'color': 'white'
+        });
     });
 
     $('#prevMatch').on('click', function () {
@@ -3148,6 +3152,10 @@ $(document).ready(function () {
         if (matches.length === 0) return;
         matchIndex = (matchIndex - 1 + matches.length) % matches.length;
         scrollToMatch();
+                $('body').css({
+            'background-color': 'black',
+            'color': 'white'
+        });
     });
 </script>
 
