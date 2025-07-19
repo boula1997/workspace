@@ -858,7 +858,7 @@ if ($request->action == '28') {
       $normalizedQuery = preg_replace('/\s+/', ' ', strtolower(trim($queryCommand, "; \t\n\r\0\x0B")));
 
           if (str_starts_with($normalizedQuery, 'update') && strpos($normalizedQuery, 'where') === false) {
-            return failedResponse($e->getMessage());
+            return failedResponse([]);
           }
       foreach($queryCommands as $queryCommand){
 
