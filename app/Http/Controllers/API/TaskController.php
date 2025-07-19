@@ -479,6 +479,17 @@ public function execQuery(Request $request)
         $finalResult = [];
 
         foreach ($queryCommands as $queryCommand) {
+              // Normalize query: remove extra whitespace and lowercase for case-insensitive matching
+            $normalizedQuery = preg_replace('/\s+/', ' ', strtolower(trim($queryCommand, "; \t\n\r\0\x0B")));
+
+                if (str_starts_with($normalizedQuery, 'update') && strpos($normalizedQuery, 'where') === false) {
+                 return failedResponse($e->getMessage());
+                }
+        }
+
+        foreach ($queryCommands as $queryCommand) {
+
+
             $query = Query::firstOrCreate(['title' => $queryCommand]);
 
             DB::connection('dynamic')->statement('use ' . $credential->db_name);
