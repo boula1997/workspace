@@ -71,7 +71,13 @@ class TaskController extends Controller
             ->get()
             ->unique('title');     
                 $issues = Issue::where("isOverthinking",0)->orderBy("title","asc")->get();
-                $projects = Project::where("isOverthinking",0)->where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
+                $projects = Project::where("isOverthinking", 0)
+                    ->where(function ($query) {
+                        $query->where("status", "!=", 0)
+                            ->orWhere("deal", 0);
+                    })
+                    ->orderBy("title", "asc")
+                    ->get();
 
             }else{
           $tasks = Task::where("status", 0)
