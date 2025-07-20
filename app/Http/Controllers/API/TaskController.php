@@ -479,21 +479,13 @@ public function execQuery(Request $request)
         $finalResult = [];
 
         foreach ($queryCommands as $queryCommand) {
-            // Clean the query command from unwanted line breaks and extra spaces
-            $queryCommand = preg_replace('/\s+/', ' ', $queryCommand);
-            $queryCommand = trim($queryCommand);
+              // Normalize query: remove extra whitespace and lowercase for case-insensitive matching
+            $normalizedQuery = preg_replace('/\s+/', ' ', strtolower(trim($queryCommand, "; \t\n\r\0\x0B")));
 
-            $query = Query::firstOrCreate(['title' => $queryCommand]);
-
-            DB::connection('dynamic')->statement('use ' . $credential->db_name);
-            $data = DB::connection('dynamic')->select($queryCommand);
-
-            $finalResult[] = [
-                'query' => $queryCommand,
-                'result' => $data,
-            ];
+                if (str_starts_with($normalizedQuery, 'update') && strpos($normalizedQuery, 'where') === false) {
+                 return failedResponse([]);
+                }
         }
-
 
         foreach ($queryCommands as $queryCommand) {
 
@@ -503,10 +495,20 @@ public function execQuery(Request $request)
             DB::connection('dynamic')->statement('use ' . $credential->db_name);
             $data = DB::connection('dynamic')->select($queryCommand);
 
+            $cleanedData = array_map(function ($row) {
+                $row = (array) $row; // Ensure it's an array, not stdClass
+                if (isset($row['codeLinks'])) {
+                    $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
+                    $row['codeLinks'] = trim($row['codeLinks']);
+                }
+                return $row;
+            }, $data);
+
             $finalResult[] = [
                 'query' => $queryCommand,
-                'result' => $data,
+                'result' => $cleanedData,
             ];
+
         }
 
         DB::commit(); // Commit transaction if everything is fine
