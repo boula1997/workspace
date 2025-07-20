@@ -902,9 +902,9 @@ public function show($db, $table, $query)
     $credential = DBCredential::where('db_name', $db)->first();
 
     $dbHost = '127.0.0.1';
-    $dbName = isset($credential->db_name) ? $credential->db_name : 'automation';
-    $dbUser = isset($credential->db_username) ? $credential->db_username : 'root';
-    $dbPass = isset($credential->db_password) ? $credential->db_password : '';
+    $dbName = $credential->db_name ?? 'automation';
+    $dbUser = $credential->db_username ?? 'root';
+    $dbPass = $credential->db_password ?? '';
 
     config([
         'database.connections.dynamic' => [
@@ -940,11 +940,10 @@ public function show($db, $table, $query)
 
     $insertString = "INSERT INTO $table ($attributes) VALUES ($datatypes);";
 
-    // ✅ NEW: Alphabetically sort all columns
+    // Sort columns alphabetically
     $allColumnNames = collect($columns)->pluck('COLUMN_NAME')->sort()->values();
     $orderedColumnList = $allColumnNames->map(fn($col) => "`$col`")->implode(', ');
 
-    // ✅ Updated data query using sorted column list
     $data = DB::connection('dynamic')->select("
         SELECT * 
         FROM (
@@ -954,6 +953,16 @@ public function show($db, $table, $query)
             LIMIT 1000
         ) AS q;
     ");
+
+    // ✅ Clean codeLinks / extra spaces / \n \r
+    $data = array_map(function ($row) {
+        $row = (array) $row;
+        if (isset($row['codeLinks'])) {
+            $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
+            $row['codeLinks'] = trim($row['codeLinks']);
+        }
+        return $row;
+    }, $data);
 
     $updateQuery = "";
 
@@ -967,7 +976,6 @@ public function show($db, $table, $query)
                 ->delete();
         }
 
-        // ✅ Use same ordered column list here
         $singleRow = DB::connection('dynamic')->select("
             SELECT * 
             FROM (
@@ -1018,6 +1026,7 @@ public function show($db, $table, $query)
         'updateQuery' => $updateQuery,
     ]);
 }
+
 
   
   
