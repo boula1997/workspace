@@ -825,58 +825,72 @@ if ($request->action == '28') {
 
   }
 
-  public function execQuery(Request $request)
-  {
+public function execQuery(Request $request)
+{
     try {
-
-        $credential=DBCredential::where('db_name',isset($request->dbname)?$request->dbname:'yousabte_automation')->first();
+        $credential = DBCredential::where('db_name', $request->dbname ?? 'yousabte_automation')->first();
         $dbHost = '127.0.0.1';
-        $dbName = isset($credential->db_name)?$credential->db_name:'automation';
-        $dbUser = isset($credential->db_username)?$credential->db_username:'root';
-        $dbPass = isset($credential->db_password)?$credential->db_password:'';
-    
-            // Temporarily configure the database connection
-            config([
-              'database.connections.dynamic' => [
-                  'driver' => 'mysql',
-                  'host' => $dbHost,
-                  'database' => $dbName,
-                  'username' => $dbUser,
-                  'password' => $dbPass,
-                  'charset' => 'utf8mb4',
-                  'collation' => 'utf8mb4_unicode_ci',
-              ],
-          ]);
-    
-              // Use the dynamic connection
+        $dbName = $credential->db_name ?? 'automation';
+        $dbUser = $credential->db_username ?? 'root';
+        $dbPass = $credential->db_password ?? '';
+
+        config([
+            'database.connections.dynamic' => [
+                'driver' => 'mysql',
+                'host' => $dbHost,
+                'database' => $dbName,
+                'username' => $dbUser,
+                'password' => $dbPass,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+            ],
+        ]);
+
         DB::purge('dynamic');
         DB::reconnect('dynamic');
-      // $result = DB::connection('dynamic')->statement('use automation');
-      $queryCommands=explode('++', $request->queryCommand);
 
-              // Normalize query: remove extra whitespace and lowercase for case-insensitive matching
-      $normalizedQuery = preg_replace('/\s+/', ' ', strtolower(trim($queryCommand, "; \t\n\r\0\x0B")));
+        $queryCommands = explode('++', $request->queryCommand);
 
-          if (str_starts_with($normalizedQuery, 'update') && strpos($normalizedQuery, 'where') === false) {
-            return failedResponse([]);
-          }
-      foreach($queryCommands as $queryCommand){
+        foreach ($queryCommands as $queryCommand) {
+            $normalizedQuery = preg_replace('/\s+/', ' ', strtolower(trim($queryCommand, "; \t\n\r\0\x0B")));
 
-        $query=Query::where('title',$queryCommand)->first();
-        if(!isset($query))
-        $query=Query::create([
-          'title'=>$queryCommand
+            if (str_starts_with($normalizedQuery, 'update') && strpos($normalizedQuery, 'where') === false) {
+                return failedResponse([]);
+            }
+
+            $query = Query::firstOrCreate(['title' => $queryCommand]);
+
+            DB::connection('dynamic')->statement('use ' . $dbName);
+            $data = DB::connection('dynamic')->select($queryCommand);
+
+            $data = array_map(function ($row) {
+                $row = (array) $row;
+                if (isset($row['codeLinks'])) {
+                    $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
+                    $row['codeLinks'] = trim($row['codeLinks']);
+                }
+                return $row;
+            }, $data);
+
+            $finalResult[] = [
+                'query' => $queryCommand,
+                'result' => $data,
+            ];
+        }
+
+        return response()->json([
+            'success' => "Done Successfully",
+            'data' => $finalResult ?? [],
         ]);
-        $queries=Query::latest()->take(100)->get()->unique('title');
-        $queryTitles=$queries->pluck('title')->toArray();
-        $result = DB::connection('dynamic')->statement('use ' . $request->dbname . '');
-        $data = DB::connection('dynamic')->select($queryCommand);
-      }
-      return response()->json(['success' => "Done Successfully", 'data' => $data,'query'=>$queryCommand]);
     } catch (\Exception $e) {
-      return response()->json(['success' => $e->getMessage(), 'data' => [],'query'=>$queryCommand]);
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'data' => [],
+        ]);
     }
-  }
+}
+
 
 
 
