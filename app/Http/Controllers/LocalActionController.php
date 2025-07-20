@@ -988,34 +988,54 @@ public function show($db, $table, $query)
     return response()->json(['success' => "Deleted Successfully"]);
   }
 
-  public function execQuery(Request $request)
-  {
+public function execQuery(Request $request)
+{
     try {
-      $result = DB::statement('use webapp');
-      $queryCommands=explode('++', $request->queryCommand);
-              // Normalize query: remove extra whitespace and lowercase for case-insensitive matching
-      $normalizedQuery = preg_replace('/\s+/', ' ', strtolower(trim($queryCommand, "; \t\n\r\0\x0B")));
+        DB::statement('use webapp');
+        $queryCommands = explode('++', $request->queryCommand);
+        $finalResult = [];
 
-          if (str_starts_with($normalizedQuery, 'update') && strpos($normalizedQuery, 'where') === false) {
-            return failedResponse([]);
-          }
-       foreach($queryCommands as $queryCommand){
+        foreach ($queryCommands as $queryCommand) {
+            $normalizedQuery = preg_replace('/\s+/', ' ', strtolower(trim($queryCommand, "; \t\n\r\0\x0B")));
 
-         $query=Query::where('title',$queryCommand)->first();
-         if(!isset($query))
-         $query=Query::create([
-           'title'=>$queryCommand
-         ]);
-         $queries=Query::latest()->take(100)->get()->unique('title');
-         $queryTitles=$queries->pluck('title')->toArray();
-         $result = DB::statement('use '.$request->dbname.'');
-         $data = DB::select($queryCommand);
-       }
-      return response()->json(['success' => "Done Successfully", 'data' => $data,'query'=>$queryCommand]);
+            if (str_starts_with($normalizedQuery, 'update') && strpos($normalizedQuery, 'where') === false) {
+                return failedResponse([]);
+            }
+
+            $query = Query::firstOrCreate(['title' => $queryCommand]);
+
+            DB::statement('use ' . $request->dbname);
+            $data = DB::select($queryCommand);
+
+            // Clean the output to remove \r\n, \n, \t from codeLinks
+            $cleanedData = array_map(function ($row) {
+                $row = (array) $row;
+                if (isset($row['codeLinks'])) {
+                    $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
+                    $row['codeLinks'] = trim($row['codeLinks']);
+                }
+                return $row;
+            }, $data);
+
+            $finalResult[] = [
+                'query' => $queryCommand,
+                'result' => $cleanedData,
+            ];
+        }
+
+        return response()->json([
+            'success' => "Done Successfully",
+            'data' => $finalResult ?? [],
+        ]);
     } catch (\Exception $e) {
-      return response()->json(['success' => $e->getMessage(), 'data' => [],'query'=>$queryCommand]);
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'data' => [],
+        ]);
     }
-  }
+}
+
 
   public function lastUpdate($date)
   {
