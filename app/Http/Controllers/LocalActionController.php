@@ -836,11 +836,10 @@ public function show($db, $table, $query)
 
     $insertString = "INSERT INTO $table ($attributes) VALUES ($datatypes);";
 
-    // ✅ Step: Get all column names and sort them alphabetically
+    // Sort all column names alphabetically
     $allColumnNames = collect($columns)->pluck('COLUMN_NAME')->sort()->values();
     $orderedColumnList = $allColumnNames->map(fn($col) => "`$col`")->implode(', ');
 
-    // ✅ Use ordered columns in your query instead of *
     $data = DB::select("
         SELECT * 
         FROM (
@@ -850,6 +849,16 @@ public function show($db, $table, $query)
             LIMIT 1000
         ) AS q;
     ");
+
+    // ✅ Clean `codeLinks` field in $data
+    $data = array_map(function ($row) {
+        $row = (array) $row;
+        if (isset($row['codeLinks'])) {
+            $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
+            $row['codeLinks'] = trim($row['codeLinks']);
+        }
+        return $row;
+    }, $data);
 
     $updateQuery = "";
 
@@ -873,7 +882,7 @@ public function show($db, $table, $query)
         ");
 
         if (!empty($singleRow)) {
-            $row = (array) $singleRow[0]; // Convert object to array
+            $row = (array) $singleRow[0];
 
             $updateParts = [];
             foreach ($row as $column => $value) {
@@ -912,6 +921,7 @@ public function show($db, $table, $query)
         'updateQuery' => $updateQuery,
     ]);
 }
+
 
   
   
