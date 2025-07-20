@@ -501,6 +501,10 @@ public function execQuery(Request $request)
                     $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
                     $row['codeLinks'] = trim($row['codeLinks']);
                 }
+                if (isset($row['script'])) {
+                $row['script'] = preg_replace('/\s+/', ' ', $row['script']);
+                $row['script'] = trim($row['script']);
+                }
                 return $row;
             }, $data);
 

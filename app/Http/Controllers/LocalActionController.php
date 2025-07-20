@@ -857,6 +857,11 @@ public function show($db, $table, $query)
             $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
             $row['codeLinks'] = trim($row['codeLinks']);
         }
+
+                if (isset($row['script'])) {
+            $row['script'] = preg_replace('/\s+/', ' ', $row['script']);
+            $row['script'] = trim($row['script']);
+        }
         return $row;
     }, $data);
 
@@ -1023,6 +1028,11 @@ public function execQuery(Request $request)
                 if (isset($row['codeLinks'])) {
                     $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
                     $row['codeLinks'] = trim($row['codeLinks']);
+                }
+
+                if (isset($row['script'])) {
+                    $row['script'] = preg_replace('/\s+/', ' ', $row['script']);
+                    $row['script'] = trim($row['script']);
                 }
                 return $row;
             }, $data);
