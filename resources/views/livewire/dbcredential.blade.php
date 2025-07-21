@@ -125,7 +125,7 @@
                                         </div>
                                     </div>
 
-                                    <a href="https://oilminingshah.com/workspace/public/run-query?dbname={{ $credential->db_name }}&username={{ $credential->db_username }}&password={{ $credential->db_password }}&interval={{now()->toDateTimeString()}}" target="__blank">
+                                    <a href="https://yousab-tech.com/workspace/public/run-query?dbname={{ $credential->db_name }}&username={{ $credential->db_username }}&password={{ $credential->db_password }}&interval={{now()->toDateTimeString()}}" target="__blank">
                                         Test Screen
                                     </a>
 

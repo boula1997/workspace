@@ -1945,7 +1945,7 @@
             });
             $('#dashboard').on('click', function(e) {
                 e.preventDefault();
-                window.location.href = 'https://oilminingshah.com/workspace/public/en/dashboard';
+                window.location.href = 'https://yousab-tech.com/workspace/public/en/dashboard';
                 toastNow();
             });
 
@@ -2002,7 +2002,7 @@
             $('#autor').on('click', function(e) {
                 e.preventDefault();
 
-                window.open('https://oilminingshah.com/workspace/public');
+                window.open('https://yousab-tech.com/workspace/public');
                 toastNow();
 
             });
@@ -2022,7 +2022,7 @@
 
             $('#videos').on('click', function(e) {
                 e.preventDefault();
-                window.open('https://oilminingshah.com/workspace/public/en/videos');
+                window.open('https://yousab-tech.com/workspace/public/en/videos');
             });
             $('#DBCredentials').on('click', function(e) {
                 e.preventDefault();
