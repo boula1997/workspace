@@ -505,6 +505,10 @@ public function execQuery(Request $request)
                 $row['script'] = preg_replace('/\s+/', ' ', $row['script']);
                 $row['script'] = trim($row['script']);
                 }
+                if (isset($row['dispatch_status'])) {
+                $row['dispatch_status'] = preg_replace('/\s+/', ' ', $row['dispatch_status']);
+                $row['dispatch_status'] = trim($row['dispatch_status']);
+                }
                 return $row;
             }, $data);
 
