@@ -451,7 +451,7 @@ class TaskController extends Controller
 
 public function execQuery(Request $request)
 {
-    DB::beginTransaction(); // Start transaction
+    DB::beginTransaction();
 
     try {
         $credential = DBCredential::where('id', $request->credential_id)->first();
@@ -478,53 +478,55 @@ public function execQuery(Request $request)
         $queryCommands = explode('++', $request->title);
         $finalResult = [];
 
+        // Validation: prevent dangerous updates
         foreach ($queryCommands as $queryCommand) {
-              // Normalize query: remove extra whitespace and lowercase for case-insensitive matching
             $normalizedQuery = preg_replace('/\s+/', ' ', strtolower(trim($queryCommand, "; \t\n\r\0\x0B")));
-
-                if (str_starts_with($normalizedQuery, 'update') && strpos($normalizedQuery, 'where') === false) {
-                 return failedResponse([]);
-                }
+            if (str_starts_with($normalizedQuery, 'update') && strpos($normalizedQuery, 'where') === false) {
+                return failedResponse([]);
+            }
         }
 
         foreach ($queryCommands as $queryCommand) {
+            try {
+                // Save query
+                $query = Query::firstOrCreate(['title' => $queryCommand]);
 
+                // Switch DB
+                DB::connection('dynamic')->statement('use ' . $credential->db_name);
 
-            $query = Query::firstOrCreate(['title' => $queryCommand]);
+                // Try executing query
+                $data = DB::connection('dynamic')->select($queryCommand);
 
-            DB::connection('dynamic')->statement('use ' . $credential->db_name);
-            $data = DB::connection('dynamic')->select($queryCommand);
-
-            if(count($data)==0)
-            continue;
-
-            
-
-            $cleanedData = array_map(function ($row) {
-                $row = (array) $row; // Ensure it's an array, not stdClass
-                if (isset($row['codeLinks'])) {
-                    $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
-                    $row['codeLinks'] = trim($row['codeLinks']);
+                if (count($data) === 0) {
+                    continue; // Skip empty results
                 }
-                if (isset($row['script'])) {
-                $row['script'] = preg_replace('/\s+/', ' ', $row['script']);
-                $row['script'] = trim($row['script']);
-                }
-                if (isset($row['dispatch_status'])) {
-                $row['dispatch_status'] = preg_replace('/\s+/', ' ', $row['dispatch_status']);
-                $row['dispatch_status'] = trim($row['dispatch_status']);
-                }
-                return $row;
-            }, $data);
 
-            $finalResult[] = [
-                'query' => $queryCommand,
-                'result' => $cleanedData,
-            ];
+                // Clean result
+                $cleanedData = array_map(function ($row) {
+                    $row = (array) $row;
 
+                    foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
+                        if (isset($row[$field])) {
+                            $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
+                        }
+                    }
+
+                    return $row;
+                }, $data);
+
+                // Add to result
+                $finalResult[] = [
+                    'query' => $queryCommand,
+                    'result' => $cleanedData,
+                ];
+            } catch (\Throwable $e) {
+                // Log the error, skip this query
+                Log::warning("Query failed: {$queryCommand} | Error: " . $e->getMessage());
+                continue;
+            }
         }
 
-        DB::commit(); // Commit transaction if everything is fine
+        DB::commit();
 
         return response()->json([
             'success' => "Done Successfully",
@@ -532,15 +534,15 @@ public function execQuery(Request $request)
         ]);
 
     } catch (\Exception $e) {
-        DB::rollBack(); // Rollback if something goes wrong
+        DB::rollBack();
 
         $fallbackData = Query::where('title', 'like', "%{$request->title}%")
-    ->latest()
-    ->get()
-    ->map(function ($item) {
-        $item->title = trim(preg_replace('/\s+/', ' ', $item->title)); // Remove \n, \r, tabs, extra spaces
-        return $item;
-    });
+            ->latest()
+            ->get()
+            ->map(function ($item) {
+                $item->title = trim(preg_replace('/\s+/', ' ', $item->title));
+                return $item;
+            });
 
         return response()->json([
             'success' => false,
@@ -549,6 +551,7 @@ public function execQuery(Request $request)
         ]);
     }
 }
+
 
 
 
