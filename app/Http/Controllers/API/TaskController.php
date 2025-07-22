@@ -487,36 +487,50 @@ public function execQuery(Request $request)
                 }
         }
 
+        $finalResult = [];
+
         foreach ($queryCommands as $queryCommand) {
+            try {
+                // Save query reference (optional tracking)
+                $query = Query::firstOrCreate(['title' => $queryCommand]);
 
+                // Switch to the dynamic database
+                DB::connection('dynamic')->statement('use ' . $credential->db_name);
 
-            $query = Query::firstOrCreate(['title' => $queryCommand]);
+                // Execute query — might fail
+                $data = DB::connection('dynamic')->select($queryCommand);
 
-            DB::connection('dynamic')->statement('use ' . $credential->db_name);
-            $data = DB::connection('dynamic')->select($queryCommand);
+                // Clean up the results
+                $cleanedData = array_map(function ($row) {
+                    $row = (array) $row;
 
-            $cleanedData = array_map(function ($row) {
-                $row = (array) $row; // Ensure it's an array, not stdClass
-                if (isset($row['codeLinks'])) {
-                    $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
-                    $row['codeLinks'] = trim($row['codeLinks']);
-                }
-                if (isset($row['script'])) {
-                $row['script'] = preg_replace('/\s+/', ' ', $row['script']);
-                $row['script'] = trim($row['script']);
-                }
-                if (isset($row['dispatch_status'])) {
-                $row['dispatch_status'] = preg_replace('/\s+/', ' ', $row['dispatch_status']);
-                $row['dispatch_status'] = trim($row['dispatch_status']);
-                }
-                return $row;
-            }, $data);
+                    foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
+                        if (isset($row[$field])) {
+                            $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
+                        }
+                    }
 
-            $finalResult[] = [
-                'query' => $queryCommand,
-                'result' => $cleanedData,
-            ];
+                    return $row;
+                }, $data);
 
+                // Add to final result
+                $finalResult[] = [
+                    'query' => $queryCommand,
+                    'result' => $cleanedData,
+                ];
+            } catch (\Throwable $e) {
+                // Skip this query and log the error
+                Log::warning("Skipped failed query: $queryCommand | Error: " . $e->getMessage());
+
+                // Optionally include failed query with empty result
+                $finalResult[] = [
+                    'query' => $queryCommand,
+                    'result' => [],
+                    'error' => 'Query failed and was skipped',
+                ];
+
+                continue; // Go to next query
+            }
         }
 
         DB::commit(); // Commit transaction if everything is fine
