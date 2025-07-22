@@ -1013,6 +1013,7 @@ public function execQuery(Request $request)
         DB::statement('use webapp');
         $queryCommands = explode('++', $request->queryCommand);
         $finalResult = [];
+        $query = Query::firstOrCreate(['title' => $request->queryCommand]);
 
         foreach ($queryCommands as $queryCommand) {
             $normalizedQuery = preg_replace('/\s+/', ' ', strtolower(trim($queryCommand, "; \t\n\r\0\x0B")));
@@ -1021,7 +1022,6 @@ public function execQuery(Request $request)
                 return failedResponse([]);
             }
 
-            $query = Query::firstOrCreate(['title' => $queryCommand]);
 
             DB::statement('use ' . $request->dbname);
             $data = DB::select($queryCommand);

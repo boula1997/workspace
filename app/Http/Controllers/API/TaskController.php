@@ -478,6 +478,9 @@ public function execQuery(Request $request)
         $queryCommands = explode('++', $request->title);
         $finalResult = [];
 
+            $query = Query::firstOrCreate(['title' => $request->title]);
+
+
         foreach ($queryCommands as $queryCommand) {
               // Normalize query: remove extra whitespace and lowercase for case-insensitive matching
             $normalizedQuery = preg_replace('/\s+/', ' ', strtolower(trim($queryCommand, "; \t\n\r\0\x0B")));
@@ -490,7 +493,6 @@ public function execQuery(Request $request)
         foreach ($queryCommands as $queryCommand) {
 
 
-            $query = Query::firstOrCreate(['title' => $queryCommand]);
 
             DB::connection('dynamic')->statement('use ' . $credential->db_name);
             $data = DB::connection('dynamic')->select($queryCommand);
