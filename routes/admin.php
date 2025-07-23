@@ -71,7 +71,7 @@ Route::group(
             Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'createAdmin'])->name('admin.register');
 
             
-             Route::group(['middleware' => 'businessHours'], function () {
+            //  Route::group(['middleware' => 'businessHours'], function () {
 
                  Route::group(['middleware' => ['auth:admin']], function () {
      
@@ -163,7 +163,7 @@ Route::group(
      
              Route::get('/projects/public/{project}', [ProjectController::class, 'show'])->name('projects.publicShow');
 
-             });
+            //  });
 
     });
 }
