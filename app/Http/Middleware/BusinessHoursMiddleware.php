@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\Setting;
 
 class BusinessHoursMiddleware
 {
@@ -15,6 +16,9 @@ class BusinessHoursMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+            if (Setting::where('updated_at', '>', now()->addMinutes(30))->exists()) {
+                Setting::query()->update(['stopClosing' => 0]);
+            }
 
         if(settings()->stopClosing)
         return $next($request);
