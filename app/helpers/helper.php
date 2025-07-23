@@ -975,6 +975,10 @@ function boula()
 
 
 function isWithinWorkingHours(){
+
+
+    if(settings()->stopClosing)
+        return true;
       date_default_timezone_set('Africa/Cairo');
 
         $dayOfWeek = date('w'); // 0 (Sunday) to 6 (Saturday)
