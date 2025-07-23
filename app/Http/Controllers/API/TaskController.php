@@ -276,7 +276,7 @@ class TaskController extends Controller
             $overthinkingTasks=Task::where("isOverthinking",1)->get();
             $tasks=Task::get();
 
-            if(count($tasks)==count($overthinkingTasks))
+            if(count($tasks)==count($overthinkingTasks) && !isWithinWorkingHours())
               return failedResponse([]);
 
             $titles = explode('+', $request->title);
