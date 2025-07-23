@@ -15,6 +15,11 @@ class BusinessHoursMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+
+        if(settings()->stopClosing)
+        return $next($request);
+
+        
         date_default_timezone_set('Africa/Cairo');
 
         $dayOfWeek = date('w'); // 0 (Sunday) to 6 (Saturday)
