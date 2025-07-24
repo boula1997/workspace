@@ -718,15 +718,15 @@
             console.log('formattedDate:', formattedDate);
             console.log('isWithinWorkingHours:', isWithinWorkingHours);
 
-            if (!isWithinWorkingHours) {
-                alert("You are accessing this site outside of working hours (" + startTime + ":00 - " + endHour +
-                    ":00).");
-                alert("Please be productive today :)");
-                setTimeout(() => {
-                    $('#surveyModal').modal('show');
-                    $('input[name="startYourWork"]').click();
-                }, 3000);
-            }
+            // if (!isWithinWorkingHours) {
+            //     alert("You are accessing this site outside of working hours (" + startTime + ":00 - " + endHour +
+            //         ":00).");
+            //     alert("Please be productive today :)");
+            //     setTimeout(() => {
+            //         $('#surveyModal').modal('show');
+            //         $('input[name="startYourWork"]').click();
+            //     }, 3000);
+            // }
         });
 
 
