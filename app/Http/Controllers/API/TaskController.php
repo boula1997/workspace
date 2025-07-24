@@ -353,6 +353,9 @@ class TaskController extends Controller
     {
         try {
 
+             if(!isWithinWorkingHours())
+              return failedResponse([]);
+
                 // Find and toggle the level for the given task ID
                 $task = Task::find($id);
                 $task->where('title', $task->title)->update(['piority' => !$task->piority]);
@@ -367,6 +370,9 @@ class TaskController extends Controller
         public function toggleStatus($id)
     {
         try {
+
+             if(!isWithinWorkingHours())
+              return failedResponse([]);
 
                  // Find and toggle the level for the given task ID
                  $task = Task::find($id);

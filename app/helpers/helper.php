@@ -98,7 +98,7 @@ function updateStopClosingStatus(){
 
 if(settings()->stopClosing==1 && !isWithinWorkingHours()){
      $diffInMinutes = Carbon::now()->diffInMinutes(settings()->updated_at);
-    $now = Carbon::now();
+     $now = Carbon::now();
  
 
     if($diffInMinutes>490)
