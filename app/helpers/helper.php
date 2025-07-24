@@ -94,11 +94,10 @@ function activeDeadline()
 
 
 function updateStopClosingStatus(){
-    // Get the latest setting that has an updated_at
-$setting = Setting::whereNotNull('updated_at')->orderBy('updated_at', 'desc')->first();
 
-if ($setting) {
-    $diffInMinutes = Carbon::now()->diffInMinutes($setting->updated_at);
+
+if(settings()->stopClosing==1 && !isWithinWorkingHours()){
+     $diffInMinutes = Carbon::now()->diffInMinutes(settings()->updated_at);
     $now = Carbon::now();
  
 
@@ -107,11 +106,10 @@ if ($setting) {
         'stopClosing' => 0,
         'updated_at' => now()
     ]);
-
-
-} else {
-    dd('No updated settings found.');
 }
+
+
+
 }
 
 function dectatorBoula()
