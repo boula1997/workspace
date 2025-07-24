@@ -25,16 +25,11 @@ class BusinessHoursMiddleware
 $setting = Setting::whereNotNull('updated_at')->orderBy('updated_at', 'desc')->first();
 
 if ($setting) {
-    $diffInMinutes = Carbon::now()->diffInMinutes($setting->updated_at->setTimezone('Africa/Cairo'));
+    $diffInMinutes = Carbon::now()->diffInMinutes($setting->updated_at);
     $now = Carbon::now();
-            dd([
-            'now'           => $now->toDateTimeString(),      // e.g. 2025‑07‑24 04:20:07
-            'updated_at'    => $setting->updated_at->setTimezone('Africa/Cairo')->toDateTimeString(),
-            'diff_seconds'  => $now->diffInSeconds($setting->updated_at->setTimezone('Africa/Cairo')),
-            'diff_minutes'  => $now->diffInMinutes($setting->updated_at->setTimezone('Africa/Cairo')),
-        ]);
+ 
 
-    if($diffInMinutes>30)
+    if($diffInMinutes>482)
     Setting::query()->update([
         'stopClosing' => 0,
         'updated_at' => now()
