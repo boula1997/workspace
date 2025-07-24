@@ -27,18 +27,20 @@ $setting = Setting::whereNotNull('updated_at')->orderBy('updated_at', 'desc')->f
 if ($setting) {
     $diffInMinutes = Carbon::now()->diffInMinutes($setting->updated_at);
 
+        dd([
+        'now'           => $now->toDateTimeString(),      // e.g. 2025‑07‑24 04:20:07
+        'updated_at'    => $setting->updated_at->toDateTimeString(),
+        'diff_seconds'  => $now->diffInSeconds($setting->updated_at),
+        'diff_minutes'  => $now->diffInMinutes($setting->updated_at),
+    ]);
+
     if($diffInMinutes>30)
     Setting::query()->update([
         'stopClosing' => 0,
         'updated_at' => now()
     ]);
 
-    dd([
-        'now'           => $now->toDateTimeString(),      // e.g. 2025‑07‑24 04:20:07
-        'updated_at'    => $setting->updated_at->toDateTimeString(),
-        'diff_seconds'  => $now->diffInSeconds($setting->updated_at),
-        'diff_minutes'  => $now->diffInMinutes($setting->updated_at),
-    ]);
+
 } else {
     dd('No updated settings found.');
 }
