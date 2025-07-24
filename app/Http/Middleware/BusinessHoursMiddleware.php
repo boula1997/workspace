@@ -21,8 +21,7 @@ class BusinessHoursMiddleware
 
 
 
-            if (Setting::where('updated_at', '<', now()->addMinutes(30))->exists()) {
-                DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode([now()->addMinutes(30),settings()->updated_at]), 'created_at' => now(), ]);
+            if (Setting::where('updated_at', '<', now()->addMinutes(2))->exists()) {
                 Setting::query()->update(['stopClosing' => 0]);
             }
 
