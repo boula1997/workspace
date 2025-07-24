@@ -29,7 +29,7 @@ if ($setting) {
     $now = Carbon::now();
  
 
-    if($diffInMinutes>10)
+    if($diffInMinutes>490)
     Setting::query()->update([
         'stopClosing' => 0,
         'updated_at' => now()
