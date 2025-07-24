@@ -196,7 +196,7 @@ class TaskController extends Controller
             ->where('cost', '>', 0)
             ->pluck('id'); // returns a collection of IDs
             $moneyProjectsList = $selectedProjects->filter(function ($project) use ($moneyProjectIds) {
-                return in_array($project->id, $moneyProjectIds);
+                return $moneyProjectIds->contains($project->id);
             });
             $progressProjects=Project::where('status',1)->get();
             $finishedProjects=Project::where('status',0)->get();
