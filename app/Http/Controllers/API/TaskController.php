@@ -221,6 +221,7 @@ class TaskController extends Controller
                 "totalGained"=>$totalCost-$totalRest,
                 "target"=>20000,
                 "contractProjects"=>count($contractProjects),
+                "contracts"=>$contractProjects,
                 "moneyProjects"=>count($moneyProjects),
                 "progressProjects"=>count($progressProjects),
                 "finishedProjects"=>count($finishedProjects),
