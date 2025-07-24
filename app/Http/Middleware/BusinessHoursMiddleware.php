@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
-
+use Carbon\Carbon;
 
 class BusinessHoursMiddleware
 {
@@ -19,6 +19,22 @@ class BusinessHoursMiddleware
     public function handle(Request $request, Closure $next): Response
     {
 
+
+        
+// Get the latest setting that has an updated_at
+$setting = Setting::whereNotNull('updated_at')->orderBy('updated_at', 'desc')->first();
+
+if ($setting) {
+    $diffInMinutes = Carbon::now()->diffInMinutes($setting->updated_at);
+    $diffInSeconds = Carbon::now()->diffInSeconds($setting->updated_at);
+
+    dd([
+        'diff_minutes' => $diffInMinutes,
+        'diff_seconds' => $diffInSeconds,
+    ]);
+} else {
+    dd('No updated settings found.');
+}
 
 
         if (Setting::where('updated_at', '>=', now()->subMinutes(2))->exists()) {
