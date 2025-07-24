@@ -191,9 +191,10 @@ class TaskController extends Controller
             ->where('cost', 0)
             ->get();
             $moneyProjects=Project::where('status',2)->where("cost",">",0)->get();
+            $moneyProjectsList=Project::where('status',2)->where("cost",">",0)->whereIn("id",$moneyProjectIds)->get();
             $moneyProjectIds = Project::where('status', 2)
-    ->where('cost', '>', 0)
-    ->pluck('id'); // returns a collection of IDs
+            ->where('cost', '>', 0)
+            ->pluck('id'); // returns a collection of IDs
             $progressProjects=Project::where('status',1)->get();
             $finishedProjects=Project::where('status',0)->get();
 
@@ -221,6 +222,7 @@ class TaskController extends Controller
                 "totalGained"=>$totalCost-$totalRest,
                 "target"=>20000,
                 "contractProjects"=>count($contractProjects),
+                "moneyProjectsListCount"=>count($moneyProjectsList),
                 "contracts"=>$contractProjects,
                 "moneyProjects"=>count($moneyProjects),
                 "progressProjects"=>count($progressProjects),
