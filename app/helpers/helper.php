@@ -55,6 +55,10 @@ function settings()
 {
     return Setting::first();
 }
+function settings2()
+{
+    return Setting::where("id",">",1)->first();
+}
 
 
 function clearTasks($taskTitle)
@@ -96,8 +100,8 @@ function activeDeadline()
 function updateStopClosingStatus(){
 
 
-if(settings()->stopClosing==1 && !isWithinWorkingHours()){
-     $diffInMinutes = Carbon::now()->diffInMinutes(settings()->updated_at);
+if(settings2()->stopClosing==1 && !isWithinWorkingHours()){
+     $diffInMinutes = Carbon::now()->diffInMinutes(settings2()->updated_at);
      $now = Carbon::now();
  
 
