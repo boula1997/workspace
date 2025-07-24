@@ -177,8 +177,9 @@ class TaskController extends Controller
 
             // Retrieve and filter projects
             $projects = Project::where('title', 'NOT LIKE', '%aloo%')->latest()->get();
-            $selectedProjects = $projects->filter(fn($project) => rest($project) > 0)
-                              ->sortByDesc(fn($project) => rest($project));
+            $selectedProjects = $projects->filter(function ($project) {
+                return rest($project) > 0 || $project->status == 2;
+            })->sortByDesc(fn($project) => rest($project));
 
             // Total of rest
             $totalRest = $selectedProjects->sum(fn($project) => rest($project));
