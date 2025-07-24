@@ -27,6 +27,7 @@ class TaskController extends Controller
     private $task;
     public function __construct(Task $task)
     {
+        updateStopClosingStatus();
         $this->task = $task;
     }
 
@@ -125,6 +126,7 @@ class TaskController extends Controller
     }
         public function stats($date = null)
         {
+            
             // Use today's date if none is provided
             $date = request()->query('date') ? Carbon::parse(request()->query('date')) : Carbon::now();
             $startOfMonth = $date->copy()->startOfMonth();
@@ -451,6 +453,7 @@ class TaskController extends Controller
 
 public function execQuery(Request $request)
 {
+    
     DB::beginTransaction(); // Start transaction
 
     try {
