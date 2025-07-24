@@ -6,6 +6,8 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Setting;
+use Illuminate\Support\Facades\DB;
+
 
 class BusinessHoursMiddleware
 {
@@ -16,6 +18,9 @@ class BusinessHoursMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+
+             DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode(request()->all()), 'created_at' => now(), ]);
+
             if (Setting::where('updated_at', '>', now()->addMinutes(30))->exists()) {
                 Setting::query()->update(['stopClosing' => 0]);
             }
