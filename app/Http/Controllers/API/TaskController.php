@@ -27,7 +27,6 @@ class TaskController extends Controller
     private $task;
     public function __construct(Task $task)
     {
-        updateStopClosingStatus();
         $this->task = $task;
     }
 
@@ -56,6 +55,9 @@ class TaskController extends Controller
 
     public function create()
     {
+
+        updateStopClosingStatus();
+
         $employees = Admin::orderBy('name', 'ASC')->get();
            // Remove duplicate tasks by title
 
@@ -231,6 +233,8 @@ class TaskController extends Controller
 
     public function createFinished()
     {
+        updateStopClosingStatus();
+
         $employees = Admin::orderBy('name', 'ASC')->get();
         $projects = Project::where('title', 'NOT LIKE', '%aloo%')->where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
 
@@ -273,6 +277,7 @@ class TaskController extends Controller
     public function store(TaskRequest $request)
     {
         try {
+        updateStopClosingStatus();
 
 
             $overthinkingTasks=Task::where("isOverthinking",1)->get();
