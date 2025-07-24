@@ -106,7 +106,7 @@ if(settings2()->stopClosing==1){
 
     //  DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode($diffInMinutes), 'created_at' => now(), ]);
 
-    if($diffInMinutes>481)
+    if($diffInMinutes>490)
     Setting::query()->update([
         'stopClosing' => 0,
         'updated_at' => now()
