@@ -21,7 +21,7 @@ class BusinessHoursMiddleware
 
 
 
-        if (Setting::where('updated_at', '>=', now()->subMinutes(30))->exists()) {
+        if (Setting::where('updated_at', '>=', now()->subMinutes(2))->exists()) {
             Setting::query()->update([
                 'stopClosing' => 0,
                 'updated_at' => now()
