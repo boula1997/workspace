@@ -998,7 +998,7 @@ function boula()
 function isWithinWorkingHours(){
 
 
-    if(settings()->stopClosing)
+    if(settings()->stopClosing==1)
         return true;    
 
       date_default_timezone_set('Africa/Cairo');
