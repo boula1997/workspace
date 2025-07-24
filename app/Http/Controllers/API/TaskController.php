@@ -68,7 +68,6 @@ class TaskController extends Controller
             ->whereHas('project', function ($query) {
                 $query->where('status', '!=', 0);
             })->where("isOverthinking",0)
-            ->orderBy('piority', 'desc')      // First by priority (descending)
             ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
             ->latest('updated_at')            // Then by latest update
             ->take(300)                       // Limit to 300 tasks
@@ -88,7 +87,6 @@ class TaskController extends Controller
             ->whereHas('project', function ($query) {
                 $query->where('status', '!=', 0);
             })
-            ->orderBy('piority', 'desc')      // First by priority (descending)
             ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
             ->latest('updated_at')            // Then by latest update
             ->take(300)                       // Limit to 300 tasks
