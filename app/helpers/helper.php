@@ -100,7 +100,7 @@ function activeDeadline()
 function updateStopClosingStatus(){
 
 
-if(settings2()->stopClosing==1 && !isWithinWorkingHours()){
+if(settings2()->stopClosing==1){
      $diffInMinutes = Carbon::now()->diffInMinutes(settings2()->updated_at);
      $now = Carbon::now();
 
