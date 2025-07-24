@@ -100,10 +100,10 @@ function activeDeadline()
 function updateStopClosingStatus(){
 
 
+    dd(settings2()->stopClosing==1 && !isWithinWorkingHours());
 if(settings2()->stopClosing==1 && !isWithinWorkingHours()){
      $diffInMinutes = Carbon::now()->diffInMinutes(settings2()->updated_at);
      $now = Carbon::now();
- dd($diffInMinutes);
 
     if($diffInMinutes>490)
     Setting::query()->update([
