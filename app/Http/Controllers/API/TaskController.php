@@ -191,6 +191,9 @@ class TaskController extends Controller
             ->where('cost', 0)
             ->get();
             $moneyProjects=Project::where('status',2)->where("cost",">",0)->get();
+            $moneyProjectIds = Project::where('status', 2)
+    ->where('cost', '>', 0)
+    ->pluck('id'); // returns a collection of IDs
             $progressProjects=Project::where('status',1)->get();
             $finishedProjects=Project::where('status',0)->get();
 
@@ -208,6 +211,7 @@ class TaskController extends Controller
                 "monthlyIncomeArray" => $monthlyIncomeArray,
                 "monthlyOutcomeArray" => $monthlyOutcomeArray,
                 "monthlyProjectsArray" => $monthlyProjectsArray,
+                "moneyProjectIds" => $moneyProjectIds,
                 "allProjects" => $allProjects,
                 "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
                 "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
