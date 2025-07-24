@@ -215,7 +215,7 @@ class TaskController extends Controller
                 "deadlineDate"=>activeDeadline()["deadline"],
                 "totalRest"=>$totalRest,
                 "totalGained"=>$totalCost-$totalRest,
-                "target"=>setting()->target,
+                "target"=>20000,
                 "contractProjects"=>count($contractProjects),
                 "moneyProjects"=>count($moneyProjects),
                 "progressProjects"=>count($progressProjects),
