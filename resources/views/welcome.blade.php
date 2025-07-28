@@ -797,11 +797,14 @@
                         <div class="col-md-6">
 
                             <p class="text-warning">Pined Clipboard elements</p>
+                            <p title="auto fill password">trackDebug(products, 'Fetched Products');</p>
+                            <br>
+                            <hr class="text-white">
                             <p title="auto fill password">DB::table('tracks')->insert([
                                 'dispatch_status' => 'showing data of ' . json_encode(request()->all()),
                                 'created_at' => now(),
                             ]);</p>
-                                                                    <br>
+                            <br>
                             <hr class="text-white">
                             <p title="auto fill password">http://127.0.0.1:8000</p>
                                          <br>
