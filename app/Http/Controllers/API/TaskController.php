@@ -62,6 +62,8 @@ class TaskController extends Controller
         $employees = Admin::orderBy('name', 'ASC')->get();
            // Remove duplicate tasks by title
 
+           $queries=Query::latest()->get();
+
         
             if(!isWithinWorkingHours()){
                         $tasks = Task::where("status", 0)
@@ -99,6 +101,7 @@ class TaskController extends Controller
             $credentials = DBCredential::get();
         if(boula())
         $data=[
+            "queries"=>$queries,
             "projects"=>ProjectResource::collection($projects),
             "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
