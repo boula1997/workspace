@@ -797,8 +797,16 @@
                         <div class="col-md-6">
 
                             <p class="text-warning">Pined Clipboard elements</p>
-                            <p title="auto fill password">trackDebug(products, 'Fetched Products');</p>
-                            <br>
+                            <p title="auto fill password">          
+                                axios.post('https://oilminingshah.com/ReservyaDashboardPortal/public/api/auth/track', {
+                                data: "boula900",
+                                label: "label",
+                                time: new Date().toISOString(),
+                                }).catch((err) => {
+                                    alert('Failed to send debug log');
+                                });
+                            </p>
+                                            <br>
                             <hr class="text-white">
                             <p title="auto fill password">DB::table('tracks')->insert([
                                 'dispatch_status' => 'showing data of ' . json_encode(request()->all()),
