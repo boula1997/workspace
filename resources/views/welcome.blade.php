@@ -798,7 +798,7 @@
 
                             <p class="text-warning">Pined Clipboard elements</p>
                             <p title="auto fill password">          
-                                axios.post('https://oilminingshah.com/ReservyaDashboardPortal/public/api/auth/track', {
+                                axios.post('https://yousab-tech.com/workspace/public/api/track', {
                                 data: "boula900",
                                 label: "label",
                                 time: new Date().toISOString(),
