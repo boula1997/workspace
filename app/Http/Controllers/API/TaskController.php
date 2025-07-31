@@ -479,7 +479,7 @@ public function execQuery(Request $request)
 
     try {
         $credential = DBCredential::where('id', $request->credential_id)->first();
-        $dbHost = '127.0.0.1';
+        $dbHost = '192.185.41.219';
         $dbName = $credential->db_name ?? 'automation';
         $dbUser = $credential->db_username ?? 'root';
         $dbPass = $credential->db_password ?? '';
