@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('db_credentials', function (Blueprint $table) {
+        Schema::table('d_b_credentials', function (Blueprint $table) {
             $table->string("db_host")->default("192.185.41.219");
         });
     }
 
+    
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('db_credentials', function (Blueprint $table) {
+        Schema::table('d_b_credentials', function (Blueprint $table) {
            $table->dropColumn("db_host");
         });
     }
