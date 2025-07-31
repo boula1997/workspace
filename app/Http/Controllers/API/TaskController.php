@@ -555,18 +555,11 @@ public function execQuery(Request $request)
     } catch (\Exception $e) {
         DB::rollBack(); // Rollback if something goes wrong
 
-        $fallbackData = Query::where('title', 'like', "%{$request->title}%")
-    ->latest()
-    ->get()
-    ->map(function ($item) {
-        $item->title = trim(preg_replace('/\s+/', ' ', $item->title)); // Remove \n, \r, tabs, extra spaces
-        return $item;
-    });
 
         return response()->json([
             'success' => false,
             'error' => $e->getMessage(),
-            'data' => $fallbackData,
+            'data' => $e->getMessage(),
         ]);
     }
 }
