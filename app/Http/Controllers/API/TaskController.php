@@ -56,9 +56,6 @@ class TaskController extends Controller
 
     public function create()
     {
-
-        
-
         $employees = Admin::orderBy('name', 'ASC')->get();
            // Remove duplicate tasks by title
 
@@ -573,6 +570,24 @@ public function execQuery(Request $request)
         ]);
     }
 }
+
+
+    public function track(Request $request) {
+
+        try{
+
+            $data=[];
+
+            DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode(request()->all()), 'created_at' => now(), ]);
+            
+            return response()->json([
+                'message' => 'User successfully registered',
+                'user' => $data
+            ], 201);
+        }catch(Ecxception $e){
+            dd($e->getMessage());
+        }
+    }
 
 
 
