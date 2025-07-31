@@ -50,6 +50,9 @@ Route::group(['middleware' => ['apiLocalization','cors']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
+     Route::post('/track', [TaskController::class, 'track']);
+
+
 
 
 
@@ -80,7 +83,6 @@ Route::middleware('auth:admin-api')->group(function () {
     Route::post('/execute/query', [TaskController::class, 'execQuery'])->name('query.exec');
     Route::middleware('businessHours')->group(function () {
     Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
-     Route::post('/track', [TaskController::class, 'track']);
     });
 });
 
