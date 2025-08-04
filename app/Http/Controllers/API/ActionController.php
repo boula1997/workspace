@@ -9,6 +9,8 @@ use App\Models\Task;
 use Exception;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\DB;
+
 class ActionController extends Controller
 {
     public function postFunction(Request $request)
@@ -20,11 +22,11 @@ class ActionController extends Controller
                 $request->validate([
                 'message' => 'required',
                 ]);
-                $data = Message::create($request->except('action'));
+                  $data = Message::create($request->except('action'));
             }
             return successResponse($data);
         } catch (Exception $e) {
-
+             DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(), ]);
             return failedResponse($e->getMessage());
         }
     }
@@ -38,7 +40,7 @@ class ActionController extends Controller
             $data = Task::get();
             return successResponse($data);
         } catch (Exception $e) {
-
+             DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(), ]);
             return failedResponse($e->getMessage());
         }
     }
