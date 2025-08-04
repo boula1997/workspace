@@ -1,56 +1,140 @@
+Laravel Backend Part
+
+Route::post('/postFunction', [ActionController::class, 'postFunction']);
+Route::get('/getFunction', [ActionController::class, 'getFunction']);
+
+code app\Http\Controllers\API\ActionController.php
+
+use App\Http\Controllers\API\ActionController;
+
 <?php
 
-use App\Http\Controllers\API\FaqController;
-use App\Http\Controllers\API\MessageController;
-use App\Http\Controllers\API\CounterController;
-use App\Http\Controllers\API\NewsletterController;
-use App\Http\Controllers\API\ContactController;
-use App\Http\Controllers\API\PageController;
-use App\Http\Controllers\API\PortfolioController;
-use App\Http\Controllers\API\FeeController;
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\API\MessageRequest;
+use App\Models\Message;
+use App\Models\Task;
+use Exception;
 use Illuminate\Http\Request;
-use App\Http\Controllers\API\AccountantController;
-use App\Http\Controllers\API\HistoryController;
-use App\Http\Controllers\API\TaskController;
-use App\Http\Controllers\API\ProjectController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\ServiceController;
-use App\Http\Controllers\API\FollowupController;
-use App\Http\Controllers\API\TestimonialController;
-use App\Http\Controllers\API\ProcessController;
-use App\Http\Controllers\API\CategoryController;
-use App\Http\Controllers\API\ComplainController;
-use App\Http\Controllers\API\ProductController;
-use App\Http\Controllers\API\SettingController;
-use App\Http\Controllers\API\PartnerController;
-use App\Http\Controllers\API\TeamController;
-use App\Http\Controllers\API\VaccancyController;
-use App\Http\Requests\API\ComplainRequest;
-use App\Http\Requests\API\VaccancyRequest;
-use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\DB;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteProductProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+class ActionController extends Controller
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+{
+    public function postFunction(Request $request)
+
+    {
+
+        try {
+            $action = request()->query('action');
+
+            if($action=="contatus")
+
+            $data = Message::create($request->all());
+
+            return successResponse($data);
+
+        } catch (Exception $e) {
+             DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(), ]);
+            return failedResponse($e->getMessage());
+        }
+
+    }
+
+
+
+
+    public function getFunction(Request $request)
+
+    {
+
+        try {
+
+            $action = request()->query('action');
+
+            if($action=="getTasks")
+
+            $data = Task::get();
+
+            return successResponse($data);
+
+        } catch (Exception $e) {
+             DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(), ]);
+            return failedResponse($e->getMessage());
+        }
+
+    }
+
+}
+
+
+React or ReactNative Frontend Part
+
+import axios from "axios"
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+Post part
+
+const formData = new FormData();
+
+formData.append('name', 'John Doe');
+
+formData.append('file', selectedFile); // if you have a file
+
+axios.post(
+
+  'https://yourdomain.com/public/api/postFunction?action=contatus',
+
+  formData, // send FormData directly
+
+  {
+
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}` // if using ReactNative AsyncStorage.getItem('token')
+
+      'Content-Type': 'multipart/form-data', // important for files
+
+    },
+
+  }
+
+)
+.then((res) => {
+
+  console.log('Success', res.data);
+})
+.catch((err) => {
+
+    alert('Failed to send post Function');
+    axios.post('https://yousab-tech.com/workspace/public/api/track', { data: err, label: "postFunction", time: new Date().toISOString(), }).catch((err) => { alert('Failed to send debug log'); });
+  console.error(err);
+});
+
+Get Part
+
+axios.get('https://yourdomain.com/public/api/getFunction', {
+  params: {
+    action: 'tasks',
+
+    id: 5,
+  },
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  }
+})
+.then((res) => {
+  console.log('Success', res.data);
+})
+.catch((err) => {
+  alert('Failed to send GET request');
+
+    axios.post('https://yousab-tech.com/workspace/public/api/track', { data: err, label: "getFunction", time: new Date().toISOString(), }).catch((err) => { alert('Failed to send debug log'); });
+  console.error(err);
 });
 
 
-Route::group(['middleware' => ['apiLocalization','cors']], function () {
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-});
-
-     Route::post('/track', [TaskController::class, 'track']);
 
 
 
@@ -64,26 +148,28 @@ Route::group(['middleware' => ['apiLocalization','cors']], function () {
 
 
 
-Route::middleware('auth:admin-api')->group(function () {
-    
-    Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
-    Route::post('/storeDeadline',[TaskController::class,'storeDeadline']);
-    Route::get('/stats', [TaskController::class, 'stats']);
-    Route::get('/links', [TaskController::class, 'links'])->name('links');
-    Route::get('/last/{date}', 'App\Http\Controllers\ActionController@lastUpdate')->name('last.update');
-    Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
-    Route::get('/apptask/create', [TaskController::class, 'create']);
-    Route::get('/apptask/create/finished', [TaskController::class, 'createFinished']);
-    Route::post('/refresh', [AuthController::class, 'refresh']);
-    
-    
-    Route::post('/apptask/refpro', [TaskController::class, 'refpro']);
-    Route::post('/apptask/store', [TaskController::class, 'store']);
-    Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
-    Route::post('/execute/query', [TaskController::class, 'execQuery'])->name('query.exec');
-    Route::middleware('businessHours')->group(function () {
-    Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
-    });
-});
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+V
