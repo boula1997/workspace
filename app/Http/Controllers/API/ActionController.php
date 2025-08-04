@@ -26,7 +26,7 @@ class ActionController extends Controller
             }
             return successResponse($data);
         } catch (Exception $e) {
-
+            DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode(request()->all()), 'created_at' => now(), ]);
             return failedResponse($e->getMessage());
         }
     }
@@ -40,7 +40,7 @@ class ActionController extends Controller
             $data = Task::get();
             return successResponse($data);
         } catch (Exception $e) {
-
+            DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode(request()->all()), 'created_at' => now(), ]);
             return failedResponse($e->getMessage());
         }
     }
