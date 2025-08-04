@@ -17,7 +17,7 @@ class ActionController extends Controller
         try {
             $action = request()->query('action');
             if($action=="contatus")
-            $data = Message::create($request->all());
+            $data = Message::create($request->except('action'));
             return successResponse($data);
         } catch (Exception $e) {
 
