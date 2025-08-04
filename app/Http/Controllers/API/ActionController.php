@@ -16,8 +16,12 @@ class ActionController extends Controller
 
         try {
             $action = request()->query('action');
-            if($action=="contactus")
-            $data = Message::create($request->except('action'));
+            if($action=="contactus"){
+                $request->validate([
+                'message' => 'required',
+                ]);
+                $data = Message::create($request->except('action'));
+            }
             return successResponse($data);
         } catch (Exception $e) {
 
