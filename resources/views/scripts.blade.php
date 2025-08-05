@@ -1756,6 +1756,29 @@
                 contentType: false,
                 processData: false,
                 success: (response) => {
+                    console.log("boula",response);
+
+                    if(response.success==false){
+                     toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": true,
+                        "positionClass": "{{ app()->getLocale() == 'ar' ? 'toast-top-right' : 'toast-top-right' }}",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": "900",
+                        "hideDuration": "2000",
+                        "timeOut": "5000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    };
+                    toastr.error(response.error);
+                    }
+
                     response.data.forEach((boula, index) => {
                         console.log('boula', response);
                         $('#jsonResult').append(
@@ -1787,25 +1810,8 @@
 
                 },
                 error: function(response) {
-
-                      toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": false,
-                        "progressBar": true,
-                        "positionClass": "{{ app()->getLocale() == 'ar' ? 'toast-top-right' : 'toast-top-right' }}",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showDuration": "900",
-                        "hideDuration": "2000",
-                        "timeOut": "5000",
-                        "extendedTimeOut": "1000",
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut"
-                    };
-                    toastr.error(response.error);
+          
+                    
 
                 }
             });
