@@ -969,7 +969,7 @@
                             ]);</p>
                             <br>
                             <hr class="text-white">
-                                <pre class="bg-dark text-white p-3 rounded border">
+                                <p>
                                 axios.get('https://yourdomain.com/public/api/getFunction', {
                                 params: {
                                     action: 'getTasks',
@@ -1003,7 +1003,7 @@
                                 </pre>
                             <br>
                             <hr class="text-white">
-                                <pre class="bg-dark text-white p-3 rounded border">
+                                <p>
                                 const formData = new FormData();
                                 formData.append('name', 'John Doe');
                                 formData.append('file', selectedFile); // if you have a file
