@@ -641,7 +641,7 @@
                                 <h2 class="text-white mt-4">Laravel Backend Part</h2>
 
                                 <h5 class="text-white mt-3">Routes (web.php or api.php):</h5>
-                                <pre class="bg-light p-3 rounded border">
+                                <pre class="bg-dark text-white p-3 rounded border">
                                 use App\Http\Controllers\API\ActionController;
 
                                 Route::post('/postFunction', [ActionController::class, 'postFunction']);
@@ -649,7 +649,7 @@
                                 </pre>
 
                                 <h5 class="text-white mt-4">Controller: <code>app/Http/Controllers/API/ActionController.php</code></h5>
-                                <pre class="bg-light p-3 rounded border overflow-auto">
+                                <pre class="bg-dark text-white p-3 rounded border overflow-auto">
                                 &lt;?php
 
                                 namespace App\Http\Controllers\API;
@@ -705,13 +705,13 @@
                                 <h2 class="text-white mt-5">React or React Native Frontend Part</h2>
 
                                 <h5 class="text-white mt-3">Import Statements</h5>
-                                <pre class="bg-light p-3 rounded border">
+                                <pre class="bg-dark text-white p-3 rounded border">
                                 import axios from "axios"
                                 import AsyncStorage from '@react-native-async-storage/async-storage';
                                 </pre>
 
                                 <h5 class="text-white mt-4">POST Request Example</h5>
-                                <pre class="bg-light p-3 rounded border">
+                                <pre class="bg-dark text-white p-3 rounded border">
                                 const formData = new FormData();
                                 formData.append('name', 'John Doe');
                                 formData.append('file', selectedFile); // if you have a file
@@ -750,7 +750,7 @@
                                 </pre>
 
                                 <h5 class="text-white mt-4">GET Request Example</h5>
-                                <pre class="bg-light p-3 rounded border">
+                                <pre class="bg-dark text-white p-3 rounded border">
                                 axios.get('https://yourdomain.com/public/api/getFunction', {
                                 params: {
                                     action: 'getTasks',
@@ -970,7 +970,7 @@
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">
-                                axios.get('https://yourdomain.com/public/api/getFunction', {
+                            axios.get('https://yourdomain.com/public/api/getFunction', {
                               params: {
                                 action: 'getTasks',
                                 id: 5,
