@@ -628,15 +628,156 @@
                                 alt="doing tasks from easy to hard" title="doing tasks from easy to hard">
                             <button class="btn btn-secondary mt-2" id="submitbtn">Submit</button>
 
+                            <p>
+                                all-input-inputtrans-textarea-textareatrans-select-multiselect-staticselect-multistaticselect-radio-file-multifile-image-multimage-date-time-datetime-number-checkbox-email-tel-url
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                               <div class="">
+                                <h1 class="text-white mb-4">Laravel Backend and React/React Native Frontend Integration</h1>
+
+                                <h2 class="text-white mt-4">Laravel Backend Part</h2>
+
+                                <h5 class="text-white mt-3">Routes (web.php or api.php):</h5>
+                                <pre class="bg-light p-3 rounded border">
+                                use App\Http\Controllers\API\ActionController;
+
+                                Route::post('/postFunction', [ActionController::class, 'postFunction']);
+                                Route::get('/getFunction', [ActionController::class, 'getFunction']);
+                                </pre>
+
+                                <h5 class="text-white mt-4">Controller: <code>app/Http/Controllers/API/ActionController.php</code></h5>
+                                <pre class="bg-light p-3 rounded border overflow-auto">
+                                &lt;?php
+
+                                namespace App\Http\Controllers\API;
+
+                                use App\Http\Controllers\Controller;
+                                use App\Http\Requests\API\MessageRequest;
+                                use App\Models\Message;
+                                use App\Models\Task;
+                                use Exception;
+                                use Illuminate\Http\Request;
+                                use Illuminate\Support\Facades\DB;
+
+                                class ActionController extends Controller
+                                {
+                                    public function postFunction(Request $request)
+                                    {
+                                        try {
+                                            $action = request()->query('action');
+                                            if ($action == "contactus") {
+                                                $request->validate([
+                                                    'message' => 'required',
+                                                ]);
+                                                $data = Message::create($request->except('action'));
+                                            }
+                                            return successResponse($data);
+                                        } catch (Exception $e) {
+                                            DB::table('tracks')->insert([
+                                                'dispatch_status' => 'showing data of ' . json_encode([$e->getMessage()]),
+                                                'created_at' => now(),
+                                            ]);
+                                            return failedResponse($e->getMessage());
+                                        }
+                                    }
+
+                                    public function getFunction(Request $request)
+                                    {
+                                        try {
+                                            $action = request()->query('action');
+                                            if ($action == "getTasks")
+                                                $data = Task::get();
+                                            return successResponse($data);
+                                        } catch (Exception $e) {
+                                            DB::table('tracks')->insert([
+                                                'dispatch_status' => 'showing data of ' . json_encode([$e->getMessage()]),
+                                                'created_at' => now(),
+                                            ]);
+                                            return failedResponse($e->getMessage());
+                                        }
+                                    }
+                                }
+                                </pre>
+
+                                <h2 class="text-white mt-5">React or React Native Frontend Part</h2>
+
+                                <h5 class="text-white mt-3">Import Statements</h5>
+                                <pre class="bg-light p-3 rounded border">
+                                import axios from "axios"
+                                import AsyncStorage from '@react-native-async-storage/async-storage';
+                                </pre>
+
+                                <h5 class="text-white mt-4">POST Request Example</h5>
+                                <pre class="bg-light p-3 rounded border">
+                                const formData = new FormData();
+                                formData.append('name', 'John Doe');
+                                formData.append('file', selectedFile); // if you have a file
+
+                                axios.post(
+                                'https://yourdomain.com/public/api/postFunction?action=contactus',
+                                formData,
+                                {
+                                    headers: {
+                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                    'Content-Type': 'multipart/form-data',
+                                    },
+                                }
+                                )
+                                .then((res) => {
+                                console.log('Success', res.data);
+                                })
+                                .catch((err) => {
+                                alert('Failed to send post Function');
+                                axios.post('https://yousab-tech.com/workspace/public/api/track', {
+                                    data: err,
+                                    label: "postFunction",
+                                    time: new Date().toISOString(),
+                                }).catch((err) => {
+                                    alert('Failed to send debug log');
+                                });
+                                console.error(err);
+                                });
+                                </pre>
+
+                                <h5 class="text-white mt-4">GET Request Example</h5>
+                                <pre class="bg-light p-3 rounded border">
+                                axios.get('https://yourdomain.com/public/api/getFunction', {
+                                params: {
+                                    action: 'getTasks',
+                                    id: 5,
+                                },
+                                headers: {
+                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                }
+                                })
+                                .then((res) => {
+                                console.log('Success', res.data);
+                                })
+                                .catch((err) => {
+                                alert('Failed to send GET request');
+                                axios.post('https://yousab-tech.com/workspace/public/api/track', {
+                                    data: err,
+                                    label: "getFunction",
+                                    time: new Date().toISOString(),
+                                }).catch((err) => {
+                                    alert('Failed to send debug log');
+                                });
+                                console.error(err);
+                                });
+                                </pre>
+                                </div>
 
                         </div>
                     </div>
                     <div class="row mt-3">
 
                         <div class="col-md-6">
-                            <p>
-                                all-input-inputtrans-textarea-textareatrans-select-multiselect-staticselect-multistaticselect-radio-file-multifile-image-multimage-date-time-datetime-number-checkbox-email-tel-url
-                            </p>
+
+
+
                             <p>It is very helpful to use logs in laravel to debug especially in case of api where you
                                 need to see terminal or console of front. So always use it for tracing and debuging </p>
                             <p>
