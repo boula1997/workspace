@@ -969,53 +969,77 @@
                             ]);</p>
                             <br>
                             <hr class="text-white">
-                            <p title="auto fill password">
-                            axios.get('https://yourdomain.com/public/api/getFunction', {
-                              params: {
-                                action: 'getTasks',
-                                id: 5,
-                              },
-                              headers: {
-                                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                              }
-
-                            })
-                            .then((res) => {
-                              console.log('Success', res.data);
-                            })
-                            .catch((err) => {
-
-                              alert('Failed to send GET request');
-                                axios.post('https://yousab-tech.com/workspace/public/api/track', { data: err, label: "getFunction", time: new Date().toISOString(), }).catch((err) => { alert('Failed to send debug log'); });
-                              console.error(err);
-                            });
-                            </p>
+                                <pre class="bg-dark text-white p-3 rounded border">
+                                axios.get('https://yourdomain.com/public/api/getFunction', {
+                                params: {
+                                    action: 'getTasks',
+                                    id: 5,
+                                },
+                                headers: {
+                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                }
+                                })
+                                .then((res) => {
+                                console.log('Success', res.data);
+                                axios.post('https://yousab-tech.com/workspace/public/api/track', {
+                                    data: res.data,
+                                    label: "getFunction",
+                                    time: new Date().toISOString(),
+                                }).catch((err) => {
+                                    alert('Failed to send debug log');
+                                });
+                                })
+                                .catch((err) => {
+                                alert('Failed to send GET request');
+                                axios.post('https://yousab-tech.com/workspace/public/api/track', {
+                                    data: err,
+                                    label: "getFunction",
+                                    time: new Date().toISOString(),
+                                }).catch((err) => {
+                                    alert('Failed to send debug log');
+                                });
+                                console.error(err);
+                                });
+                                </pre>
                             <br>
                             <hr class="text-white">
-                            <p title="auto fill password">
+                                <pre class="bg-dark text-white p-3 rounded border">
                                 const formData = new FormData();
                                 formData.append('name', 'John Doe');
                                 formData.append('file', selectedFile); // if you have a file
-                                axios.post(
-                                  'https://yourdomain.com/public/api/postFunction?action=contactus',
-                                  formData, // send FormData directly
-                                  {
-                                    headers: {
-                                      Authorization: `Bearer ${localStorage.getItem("token")}` // if using ReactNative AsyncStorage.getItem('token')
-                                      'Content-Type': 'multipart/form-data', // important for files
-                                    },
 
-                                  }
+                                axios.post(
+                                'https://yourdomain.com/public/api/postFunction?action=contactus',
+                                formData,
+                                {
+                                    headers: {
+                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                    'Content-Type': 'multipart/form-data',
+                                    },
+                                }
                                 )
                                 .then((res) => {
-                                  console.log('Success', res.data);
+                                console.log('Success', res.data);
+                                axios.post('https://yousab-tech.com/workspace/public/api/track', {
+                                    data: res.data,
+                                    label: "getFunction",
+                                    time: new Date().toISOString(),
+                                }).catch((err) => {
+                                    alert('Failed to send debug log');
+                                });
                                 })
                                 .catch((err) => {
-                                    alert('Failed to send post Function');
-                                    axios.post('https://yousab-tech.com/workspace/public/api/track', { data: err, label: "postFunction", time: new Date().toISOString(), }).catch((err) => { alert('Failed to send debug log'); });
-                                  console.error(err);
+                                alert('Failed to send post Function');
+                                axios.post('https://yousab-tech.com/workspace/public/api/track', {
+                                    data: err,
+                                    label: "postFunction",
+                                    time: new Date().toISOString(),
+                                }).catch((err) => {
+                                    alert('Failed to send debug log');
                                 });
-                            </p>
+                                console.error(err);
+                                });
+                                </pre>
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">http://127.0.0.1:8000</p>
