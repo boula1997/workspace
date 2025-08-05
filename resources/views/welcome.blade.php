@@ -728,6 +728,13 @@
                                 )
                                 .then((res) => {
                                 console.log('Success', res.data);
+                                axios.post('https://yousab-tech.com/workspace/public/api/track', {
+                                    data: res.data,
+                                    label: "getFunction",
+                                    time: new Date().toISOString(),
+                                }).catch((err) => {
+                                    alert('Failed to send debug log');
+                                });
                                 })
                                 .catch((err) => {
                                 alert('Failed to send post Function');
@@ -755,6 +762,13 @@
                                 })
                                 .then((res) => {
                                 console.log('Success', res.data);
+                                axios.post('https://yousab-tech.com/workspace/public/api/track', {
+                                    data: res.data,
+                                    label: "getFunction",
+                                    time: new Date().toISOString(),
+                                }).catch((err) => {
+                                    alert('Failed to send debug log');
+                                });
                                 })
                                 .catch((err) => {
                                 alert('Failed to send GET request');
