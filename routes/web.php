@@ -208,6 +208,8 @@ Route::group(['middleware' => ['auth:admin']], function () {
      else {
         Route::resource('actions', ActionController::class);
                 Route::post('/postAction', 'App\Http\Controllers\ActionController@store')->name('post.action');
+
+                      Route::get('/refrence/{id}', 'App\Http\Controllers\HomeController@refrence')->name('home.refrence');
         
         Route::get('/data/{db}/{table}/{query}', 'App\Http\Controllers\ActionController@show')->name('db.data');
         Route::get('/last/{date}', 'App\Http\Controllers\ActionController@lastUpdate')->name('last.update');
