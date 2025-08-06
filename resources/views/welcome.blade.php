@@ -184,7 +184,8 @@
 
 
         <div id="formBody" class="mt-5">
-   <h1 class="text-center">Open in Desktop Web View python /e/xampp/htdocs/workspace/workspace.py</h1>
+   <h1 class="text-center">Open in Desktop Web View</h1>
+   <h1 class="text-center">python /e/xampp/htdocs/workspace/workspace.py</h1>
 
             <div class="text-white text-center">{{ startAndEndTime(settingFirst()->startTime)[0] }} -
                 {{ startAndEndTime(settingFirst()->startTime)[1] }}
