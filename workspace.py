@@ -1,21 +1,30 @@
 import webview
+import time
 
-# JavaScript to inject a search bar and enable text selection
 inject_js = """
-document.addEventListener('DOMContentLoaded', function() {
-    // Enable text selection
-    var css = '* { user-select: text !important; -webkit-user-select: text !important; }';
+console.log("Injecting search bar...");
+
+setTimeout(function() {
+    // Enable text selection + visibility
+    var css = `
+        * { user-select: text !important; -webkit-user-select: text !important; }
+        #customSearchBar.noHide {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+    `;
     var style = document.createElement('style');
     style.type = 'text/css';
     style.appendChild(document.createTextNode(css));
     document.head.appendChild(style);
 
-    // Create search bar
+    // Add search bar
     if (!document.getElementById('customSearchBar')) {
         var input = document.createElement('input');
         input.id = 'customSearchBar';
-        input.placeholder = 'Search... (like Ctrl+F)';
-        input.className = 'noHide';  // <- Required class
+        input.className = 'noHide';
+        input.placeholder = 'Search...';
         input.style.position = 'fixed';
         input.style.top = '10px';
         input.style.right = '10px';
@@ -26,8 +35,10 @@ document.addEventListener('DOMContentLoaded', function() {
         input.style.backgroundColor = '#fff';
         input.style.fontSize = '14px';
         input.style.boxShadow = '0 2px 5px rgba(0,0,0,0.3)';
+        input.style.setProperty('display', 'block', 'important');
+        input.style.setProperty('visibility', 'visible', 'important');
+        input.style.setProperty('opacity', '1', 'important');
 
-        // Search on Enter
         input.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 var text = input.value;
@@ -37,10 +48,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.body.appendChild(input);
     }
-});
+}, 1000);  // 1 second delay
 """
 
-# Create the window
+def inject_later():
+    time.sleep(3)
+    result = webview.windows[0].evaluate_js(inject_js)
+    print("JS injection result:", result)
+
 webview.create_window(
     "My Website",
     "https://yousab-tech.com/workspace/public/en",
@@ -48,5 +63,4 @@ webview.create_window(
     height=800
 )
 
-# Start and inject JS after load
-webview.start(func=lambda: webview.windows[0].evaluate_js(inject_js))
+webview.start(func=inject_later)
