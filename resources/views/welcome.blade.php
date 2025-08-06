@@ -109,7 +109,7 @@
     
     <div class="container">
 
-   <h3 class="text-center">Open in Desktop Web View python /e/xampp/htdocs/workspace/workspace.py</h3>
+   <h3>Open in Desktop Web View python /e/xampp/htdocs/workspace/workspace.py</h3>
         @if (boula() && isWithinWorkingHours())
             <div class="allModals">
                 @foreach (posts() as $post)
