@@ -109,7 +109,6 @@
     
     <div class="container">
 
-   <h2 class="text-center">Open in Desktop Web View python /e/xampp/htdocs/workspace/workspace.py</h2>
         @if (boula() && isWithinWorkingHours())
             <div class="allModals">
                 @foreach (posts() as $post)
@@ -185,6 +184,8 @@
 
 
         <div id="formBody" class="mt-5">
+   <h2 class="text-center">Open in Desktop Web View python /e/xampp/htdocs/workspace/workspace.py</h2>
+
             <div class="text-white text-center">{{ startAndEndTime(settingFirst()->startTime)[0] }} -
                 {{ startAndEndTime(settingFirst()->startTime)[1] }}
             
