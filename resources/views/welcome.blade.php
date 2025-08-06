@@ -956,9 +956,14 @@
                             <p title="auto fill password">start https://yousab-tech.com/workspace/public/en</p>
                             <p title="auto fill password">exit</p>
                             <p title="auto fill password">cls</p>
-
                             <br>
                             <hr class="text-white">
+                            <p title="auto fill password">start http://127.0.0.1:8000</p>
+                            <p title="auto fill password">exit</p>
+                            <p title="auto fill password">cls</p>
+                            <br>
+                            <hr class="text-white">
+                            
                             <p title="auto fill password">          
                                 axios.post('https://yousab-tech.com/workspace/public/api/track', {
                                 data: "boula900",
@@ -1047,11 +1052,7 @@
                                 console.error(err);
                                 });
                                 </pre>
-                            <br>
-                            <hr class="text-white">
-                            <p title="auto fill password">start http://127.0.0.1:8000</p>
-                            <p title="auto fill password">exit</p>
-                            <p title="auto fill password">cls</p>
+
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">npx expo start --no-dev --minify</p>
