@@ -1,8 +1,9 @@
 <div class="">
 
     <div class="row">
-    
-        <button class="btn btn-outline-warning col-2" id="{{boula()?'home':''}}">home</button>
+       <a href="">
+           <button class="btn btn-outline-warning col-2" id="{{boula()?'home':''}}">home</button>
+       </a>
         <button class="btn btn-outline-warning col-2" id="{{boula()?'removeColors':''}}">Reset</button>
         <button class="btn btn-outline-warning col-2" id="{{boula()?'googlead':''}}">GANM</button>
         <button class="btn btn-outline-warning col-2" id="{{boula()?'seo':''}}">SEO</button>

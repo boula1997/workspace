@@ -1928,7 +1928,7 @@
             });
             $('#home').on('click', function(e) {
                 e.preventDefault();
-                window.open('actions');
+                window.location.href = 'actions';
             });
             $('#auto').on('click', function(e) {
                 e.preventDefault();
