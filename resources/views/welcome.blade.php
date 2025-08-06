@@ -20,8 +20,37 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/home.css') }}">
 
-</head>
+    <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
 
+</head>
+<style>
+  #searchHighlight {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+
+  .noHide {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  mark {
+    background: yellow;
+    padding: 2px;
+    border-radius: 2px;
+  }
+</style>
+
+<input type="text" id="searchHighlight" class="noHide" placeholder="Search...">
 <style>
     /* Set the background and text color for the Select2 container */
     .select2-container--default .select2-selection--single {

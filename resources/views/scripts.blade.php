@@ -3190,6 +3190,25 @@ $(document).ready(function () {
 </script>
 
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('searchHighlight');
+    const context = document.body;
+    const instance = new Mark(context);
+
+    input.addEventListener('input', function () {
+      const keyword = this.value;
+      instance.unmark({
+        done: function () {
+          if (keyword.length > 1) {
+            instance.mark(keyword);
+          }
+        }
+      });
+    });
+  });
+</script>
+
 
 
 
