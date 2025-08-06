@@ -16,6 +16,19 @@
         p {
             color: #cccccc;
         }
+        .reload-btn {
+            margin-top: 30px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .reload-btn:hover {
+            background-color: #1565c0;
+        }
     </style>
 </head>
 <body>
@@ -26,6 +39,7 @@
         <li>Saturday & Friday: Closed</li>
     </ul>
     <p>Please visit us during those hours.</p>
-</body>`
+
+    <button class="reload-btn" onclick="location.reload()">Reload Page</button>
+</body>
 </html>
-    
