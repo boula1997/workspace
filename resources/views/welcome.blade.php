@@ -953,7 +953,7 @@
 
                             <p class="text-warning">Pined Clipboard elements</p>
 
-                            <p title="auto fill password">start https://yousab-tech.com/workspace/public/en</p>
+                            <p title="auto fill password">python /e/xampp/htdocs/workspace/workspace.py</p>
                             <p title="auto fill password">exit</p>
                             <p title="auto fill password">cls</p>
                             <br>
