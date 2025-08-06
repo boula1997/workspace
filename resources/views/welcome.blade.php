@@ -952,6 +952,10 @@
                         <div class="col-md-6">
 
                             <p class="text-warning">Pined Clipboard elements</p>
+
+                            <p title="auto fill password">start https://yousab-tech.com/workspace/public/en</p>
+                            <br>
+                            <hr class="text-white">
                             <p title="auto fill password">          
                                 axios.post('https://yousab-tech.com/workspace/public/api/track', {
                                 data: "boula900",
@@ -1042,7 +1046,7 @@
                                 </pre>
                             <br>
                             <hr class="text-white">
-                            <p title="auto fill password">http://127.0.0.1:8000</p>
+                            <p title="auto fill password">start http://127.0.0.1:8000</p>
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">npx expo start --no-dev --minify</p>
