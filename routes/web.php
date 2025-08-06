@@ -214,6 +214,9 @@ Route::group(['middleware' => ['auth:admin']], function () {
         Route::get('/data/{db}/{table}/{query}', 'App\Http\Controllers\ActionController@show')->name('db.data');
         Route::get('/last/{date}', 'App\Http\Controllers\ActionController@lastUpdate')->name('last.update');
         Route::get('/website/{id}', 'App\Http\Controllers\ActionController@websiteToggle')->name('website.toggle');
+
+        Route::get('/project/{id}', 'App\Http\Controllers\HomeController@project')->name('home.project');
+
         
         Route::get('/websitedbl/{id}', 'App\Http\Controllers\ActionController@websiteToggle')->name('website.dbltoggle');
         Route::get('/websitetrpl/{id}', 'App\Http\Controllers\ActionController@websiteToggle')->name('website.trpltoggle');
