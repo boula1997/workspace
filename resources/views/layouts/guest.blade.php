@@ -21,6 +21,6 @@
             {{ $slot }}
         </div>
 
-        @include('navIcon')
+        {{-- @include('navIcon') --}}
     </body>
 </html>

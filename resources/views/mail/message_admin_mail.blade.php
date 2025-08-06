@@ -97,7 +97,7 @@
 
   </main>
 
-  @include('navIcon')
+  {{-- @include('navIcon') --}}
 
   <footer class="text-muted py-5">
     <div class="container">

@@ -141,7 +141,7 @@
         <p class="no-data">No tables found with recent updates on 'updated_at'.</p>
     @endif
 
-    @include('navIcon')
+    {{-- @include('navIcon') --}}
 
 </body>
 
