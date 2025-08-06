@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var input = document.createElement('input');
         input.id = 'customSearchBar';
         input.placeholder = 'Search... (like Ctrl+F)';
+        input.className = 'noHide';  // <- Required class
         input.style.position = 'fixed';
         input.style.top = '10px';
         input.style.right = '10px';
