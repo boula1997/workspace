@@ -739,9 +739,9 @@
                             <pre class="bg-dark text-white p-3 rounded border">
                             const [inputData, setInputData] = useState({});
                               const [images, setImages] = useState([]);
-                              const [image, setImage] = useState(&quot;&quot;);
+                              const [image, setImage] = useState("");
 
-                                const pickImages = async () =&gt; {
+                                const pickImages = async () => {
                                 try {
                                 let result = await ImagePicker.launchImageLibraryAsync({
                                     mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -750,19 +750,19 @@
                                 });
                             
                                 if (!result?.assets || result.canceled) {
-                                    console.warn(&quot;No images selected&quot;);
+                                    console.warn("No images selected");
                                     return;
                                 }
                             
-                                const newImages = result.assets.map((asset) =&gt; asset.uri);
-                                setImages((prevImages) =&gt; [...prevImages, ...newImages]); // Store only product images
+                                const newImages = result.assets.map((asset) => asset.uri);
+                                setImages((prevImages) => [...prevImages, ...newImages]); // Store only product images
                                 } catch (error) {
-                                console.error(&quot;Error picking images:&quot;, error);
+                                console.error("Error picking images:", error);
                                 }
                             };
 
 
-                            const pickMainImage = async () =&gt; {
+                            const pickMainImage = async () => {
                             try {
                                 const result = await ImagePicker.launchImageLibraryAsync({
                                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -773,13 +773,13 @@
 
                                 setImage(result.assets[0].uri); // Save main image URI
                             } catch (error) {
-                                console.error(&quot;Error picking main image:&quot;, error);
+                                console.error("Error picking main image:", error);
                             }
                             };
-                            const handleChange = (e) =&gt; {
-                                setInputData({ ...inputData, [e.target.name]: e.target.value&nbsp;});
-                            &nbsp;&nbsp;};
-                          const handleSubmit = async () =&gt; {
+                            const handleChange = (e) => {
+                                setInputData({ ...inputData, [e.target.name]: e.target.value });
+                              };
+                          const handleSubmit = async () => {
                             const formData = new FormData();
                             formData.append('name', inputData.name);
                             formData.append('file', selectedFile);
@@ -792,7 +792,7 @@
                                 }
 
                                 // Append images
-                                images.forEach((uri, index) =&gt; {
+                                images.forEach((uri, index) => {
                                 formData.append('images[]', {
                                     uri,
                                     name: `product_image_${index}.jpg`,
@@ -804,7 +804,7 @@
                                 const response = await fetch('https://yourdomain.com/public/api/postFunction?action=contactus', {
                                 method: 'POST',
                                 headers: {
-                                    Authorization: `Bearer ${AsyncStorage.getItem(&quot;token&quot;)}`,
+                                    Authorization: `Bearer ${AsyncStorage.getItem("token")}`,
                                 },
                                 body: formData,
                                 });
@@ -821,7 +821,7 @@
                                 },
                                 body: JSON.stringify({
                                     data: data,
-                                    label: &quot;postFunction&quot;,
+                                    label: "postFunction",
                                     time: new Date().toISOString(),
                                 }),
                                 });
@@ -836,61 +836,61 @@
                                 },
                                 body: JSON.stringify({
                                     data: err.message,
-                                    label: &quot;postFunction&quot;,
+                                    label: "postFunction",
                                     time: new Date().toISOString(),
                                 }),
-                                }).catch(() =&gt; {
+                                }).catch(() => {
                                 alert('Failed to send debug log');
                                 });
                             }
                             };
 
 
-                                {/* Upload item container */}
-                            &lt;View style={{ marginTop: 2, paddingHorizontal: 16 }}&gt;
-                            &lt;Text style={styles.subTitle}&gt;Upload Photo/License&lt;/Text&gt;
+                                {{-- {/* Upload item container */}
+                            <View style={{ marginTop: 2, paddingHorizontal: 16 }}>
+                            <Text style={styles.subTitle}>Upload Photo/License</Text>
 
-                            &lt;FlatList
+                            <FlatList
                             data={images}
-                            keyExtractor={(item, index) =&gt; index.toString()}
+                            keyExtractor={(item, index) => index.toString()}
                             numColumns={3}
-                            renderItem={({ item }) =&gt; (
-                                &lt;View style={styles.imageContainer}&gt;
-                                &lt;Image source={{ uri: item }} style={styles.image} /&gt;
-                                &lt;/View&gt;
+                            renderItem={({ item }) => (
+                                <View style={styles.imageContainer}>
+                                <Image source={{ uri: item }} style={styles.image} />
+                                </View>
                             )}
                             ListFooterComponent={
-                                &lt;TouchableOpacity onPress={pickImages} style={styles.uploadButton}&gt;
-                                &lt;Ionicons name=&quot;cloud-upload-outline&quot; size={40} color=&quot;black&quot; /&gt;
-                                &lt;/TouchableOpacity&gt;
+                                <TouchableOpacity onPress={pickImages} style={styles.uploadButton}>
+                                <Ionicons name="cloud-upload-outline" size={40} color="black" />
+                                </TouchableOpacity>
                             }
-                            /&gt;
+                            />
 
 
-                            &lt;/View&gt;
+                            </View>
 
 
                                 {/* Image Upload */}
-                                &lt;View style={{ marginBottom: 20 }}&gt;
-                                    &lt;Text style={styles.subTitle}&gt;Upload photo/video&lt;/Text&gt;
-                                    &lt;View
+                                <View style={{ marginBottom: 20 }}>
+                                    <Text style={styles.subTitle}>Upload photo/video</Text>
+                                    <View
                                     style={{
-                                        flexDirection: &quot;row&quot;,
+                                        flexDirection: "row",
                                         marginTop: 8,
-                                        justifyContent: &quot;space-between&quot;,
+                                        justifyContent: "space-between",
                                     }}
-                                    &gt;
-                                    &lt;View style={[styles.cardContainer, { backgroundColor: COLORS.gray6 }]}&gt;
-                                        {image &amp;&amp; &lt;Image source={{ uri: image }} style={{ width: &quot;100%&quot;, height: &quot;100%&quot; }} /&gt;}
-                                    &lt;/View&gt;
-                                    &lt;TouchableOpacity
+                                    >
+                                    <View style={[styles.cardContainer, { backgroundColor: COLORS.gray6 }]}>
+                                        {image && <Image source={{ uri: image }} style={{ width: "100%", height: "100%" }} />}
+                                    </View>
+                                    <TouchableOpacity
                                         onPress={pickImage}
                                         style={[styles.cardContainer, styles.uploadContainer]}
-                                    &gt;
-                                        &lt;Ionicons name=&quot;cloud-upload-outline&quot; size={24} color={COLORS.black} /&gt;
-                                    &lt;/TouchableOpacity&gt;
-                                    &lt;/View&gt;
-                                &lt;/View&gt;
+                                    >
+                                        <Ionicons name="cloud-upload-outline" size={24} color={COLORS.black} />
+                                    </TouchableOpacity>
+                                    </View>
+                                </View> --}}
 
                             </pre>
 
