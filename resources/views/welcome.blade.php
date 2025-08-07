@@ -735,8 +735,8 @@
 
                                 <h2 class="text-white mt-5">React or React Native Frontend Part</h2>
 
-                            &lt;h5 class=&quot;text-white mt-4&quot;&gt;POST Request Example&lt;/h5&gt;
-                            &lt;pre class=&quot;bg-dark text-white p-3 rounded border&quot;&gt;
+                            <h5 class="text-white mt-4">POST Request Example</h5>
+                            <pre class="bg-dark text-white p-3 rounded border">
                             const [inputData, setInputData] = useState({});
                               const [images, setImages] = useState([]);
                               const [image, setImage] = useState(&quot;&quot;);
@@ -892,7 +892,7 @@
                                     &lt;/View&gt;
                                 &lt;/View&gt;
 
-                            &lt;/pre&gt;
+                            </pre>
 
                             <h5 class="text-white mt-4">GET Request Example</h5>
                             <pre class="bg-dark text-white p-3 rounded border">
