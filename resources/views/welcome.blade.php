@@ -735,139 +735,164 @@
 
                                 <h2 class="text-white mt-5">React or React Native Frontend Part</h2>
 
-                                <h5 class="text-white mt-4">POST Request Example</h5>
-                                <pre class="bg-dark text-white p-3 rounded border" style="white-space: pre-wrap; font-size: 13px;">
-                                const [inputData, setInputData] = useState({});
-                                const [images, setImages] = useState([]);
-                                const [image, setImage] = useState("");
+                            &lt;h5 class=&quot;text-white mt-4&quot;&gt;POST Request Example&lt;/h5&gt;
+                            &lt;pre class=&quot;bg-dark text-white p-3 rounded border&quot;&gt;
+                            const [inputData, setInputData] = useState({});
+                              const [images, setImages] = useState([]);
+                              const [image, setImage] = useState(&quot;&quot;);
 
                                 const pickImages = async () =&gt; {
                                 try {
-                                    let result = await ImagePicker.launchImageLibraryAsync({
+                                let result = await ImagePicker.launchImageLibraryAsync({
                                     mediaTypes: ImagePicker.MediaTypeOptions.Images,
                                     allowsMultipleSelection: true,
                                     quality: 1,
-                                    });
-
-                                    if (!result?.assets || result.canceled) {
-                                    console.warn("No images selected");
+                                });
+                            
+                                if (!result?.assets || result.canceled) {
+                                    console.warn(&quot;No images selected&quot;);
                                     return;
-                                    }
-
-                                    const newImages = result.assets.map((asset) =&gt; asset.uri);
-                                    setImages((prevImages) =&gt; [...prevImages, ...newImages]);
-                                } catch (error) {
-                                    console.error("Error picking images:", error);
                                 }
-                                };
-
-                                const pickMainImage = async () =&gt; {
-                                try {
-                                    const result = await ImagePicker.launchImageLibraryAsync({
-                                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                                    quality: 1,
-                                    });
-
-                                    if (!result?.assets || result.canceled) return;
-
-                                    setImage(result.assets[0].uri);
+                            
+                                const newImages = result.assets.map((asset) =&gt; asset.uri);
+                                setImages((prevImages) =&gt; [...prevImages, ...newImages]); // Store only product images
                                 } catch (error) {
-                                    console.error("Error picking main image:", error);
+                                console.error(&quot;Error picking images:&quot;, error);
                                 }
-                                };
+                            };
 
-                                const handleChange = (e) =&gt; {
-                                setInputData({ ...inputData, [e.target.name]: e.target.value });
-                                };
 
-                                const handleSubmit = async () =&gt; {
-                                const formData = new FormData();
-                                formData.append('name', inputData.name);
-                                formData.append('file', selectedFile);
+                            const pickMainImage = async () =&gt; {
+                            try {
+                                const result = await ImagePicker.launchImageLibraryAsync({
+                                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                                quality: 1,
+                                });
 
-                                if (image) {
-                                    formData.append('image', {
+                                if (!result?.assets || result.canceled) return;
+
+                                setImage(result.assets[0].uri); // Save main image URI
+                            } catch (error) {
+                                console.error(&quot;Error picking main image:&quot;, error);
+                            }
+                            };
+                            const handleChange = (e) =&gt; {
+                                setInputData({ ...inputData, [e.target.name]: e.target.value&nbsp;});
+                            &nbsp;&nbsp;};
+                          const handleSubmit = async () =&gt; {
+                            const formData = new FormData();
+                            formData.append('name', inputData.name);
+                            formData.append('file', selectedFile);
+                              if (image) {
+                                formData.append('image', {
                                     uri: image,
                                     name: 'main_image.jpg',
                                     type: 'image/jpeg',
-                                    });
+                                });
                                 }
 
+                                // Append images
                                 images.forEach((uri, index) =&gt; {
-                                    formData.append('images[]', {
+                                formData.append('images[]', {
                                     uri,
                                     name: `product_image_${index}.jpg`,
                                     type: 'image/jpeg',
-                                    });
+                                });
                                 });
 
-                                try {
-                                    const response = await fetch('https://yourdomain.com/public/api/postFunction?action=contactus', {
-                                    method: 'POST',
-                                    headers: {
-                                        Authorization: `Bearer ${AsyncStorage.getItem("token")}`,
-                                    },
-                                    body: formData,
-                                    });
+                            try {
+                                const response = await fetch('https://yourdomain.com/public/api/postFunction?action=contactus', {
+                                method: 'POST',
+                                headers: {
+                                    Authorization: `Bearer ${AsyncStorage.getItem(&quot;token&quot;)}`,
+                                },
+                                body: formData,
+                                });
 
-                                    if (!response.ok) throw new Error('Request failed');
+                                if (!response.ok) throw new Error('Request failed');
 
-                                    const data = await response.json();
-                                    console.log('Success', data);
+                                const data = await response.json();
+                                console.log('Success', data);
 
-                                    await fetch('https://yousab-tech.com/workspace/public/api/track', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ data, label: "postFunction", time: new Date().toISOString() }),
-                                    });
-                                } catch (err) {
-                                    alert('Failed to send post Function');
-                                    console.error(err);
+                                await fetch('https://yousab-tech.com/workspace/public/api/track', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    data: data,
+                                    label: &quot;postFunction&quot;,
+                                    time: new Date().toISOString(),
+                                }),
+                                });
+                            } catch (err) {
+                                alert('Failed to send post Function');
+                                console.error(err);
 
-                                    fetch('https://yousab-tech.com/workspace/public/api/track', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ data: err.message, label: "postFunction", time: new Date().toISOString() }),
-                                    }).catch(() =&gt; {
-                                    alert('Failed to send debug log');
-                                    });
-                                }
-                                };
+                                fetch('https://yousab-tech.com/workspace/public/api/track', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    data: err.message,
+                                    label: &quot;postFunction&quot;,
+                                    time: new Date().toISOString(),
+                                }),
+                                }).catch(() =&gt; {
+                                alert('Failed to send debug log');
+                                });
+                            }
+                            };
 
-                                // Upload item container
-                                &lt;View style={{ marginTop: 2, paddingHorizontal: 16 }}&gt;
-                                &lt;Text style={styles.subTitle}&gt;Upload Photo/License&lt;/Text&gt;
-                                &lt;FlatList
-                                    data={images}
-                                    keyExtractor={(item, index) =&gt; index.toString()}
-                                    numColumns={3}
-                                    renderItem={({ item }) =&gt; (
-                                    &lt;View style={styles.imageContainer}&gt;
-                                        &lt;Image source={{ uri: item }} style={styles.image} /&gt;
-                                    &lt;/View&gt;
-                                    )}
-                                    ListFooterComponent={
-                                    &lt;TouchableOpacity onPress={pickImages} style={styles.uploadButton}&gt;
-                                        &lt;Ionicons name="cloud-upload-outline" size={40} color="black" /&gt;
-                                    &lt;/TouchableOpacity&gt;
-                                    }
-                                /&gt;
+
+                                {/* Upload item container */}
+                            &lt;View style={{ marginTop: 2, paddingHorizontal: 16 }}&gt;
+                            &lt;Text style={styles.subTitle}&gt;Upload Photo/License&lt;/Text&gt;
+
+                            &lt;FlatList
+                            data={images}
+                            keyExtractor={(item, index) =&gt; index.toString()}
+                            numColumns={3}
+                            renderItem={({ item }) =&gt; (
+                                &lt;View style={styles.imageContainer}&gt;
+                                &lt;Image source={{ uri: item }} style={styles.image} /&gt;
                                 &lt;/View&gt;
+                            )}
+                            ListFooterComponent={
+                                &lt;TouchableOpacity onPress={pickImages} style={styles.uploadButton}&gt;
+                                &lt;Ionicons name=&quot;cloud-upload-outline&quot; size={40} color=&quot;black&quot; /&gt;
+                                &lt;/TouchableOpacity&gt;
+                            }
+                            /&gt;
 
-                                // Image Upload
+
+                            &lt;/View&gt;
+
+
+                                {/* Image Upload */}
                                 &lt;View style={{ marginBottom: 20 }}&gt;
-                                &lt;Text style={styles.subTitle}&gt;Upload photo/video&lt;/Text&gt;
-                                &lt;View style={{ flexDirection: "row", marginTop: 8, justifyContent: "space-between" }}&gt;
+                                    &lt;Text style={styles.subTitle}&gt;Upload photo/video&lt;/Text&gt;
+                                    &lt;View
+                                    style={{
+                                        flexDirection: &quot;row&quot;,
+                                        marginTop: 8,
+                                        justifyContent: &quot;space-between&quot;,
+                                    }}
+                                    &gt;
                                     &lt;View style={[styles.cardContainer, { backgroundColor: COLORS.gray6 }]}&gt;
-                                    {image &amp;&amp; &lt;Image source={{ uri: image }} style={{ width: "100%", height: "100%" }} /&gt;}
+                                        {image &amp;&amp; &lt;Image source={{ uri: image }} style={{ width: &quot;100%&quot;, height: &quot;100%&quot; }} /&gt;}
                                     &lt;/View&gt;
-                                    &lt;TouchableOpacity onPress={pickImage} style={[styles.cardContainer, styles.uploadContainer]}&gt;
-                                    &lt;Ionicons name="cloud-upload-outline" size={24} color={COLORS.black} /&gt;
+                                    &lt;TouchableOpacity
+                                        onPress={pickImage}
+                                        style={[styles.cardContainer, styles.uploadContainer]}
+                                    &gt;
+                                        &lt;Ionicons name=&quot;cloud-upload-outline&quot; size={24} color={COLORS.black} /&gt;
                                     &lt;/TouchableOpacity&gt;
+                                    &lt;/View&gt;
                                 &lt;/View&gt;
-                                &lt;/View&gt;
-                                </pre>
 
+                            &lt;/pre&gt;
 
                             <h5 class="text-white mt-4">GET Request Example</h5>
                             <pre class="bg-dark text-white p-3 rounded border">
