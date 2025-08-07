@@ -805,6 +805,7 @@
                                 method: 'POST',
                                 headers: {
                                     Authorization: `Bearer ${AsyncStorage.getItem("token")}`,
+                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                                 },
                                 body: formData,
                                 });
