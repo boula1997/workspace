@@ -804,7 +804,6 @@
                                 const response = await fetch('https://yourdomain.com/public/api/postFunction?action=contactus', {
                                 method: 'POST',
                                 headers: {
-                                    Authorization: `Bearer ${AsyncStorage.getItem("token")}`,
                                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                                 },
                                 body: formData,
