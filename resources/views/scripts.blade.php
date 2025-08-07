@@ -3203,7 +3203,6 @@ $(document).ready(function () {
           if (keyword.length > 1) {
             instance.mark(keyword, {
               separateWordSearch: false,
-              accuracy: "exactly"
             });
           }
         }
