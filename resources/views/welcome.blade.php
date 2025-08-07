@@ -737,7 +737,7 @@
 
                             <h5 class="text-white mt-4">POST Request Example</h5>
                             <pre class="bg-dark text-white p-3 rounded border">
-                            const [inputData, setInputData] = useState([]);
+                            const [inputData, setInputData] = useState({});
                             const handleChange = (e) => {
                                 setInputData({ ...inputData, [e.target.name]: e.target.value });
                               };
