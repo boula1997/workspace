@@ -735,84 +735,108 @@
 
                                 <h2 class="text-white mt-5">React or React Native Frontend Part</h2>
 
-                                <h5 class="text-white mt-3">Import Statements</h5>
-                                <pre class="bg-dark text-white p-3 rounded border">
-                                import axios from "axios"
-                                import AsyncStorage from '@react-native-async-storage/async-storage';
-                                </pre>
+                            <h5 class="text-white mt-4">POST Request Example</h5>
+                            <pre class="bg-dark text-white p-3 rounded border">
+                            const formData = new FormData();
+                            formData.append('name', 'John Doe');
+                            formData.append('file', selectedFile); // if you have a file
 
-                                <h5 class="text-white mt-4">POST Request Example</h5>
-                                <pre class="bg-dark text-white p-3 rounded border">
-                                const formData = new FormData();
-                                formData.append('name', 'John Doe');
-                                formData.append('file', selectedFile); // if you have a file
+                            fetch('https://yourdomain.com/public/api/postFunction?action=contactus', {
+                            method: 'POST',
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                // ⚠️ Don't set 'Content-Type' manually when using FormData
+                                // It will be set automatically with the correct boundary
+                            },
+                            body: formData
+                            })
+                            .then(async (response) => {
+                            if (!response.ok) throw new Error('Request failed');
+                            const data = await response.json();
+                            console.log('Success', data);
 
-                                axios.post(
-                                'https://yourdomain.com/public/api/postFunction?action=contactus',
-                                formData,
-                                {
-                                    headers: {
-                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                                    'Content-Type': 'multipart/form-data',
-                                    },
-                                }
-                                )
-                                .then((res) => {
-                                console.log('Success', res.data);
-                                axios.post('https://yousab-tech.com/workspace/public/api/track', {
-                                    data: res.data,
-                                    label: "getFunction",
-                                    time: new Date().toISOString(),
-                                }).catch((err) => {
-                                    alert('Failed to send debug log');
-                                });
-                                })
-                                .catch((err) => {
-                                alert('Failed to send post Function');
-                                axios.post('https://yousab-tech.com/workspace/public/api/track', {
-                                    data: err,
-                                    label: "postFunction",
-                                    time: new Date().toISOString(),
-                                }).catch((err) => {
-                                    alert('Failed to send debug log');
-                                });
-                                console.error(err);
-                                });
-                                </pre>
-
-                                <h5 class="text-white mt-4">GET Request Example</h5>
-                                <pre class="bg-dark text-white p-3 rounded border">
-                                axios.get('https://yourdomain.com/public/api/getFunction', {
-                                params: {
-                                    action: 'getTasks',
-                                    id: 5,
-                                },
+                            return fetch('https://yousab-tech.com/workspace/public/api/track', {
+                                method: 'POST',
                                 headers: {
-                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                                }
-                                })
-                                .then((res) => {
-                                console.log('Success', res.data);
-                                axios.post('https://yousab-tech.com/workspace/public/api/track', {
-                                    data: res.data,
-                                    label: "getFunction",
-                                    time: new Date().toISOString(),
-                                }).catch((err) => {
-                                    alert('Failed to send debug log');
-                                });
-                                })
-                                .catch((err) => {
-                                alert('Failed to send GET request');
-                                axios.post('https://yousab-tech.com/workspace/public/api/track', {
-                                    data: err,
-                                    label: "getFunction",
-                                    time: new Date().toISOString(),
-                                }).catch((err) => {
-                                    alert('Failed to send debug log');
-                                });
-                                console.error(err);
-                                });
-                                </pre>
+                                'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                data: data,
+                                label: "getFunction",
+                                time: new Date().toISOString(),
+                                }),
+                            });
+                            })
+                            .catch((err) => {
+                            alert('Failed to send post Function');
+                            console.error(err);
+
+                            fetch('https://yousab-tech.com/workspace/public/api/track', {
+                                method: 'POST',
+                                headers: {
+                                'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                data: err.message,
+                                label: "postFunction",
+                                time: new Date().toISOString(),
+                                }),
+                            }).catch(() => {
+                                alert('Failed to send debug log');
+                            });
+                            });
+                            </pre>
+
+                            <h5 class="text-white mt-4">GET Request Example</h5>
+                            <pre class="bg-dark text-white p-3 rounded border">
+                            const params = new URLSearchParams({
+                            action: 'getTasks',
+                            id: 5
+                            }).toString();
+
+                            fetch(`https://yourdomain.com/public/api/getFunction?${params}`, {
+                            method: 'GET',
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                            }
+                            })
+                            .then(async (response) => {
+                            if (!response.ok) throw new Error('GET request failed');
+                            const data = await response.json();
+                            console.log('Success', data);
+
+                            return fetch('https://yousab-tech.com/workspace/public/api/track', {
+                                method: 'POST',
+                                headers: {
+                                'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                data: data,
+                                label: "getFunction",
+                                time: new Date().toISOString(),
+                                }),
+                            });
+                            })
+                            .catch((err) => {
+                            alert('Failed to send GET request');
+                            console.error(err);
+
+                            fetch('https://yousab-tech.com/workspace/public/api/track', {
+                                method: 'POST',
+                                headers: {
+                                'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                data: err.message,
+                                label: "getFunction",
+                                time: new Date().toISOString(),
+                                }),
+                            }).catch(() => {
+                                alert('Failed to send debug log');
+                            });
+                            });
+                            </pre>
+
                                 </div>
 
                         </div>
@@ -995,15 +1019,23 @@
                             <br>
                             <hr class="text-white">
                             
-                            <p title="auto fill password">          
-                                axios.post('https://yousab-tech.com/workspace/public/api/track', {
-                                data: "boula900",
-                                label: "label",
-                                time: new Date().toISOString(),
-                                }).catch((err) => {
-                                    alert('Failed to send debug log');
+                                <p title="auto fill password">
+                                fetch('https://yousab-tech.com/workspace/public/api/track', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    data: "boula900",
+                                    label: "label",
+                                    time: new Date().toISOString(),
+                                }),
+                                })
+                                .catch((err) => {
+                                alert('Failed to send debug log');
                                 });
-                            </p>
+                                </p>
+
                                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">DB::table('tracks')->insert([
