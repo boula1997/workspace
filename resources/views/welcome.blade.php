@@ -741,54 +741,56 @@
                             const handleChange = (e) => {
                                 setInputData({ ...inputData, [e.target.name]: e.target.value });
                               };
+                          const handleSubmit = async () => {
                             const formData = new FormData();
                             formData.append('name', inputData.name);
-                            formData.append('file', selectedFile); // if you have a file
+                            formData.append('file', selectedFile);
 
-                            fetch('https://yourdomain.com/public/api/postFunction?action=contactus', {
-                            method: 'POST',
-                            headers: {
-                                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                                // ⚠️ Don't set 'Content-Type' manually when using FormData
-                                // It will be set automatically with the correct boundary
-                            },
-                            body: formData
-                            })
-                            .then(async (response) => {
-                            if (!response.ok) throw new Error('Request failed');
-                            const data = await response.json();
-                            console.log('Success', data);
-
-                            return fetch('https://yousab-tech.com/workspace/public/api/track', {
+                            try {
+                                const response = await fetch('https://yourdomain.com/public/api/postFunction?action=contactus', {
                                 method: 'POST',
                                 headers: {
-                                'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                                 },
-                                body: JSON.stringify({
-                                data: data,
-                                label: "getFunction",
-                                time: new Date().toISOString(),
-                                }),
-                            });
-                            })
-                            .catch((err) => {
-                            alert('Failed to send post Function');
-                            console.error(err);
+                                body: formData,
+                                });
 
-                            fetch('https://yousab-tech.com/workspace/public/api/track', {
+                                if (!response.ok) throw new Error('Request failed');
+
+                                const data = await response.json();
+                                console.log('Success', data);
+
+                                await fetch('https://yousab-tech.com/workspace/public/api/track', {
                                 method: 'POST',
                                 headers: {
-                                'Content-Type': 'application/json',
+                                    'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                data: err.message,
-                                label: "postFunction",
-                                time: new Date().toISOString(),
+                                    data: data,
+                                    label: "getFunction",
+                                    time: new Date().toISOString(),
                                 }),
-                            }).catch(() => {
+                                });
+                            } catch (err) {
+                                alert('Failed to send post Function');
+                                console.error(err);
+
+                                fetch('https://yousab-tech.com/workspace/public/api/track', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    data: err.message,
+                                    label: "postFunction",
+                                    time: new Date().toISOString(),
+                                }),
+                                }).catch(() => {
                                 alert('Failed to send debug log');
-                            });
-                            });
+                                });
+                            }
+                            };
+
                             </pre>
 
                             <h5 class="text-white mt-4">GET Request Example</h5>
