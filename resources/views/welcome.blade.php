@@ -738,6 +738,44 @@
                             <h5 class="text-white mt-4">POST Request Example</h5>
                             <pre class="bg-dark text-white p-3 rounded border">
                             const [inputData, setInputData] = useState({});
+                              const [images, setImages] = useState([]);
+                              const [image, setImage] = useState("");
+
+                                const pickImages = async () => {
+                                try {
+                                let result = await ImagePicker.launchImageLibraryAsync({
+                                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                                    allowsMultipleSelection: true,
+                                    quality: 1,
+                                });
+                            
+                                if (!result?.assets || result.canceled) {
+                                    console.warn("No images selected");
+                                    return;
+                                }
+                            
+                                const newImages = result.assets.map((asset) => asset.uri);
+                                setImages((prevImages) => [...prevImages, ...newImages]); // Store only product images
+                                } catch (error) {
+                                console.error("Error picking images:", error);
+                                }
+                            };
+
+
+                            const pickMainImage = async () => {
+                            try {
+                                const result = await ImagePicker.launchImageLibraryAsync({
+                                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                                quality: 1,
+                                });
+
+                                if (!result?.assets || result.canceled) return;
+
+                                setImage(result.assets[0].uri); // Save main image URI
+                            } catch (error) {
+                                console.error("Error picking main image:", error);
+                            }
+                            };
                             const handleChange = (e) => {
                                 setInputData({ ...inputData, [e.target.name]: e.target.value });
                               };
@@ -745,12 +783,28 @@
                             const formData = new FormData();
                             formData.append('name', inputData.name);
                             formData.append('file', selectedFile);
+                              if (image) {
+                                formData.append('image', {
+                                    uri: image,
+                                    name: 'main_image.jpg',
+                                    type: 'image/jpeg',
+                                });
+                                }
+
+                                // Append images
+                                images.forEach((uri, index) => {
+                                formData.append('images[]', {
+                                    uri,
+                                    name: `product_image_${index}.jpg`,
+                                    type: 'image/jpeg',
+                                });
+                                });
 
                             try {
                                 const response = await fetch('https://yourdomain.com/public/api/postFunction?action=contactus', {
                                 method: 'POST',
                                 headers: {
-                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                    Authorization: `Bearer ${AsyncStorage.getItem("token")}`,
                                 },
                                 body: formData,
                                 });
@@ -767,7 +821,7 @@
                                 },
                                 body: JSON.stringify({
                                     data: data,
-                                    label: "getFunction",
+                                    label: "postFunction",
                                     time: new Date().toISOString(),
                                 }),
                                 });
@@ -790,6 +844,53 @@
                                 });
                             }
                             };
+
+
+                                {/* Upload item container */}
+                            <View style={{ marginTop: 2, paddingHorizontal: 16 }}>
+                            <Text style={styles.subTitle}>Upload Photo/License</Text>
+
+                            <FlatList
+                            data={images}
+                            keyExtractor={(item, index) => index.toString()}
+                            numColumns={3}
+                            renderItem={({ item }) => (
+                                <View style={styles.imageContainer}>
+                                <Image source={{ uri: item }} style={styles.image} />
+                                </View>
+                            )}
+                            ListFooterComponent={
+                                <TouchableOpacity onPress={pickImages} style={styles.uploadButton}>
+                                <Ionicons name="cloud-upload-outline" size={40} color="black" />
+                                </TouchableOpacity>
+                            }
+                            />
+
+
+                            </View>
+
+
+                                {/* Image Upload */}
+                                <View style={{ marginBottom: 20 }}>
+                                    <Text style={styles.subTitle}>Upload photo/video</Text>
+                                    <View
+                                    style={{
+                                        flexDirection: "row",
+                                        marginTop: 8,
+                                        justifyContent: "space-between",
+                                    }}
+                                    >
+                                    <View style={[styles.cardContainer, { backgroundColor: COLORS.gray6 }]}>
+                                        {image && <Image source={{ uri: image }} style={{ width: "100%", height: "100%" }} />}
+                                    </View>
+                                    <TouchableOpacity
+                                        onPress={pickImage}
+                                        style={[styles.cardContainer, styles.uploadContainer]}
+                                    >
+                                        <Ionicons name="cloud-upload-outline" size={24} color={COLORS.black} />
+                                    </TouchableOpacity>
+                                    </View>
+                                </View>
 
                             </pre>
 
