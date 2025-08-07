@@ -737,8 +737,12 @@
 
                             <h5 class="text-white mt-4">POST Request Example</h5>
                             <pre class="bg-dark text-white p-3 rounded border">
+                            const [inputData, setInputData] = useState([]);
+                            const handleChange = (e) => {
+                                setInputData({ ...inputData, [e.target.name]: e.target.value });
+                              };
                             const formData = new FormData();
-                            formData.append('name', 'John Doe');
+                            formData.append('name', inputData.name);
                             formData.append('file', selectedFile); // if you have a file
 
                             fetch('https://yourdomain.com/public/api/postFunction?action=contactus', {
