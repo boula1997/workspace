@@ -782,7 +782,6 @@
                           const handleSubmit = async () => {
                             const formData = new FormData();
                             formData.append('name', inputData.name);
-                            formData.append('file', selectedFile);
                               if (image) {
                                 formData.append('image', {
                                     uri: image,
