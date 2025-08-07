@@ -3197,11 +3197,14 @@ $(document).ready(function () {
     const instance = new Mark(context);
 
     input.addEventListener('input', function () {
-      const keyword = this.value;
+      const keyword = this.value.trim();
       instance.unmark({
         done: function () {
           if (keyword.length > 1) {
-            instance.mark(keyword);
+            instance.mark(keyword, {
+              separateWordSearch: false,
+              accuracy: "exactly"
+            });
           }
         }
       });
