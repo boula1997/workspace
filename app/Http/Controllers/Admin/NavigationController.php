@@ -204,10 +204,6 @@ class NavigationController extends Controller
     {
         try {
             $data = $request->except('employees');
-            $data['difficulty']=$request->has('difficulty')?1:0;
-            $data['hasPhone']=$request->has('hasPhone')?1:0;
-            $navigations=Navigation::where('title',$navigation->title)->get();
-            foreach($navigations as $navigation) 
             $navigation->update($data);
                       // Get the previous and the one before the previous route
                       $previousRoute = session('previousRoute');
@@ -230,10 +226,7 @@ class NavigationController extends Controller
     public function destroy(Navigation $navigation)
     {
         try {
-            $navigation->update([
-                'status' => !$navigation->status,
-                'created_at' => now() // or use Carbon::now()
-            ]);
+            $navigation->delete();
             return redirect()->back()->with(['success' => __('general.created_successfully')]);
         } catch (Exception $e) {
             dd($e->getMessage());
