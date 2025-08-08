@@ -1,7 +1,7 @@
 @extends('admin.layouts.master')
 
 @section('content')
-    <!-- Content Wrapper. Contains user content -->
+    <!-- Content Wrapper. Contains navigation content -->
     <div class="content-wrapper">
         <!-- Main content -->
         <section class="content pt-2">
@@ -14,10 +14,10 @@
                                 <!-- general form elements -->
                                 <div class="row">
                                     <div class="col-md-6 d-flex d-flex justify-content-start">
-                                        <h1 class="card-title fw-bold"><th>@lang('general.users')</th></h3>
+                                        <h1 class="card-title fw-bold"><th>@lang('general.navigations')</th></h3>
                                     </div>
                                     <div class="col-md-6 d-flex d-flex justify-content-end">
-                                        <a href="{{route('users.create')}}">
+                                        <a href="{{route('navigations.create')}}">
                                             
                                             <button class="btn btn-outline-primary px-5
 "><i class="fa fa-plus fa-sm px-2" aria-hidden="true"></i> @lang('general.add')</button>
@@ -32,25 +32,25 @@
                                     <thead class="h-2">
                                         <tr class="p-0 m-0">
                                             <th>#</th>
-                                            <th>@lang('general.image')</th>
-                                            <th>@lang('general.name')</th>
-                                            <th>@lang('general.email')</th>
+                                            <th>@lang('general.link')</th>
+                                            <th>@lang('general.title')</th>
+                                            <th>@lang('general.navigation')</th>
+                                            <th>@lang('general.password')</th>
                                             <th class="th-controls">@lang('general.controls')</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($data as $user)
+                                        @foreach ($data as $navigation)
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td><img width="100" height="100" src="{{$user->image}}"
-                                                        alt="{{ $user->name }}"></td>
-                                                <td>{{ $user->name }}</td>
-                                                <td>{{ $user->email }}</td>
+                                                <td>{{ $navigation->link }}</td>
+                                                <td>{{ $navigation->navigation }}</td>
+                                                <td>{{ $navigation->password }}</td>
                                                 <td>
                                                     @include('admin.components.controls', [
-                                                        'route' => 'users',
-                                                        'role' => 'user',
-                                                        'module' => $user,
+                                                        'route' => 'navigations',
+                                                        'role' => 'navigation',
+                                                        'module' => $navigation,
                                                     ])
                                                 </td>
                                             </tr>
