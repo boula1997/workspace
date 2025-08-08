@@ -195,8 +195,7 @@ class NavigationController extends Controller
         //    dd($navigation->title);
         $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('status',1)->get();
-        $selectedEmployees=Navigation::where('title',$navigation->title)->pluck('employee_id');;
-        return view('admin.crud.navigations.edit', compact('navigation','employees','projects','selectedEmployees'));
+        return view('admin.crud.navigations.edit', compact('navigation','employees','projects'));
     }
     /**
      * Update the specified resource in storage.
