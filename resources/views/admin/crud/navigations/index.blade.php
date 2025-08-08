@@ -73,9 +73,9 @@
                                                         <td>{{ $navigation->password }}</td>
                                             <td>
                                                 @include('admin.components.controls', [
-                                                    'route' => 'admins',
-                                                    'role' => 'admin',
-                                                    'module' => $admin,
+                                                    'route' => 'navigations',
+                                                    'role' => 'navigation',
+                                                    'module' => $navigation,
                                                 ])
                                             </td>
                                                     </tr>
