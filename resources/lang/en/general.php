@@ -462,4 +462,52 @@ return [
     "Name" => "Name",
     "Logout" => "Logout",
 
+    "navigations" => "Navigations",
+
+"allnavigations" => "Allnavigations",
+
+"show_all" => "Show all",
+
+"cancel" => "Cancel",
+
+"no_result" => "No result",
+
+"link" => "Link",
+
+"Bed" => "Bed",
+
+"brand" => "Brand",
+
+"hdd" => "Hdd",
+
+"ssd" => "Ssd",
+
+"ram" => "Ram",
+
+"processor" => "Processor",
+
+"generation" => "Generation",
+
+"screenCard" => "ScreenCard",
+
+"files" => "Files",
+
+"$1" => "$1",
+
+"Dashboard" => "Dashboard",
+
+"Register" => "Register",
+
+"Name" => "Name",
+
+"Password" => "Password",
+
+"Email" => "Email",
+
+"Login" => "Login",
+
+"Confirm" => "Confirm",
+
+"Logout" => "Logout",
+
 ];

@@ -14,6 +14,7 @@ class NavigationResource extends JsonResource
      */
     public function toArray($request)
     {
+
         return [
             "id" => $this->id,
             'link'=>$this->link.'?user='.$this->user.'&password='.$this->password,
