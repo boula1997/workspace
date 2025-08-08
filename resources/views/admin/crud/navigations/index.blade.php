@@ -35,6 +35,7 @@
                                             <th>@lang('general.link')</th>
                                             <th>@lang('general.title')</th>
                                             <th>@lang('general.navigation')</th>
+                                            <th>@lang('general.user')</th>
                                             <th>@lang('general.password')</th>
                                             <th class="th-controls">@lang('general.controls')</th>
                                         </tr>
@@ -44,6 +45,7 @@
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $navigation->link }}</td>
+                                                <td>{{ $navigation->title }}</td>
                                                 <td>{{ $navigation->navigation }}</td>
                                                 <td>{{ $navigation->user }}</td>
                                                 <td>{{ $navigation->password }}</td>
