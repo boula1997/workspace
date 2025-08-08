@@ -12,6 +12,7 @@ use App\Models\Newsletter;
 use App\Models\Contact;
 use App\Models\Gallery;
 use App\Models\Followup;
+use App\Models\Navigation;
 use App\Models\Image;
 use App\Models\Accountant;
 use App\Models\History;
@@ -445,6 +446,7 @@ function itemsCount($model)
         "videos" => count(Video::get()),
         "roles" => count(Role::get()),
         "categories" => count(Category::get()),
+        "navigations" => count(Navigation::get()),
     ];
 
 
