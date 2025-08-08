@@ -33,59 +33,13 @@ class NavigationController extends Controller
         try {
             $employees=Admin::orderBy('name', 'ASC')->get();
 
-            if(request()->routeIs('navigations.finished'))
-            $status=[1];
-            else if(request()->routeIs('navigations.index'))
-            $status=[0];
-            else
-            $status=[0,1];
+  
 
-            if(auth()->user()->email!="nessimboula@gmail.com"){
-                if(auth()->user() && auth()->user()->type=='admin')
-                $navigations = $this->navigation
-                    ->whereIn('status', $status)
-                    ->whereDoesntHave('employee', function ($query) {
-                        $query->where('email', 'nessimboula@gmail.com');
-                    })
-                    ->orderBy('status')
-                    ->latest()
-                    ->get()
-                    ->unique('title');
-                else
-                $navigations = $this->navigation
-                ->whereIn('status', $status)
-                ->where(function ($query) {
-                    $query->where('employee_id', auth()->user()->id)
-                          ->orWhereHas('employee', function ($query) {
-                              $query->where('name', 'All');
-                          });
-                })
-                ->whereDoesntHave('employee', function ($query) {
-                    $query->where('email', 'nessimboula@gmail.com');
-                })
-                ->orderBy('status') // Order by status
-                ->latest()          // Then order by latest date
-                ->get()
-                ->unique('title');
-            
-            }else{
-
-                if(auth()->user() && auth()->user()->type=='admin')
-                $navigations = $this->navigation->whereIn('status',$status)->orderBy('status')->latest()->get() ->unique('title');
-                else
-                $navigations = $this->navigation
-                ->whereIn('status', $status)
-                ->where(function ($query) {
-                    $query->where('employee_id', auth()->user()->id)
-                          ->orWhereHas('employee', function ($query) {
-                              $query->where('name', 'All');
-                          });
-                })
-                ->orderBy('status')
+            $navigations = $this->navigation
                 ->latest()
                 ->get()
                 ->unique('title');
-            }
+
             return view('admin.crud.navigations.index', compact('navigations','employees'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);
         } catch (Exception $e) {
