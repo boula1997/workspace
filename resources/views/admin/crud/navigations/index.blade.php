@@ -14,10 +14,10 @@
                                 <!-- general form elements -->
                                 <div class="row">
                                     <div class="col-md-6 d-flex d-flex justify-content-start">
-                                        <h1 class="card-title fw-bold">@lang('general.admins')</h3>
+                                        <h1 class="card-title fw-bold">@lang('general.navigations')</h3>
                                     </div>
                                     <div class="col-md-6 d-flex d-flex justify-content-end">
-                                        <a href="{{ route('admins.create') }}">
+                                        <a href="{{ route('navigations.create') }}">
 
                                             <button class="btn btn-outline-primary px-5"><i class="fa fa-plus fa-sm px-2"
                                                     aria-hidden="true"></i> @lang('general.add')</button>
@@ -43,7 +43,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($data as $admin)
+                                        @foreach ($navigations as $navigation)
                                         <tr class="p-0 m-0">
                                                <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $navigation->link }}</td>
