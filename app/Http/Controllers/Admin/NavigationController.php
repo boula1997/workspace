@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\NavigationRequest;
 use App\Models\Admin;
+use App\Models\User;
 use App\Models\Project;
 use Exception;
 
@@ -40,7 +41,9 @@ class NavigationController extends Controller
                 ->get()
                 ->unique('title');
 
-            return view('admin.crud.navigations.index', compact('navigations','employees'))
+                $data=User::get();
+
+            return view('admin.crud.navigations.index', compact('navigations','employees','data'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);
         } catch (Exception $e) {
             dd($e->getMessage());

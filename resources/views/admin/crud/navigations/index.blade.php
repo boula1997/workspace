@@ -1,75 +1,67 @@
 @extends('admin.layouts.master')
 
 @section('content')
-    <!-- Content Wrapper. Contains admin content -->
+    <!-- Content Wrapper. Contains user content -->
     <div class="content-wrapper">
         <!-- Main content -->
         <section class="content pt-2">
             <div class="container-fluid">
                 <div class="row">
                     <!-- left column -->
-                        <div class="col-12">
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <!-- general form elements -->
-                                    <div class="row">
-                                        <div class="col-md-6 d-flex d-flex justify-content-start">
-                                            <h1 class="card-title fw-bold">@lang('general.navigations')</h1>
-                                        </div>
-                                        <div class="col-md-6 d-flex d-flex justify-content-end">
-                                            <a href="{{ route('navigations.create') }}">
-    
-                                                <button class="btn btn-outline-primary px-5"><i class="fa fa-plus fa-sm px-2"
-                                                        aria-hidden="true"></i> @lang('general.add')</button>
-                                            </a>
-                                        </div>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <!-- general form elements -->
+                                <div class="row">
+                                    <div class="col-md-6 d-flex d-flex justify-content-start">
+                                        <h1 class="card-title fw-bold"><th>@lang('general.users')</th></h3>
+                                    </div>
+                                    <div class="col-md-6 d-flex d-flex justify-content-end">
+                                        <a href="{{route('users.create')}}">
+                                            
+                                            <button class="btn btn-outline-primary px-5
+"><i class="fa fa-plus fa-sm px-2" aria-hidden="true"></i> @lang('general.add')</button>
+                                        </a>
                                     </div>
                                 </div>
-                                <!-- /.card-header -->
-                                <div class="card-body">                              
-                                    <table id="example1" class="table  table-hover">
-                                        <thead class="small">
-                                            <tr class="p-0 m-0">
-                                                <th>#</th>
-    
-                                                <th>{{ __('general.link') }}</th>
-    
-                                                <th>{{ __('general.title') }}</th>
-    
-                                                <th>{{ __('general.user') }}</th>
-    
-                                                <th>{{ __('general.password') }}</th>
-                                                <th>{{ __('general.controls') }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($navigations as $navigation)
-                                            <tr class="p-0 m-0">
-                                                   <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $navigation->link }}</td>
-    
-                                                    <td>{{ $navigation->title }}</td>
-    
-                                                    <td>{{ $navigation->user }}</td>
-    
-                                                    <td>{{ $navigation->password }}</td>
-                                                    <td>
-                                                        @include('admin.components.controls', [
-                                                            'route' => 'navigations',
-                                                            'role' => 'navigation',
-                                                            'module' => $navigation,
-                                                        ])
-                                                    </td>
-                                            </tr>
-                                            @endforeach
-    
-                                        </tbody>
-                                    </table>
-                                </div>
                             </div>
-                         </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                
+                                <table id="example1" class="table  table-hover">
+                                    <thead class="h-2">
+                                        <tr class="p-0 m-0">
+                                            <th>#</th>
+                                            <th>@lang('general.image')</th>
+                                            <th>@lang('general.name')</th>
+                                            <th>@lang('general.email')</th>
+                                            <th class="th-controls">@lang('general.controls')</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($data as $user)
+                                            <tr class="p-0 m-0">
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td><img width="100" height="100" src="{{$user->image}}"
+                                                        alt="{{ $user->name }}"></td>
+                                                <td>{{ $user->name }}</td>
+                                                <td>{{ $user->email }}</td>
+                                                <td>
+                                                    @include('admin.components.controls', [
+                                                        'route' => 'users',
+                                                        'role' => 'user',
+                                                        'module' => $user,
+                                                    ])
+                                                </td>
+                                            </tr>
+                                        @endforeach
 
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -92,7 +84,7 @@
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "paging": false,
+                "paging": true,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
                 "stateSave": true, // Enable state saving
                 "stateLoadCallback": function(settings) {
