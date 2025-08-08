@@ -16,7 +16,7 @@ use App\Http\Controllers\API\TaskController;
 use App\Http\Controllers\API\ProjectController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ServiceController;
-use App\Http\Controllers\API\FollowupController;
+use App\Http\Controllers\API\NavigationController;
 use App\Http\Controllers\API\TestimonialController;
 use App\Http\Controllers\API\ProcessController;
 use App\Http\Controllers\API\CategoryController;

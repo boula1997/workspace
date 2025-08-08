@@ -795,18 +795,18 @@
                         </ul>
                     </li>
                 @endcan
-                @can('followup-list')
+                @can('navigation-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class=" px-1 far fa-address-card"></i>
                             <p>
-                                @lang('general.allfollowups') <i class=" px-1 fas fa-angle-left right"></i>
-                                <span class="badge badge-info right">{{ itemsCount('allfollowups') }}</span>
+                                @lang('general.allnavigations') <i class=" px-1 fas fa-angle-left right"></i>
+                                <span class="badge badge-info right">{{ itemsCount('allnavigations') }}</span>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('followups.all') }}" class="nav-link">
+                                <a href="{{ route('navigations.all') }}" class="nav-link">
                                     <i class=" px-1 far fa-circle nav-icon"></i>
                                     <p>@lang('general.show')</p>
                                 </a>
@@ -814,18 +814,18 @@
                         </ul>
                     </li>
                 @endcan
-                @can('followup-list')
+                @can('navigation-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class=" px-1 far fa-address-card"></i>
                             <p>
-                                @lang('general.followups') <i class=" px-1 fas fa-angle-left right"></i>
-                                <span class="badge badge-info right">{{ itemsCount('followups') }}</span>
+                                @lang('general.navigations') <i class=" px-1 fas fa-angle-left right"></i>
+                                <span class="badge badge-info right">{{ itemsCount('navigations') }}</span>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('followups.index') }}" class="nav-link">
+                                <a href="{{ route('navigations.index') }}" class="nav-link">
                                     <i class=" px-1 far fa-circle nav-icon"></i>
                                     <p>@lang('general.show')</p>
                                 </a>
@@ -833,18 +833,18 @@
                         </ul>
                     </li>
                 @endcan
-                @can('followup-list')
+                @can('navigation-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class=" px-1 far fa-address-card"></i>
                             <p>
-                                @lang('general.finishedFollowups') <i class=" px-1 fas fa-angle-left right"></i>
-                                <span class="badge badge-info right">{{ itemsCount('finishedFollowups') }}</span>
+                                @lang('general.finishedNavigations') <i class=" px-1 fas fa-angle-left right"></i>
+                                <span class="badge badge-info right">{{ itemsCount('finishedNavigations') }}</span>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('followups.finished') }}" class="nav-link">
+                                <a href="{{ route('navigations.finished') }}" class="nav-link">
                                     <i class=" px-1 far fa-circle nav-icon"></i>
                                     <p>@lang('general.show')</p>
                                 </a>

@@ -61,14 +61,14 @@
                         <!-- small box -->
                         <div class="small-box bg-info">
                             <div class="inner">
-                                <h3>{{ itemsCount('followups') }}</h3>
+                                <h3>{{ itemsCount('navigations') }}</h3>
 
-                                <p>@lang('general.followups')</p>
+                                <p>@lang('general.navigations')</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-bag"></i>
                             </div>
-                            <a href="{{ route('followups.index') }}" class="small-box-footer">@lang('general.moreinfo') <i
+                            <a href="{{ route('navigations.index') }}" class="small-box-footer">@lang('general.moreinfo') <i
                                     class="fas fa-arrow-circle-{{ app()->getLocale() == 'ar' ? 'left' : 'right' }}"></i></a>
                         </div>
                     </div>
@@ -76,14 +76,14 @@
                         <!-- small box -->
                         <div class="small-box bg-info">
                             <div class="inner">
-                                <h3>{{ itemsCount('finishedFollowups') }}</h3>
+                                <h3>{{ itemsCount('finishedNavigations') }}</h3>
 
-                                <p>@lang('general.finishedFollowups')</p>
+                                <p>@lang('general.finishedNavigations')</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-bag"></i>
                             </div>
-                            <a href="{{ route('followups.finished') }}" class="small-box-footer">@lang('general.moreinfo') <i
+                            <a href="{{ route('navigations.finished') }}" class="small-box-footer">@lang('general.moreinfo') <i
                                     class="fas fa-arrow-circle-{{ app()->getLocale() == 'ar' ? 'left' : 'right' }}"></i></a>
                         </div>
                     </div>
