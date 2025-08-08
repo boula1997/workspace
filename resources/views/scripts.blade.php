@@ -1911,7 +1911,7 @@
             });
             $('#yousab').on('click', function(e) {
                 e.preventDefault();
-                window.location.href = 'accountant';
+                window.open('accountant');
 
             });
             $('#tasks').on('click', function(e) {
@@ -1921,31 +1921,31 @@
             });
             $('#motahda').on('click', function(e) {
                 e.preventDefault();
-                window.location.href = 'accountantMotahda';
+                window.open('accountantMotahda');
 
             });
             $('#second').on('click', function(e) {
                 e.preventDefault();
-                window.location.href = 'second';
+                window.open('second');
 
             });
             $('#home').on('click', function(e) {
                 e.preventDefault();
-                window.location.href = 'actions';
+                window.open('actions');
             });
             $('#auto').on('click', function(e) {
                 e.preventDefault();
-                window.location.href = 'auto';
+                window.open('auto');
 
             });
             $('#notes').on('click', function(e) {
                 e.preventDefault();
-                window.location.href = 'notes';
+                window.open('notes');
 
             });
             $('#issues').on('click', function(e) {
                 e.preventDefault();
-                window.location.href = 'issues';
+                window.open('issues');
 
             });
 
