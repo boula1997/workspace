@@ -43,8 +43,7 @@ class NavigationController extends Controller
 
                 $data=User::get();
 
-            return view('admin.crud.navigations.index', compact('navigations','employees','data'))
-                ->with('i', (request()->input('page', 1) - 1) * 5);
+            return view('admin.crud.navigations.index', compact('navigations','employees','data'));
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
