@@ -8,7 +8,6 @@
             <div class="container-fluid">
                 <div class="row">
                     <!-- left column -->
-                    <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
                                 <!-- general form elements -->
@@ -68,7 +67,6 @@
                             </div>
                         </div>
 
-                    </div>
 
                 </div>
 
