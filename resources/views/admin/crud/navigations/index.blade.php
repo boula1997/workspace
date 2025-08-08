@@ -32,7 +32,6 @@
                                     <thead class="h-2">
                                         <tr class="p-0 m-0">
                                             <th>#</th>
-                                            <th>@lang('general.link')</th>
                                             <th>@lang('general.title')</th>
                                             <th>@lang('general.user')</th>
                                             <th>@lang('general.password')</th>
@@ -43,7 +42,6 @@
                                         @foreach ($data as $navigation)
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td class="text-wrap">{{ $navigation->link }}</td>
                                                 <td>{{ $navigation->title }}</td>
                                                 <td>{{ $navigation->user }}</td>
                                                 <td>{{ $navigation->password }}</td>
