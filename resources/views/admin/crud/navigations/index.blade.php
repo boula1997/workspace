@@ -40,7 +40,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($users as $navigation)
+                                        @foreach ($data as $navigation)
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $navigation->link }}</td>

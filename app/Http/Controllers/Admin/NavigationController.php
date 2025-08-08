@@ -39,7 +39,7 @@ class NavigationController extends Controller
             $data = $this->navigation
                 ->latest()
                 ->get()
-                ->unique('title');
+                 ;
 
                 $users=User::get();
 
