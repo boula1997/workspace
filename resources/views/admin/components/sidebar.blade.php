@@ -653,7 +653,7 @@
                     </li>
                 @endcan
                 @can('followup-list')
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class=" px-1 far fa-address-card"></i>
                             <p>
@@ -670,7 +670,7 @@
                             </li>
                         </ul>
                     </li>
-                @endcan
+                @endcan --}}
                 @can('followup-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
