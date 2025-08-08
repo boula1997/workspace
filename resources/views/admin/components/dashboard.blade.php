@@ -833,25 +833,7 @@
                         </ul>
                     </li>
                 @endcan
-                @can('navigation-list')
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class=" px-1 far fa-address-card"></i>
-                            <p>
-                                @lang('general.finishedNavigations') <i class=" px-1 fas fa-angle-left right"></i>
-                                <span class="badge badge-info right">{{ itemsCount('finishedNavigations') }}</span>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('navigations.finished') }}" class="nav-link">
-                                    <i class=" px-1 far fa-circle nav-icon"></i>
-                                    <p>@lang('general.show')</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endcan
+
                 @can('newsletter-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
