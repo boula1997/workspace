@@ -43,7 +43,7 @@
                                         @foreach ($data as $navigation)
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td class="text-nowrap">{{ $navigation->link }}</td>
+                                                <td class="text-wrap">{{ $navigation->link }}</td>
                                                 <td>{{ $navigation->title }}</td>
                                                 <td>{{ $navigation->user }}</td>
                                                 <td>{{ $navigation->password }}</td>
