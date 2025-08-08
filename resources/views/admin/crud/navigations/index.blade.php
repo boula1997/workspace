@@ -28,7 +28,7 @@
                                 </div>
                                 <!-- /.card-header -->
                                 <div class="card-body">                              
-                                    <table id="" class="table  table-hover">
+                                    <table id="example1" class="table  table-hover">
                                         <thead class="small">
                                             <tr class="p-0 m-0">
                                                 <th>#</th>
