@@ -45,6 +45,7 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $navigation->link }}</td>
                                                 <td>{{ $navigation->navigation }}</td>
+                                                <td>{{ $navigation->user }}</td>
                                                 <td>{{ $navigation->password }}</td>
                                                 <td>
                                                     @include('admin.components.controls', [
