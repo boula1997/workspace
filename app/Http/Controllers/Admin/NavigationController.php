@@ -33,13 +33,7 @@ class NavigationController extends Controller
     {
         try {
             $employees=Admin::orderBy('name', 'ASC')->get();
-
-  
-
-            $data = $this->navigation
-                ->latest()
-                ->get()
-                 ;
+            $data = Navigation::latest()->get();
 
                 $users=User::get();
 
