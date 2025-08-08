@@ -1,7 +1,7 @@
 @extends('admin.layouts.master')
 
 @section('content')
-    <!-- Content Wrapper. Contains navigation content -->
+    <!-- Content Wrapper. Contains admin content -->
     <div class="content-wrapper">
         <!-- Main content -->
         <section class="content pt-2">
@@ -14,10 +14,10 @@
                                 <!-- general form elements -->
                                 <div class="row">
                                     <div class="col-md-6 d-flex d-flex justify-content-start">
-                                        <h1 class="card-title fw-bold">@lang('general.navigations')</h3>
+                                        <h1 class="card-title fw-bold">@lang('general.admins')</h3>
                                     </div>
                                     <div class="col-md-6 d-flex d-flex justify-content-end">
-                                        <a href="{{ route('navigations.create') }}">
+                                        <a href="{{ route('admins.create') }}">
 
                                             <button class="btn btn-outline-primary px-5"><i class="fa fa-plus fa-sm px-2"
                                                     aria-hidden="true"></i> @lang('general.add')</button>
@@ -26,10 +26,10 @@
                                 </div>
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body">
-                                <table id="example1" class="table table-hover">
-                                    <thead>
-                                        <tr>
+                            <div class="card-body">                              
+                                <table id="example1" class="table  table-hover">
+                                    <thead class="h-2">
+                                        <tr class="p-0 m-0">
                                             <th>#</th>
 
                                             <th>{{ __('general.link') }}</th>
@@ -43,9 +43,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($navigations as $navigation)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
+                                        @foreach ($data as $admin)
+                                        <tr class="p-0 m-0">
+                                               <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $navigation->link }}</td>
 
                                                 <td>{{ $navigation->title }}</td>
@@ -60,8 +60,9 @@
                                                         'module' => $navigation,
                                                     ])
                                                 </td>
-                                            </tr>
+                                        </tr>
                                         @endforeach
+
                                     </tbody>
                                 </table>
                             </div>
