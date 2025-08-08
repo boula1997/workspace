@@ -41,9 +41,9 @@ class NavigationController extends Controller
                 ->get()
                 ->unique('title');
 
-    
+                $users=User::get();
 
-            return view('admin.crud.navigations.index', compact('employees','data'));
+            return view('admin.crud.navigations.index', compact('users','employees','data'));
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
