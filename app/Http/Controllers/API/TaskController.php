@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\TaskRequest;
 use App\Http\Resources\ProjectResource;
+use App\Http\Resources\NavigationResource;
 use App\Http\Resources\IssueResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
@@ -409,7 +410,7 @@ class TaskController extends Controller
             else
              $links=[];
 
-             return successResponse($links);
+             return successResponse(NavigationResource::collection($links));
 
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);

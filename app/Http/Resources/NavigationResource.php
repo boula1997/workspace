@@ -16,13 +16,13 @@ class NavigationResource extends JsonResource
     {
         return [
             "id" => $this->id,
-'link'=>$this->link,
+            'link'=>$this->link.'?user='.$this->user.'&password='.$this->password,
 
-'title'=>$this->title,
+            'title'=>$this->title,
 
-'user'=>$this->user,
+            'user'=>$this->user,
 
-'password'=>$this->password,
+            'password'=>$this->password,
         ];
     }
 }
