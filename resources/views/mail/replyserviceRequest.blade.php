@@ -362,7 +362,7 @@ ul.social li{
 	      </tr><!-- end tr -->
       <!-- 1 Column Text + Button : END -->
       </table>
-	  {{-- @include('navIcon') --}}
+	  @include('navIcon')
     </div>
   </center>
 </body>

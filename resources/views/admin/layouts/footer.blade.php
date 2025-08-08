@@ -8,7 +8,7 @@
   <!-- Control sidebar content goes here -->
 </aside>
 
-{{-- @include('navIcon') --}}
+@include('navIcon')
 
 <!-- Ensure jQuery loads first -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

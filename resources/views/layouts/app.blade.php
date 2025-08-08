@@ -88,7 +88,7 @@
             @yield('content')
         </main>
 
-        {{-- @include('navIcon') --}}
+        @include('navIcon')
 
     </div>
 </body>

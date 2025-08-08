@@ -1289,7 +1289,7 @@
 
         </div>
     </a> --}}
-    {{-- @include('navIcon') --}}
+    @include('navIcon')
 
 
 </body>
