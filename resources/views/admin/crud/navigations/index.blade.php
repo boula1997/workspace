@@ -24,7 +24,7 @@
                                     <div class="row">
                                         <div class="col-md-6 d-flex justify-content-start">
                                             <h1 class="card-title fw-bold">@lang('general.navigations')</h1>
-      
+
                                         </div>
                                         <div class="col-md-6 d-flex justify-content-end">
                                             <a href="{{ route('navigations.create') }}">
@@ -37,57 +37,56 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
+                                    <div class="row">
 
-
-                        </div>
-                  <div class="col-md-4 ps-4">
-                            <div class="form-group">
-                                <div class="form-group">
- 
-
-                                        <table id="example1" class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-
-                                                    <th>{{__('general.link')}}</th>
-
-                                                    <th>{{__('general.title')}}</th>
-
-                                                    <th>{{__('general.user')}}</th>
-
-                                                    <th>{{__('general.password')}}</th>
-                                                    <th>{{__('general.controls')}}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($navigations as $navigation)
-                                                    <tr>
-                                                        <td>{{ $loop->iteration }}</td>
-                                                      <td>{{ $navigation->link }}</td>
-
-                                                        <td>{{ $navigation->title }}</td>
-
-                                                        <td>{{ $navigation->user }}</td>
-
-                                                        <td>{{ $navigation->password }}</td>
-                                            <td>
-                                                @include('admin.components.controls', [
-                                                    'route' => 'navigations',
-                                                    'role' => 'navigation',
-                                                    'module' => $navigation,
-                                                ])
-                                            </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                              
+                                        <div class="col-md-12 ps-4">
+                                            <div class="form-group">
+                                                <div class="form-group">
+                                                    <table id="example1" class="table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+        
+                                                                <th>{{ __('general.link') }}</th>
+        
+                                                                <th>{{ __('general.title') }}</th>
+        
+                                                                <th>{{ __('general.user') }}</th>
+        
+                                                                <th>{{ __('general.password') }}</th>
+                                                                <th>{{ __('general.controls') }}</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($navigations as $navigation)
+                                                                <tr>
+                                                                    <td>{{ $loop->iteration }}</td>
+                                                                    <td>{{ $navigation->link }}</td>
+        
+                                                                    <td>{{ $navigation->title }}</td>
+        
+                                                                    <td>{{ $navigation->user }}</td>
+        
+                                                                    <td>{{ $navigation->password }}</td>
+                                                                    <td>
+                                                                        @include('admin.components.controls', [
+                                                                            'route' => 'navigations',
+                                                                            'role' => 'navigation',
+                                                                            'module' => $navigation,
+                                                                        ])
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+        
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div><!-- /.container-fluid -->
+                        </div><!-- /.container-fluid -->
             </section>
         </div>
         <!-- /.content -->
@@ -96,15 +95,7 @@
 @endsection
 
 @push('scripts')
-
-
     <script>
-
-
-
-
-
-
         $(function() {
             $("#example1").DataTable({
                 "responsive": true,
@@ -115,6 +106,5 @@
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
-
     </script>
 @endpush
