@@ -57,6 +57,7 @@
                                                     <th>{{__('general.user')}}</th>
 
                                                     <th>{{__('general.password')}}</th>
+                                                    <th>{{__('general.controls')}}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -65,12 +66,18 @@
                                                         <td>{{ $loop->iteration }}</td>
                                                       <td>{{ $navigation->link }}</td>
 
-<td>{{ $navigation->title }}</td>
+                                                        <td>{{ $navigation->title }}</td>
 
-<td>{{ $navigation->user }}</td>
+                                                        <td>{{ $navigation->user }}</td>
 
-<td>{{ $navigation->password }}</td>
-
+                                                        <td>{{ $navigation->password }}</td>
+                                            <td>
+                                                @include('admin.components.controls', [
+                                                    'route' => 'admins',
+                                                    'role' => 'admin',
+                                                    'module' => $admin,
+                                                ])
+                                            </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -92,39 +99,7 @@
 
 
     <script>
-        document.getElementById('toggle-fullscreen').addEventListener('click', function() {
-            document.body.classList.toggle('fullscreen-mode');
 
-            const icon = this.querySelector('i');
-            icon.classList.toggle('fa-expand');
-            icon.classList.toggle('fa-compress');
-            this.textContent = icon.classList.contains('fa-expand') ? ' Full Screen' : ' Exit Full Screen';
-        });
-
-
-        $(document).ready(function() {
-            // Function to load the value into the search input and trigger search
-            function loadSearchValue() {
-                if (localStorage.getItem('searchValue')) {
-                    const $searchInput = $('input[type="search"]');
-                    $searchInput.val(localStorage.getItem('searchValue'));
-                    $searchInput.trigger('input'); // Trigger the input event to start the search
-                }
-            }
-
-            // Check for the input field's existence every 500ms
-            const interval = setInterval(function() {
-                if ($('input[type="search"]').length > 0) {
-                    loadSearchValue();
-                    clearInterval(interval); // Stop checking once the input is found
-                }
-            }, 500);
-
-            // Save the value to localStorage whenever the input value changes
-            $(document).on('input', 'input[type="search"]', function() {
-                localStorage.setItem('searchValue', $(this).val());
-            });
-        });
 
 
 
@@ -141,17 +116,5 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function toggleCheckbox(navigationId) {
-            const checkbox = document.getElementById(`checkbox-${navigationId}`);
-            const navigationRow = $(`#checkbox-${navigationId}`).closest('tr').find('td:nth-child(2)');
-
-            checkbox.checked = !checkbox.checked;
-
-            if (checkbox.checked) {
-                navigationRow.css('background-color', 'yellow');
-            } else {
-                navigationRow.css('background-color', '');
-            }
-        }
     </script>
 @endpush
