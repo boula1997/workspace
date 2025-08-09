@@ -24,13 +24,15 @@ class DbcredentialRequest extends FormRequest
      */
     public function rules()
     {
-        $image=request()->isMethod('put')?'nullable':'required';
         // dd(request()->all());
         return [
-            'image' => $image,
-            'name' => 'required',
-            'email' => ['required','email',Rule::unique('dbcredentials', 'email')->ignore($this->id)],
-            'password' => 'required_without:_method|same:confirm-password',
+            'db_host' => 'required',
+
+            'db_name' => 'required',
+
+            'db_password' => 'required',
+
+            'db_username' => 'required',
         ];
     }
 }

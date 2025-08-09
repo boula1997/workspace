@@ -26,31 +26,14 @@
                                     <!-- form start -->
                                     <form>
                                         <div class="card-body">
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">@lang('general.name')</label>
-                                                <p>{{ $dbcredential->name }}</p>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1">@lang('general.email')</label>
-                                                    <p>{{ $dbcredential->email }}</p>
-                                                </div>
+<!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.db_host')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $dbcredential->db_host }}</p> </div> </div> </div>
 
+<!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.db_name')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $dbcredential->db_name }}</p> </div> </div> </div>
 
-                                                <div class="row">
-                                                    <div class="form-group">
-                                                        <label for="exampleInputFile1">@lang('general.image')</label>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group text-center">
-                                                                <img width="300" height="300" src="{{ $dbcredential->image }}"
-                                                                    alt="">
+<!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.db_password')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $dbcredential->db_password }}</p> </div> </div> </div>
 
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+<!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.db_username')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $dbcredential->db_username }}</p> </div> </div> </div>
 
-                                            </div>
                                         </div>
                                     </form>
                                 </div>

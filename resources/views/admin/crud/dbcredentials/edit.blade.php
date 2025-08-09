@@ -21,42 +21,13 @@
 
                             <input type="hidden" name="id" value="{{ $dbcredential->id }}">
                             <div class="card-body mb-5">
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">@lang('general.name')</label>
-                                    <input type="text" name="name" value="{{ old('name', $dbcredential->name) }}"
-                                        class="form-control @error('') invalid @enderror" id="exampleInputName" placeholder="@lang('general.name')">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">@lang('general.email')</label>
-                                    <input type="email" name="email" value="{{ old('email', $dbcredential->email) }}"
-                                        class="form-control @error('') invalid @enderror" id="exampleInputEmail" placeholder="@lang('general.email')">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">@lang('general.password')</label>
-                                    <input type="password" name="password" value="" class="form-control @error('') invalid @enderror"
-                                        id="exampleInputPassword" placeholder="Enter @lang('general.password')">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">@lang('general.confirm_password')</label>
-                                    <input type="password" name="confirm-password" value="{{ old('confirm-password') }}"
-                                        class="form-control @error('') invalid @enderror" id="exampleInputConfirmpassword"
-                                        placeholder="Enter @lang('general.confirm_password')">
-                                </div>
+<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.db_host')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="db_host" placeholder="{{__('general.db_host')}}" class="form-control pl-1 min-h-40px @error('db_host') is-invalid @enderror" value="{{ old('db_host', $dbcredential->db_host) }}"> </div> </div> </div>
 
+<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.db_name')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="db_name" placeholder="{{__('general.db_name')}}" class="form-control pl-1 min-h-40px @error('db_name') is-invalid @enderror" value="{{ old('db_name', $dbcredential->db_name) }}"> </div> </div> </div>
 
-                                <div class="row">
-                                    <div class="form-group">
-                                        @include('admin.components.image', [
-                                            'label' => __('general.image'),
-                                            'value' => old('image',$dbcredential->image),
-                                            'name' => 'image',
-                                            'id' => 'kt_image_3',
-                                            'accept' => 'image/*',
-                                            'required' => true,
-                                        ])
-                
-                                    </div>
-                                </div>
+<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.db_password')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="db_password" placeholder="{{__('general.db_password')}}" class="form-control pl-1 min-h-40px @error('db_password') is-invalid @enderror" value="{{ old('db_password', $dbcredential->db_password) }}"> </div> </div> </div>
+
+<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.db_username')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="db_username" placeholder="{{__('general.db_username')}}" class="form-control pl-1 min-h-40px @error('db_username') is-invalid @enderror" value="{{ old('db_username', $dbcredential->db_username) }}"> </div> </div> </div>
 
                                 <div class="card-footer mb-5 mt-5">
                                     <button type="submit" class="btn btn-outline-primary px-5">@lang('general.save')</button>

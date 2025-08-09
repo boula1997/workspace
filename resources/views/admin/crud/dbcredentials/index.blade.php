@@ -32,9 +32,13 @@
                                     <thead class="h-2">
                                         <tr class="p-0 m-0">
                                             <th>#</th>
-                                            <th>@lang('general.image')</th>
-                                            <th>@lang('general.name')</th>
-                                            <th>@lang('general.email')</th>
+                                            <th>{{__('general.db_host')}}</th>
+
+                                            <th>{{__('general.db_name')}}</th>
+
+                                            <th>{{__('general.db_password')}}</th>
+
+                                            <th>{{__('general.db_username')}}</th>
                                             <th class="th-controls">@lang('general.controls')</th>
                                         </tr>
                                     </thead>
@@ -42,10 +46,13 @@
                                         @foreach ($data as $dbcredential)
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td><img width="100" height="100" src="{{$dbcredential->image}}"
-                                                        alt="{{ $dbcredential->name }}"></td>
-                                                <td>{{ $dbcredential->name }}</td>
-                                                <td>{{ $dbcredential->email }}</td>
+                                                <td>{{ $dbcredential->db_host }}</td>
+
+                                                <td>{{ $dbcredential->db_name }}</td>
+
+                                                <td>{{ $dbcredential->db_password }}</td>
+
+                                                <td>{{ $dbcredential->db_username }}</td>
                                                 <td>
                                                     @include('admin.components.controls', [
                                                         'route' => 'dbcredentials',
