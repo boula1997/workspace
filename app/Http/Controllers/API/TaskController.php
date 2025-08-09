@@ -406,7 +406,7 @@ class TaskController extends Controller
         try {
            
             if(boula())
-             $links=Navigation::get();
+             $links = Navigation::orderBy('title', 'asc')->get();
             else
              $links=[];
 
