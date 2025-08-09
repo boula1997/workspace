@@ -139,19 +139,8 @@ class NavigationController extends Controller
     public function store(NavigationRequest $request)
     {
         try {
-            $titles = explode('+', $request->title);
-            $data['difficulty']=$request->has('difficulty')?1:0;
-            $data['hasPhone']=$request->has('hasPhone')?1:0;
-            foreach ($titles as $title) {
-                foreach ($request->employees as $employee) {
-                    Navigation::create([
-                        'title' => $title,
-                        'employee_id' => $employee,
-                        'difficulty' => $data['difficulty'],
-                        'hasPhone' => $data['hasPhone'],
-                    ]);
-                }
-            }
+
+            Navigation::create($request->all());
             // Get the previous and the one before the previous route
             $previousRoute = session('previousRoute');
             $twoRoutesAgo = session('twoRoutesAgo');
@@ -160,7 +149,7 @@ class NavigationController extends Controller
                
     
             // Redirect to either the previous or the one before
-            return redirect($twoRoutesAgo)
+            return redirect()->route('navigations.index')
                 ->with(['success' => __('general.created_successfully')]);
     
         } catch (Exception $e) {
