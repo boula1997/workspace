@@ -2759,7 +2759,7 @@
                 var formData = $(this).serialize();
                 $.ajax({
                     type: 'post',
-                    url: "{{ route('issues.update') }}",
+                    url: "{{ route('issues.updateWeb') }}",
                     data: formData,
                     dataType: 'json',
                     success: function(response) {
