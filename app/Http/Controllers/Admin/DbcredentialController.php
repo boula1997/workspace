@@ -64,7 +64,6 @@ class DbcredentialController extends Controller
 
         try {
             $input = $request->all();
-            $input['password'] = Hash::make($input['password']);
             $dbcredential = DBCredential::create($input);
             return redirect()->route('dbcredentials.index')
                 ->with('success', 'Dbcredential created successfully');
