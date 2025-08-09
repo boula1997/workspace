@@ -66,7 +66,6 @@ class DbcredentialController extends Controller
             $input = $request->all();
             $input['password'] = Hash::make($input['password']);
             $dbcredential = DBCredential::create($input);
-            $dbcredential->uploadFile();
             return redirect()->route('dbcredentials.index')
                 ->with('success', 'Dbcredential created successfully');
         } catch (Exception $e) {
@@ -118,7 +117,6 @@ class DbcredentialController extends Controller
             }
             $dbcredential = DBCredential::find($id);
             $dbcredential->update($input);
-            $dbcredential->updateFile();
             return redirect()->route('dbcredentials.index')
                 ->with('success', 'Dbcredential updated successfully');
         } catch (Exception $e) {
@@ -138,7 +136,6 @@ class DbcredentialController extends Controller
         try {
             $dbcredential = DBCredential::find($id);
             $dbcredential->delete();
-            $dbcredential->deleteFile();
             return redirect()->route('dbcredentials.index')
                 ->with('success', 'Dbcredential deleted successfully');
         } catch (Exception $e) {
