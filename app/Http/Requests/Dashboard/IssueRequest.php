@@ -26,13 +26,13 @@ class IssueRequest extends FormRequest
     {
 
         return [
-'codeLinks' => 'required',
+        'codeLinks' => 'required',
 
-'isOverthinking' => 'required',
+        'isOverthinking' => 'required',
 
-'script' => 'required',
+        'script' => 'required',
 
-'title' => 'required',
+        'title' => 'required',
 
         ];
     }

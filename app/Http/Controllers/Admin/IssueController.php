@@ -34,7 +34,7 @@ class IssueController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = Issue::orderBy('id', 'DESC')->paginate(5);
+            $data = Issue::orderBy('id', 'DESC')->get();
             return view('admin.crud.issues.index', compact('data'))
                 ->with('i', ($request->input('page', 1) - 1) * 5);
         } catch (Exception $e) {
@@ -64,9 +64,7 @@ class IssueController extends Controller
 
         try {
             $input = $request->all();
-            $input['password'] = Hash::make($input['password']);
             $issue = Issue::create($input);
-            $issue->uploadFile();
             return redirect()->route('issues.index')
                 ->with('success', 'Issue created successfully');
         } catch (Exception $e) {
@@ -111,14 +109,9 @@ class IssueController extends Controller
     {
         try {
             $input = $request->except('image','profile_avatar_remove');
-            if (!empty($input['password'])) {
-                $input['password'] = Hash::make($input['password']);
-            } else {
-                $input = Arr::except($input, array('password'));
-            }
+
             $issue = Issue::find($id);
             $issue->update($input);
-            $issue->updateFile();
             return redirect()->route('issues.index')
                 ->with('success', 'Issue updated successfully');
         } catch (Exception $e) {
@@ -138,7 +131,6 @@ class IssueController extends Controller
         try {
             $issue = Issue::find($id);
             $issue->delete();
-            $issue->deleteFile();
             return redirect()->route('issues.index')
                 ->with('success', 'Issue deleted successfully');
         } catch (Exception $e) {
