@@ -96,7 +96,7 @@ class TaskController extends Controller
                 $issues = Issue::orderBy("title","asc")->get();
             }
 
-            $credentials = DBCredential::get();
+            $credentials = DBcredential::get();
             $tablePprojects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
         if(boula())
         $data=[
@@ -483,7 +483,7 @@ public function execQuery(Request $request)
     DB::beginTransaction(); // Start transaction
 
     try {
-        $credential = DBCredential::where('id', $request->credential_id)->first();
+        $credential = DBcredential::where('id', $request->credential_id)->first();
         $dbHost = isset($credential->db_host)?$credential->db_host:'192.185.41.219';
         $dbName = $credential->db_name ?? 'automation';
         $dbUser = $credential->db_username ?? 'root';

@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\VaccancyController;
 use App\Http\Controllers\Admin\NavigationController;
 use App\Http\Controllers\Admin\FeeController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\DbcredentialController;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\HomeController;
@@ -106,6 +107,7 @@ Route::group(
                  Route::resource('projects', ProjectController::class);
                  Route::resource('tasks', TaskController::class);
                  Route::resource('admins', AdminController::class);
+                 Route::resource('dbcredentials', DbcredentialController::class);
                  Route::resource('messages', MessageController::class);
                  Route::resource('complains', ComplainController::class);
                  Route::resource('navigations', NavigationController::class);

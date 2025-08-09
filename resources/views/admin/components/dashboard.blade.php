@@ -74,7 +74,7 @@
                 <a href="#" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
-                        <img src="{{ asset('dist/img/user1-128x128.jpg') }}" alt="User Avatar"
+                        <img src="{{ asset('dist/img/dbcredential1-128x128.jpg') }}" alt="Dbcredential Avatar"
                             class="img-size-50 mr-3 img-circle">
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
@@ -91,7 +91,7 @@
                 <a href="#" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
-                        <img src="{{ asset('dist/img/user8-128x128.jpg') }}" alt="User Avatar"
+                        <img src="{{ asset('dist/img/dbcredential8-128x128.jpg') }}" alt="Dbcredential Avatar"
                             class="img-size-50 img-circle mr-3">
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
@@ -108,7 +108,7 @@
                 <a href="#" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
-                        <img src="{{ asset('dist/img/user3-128x128.jpg') }}" alt="User Avatar"
+                        <img src="{{ asset('dist/img/dbcredential3-128x128.jpg') }}" alt="Dbcredential Avatar"
                             class="img-size-50 img-circle mr-3">
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
@@ -135,7 +135,7 @@
                 <a href="#" class="dropdown-item">
                     <!-- Newsletter Start -->
                     <div class="media">
-                        <img src="{{ asset('dist/img/user1-128x128.jpg') }}" alt="User Avatar"
+                        <img src="{{ asset('dist/img/dbcredential1-128x128.jpg') }}" alt="Dbcredential Avatar"
                             class="img-size-50 mr-3 img-circle">
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
@@ -152,7 +152,7 @@
                 <a href="#" class="dropdown-item">
                     <!-- Newsletter Start -->
                     <div class="media">
-                        <img src="{{ asset('dist/img/user8-128x128.jpg') }}" alt="User Avatar"
+                        <img src="{{ asset('dist/img/dbcredential8-128x128.jpg') }}" alt="Dbcredential Avatar"
                             class="img-size-50 img-circle mr-3">
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
@@ -169,7 +169,7 @@
                 <a href="#" class="dropdown-item">
                     <!-- Newsletter Start -->
                     <div class="media">
-                        <img src="{{ asset('dist/img/user3-128x128.jpg') }}" alt="User Avatar"
+                        <img src="{{ asset('dist/img/dbcredential3-128x128.jpg') }}" alt="Dbcredential Avatar"
                             class="img-size-50 img-circle mr-3">
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
@@ -234,15 +234,15 @@
 
         </div>
         {{-- <div class="">
-            <!-- Sidebar user panel (optional) -->
+            <!-- Sidebar dbcredential panel (optional) -->
             <a href="{{ route('edit.profile') }}">
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="dbcredential-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="{{ auth('admin')->user()->file ? auth('admin')->user()->image : '' }}"
+                        <img src="{{ auth('admin')->dbcredential()->file ? auth('admin')->dbcredential()->image : '' }}"
                             class="img-circle elevation-2" alt="Edit Your Profile">
                     </div>
                     <div class="info">
-                        <a href="{{ route('edit.profile') }}" class="d-block">{{ auth('admin')->user()->name }}</a>
+                        <a href="{{ route('edit.profile') }}" class="d-block">{{ auth('admin')->dbcredential()->name }}</a>
                     </div>
                 </div>
             </a>
@@ -355,6 +355,27 @@
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <a href="{{ route('partners.index') }}" class="nav-link">
+                                    <i class=" px-1 far fa-circle nav-icon"></i>
+                                    <p>@lang('general.show')</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
+
+                 @can('dbcredential-list')
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class=" px-1 fas fa-dbcredentials"></i>
+                            <p>
+                                @lang('general.dbcredentials')
+                                <i class=" px-1 fas fa-angle-left right"></i>
+                                <span class="badge badge-info right">{{ itemsCount('dbcredentials') }}</span>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('dbcredentials.index') }}" class="nav-link">
                                     <i class=" px-1 far fa-circle nav-icon"></i>
                                     <p>@lang('general.show')</p>
                                 </a>

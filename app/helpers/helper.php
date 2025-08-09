@@ -31,6 +31,7 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Vaccancy;
 use App\Models\Video;
+use App\Models\DBcredential;
 use App\Models\Sample;
 use Illuminate\Support\Facades\File;
 use Jackiedo\Cart\Facades\Cart;
@@ -441,7 +442,8 @@ function itemsCount($model)
         "users" => count(User::get()),
         "complains" => count(Complain::get()),
         "vaccancies" => count(Vaccancy::get()),
-
+        
+        "dbcredentials" => count(DBcredential::get()),
         "admins" => count(Admin::get()),
         "videos" => count(Video::get()),
         "roles" => count(Role::get()),

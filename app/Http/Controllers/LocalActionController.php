@@ -435,7 +435,7 @@ class LocalActionController extends Controller
 
 
 
-      $credential=DBCredential::where('db_name',isset($dbname)?$dbname:'yousabte_automation')->first();
+      $credential=DBcredential::where('db_name',isset($dbname)?$dbname:'yousabte_automation')->first();
 
       $startingOrderLetter=$request->startingOrderLetter;
 

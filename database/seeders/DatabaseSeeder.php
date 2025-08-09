@@ -50,7 +50,8 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             UsersSeeder::class,
             VideosSeeder::class,
-
+            
+            DbcredentialsSeeder::class,
 
         ]);
 
