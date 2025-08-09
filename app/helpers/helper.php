@@ -440,6 +440,7 @@ function itemsCount($model)
         "partners" => count(Partner::get()),
         "products" => count(Product::get()),
         "users" => count(User::get()),
+        "issues" => count(Issue::get()),
         "complains" => count(Complain::get()),
         "vaccancies" => count(Vaccancy::get()),
         

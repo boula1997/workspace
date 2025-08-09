@@ -51,6 +51,7 @@ class DatabaseSeeder extends Seeder
             UsersSeeder::class,
             VideosSeeder::class,
             
+            IssuesSeeder::class,
             DbcredentialsSeeder::class,
 
         ]);
