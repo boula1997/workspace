@@ -24,13 +24,16 @@ class IssueRequest extends FormRequest
      */
     public function rules()
     {
-        $image=request()->isMethod('put')?'nullable':'required';
-        // dd(request()->all());
+
         return [
-            'image' => $image,
-            'name' => 'required',
-            'email' => ['required','email',Rule::unique('issues', 'email')->ignore($this->id)],
-            'password' => 'required_without:_method|same:confirm-password',
+'codeLinks' => 'required',
+
+'isOverthinking' => 'required',
+
+'script' => 'required',
+
+'title' => 'required',
+
         ];
     }
 }

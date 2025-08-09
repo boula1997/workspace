@@ -32,9 +32,11 @@
                                     <thead class="h-2">
                                         <tr class="p-0 m-0">
                                             <th>#</th>
-                                            <th>@lang('general.image')</th>
-                                            <th>@lang('general.name')</th>
-                                            <th>@lang('general.email')</th>
+
+                                        <th>{{__('general.isOverthinking')}}</th>
+
+
+                                        <th>{{__('general.title')}}</th>
                                             <th class="th-controls">@lang('general.controls')</th>
                                         </tr>
                                     </thead>
@@ -42,10 +44,11 @@
                                         @foreach ($data as $issue)
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td><img width="100" height="100" src="{{$issue->image}}"
-                                                        alt="{{ $issue->name }}"></td>
-                                                <td>{{ $issue->name }}</td>
-                                                <td>{{ $issue->email }}</td>
+
+                                                <td>{{$issue->isOverthinking?__('general.yes'):__('general.no') }}</td>
+
+
+                                                <td>{{ $issue->title }}</td>
                                                 <td>
                                                     @include('admin.components.controls', [
                                                         'route' => 'issues',

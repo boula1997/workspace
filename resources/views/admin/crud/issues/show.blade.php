@@ -26,29 +26,14 @@
                                     <!-- form start -->
                                     <form>
                                         <div class="card-body">
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">@lang('general.name')</label>
-                                                <p>{{ $issue->name }}</p>
-                                            </div>
                                             <div class="card-body">
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1">@lang('general.email')</label>
-                                                    <p>{{ $issue->email }}</p>
-                                                </div>
+<!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.codeLinks')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $issue->codeLinks }}</p> </div> </div> </div>
 
+<!-- checkbox input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{ __('general.isOverthinking') }}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{$issue->isOverthinking?_('general.yes'):__('general.no')}}</p> </div> </div> </div>
 
-                                                <div class="row">
-                                                    <div class="form-group">
-                                                        <label for="exampleInputFile1">@lang('general.image')</label>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group text-center">
-                                                                <img width="300" height="300" src="{{ $issue->image }}"
-                                                                    alt="">
+<!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.script')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $issue->script }}</p> </div> </div> </div>
 
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+<!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.title')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $issue->title }}</p> </div> </div> </div>
 
                                             </div>
                                         </div>

@@ -21,43 +21,13 @@
 
                             <input type="hidden" name="id" value="{{ $issue->id }}">
                             <div class="card-body mb-5">
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">@lang('general.name')</label>
-                                    <input type="text" name="name" value="{{ old('name', $issue->name) }}"
-                                        class="form-control @error('') invalid @enderror" id="exampleInputName" placeholder="@lang('general.name')">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">@lang('general.email')</label>
-                                    <input type="email" name="email" value="{{ old('email', $issue->email) }}"
-                                        class="form-control @error('') invalid @enderror" id="exampleInputEmail" placeholder="@lang('general.email')">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">@lang('general.password')</label>
-                                    <input type="password" name="password" value="" class="form-control @error('') invalid @enderror"
-                                        id="exampleInputPassword" placeholder="Enter @lang('general.password')">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">@lang('general.confirm_password')</label>
-                                    <input type="password" name="confirm-password" value="{{ old('confirm-password') }}"
-                                        class="form-control @error('') invalid @enderror" id="exampleInputConfirmpassword"
-                                        placeholder="Enter @lang('general.confirm_password')">
-                                </div>
+<div class="col-md-12"> <div class="col-form-group"> <label>{{ __('general.codeLinks') }} <span class="text-danger"> * </span></label> <textarea rows="100" class=" summernote @error('codeLinks') is-invalid @enderror" name="{{ 'codeLinks' }}"> {!! old('codeLinks',$issue->codeLinks) !!} </textarea> </div> </div>
 
+{{-- Checkbox Input --}} <div class="col-md-6 ps-4"> <div class="form-group"> <div class="form-group"> <div class="form-check form-switch"> <input class="form-check-input" @checked(old('isOverthinking',$issue->isOverthinking)) type="checkbox" id="isOverthinking" name="isOverthinking" value="1"> <label class="form-check-label" for="isOverthinking">{{ __('general.isOverthinking') }} <span class="text-danger"> * </span></label> </div> </div> </div> </div>
 
-                                <div class="row">
-                                    <div class="form-group">
-                                        @include('admin.components.image', [
-                                            'label' => __('general.image'),
-                                            'value' => old('image',$issue->image),
-                                            'name' => 'image',
-                                            'id' => 'kt_image_3',
-                                            'accept' => 'image/*',
-                                            'required' => true,
-                                        ])
-                
-                                    </div>
-                                </div>
+<div class="col-md-12"> <div class="col-form-group"> <label>{{ __('general.script') }} <span class="text-danger"> * </span></label> <textarea rows="100" class=" summernote @error('script') is-invalid @enderror" name="{{ 'script' }}"> {!! old('script',$issue->script) !!} </textarea> </div> </div>
 
+<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.title')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="title" placeholder="{{__('general.title')}}" class="form-control pl-1 min-h-40px @error('title') is-invalid @enderror" value="{{ old('title', $issue->title) }}"> </div> </div> </div>
                                 <div class="card-footer mb-5 mt-5">
                                     <button type="submit" class="btn btn-outline-primary px-5">@lang('general.save')</button>
                                     <a href="{{ route('issues.index') }}"

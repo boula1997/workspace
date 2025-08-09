@@ -25,43 +25,13 @@
                                     <div class="card card-custom">
                                         <!-- form start -->
                                         <div class="card-body">
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">@lang('general.name')</label>
-                                                <input type="text" name="name" value="{{ old('name') }}"
-                                                    class="form-control @error('') invalid @enderror" id="exampleInputName"
-                                                    placeholder="@lang('general.name')">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">@lang('general.email')</label>
-                                                <input type="email" name="email" value="{{ old('email') }}"
-                                                    class="form-control @error('') invalid @enderror" id="exampleInputEmail"
-                                                    placeholder="@lang('general.email')">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">@lang('general.password')</label>
-                                                <input type="password" name="password" value="{{ old('password') }}"
-                                                    class="form-control @error('') invalid @enderror" id="exampleInputPassword"
-                                                    placeholder="@lang('general.password')">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">@lang('general.confirm_password')</label>
-                                                <input type="password" name="confirm-password"
-                                                    value="{{ old('confirm-password') }}" class="form-control @error('') invalid @enderror"
-                                                    id="exampleInputConfirmpassword" placeholder="@lang('general.confirm_password')">
-                                            </div>
+<div class="col-md-12"> <div class="col-form-group"> <label>{{ __('general.codeLinks') }} <span class="text-danger"> * </span></label> <textarea rows="100" class=" summernote @error('codeLinks') is-invalid @enderror" name="{{ 'codeLinks' }}"> {!! old('codeLinks') !!} </textarea> </div> </div>
 
+{{-- Checkbox Input --}} <div class="col-md-6 ps-4"> <div class="form-group"> <div class="form-group"> <div class="form-check form-switch"> <input class="form-check-input" @checked(old('isOverthinking')) type="checkbox" id="isOverthinking" name="isOverthinking" value="1"> <label class="form-check-label" for="isOverthinking">{{ __('general.isOverthinking') }} <span class="text-danger"> * </span></label> </div> </div> </div> </div>
 
-                                            <div class="form-group">
-                                                @include('admin.components.image', [
-                                                    'label' => __('general.image'),
-                                                    'value' => old('image'),
-                                                    'name' => 'image',
-                                                    'id' => 'kt_image_3',
-                                                    'accept' => 'image/*',
-                                                    'required' => true,
-                                                ])
+<div class="col-md-12"> <div class="col-form-group"> <label>{{ __('general.script') }} <span class="text-danger"> * </span></label> <textarea rows="100" class=" summernote @error('script') is-invalid @enderror" name="{{ 'script' }}"> {!! old('script') !!} </textarea> </div> </div>
 
-                                            </div>
+<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.title')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="title" placeholder="{{__('general.title')}}" class="form-control pl-1 min-h-40px @error('title') is-invalid @enderror" value="{{ old('title') }}"> </div> </div> </div>
                                             <div class="card-footer mb-5 text-center">
                                                 <button type="submit"
                                                     class="btn btn-outline-primary px-5">@lang('general.save')</button>
