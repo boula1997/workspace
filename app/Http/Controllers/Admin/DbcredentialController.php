@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\DbcredentialRequest;
-use App\Models\DBcredential;
+use App\Models\DBCredential;
 use DB;
 use Hash;
 use Illuminate\Support\Arr;
@@ -22,7 +22,7 @@ class DbcredentialController extends Controller
      */
 
     private $dbcredential;
-    function __construct(DBcredential $dbcredential)
+    function __construct(DBCredential $dbcredential)
     {
         $this->middleware('permission:dbcredential-list|dbcredential-create|dbcredential-edit|dbcredential-delete', ['only' => ['index', 'show']]);
         $this->middleware('permission:dbcredential-create', ['only' => ['create', 'store']]);
@@ -34,7 +34,7 @@ class DbcredentialController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = DBcredential::orderBy('id', 'DESC')->paginate(5);
+            $data = DBCredential::orderBy('id', 'DESC')->paginate(5);
             return view('admin.crud.dbcredentials.index', compact('data'))
                 ->with('i', ($request->input('page', 1) - 1) * 5);
         } catch (Exception $e) {
@@ -65,7 +65,7 @@ class DbcredentialController extends Controller
         try {
             $input = $request->all();
             $input['password'] = Hash::make($input['password']);
-            $dbcredential = DBcredential::create($input);
+            $dbcredential = DBCredential::create($input);
             $dbcredential->uploadFile();
             return redirect()->route('dbcredentials.index')
                 ->with('success', 'Dbcredential created successfully');
@@ -83,7 +83,7 @@ class DbcredentialController extends Controller
      */
     public function show($id)
     {
-        $dbcredential = DBcredential::find($id);
+        $dbcredential = DBCredential::find($id);
         return view('admin.crud.dbcredentials.show', compact('dbcredential'));
     }
 
@@ -95,7 +95,7 @@ class DbcredentialController extends Controller
      */
     public function edit($id)
     {
-        $dbcredential = DBcredential::find($id);
+        $dbcredential = DBCredential::find($id);
 
         return view('admin.crud.dbcredentials.edit', compact('dbcredential'));
     }
@@ -116,7 +116,7 @@ class DbcredentialController extends Controller
             } else {
                 $input = Arr::except($input, array('password'));
             }
-            $dbcredential = DBcredential::find($id);
+            $dbcredential = DBCredential::find($id);
             $dbcredential->update($input);
             $dbcredential->updateFile();
             return redirect()->route('dbcredentials.index')
@@ -136,7 +136,7 @@ class DbcredentialController extends Controller
     public function destroy($id)
     {
         try {
-            $dbcredential = DBcredential::find($id);
+            $dbcredential = DBCredential::find($id);
             $dbcredential->delete();
             $dbcredential->deleteFile();
             return redirect()->route('dbcredentials.index')

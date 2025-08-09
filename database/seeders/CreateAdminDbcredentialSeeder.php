@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Admin;
 use Illuminate\Database\Seeder;
-use App\Models\DBcredential;
+use App\Models\DBCredential;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
   

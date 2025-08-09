@@ -18,7 +18,7 @@ class Credential extends Component
     public function render()
     {   
 
-        $this->credentials = DBcredential::orderBy('db_name','ASC')->get();
+        $this->credentials = DBCredential::orderBy('db_name','ASC')->get();
         return view('livewire.dbcredential');
     }
   
@@ -51,7 +51,7 @@ class Credential extends Component
         ]);
 
   
-        DBcredential::create([         
+        DBCredential::create([         
         'db_name' => $this->db_name,
         'db_username' => $this->db_username,
         'db_password' => $this->db_password,
@@ -69,7 +69,7 @@ class Credential extends Component
      */
     public function edit($id)
     {
-        $credential = DBcredential::findOrFail($id);
+        $credential = DBCredential::findOrFail($id);
         $this->credential_id = $id;
         $this->db_name = $credential->db_name;
         $this->db_username = $credential->db_username;
@@ -103,7 +103,7 @@ class Credential extends Component
             'db_password' => 'required',
         ]);
   
-        $credential = DBcredential::find($this->credential_id);
+        $credential = DBCredential::find($this->credential_id);
         $credential->update([
             'db_name' => $this->db_name,
             'db_username' => $this->db_username,
@@ -123,7 +123,7 @@ class Credential extends Component
      */
     public function delete($id)
     {
-        DBcredential::find($id)->delete();
+        DBCredential::find($id)->delete();
         session()->flash('message', 'Credential Deleted Successfully.');
     }
 }

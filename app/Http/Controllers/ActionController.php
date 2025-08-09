@@ -73,7 +73,7 @@ class ActionController extends Controller
   {
 
 
-      $credential=DBcredential::where('db_name',isset($request->dbname)?$request->dbname:'yousabte_automation')->first();
+      $credential=DBCredential::where('db_name',isset($request->dbname)?$request->dbname:'yousabte_automation')->first();
       $dbHost = isset($credential->db_host)?$credential->db_host:'192.185.41.219';
       $dbName = isset($credential->db_name)?$credential->db_name:'yousabte_automation';
       $dbUser = isset($credential->db_username)?$credential->db_username:'yousabte_automation';
@@ -453,7 +453,7 @@ class ActionController extends Controller
 
 
 
-      $credential=DBcredential::where('db_name',isset($dbname)?$dbname:'yousabte_automation')->first();
+      $credential=DBCredential::where('db_name',isset($dbname)?$dbname:'yousabte_automation')->first();
 
 
       $startingOrderLetter=$request->startingOrderLetter;
@@ -828,7 +828,7 @@ if ($request->action == '28') {
 public function execQuery(Request $request)
 {
     try {
-        $credential = DBcredential::where('db_name', $request->dbname ?? 'yousabte_automation')->first();
+        $credential = DBCredential::where('db_name', $request->dbname ?? 'yousabte_automation')->first();
         $dbHost = isset($credential->db_host)?$credential->db_host:'192.185.41.219';
         $dbName = $credential->db_name ?? 'automation';
         $dbUser = $credential->db_username ?? 'root';
@@ -907,7 +907,7 @@ public function execQuery(Request $request)
    */
 public function show($db, $table, $query)
 {
-    $credential = DBcredential::where('db_name', $db)->first();
+    $credential = DBCredential::where('db_name', $db)->first();
 
     $dbHost = isset($credential->db_host)?$credential->db_host:'192.185.41.219';
     $dbName = $credential->db_name ?? 'automation';
