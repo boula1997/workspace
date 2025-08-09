@@ -210,8 +210,8 @@ class NavigationController extends Controller
                       $twoRoutesAgo = session('twoRoutesAgo');
               
                       // Redirect to either the previous or the one before
-                      return redirect($twoRoutesAgo)
-                          ->with(['success' => __('general.created_successfully')]);
+                      return redirect()->route('navigations.index')
+                          ->with(['success' => __('general.updated_successfully')]);
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
