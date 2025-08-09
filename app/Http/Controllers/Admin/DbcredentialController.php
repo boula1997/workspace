@@ -110,11 +110,7 @@ class DbcredentialController extends Controller
     {
         try {
             $input = $request->except('image','profile_avatar_remove');
-            if (!empty($input['password'])) {
-                $input['password'] = Hash::make($input['password']);
-            } else {
-                $input = Arr::except($input, array('password'));
-            }
+
             $dbcredential = DBCredential::find($id);
             $dbcredential->update($input);
             return redirect()->route('dbcredentials.index')
