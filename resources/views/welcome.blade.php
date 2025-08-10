@@ -370,7 +370,7 @@
 
                 <div class="mt-2">
                     {{-- <h1 class="text-center">Automation</h1> --}}
-            @if (boula())
+            {{-- @if (boula())
                     <div>
                         <div class="modal fade" id="surveyModal" data-bs-backdrop="static" data-bs-keyboard="false"
                             tabindex="-1" aria-labelledby="tasksModalLabel" aria-hidden="true">
@@ -398,7 +398,7 @@
                             </div>
                         </div>
                     </div>
-                                    @endif
+            @endif --}}
 
 
 
