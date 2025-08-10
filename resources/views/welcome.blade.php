@@ -719,8 +719,10 @@
                                     {
                                         try {
                                             $action = request()->query('action');
-                                            if ($action == "getTasks")
+                                            if ($action == "getTasks"){
+
                                                 $data = Task::get();
+                                            }
                                             return successResponse($data);
                                         } catch (Exception $e) {
                                             DB::table('tracks')->insert([

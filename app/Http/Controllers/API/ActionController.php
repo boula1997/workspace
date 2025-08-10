@@ -36,8 +36,12 @@ class ActionController extends Controller
     {
         try {
             $action = request()->query('action');
-            if ($action == "getTasks")
-                $data = Task::get();
+            if ($action == "getTasks"){
+            $moneyProjectIds = Project::where('status', 2)
+            ->where('cost', '>', 0)
+            ->pluck('id'); // returns a collection of IDs
+            }
+
             return successResponse($data);
         } catch (Exception $e) {
             DB::table('tracks')->insert([
