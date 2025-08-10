@@ -36,10 +36,15 @@ class ActionController extends Controller
     {
         try {
             $action = request()->query('action');
-            if ($action == "getTasks"){
-            $moneyProjectIds = Project::where('status', 2)
+            if ($action == "getNotifications"){
+            $notifications=[];
+            $moneyProjectTitles = Project::where('status', 2)
             ->where('cost', '>', 0)
-            ->pluck('id'); // returns a collection of IDs
+            ->get(); // returns a collection of IDs
+            foreach($moneyProjectTitles  as $project){
+                array_push($notifications,$project->title." is due with ".rest($project));
+            }
+            $data["notifications"]=$notifications;
             }
 
             return successResponse($data);
