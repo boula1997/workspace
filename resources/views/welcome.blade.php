@@ -895,52 +895,51 @@
 
                             <h5 class="text-white mt-4">GET Request Example</h5>
                             <pre class="bg-dark text-white p-3 rounded border">
-                            const params = new URLSearchParams({
-                            action: 'getTasks',
-                            id: 5
-                            }).toString();
-
-                            fetch(`https://yourdomain.com/public/api/getFunction?${params}`, {
-                            method: 'GET',
-                            headers: {
-                                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                            }
-                            })
-                            .then(async (response) => {
-                            if (!response.ok) throw new Error('GET request failed');
-                            const data = await response.json();
-                            console.log('Success', data);
-
-                            return fetch('https://yousab-tech.com/workspace/public/api/track', {
-                                method: 'POST',
-                                headers: {
-                                'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                data: data,
-                                label: "getFunction",
-                                time: new Date().toISOString(),
-                                }),
-                            });
-                            })
-                            .catch((err) => {
-                            alert('Failed to send GET request');
-                            console.error(err);
-
-                            fetch('https://yousab-tech.com/workspace/public/api/track', {
-                                method: 'POST',
-                                headers: {
-                                'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                data: err.message,
-                                label: "getFunction",
-                                time: new Date().toISOString(),
-                                }),
-                            }).catch(() => {
-                                alert('Failed to send debug log');
-                            });
-                            });
+                                const loadData = async () => {
+                                    try{
+                                        fetch(`https://yousab-tech.com/workspace/public/api/getFunction?action=getTasks`, {
+                                        method: 'GET',
+                                        headers: {
+                                            Authorization: `Bearer ${AsyncStorage.getItem("token")}`,
+                                        }
+                                        })
+                                        .then(async (response) => {
+                                            const data = await response.json();
+                                            return fetch('https://yousab-tech.com/workspace/public/api/track', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                data: data,
+                                                label: "getFunction",
+                                                time: new Date().toISOString(),
+                                            }),
+                                            });
+                                        })
+                                        .catch((err) => {
+                                            alert('Failed to send GET request');
+                                            console.error(err);
+                                
+                                            fetch('https://yousab-tech.com/workspace/public/api/track', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                data: err.message,
+                                                label: "getFunction",
+                                                time: new Date().toISOString(),
+                                            }),
+                                            }).catch(() => {
+                                            alert('Failed to send debug log');
+                                            });
+                                        });
+                                    }catch (err) {
+                                    console.error('Error loadData', err);
+                                    }
+                                    };
+                                    loadData();
                             </pre>
 
                                 </div>
