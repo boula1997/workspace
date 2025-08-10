@@ -17,7 +17,7 @@ class NavigationResource extends JsonResource
 $link = $this->link;
 
 // Check if the link contains 'www'
-if (strpos($link, 'www') !== false) {
+if (strpos($link, 'www') !== false) {   
     $link .= '?user=' . urlencode($this->user) . '&password=' . urlencode($this->password);
 }
 
