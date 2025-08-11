@@ -890,9 +890,10 @@ public function execQuery(Request $request)
             ];
         }
 
+
         return response()->json([
             'success' => "Done Successfully",
-            'data' => $finalResult ?? [],
+            'data' => $cleanedData,
         ]);
     } catch (\Exception $e) {
       failedResponse($e->getMessage());
