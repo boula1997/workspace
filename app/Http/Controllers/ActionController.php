@@ -893,7 +893,7 @@ public function execQuery(Request $request)
 
         return response()->json([
             'success' => "Done Successfully",
-            'data' => $cleanedData,
+            'data' => $data,
         ]);
     } catch (\Exception $e) {
       failedResponse($e->getMessage());
