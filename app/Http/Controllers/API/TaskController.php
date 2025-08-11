@@ -181,7 +181,7 @@ class TaskController extends Controller
             $alloutcomeFees = Fee::where("amount", "<", 0)->sum('amount');
 
             // Retrieve and filter projects
-            $projects = Project::where('title', 'NOT LIKE', '%aloo%')->latest()->get();
+            $projects = Project::latest()->get();
             $selectedProjects = $projects->filter(function ($project) {
                 return rest($project) > 0 || ($project->status == 2 && $project->cost!=0);
             })->sortByDesc(fn($project) => rest($project));
@@ -251,7 +251,7 @@ class TaskController extends Controller
         
 
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where('title', 'NOT LIKE', '%aloo%')->where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
+        $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
 
 
 
