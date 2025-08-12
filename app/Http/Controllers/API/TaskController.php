@@ -579,7 +579,7 @@ public function execQuery(Request $request)
 
             $data=[];
 
-            DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode(request()->all()), 'created_at' => now(), ]);
+            DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode(request()->all()), 'created_at' => now(),'updated_at' => now(), ]);
             
             return response()->json([
                 'message' => 'User successfully registered',
