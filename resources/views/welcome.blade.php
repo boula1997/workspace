@@ -1147,9 +1147,6 @@
 
                             <br>
                             <hr class="text-white">
-                            <p title="auto fill password">npx expo start --no-dev --minify</p>
-                            <br>
-                            <hr class="text-white">
                             <code>
                                 if (App::environment('local')) {
                                 Route::get(&#39;routes&#39;, function () {
@@ -1228,7 +1225,9 @@
                             <p>rm -rf node_modules</p>
                             <p>rm package-lock.json yarn.lock</p>
                             <p>npm install</p>
+                            <p>npm ls --depth=0</p>
                             <p>npx expo-doctor</p>
+                            <p title="auto fill password">npx expo start --no-dev --minify</p>
                             <p>cls</p>
                             <br>
                             <hr class="text-white">
