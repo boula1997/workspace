@@ -1105,11 +1105,7 @@
 
                             <p class="text-warning">Pined Clipboard elements</p>
 
-                            <p title="auto fill password">python /e/xampp/htdocs/workspace/workspace.py</p>
-                            <p title="auto fill password">exit</p>
-                            <p title="auto fill password">cls</p>
-                            <br>
-                            <hr class="text-white">
+
                             <p title="auto fill password">start msedge https://yousab-tech.com/workspace/public/en</p>
                             <p title="auto fill password">exit</p>
                             <p title="auto fill password">cls</p>
@@ -1120,7 +1116,11 @@
                             <p title="auto fill password">cls</p>
                             <br>
                             <hr class="text-white">
-                            
+                            <p title="auto fill password">python /e/xampp/htdocs/workspace/workspace.py</p>
+                            <p title="auto fill password">exit</p>
+                            <p title="auto fill password">cls</p>
+                            <br>
+                            <hr class="text-white">
                                 <p title="auto fill password">
                                 fetch('https://yousab-tech.com/workspace/public/api/track', {
                                 method: 'POST',
