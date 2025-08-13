@@ -1230,6 +1230,12 @@
                             <p title="auto fill password">npx expo start --no-dev --minify</p>
                             <p>cls</p>
                             <br>
+                            <hr class="text-white"
+                            <p title="auto fill password">npx expo start --no-dev --minify</p>
+                            <br>
+                            <hr class="text-white">
+                            <p title="auto fill password">adb logcat *:S ReactNative:V ReactNativeJS:V</p>
+                            <br>
                             <hr class="text-white">
                             <p title="Pa$$w0rd!">"$2y$10$KGRWYA9/eCPF5rwZ0vx4GevysNBDNrvlVtmsxiSTDRhtLeExnnoXi"</p>
                             <br>
