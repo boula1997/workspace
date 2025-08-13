@@ -1234,6 +1234,9 @@
                             <p title="auto fill password">npx expo start --no-dev --minify</p>
                             <br>
                             <hr class="text-white">
+                            <p title="auto fill password">npx react-native logs-android</p>
+                            <br>
+                            <hr class="text-white">
                             <p title="auto fill password">adb logcat *:S ReactNative:V ReactNativeJS:V</p>
                             <br>
                             <hr class="text-white">
