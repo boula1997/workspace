@@ -28,7 +28,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6"> <div class="form-group mb-3"> <label class="input-label" for="renewalDate">@lang('messages.renewalDate')</label> <input type="date" name="renewalDate" id="renewalDate" class="form-control" placeholder="@lang('messages.renewalDate')" value="{{ $project->renewalDate ? $project->renewalDate->format('Y-m-d') : null; }}"> </div> </div>
+                        <div class="col-md-6"> <div class="form-group mb-3"> <label class="input-label" for="renewalDate">@lang('messages.renewalDate')</label> <input type="date" name="renewalDate" id="renewalDate" class="form-control" placeholder="@lang('messages.renewalDate')" value="{{ $project->renewalDate ? $project->renewalDate : null; }}"> </div> </div>
 
                         <!-- Normal title input -->
                         <div class="col-md-12">
