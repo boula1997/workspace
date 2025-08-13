@@ -44,7 +44,7 @@ public function getFunction(Request $request)
                 ->where('cost', '>', 0)
                 ->get();
 
-            $renewProjects = Project::whereDate('renewalDate', '<=', Carbon::now()->subMonth())
+            $renewProjects = Project::whereDate('renewalDate', '>=', Carbon::now()->subMonth())
                 ->get();
 
             if ($moneyProjects->isNotEmpty()) {
@@ -62,7 +62,6 @@ public function getFunction(Request $request)
                     return $project->title . " renewal in " . $project->renewalDate;
                 })->implode(', ');
 
-                dd($mergedRenewText);
 
                 // Push only one notification
                 $notifications[] = "Projects renew: " . $mergedRenewText ;
