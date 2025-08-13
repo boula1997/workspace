@@ -62,6 +62,8 @@ public function getFunction(Request $request)
                     return $project->title . " renewal in " . $project->renewalDate;
                 })->implode(', ');
 
+                dd($mergedRenewText);
+
                 // Push only one notification
                 $notifications[] = "Projects renew: " . $mergedRenewText ;
             }
