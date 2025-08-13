@@ -1231,9 +1231,9 @@
                             <p>cls</p>
                             <br>
                             <hr class="text-white"
-                            <p title="auto fill password text-white">npx expo start --no-dev --minify</p>
+                            <p title="auto fill password">npx expo start --no-dev --minify</p>
                             <br>
-                            <hr class="text-white">
+                            <hr class="text-white"
                             <p title="auto fill password">npx react-native logs-android</p>
                             <br>
                             <hr class="text-white">
