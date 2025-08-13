@@ -14,23 +14,6 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <!-- Normal title input -->
-                        <div class="col-md-12">
-                            <div class="form-group"> <label>{{ __('general.title') }} <span class="text-danger"> *
-                                    </span></label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend"> <span class="input-group-text"><i
-                                                class="fas fa-pen"></i></span> </div> <input type="text" name="title"
-                                        placeholder="{{ __('general.title') }}"
-                                        class="form-control pl-1 min-h-40px @error('title') is-invalid @enderror"
-                                        value="{{ old('title', $navigation->title) }}">
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
                         
 
 <!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.link')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="link" placeholder="{{__('general.link')}}" class="form-control pl-1 min-h-40px @error('link') is-invalid @enderror" value="{{ old('link', $navigation->link) }}"> </div> </div> </div>
