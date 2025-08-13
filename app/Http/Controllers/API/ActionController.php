@@ -10,7 +10,7 @@ use App\Models\Task;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Carbon\Carbon;
 class ActionController extends Controller
 {
     public function postFunction(Request $request)
@@ -44,15 +44,28 @@ public function getFunction(Request $request)
                 ->where('cost', '>', 0)
                 ->get();
 
+            $renewProjects = Project::whereDate('renewalDate', '<=', Carbon::now()->subMonth())
+                ->get();
+
             if ($moneyProjects->isNotEmpty()) {
                 // Collect all project details into one string
-                $mergedText = $moneyProjects->map(function ($project) {
+                $mergedMoneyText = $moneyProjects->map(function ($project) {
                     return $project->title . " is due with " . rest($project);
                 })->implode(', ');
 
                 // Push only one notification
-                $notifications[] = "Projects due: " . $mergedText;
+                $notifications[] = "Projects due: " . $mergedMoneyText;
             }
+            if ($renewProjects->isNotEmpty()) {
+                // Collect all project details into one string
+                $mergedRenewText = $renewProjects->map(function ($project) {
+                    return $project->title . " has to renew in " . $project->renewalDate;
+                })->implode(', ');
+
+                // Push only one notification
+                $notifications[] = "Projects renew: " . $mergedMoneyText;
+            }
+
 
             $data["notifications"] = $notifications;
         }
