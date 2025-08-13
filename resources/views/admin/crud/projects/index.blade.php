@@ -60,7 +60,7 @@
 
                                                 <th>{{ __('general.deal') }}</th>
 
-                                                <th>{{__('general.renwalDate')}}</th>
+                                                <th>{{__('general.renewalDate')}}</th>
 
                                                 <th>{{ __('general.lastTransaction') }}</th>
 
@@ -88,7 +88,7 @@
                                         
                                                     <td>{{ $project->deal ? __('general.yes') : __('general.no') }}</td>
                                         
-                                                   <td>{{ $project->renwalDate }}</td>
+                                                   <td>{{ $project->renewalDate }}</td>
                                         
                                                     <td>{{ $project->lastTransaction }}</td>
                                         
