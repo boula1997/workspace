@@ -28,6 +28,8 @@
                             </div>
                         </div>
 
+                        <div class="col-md-6"> <input name="project_id" type="hidden" value="1" /> <div class="form-group mb-3"> <label class="input-label" for="renwalDate">@lang('messages.renwalDate')</label> <input type="date" name="renwalDate" id="renwalDate" class="form-control" placeholder="@lang('messages.renwalDate')" value="{{ $project->renwalDate ? $project->renwalDate->format('Y-m-d') : null; }}"> </div> </div>
+
                         <!-- Normal title input -->
                         <div class="col-md-12">
                             <div class="form-group"> <label>{{ __('general.cost') }} <span class="text-danger"> *

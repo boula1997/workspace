@@ -26,6 +26,8 @@
                             </div>
                         </div>
 
+                        <div class="col-md-6"> <input name="project_id" type="hidden" value="1" /> <div class="form-group mb-3"> <label class="input-label" for="renwalDate">@lang('messages.renwalDate')</label> <input type="date" name="renwalDate" id="renwalDate" class="form-control" placeholder="@lang('messages.renwalDate')" value=""> </div> </div>
+
                         {{-- Number Input --}} <div class="col-md-6">
                             <div class="form-group"> <label>{{ __('general.cost') }} <span class="text-danger"> *
                                     </span></label>
