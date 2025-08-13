@@ -50,7 +50,7 @@ public function getFunction(Request $request)
             if ($moneyProjects->isNotEmpty()) {
                 // Collect all project details into one string
                 $mergedMoneyText = $moneyProjects->map(function ($project) {
-                    return $project->title . " is due with " . rest($project);
+                    return $project->title . "  with " . rest($project);
                 })->implode(', ');
 
                 // Push only one notification
@@ -59,7 +59,7 @@ public function getFunction(Request $request)
             if ($renewProjects->isNotEmpty()) {
                 // Collect all project details into one string
                 $mergedRenewText = $renewProjects->map(function ($project) {
-                    return $project->title . " has to renew in " . $project->renewalDate;
+                    return $project->title . " renewal in " . $project->renewalDate;
                 })->implode(', ');
 
                 // Push only one notification
