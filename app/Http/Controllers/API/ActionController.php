@@ -63,7 +63,7 @@ public function getFunction(Request $request)
                 })->implode(', ');
 
                 // Push only one notification
-                $notifications[] = "Projects renew: " . $mergedMoneyText;
+                $notifications[] = "Projects renew: " . $mergedRenewText ;
             }
 
 
