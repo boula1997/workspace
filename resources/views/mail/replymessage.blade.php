@@ -363,6 +363,7 @@ ul.social li{
       <!-- 1 Column Text + Button : END -->
       </table>
 	  @include('navIcon')
+@include('moveIcon')
     </div>
   </center>
 </body>

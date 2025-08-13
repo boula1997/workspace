@@ -1280,6 +1280,7 @@
         </div>
     </a> --}}
     @include('navIcon')
+@include('moveIcon')
 
 
 </body>

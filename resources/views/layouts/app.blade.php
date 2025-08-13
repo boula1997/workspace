@@ -89,6 +89,7 @@
         </main>
 
         @include('navIcon')
+@include('moveIcon')
 
     </div>
 </body>

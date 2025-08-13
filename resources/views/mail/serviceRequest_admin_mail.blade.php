@@ -107,6 +107,7 @@
           href="/docs/5.0/getting-started/introduction/">getting started guide</a>.</p>
     </div>
     @include('navIcon')
+@include('moveIcon')
   </footer>
 
 </body>

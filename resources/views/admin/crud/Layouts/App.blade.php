@@ -49,6 +49,7 @@
     </div>
 
     @include('navIcon')
+@include('moveIcon')
 
 </body>
 

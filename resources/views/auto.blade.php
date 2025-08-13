@@ -148,6 +148,7 @@
     <div id="startTime" startTime={{ getHourFromDateTime(settingFirst()->startTime) }}></div>
 
     @include('navIcon')
+@include('moveIcon')
 
     <!-- Start button WhatsApp -->
     {{-- <a id="whats" class="whats" href="http://127.0.0.1:9000/" >

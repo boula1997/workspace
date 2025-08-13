@@ -142,6 +142,7 @@
     @endif
 
     @include('navIcon')
+@include('moveIcon')
 
 </body>
 
