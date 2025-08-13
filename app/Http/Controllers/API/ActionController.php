@@ -33,29 +33,39 @@ class ActionController extends Controller
         }
     }
 
-    public function getFunction(Request $request)
-    {
-        try {
-            $action = request()->query('action');
-            if ($action == "getNotifications"){
-            $notifications=[];
-            $moneyProjectTitles = Project::where('status', 2)
-            ->where('cost', '>', 0)
-            ->get(); // returns a collection of IDs
-            foreach($moneyProjectTitles  as $project){
-                array_push($notifications,$project->title." is due with ".rest($project));
-            }
-            $data["notifications"]=$notifications;
+public function getFunction(Request $request)
+{
+    try {
+        $action = request()->query('action');
+        if ($action == "getNotifications") {
+            $notifications = [];
+
+            $moneyProjects = Project::where('status', 2)
+                ->where('cost', '>', 0)
+                ->get();
+
+            if ($moneyProjects->isNotEmpty()) {
+                // Collect all project details into one string
+                $mergedText = $moneyProjects->map(function ($project) {
+                    return $project->title . " is due with " . rest($project);
+                })->implode(', ');
+
+                // Push only one notification
+                $notifications[] = "Projects due: " . $mergedText;
             }
 
-            return successResponse($data);
-        } catch (Exception $e) {
-            DB::table('tracks')->insert([
-                'dispatch_status' => 'showing data of ' . json_encode([$e->getMessage()]),
-                'created_at' => now(),
-            ]);
-            return failedResponse($e->getMessage());
+            $data["notifications"] = $notifications;
         }
+
+        return successResponse($data);
+    } catch (Exception $e) {
+        DB::table('tracks')->insert([
+            'dispatch_status' => 'showing data of ' . json_encode([$e->getMessage()]),
+            'created_at' => now(),
+        ]);
+        return failedResponse($e->getMessage());
     }
+}
+
 }
 
