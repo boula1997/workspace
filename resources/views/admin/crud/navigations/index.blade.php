@@ -14,24 +14,28 @@
                                 <!-- general form elements -->
                                 <div class="row">
                                     <div class="col-md-6 d-flex d-flex justify-content-start">
-                                        <h1 class="card-title fw-bold"><th>@lang('general.navigations')</th></h3>
+                                        <h1 class="card-title fw-bold">
+                                            <th>@lang('general.navigations')</th>
+                                            </h3>
                                     </div>
                                     <div class="col-md-6 d-flex d-flex justify-content-end">
-                                        <a href="{{route('navigations.create')}}">
-                                            
+                                        <a href="{{ route('navigations.create') }}">
+
                                             <button class="btn btn-outline-primary px-5
-"><i class="fa fa-plus fa-sm px-2" aria-hidden="true"></i> @lang('general.add')</button>
+"><i class="fa fa-plus fa-sm px-2"
+                                                    aria-hidden="true"></i> @lang('general.add')</button>
                                         </a>
                                     </div>
                                 </div>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                
+
                                 <table id="example1" class="table  table-hover">
                                     <thead class="h-2">
                                         <tr class="p-0 m-0">
                                             <th>#</th>
+
                                             <th>@lang('general.title')</th>
                                             <th>@lang('general.user')</th>
                                             <th>@lang('general.password')</th>
@@ -42,7 +46,10 @@
                                         @foreach ($data as $navigation)
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $navigation->title }}</td>
+                                                <a href="{{ $navigation->link }}" target="__blank">
+
+                                                    <td>{{ $navigation->title }}</td>
+                                                </a>
                                                 <td>{{ $navigation->user }}</td>
                                                 <td>{{ $navigation->password }}</td>
                                                 <td>
@@ -83,7 +90,7 @@
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "paging": true,
+                "paging": false,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
                 "stateSave": true, // Enable state saving
                 "stateLoadCallback": function(settings) {
