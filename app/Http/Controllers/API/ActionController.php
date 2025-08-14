@@ -45,11 +45,13 @@ public function getFunction(Request $request)
                 ->where('cost', '>', 0)
                 ->get();
 
-            $renewProjects = Project::whereDate('renewalDate', '>=', Carbon::now()->subMonth())
-                ->get();
+                $renewProjects = Project::whereDate('renewalDate', '>=', Carbon::now()->subMonth())
+                    ->orderBy('renewalDate', 'asc')
+                    ->get();
 
-            $deadlines = Deadline::whereDate('date', '>=', Carbon::now()->subMonth())
-                ->get();
+                $deadlines = Deadline::whereDate('date', '>=', Carbon::now()->subWeek())
+                    ->orderBy('date', 'asc')
+                    ->get();
 
             if ($moneyProjects->isNotEmpty()) {
                 // Collect all project details into one string
