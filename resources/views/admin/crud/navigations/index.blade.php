@@ -46,10 +46,12 @@
                                         @foreach ($data as $navigation)
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
-                                                <a href="{{ $navigation->link }}" target="__blank">
-
-                                                    <td>{{ $navigation->title }}</td>
-                                                </a>
+                                                
+                                                <td>
+                                                        <a href="{{ $navigation->link }}" target="__blank">
+                                                        {{ $navigation->title }}
+                                                    </a>
+                                                    </td>
                                                 <td>{{ $navigation->user }}</td>
                                                 <td>{{ $navigation->password }}</td>
                                                 <td>
