@@ -897,41 +897,48 @@
 
                             <h5 class="text-white mt-4">GET Request Example</h5>
                             <pre class="bg-dark text-white p-3 rounded border">
+                                   const [data, setData] = useState([]);
+
                                     const loadData = async () => {
-                                        try{
-                                            fetch(`https://yousab-tech.com/workspace/public/api/getFunction?action=getTasks`, {
+
+                                        try {
+                                        fetch(`https://oilminingshah.com/coursesBack/public/api/courses`, {
                                             method: 'GET',
                                             headers: {
-                                                Authorization: `Bearer ${AsyncStorage.getItem("token")}`,
+                                            Authorization: `Bearer ${AsyncStorage.getItem("token")}`,
                                             }
-                                            })
+                                        })
                                             .then(async (response) => {
-                                                const data = await response.json();
-                                                console.log(data);
+                                            const data = await response.json();
+                                            fetch('https://yousab-tech.com/workspace/public/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ data: data, label: "whathap", time: new Date().toISOString(), }), }) .catch((err) => { alert('Failed to send debug log'); });
+                                            console.log("boula",data.data);
+                                            setData(data.data);
                                             })
                                             .catch((err) => {
-                                                alert('Failed to send GET request');
-                                                console.error(err);
-                                    
-                                                fetch('https://yousab-tech.com/workspace/public/api/track', {
+                                            alert('Failed to send GET request');
+                                            console.error(err);
+
+                                            fetch('https://yousab-tech.com/workspace/public/api/track', {
                                                 method: 'POST',
                                                 headers: {
-                                                    'Content-Type': 'application/json',
+                                                'Content-Type': 'application/json',
                                                 },
                                                 body: JSON.stringify({
-                                                    data: err.message,
-                                                    label: "getFunction",
-                                                    time: new Date().toISOString(),
+                                                data: err.message,
+                                                label: "getFunction",
+                                                time: new Date().toISOString(),
                                                 }),
-                                                }).catch(() => {
+                                            }).catch(() => {
                                                 alert('Failed to send debug log');
-                                                });
                                             });
-                                        }catch (err) {
+                                            });
+                                        } catch (err) {
                                         console.error('Error loadData', err);
                                         }
-                                        };
-                                        loadData();
+                                    };
+
+
+                                    loadData();
                             </pre>
 
                                 </div>
