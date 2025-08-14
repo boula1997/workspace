@@ -49,7 +49,7 @@ public function getFunction(Request $request)
                 ->orderBy('renewalDate', 'asc')
                 ->get();
 
-                $deadlines = Deadline::whereDate('date', '<=', Carbon::now()->addWeek())
+            $deadlines = Deadline::whereDate('date', '<=', Carbon::now()->addWeek())
                     ->orderBy('date', 'asc')
                     ->get();
 
@@ -62,7 +62,7 @@ public function getFunction(Request $request)
                 // Push only one notification
                 $notifications[] = "Projects due: " . $mergedMoneyText;
             }
-            if ($renewProjects->isNotEmpty() && boula()) {
+            if ($renewProjects->isNotEmpty()) {
                 // Collect all project details into one string
                 $mergedRenewText = $renewProjects->map(function ($project) {
                     return $project->title . " renewal in " . $project->renewalDate;
