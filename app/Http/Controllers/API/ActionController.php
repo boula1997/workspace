@@ -49,7 +49,7 @@ public function getFunction(Request $request)
                 ->orderBy('renewalDate', 'asc')
                 ->get();
 
-            $deadlines = Deadline::whereDate('date', '<=', Carbon::now()->addWeek())
+            $deadlines = Deadline::whereDate('date', '<=', Carbon::now()->addMonth())
                     ->orderBy('date', 'asc')
                     ->get();
 
