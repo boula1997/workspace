@@ -741,9 +741,13 @@
 
                                 <h5 class="text-white mt-4">POST Request Example</h5>
                                 <pre class="bg-dark text-white p-3 rounded border">
-                            const [inputData, setInputData] = useState({});
-                              const [images, setImages] = useState([]);
-                              const [image, setImage] = useState("");
+                                npm install @react-native-async-storage/async-storage
+                                import AsyncStorage from "@react-native-async-storage/async-storage";
+                                import React, { useEffect, useRef, useState } from "react";
+                                const [data, setData] = useState([]);
+                                const [inputData, setInputData] = useState({});
+                                const [images, setImages] = useState([]);
+                                const [image, setImage] = useState("");
 
                                 const pickImages = async () => {
                                 try {
@@ -807,7 +811,7 @@
                                 const response = await fetch('https://yourdomain.com/public/api/postFunction?action=contactus', {
                                 method: 'POST',
                                 headers: {
-                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                    Authorization: `Bearer ${AsyncStorage.getItem("token")}`,
                                 },
                                 body: formData,
                                 });
