@@ -24,30 +24,30 @@
 
 </head>
 <style>
-  #searchHighlight {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 9999;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    background: #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  }
+    #searchHighlight {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 9999;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        background: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
 
-  .noHide {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
+    .noHide {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
 
-  mark {
-    background: yellow;
-    padding: 2px;
-    border-radius: 2px;
-  }
+    mark {
+        background: yellow;
+        padding: 2px;
+        border-radius: 2px;
+    }
 </style>
 
 <input type="text" id="searchHighlight" class="noHide" placeholder="Search...">
@@ -88,10 +88,11 @@
         /* White text */
     }
 
-    .bg-success{
-    
-    color:white !important;
+    .bg-success {
+
+        color: white !important;
     }
+
     /* Placeholder text */
     .select2-container--default .select2-selection--single .select2-selection__placeholder {
         color: #aaa;
@@ -135,7 +136,7 @@
     <div class="container-fluid">
         @include('tabs')
     </div>
-    
+
     <div class="container">
 
         @if (boula() && isWithinWorkingHours())
@@ -156,8 +157,8 @@
                                     <div class="modal-body">
                                         <div>
                                             <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                            <textarea class="form-control  summernote" name="codeLinks" id="textareapost{{$post->id}}" cols="30" rows="5"
-                                                style="height:100vh !important"></textarea>
+                                            <textarea class="form-control  summernote" name="codeLinks" id="textareapost{{ $post->id }}" cols="30"
+                                                rows="5" style="height:100vh !important"></textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -192,8 +193,8 @@
                                     <div class="modal-body">
                                         <div>
                                             <input type="hidden" name="issue_id" value="{{ $refrnce->id }}">
-                                            <textarea class="form-control  summernote" name="codeLinks" id="textarearef{{$refrnce->id}}" cols="30" rows="5"
-                                                style="height:100vh !important"></textarea>
+                                            <textarea class="form-control  summernote" name="codeLinks" id="textarearef{{ $refrnce->id }}" cols="30"
+                                                rows="5" style="height:100vh !important"></textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -218,14 +219,13 @@
 
             <div class="text-white text-center">{{ startAndEndTime(settingFirst()->startTime)[0] }} -
                 {{ startAndEndTime(settingFirst()->startTime)[1] }}
-            
+
                 @if (boula() && App::environment('production'))
                     {{-- <p class="text-warning" id="deadline">{{activeDeadline()["deadline"]}}  {{activeDeadline()["action"]}}</p> --}}
-        
                 @endif
             </div>
 
-             
+
 
             <div>
                 <div class="modal fade" id="tasksModal" tabindex="-1" aria-labelledby="tasksModalLabel"
@@ -307,16 +307,14 @@
                                 class="text-warning">Yellow</span>:Working on</p>
                         <div class="website-container d-flex flex-wrap">
                             @foreach (websites() as $website)
-                            @if( $website->status>0 || $website->deal ==0)
-                            
-                                <p id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
-                                    class="{{ $website->deal ? ($website->status == 0 ? 'bg-secondary' : ($website->status == 1 ? 'bg-warning' : ($website->status == 2 ? 'bg-success' : 'bg-warning'))) : 'bg-danger' }}  hover-cursor mx-1 text-nowrap text-back">
-                                    {{ $website->title }}</p>
+                                @if ($website->status > 0 || $website->deal == 0)
+                                    <p id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
+                                        class="{{ $website->deal ? ($website->status == 0 ? 'bg-secondary' : ($website->status == 1 ? 'bg-warning' : ($website->status == 2 ? 'bg-success' : 'bg-warning'))) : 'bg-danger' }}  hover-cursor mx-1 text-nowrap text-back">
+                                        {{ $website->title }}</p>
 
-                                <i style="cursor: pointer;" content="{{ $website->codeLinks }}"
-                                    websiteId="{{ $website->id }}"
-                                    class="text-secondary fas fa-copy"></i>
-                                    @endif
+                                    <i style="cursor: pointer;" content="{{ $website->codeLinks }}"
+                                        websiteId="{{ $website->id }}" class="text-secondary fas fa-copy"></i>
+                                @endif
                             @endforeach
                         </div>
                         <button type="button" class="btn btn-outline-success w-100" id="amDone">I am
@@ -327,15 +325,14 @@
                     <div class="mt-2" id="pendingWebsites">
                         <div class="website-container d-flex flex-wrap">
                             @foreach (websites() as $website)
-                                 @if($website->status==0 && $website->deal==1)
+                                @if ($website->status == 0 && $website->deal == 1)
                                     <p id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
                                         class="{{ $website->deal ? ($website->status == 0 ? 'bg-secondary' : ($website->status == 1 ? 'bg-warning' : ($website->status == 2 ? 'bg-success' : 'bg-warning'))) : 'bg-danger' }}  hover-cursor mx-1 text-nowrap text-back">
                                         {{ $website->title }}</p>
 
                                     <i style="cursor: pointer;" content="{{ $website->codeLinks }}"
-                                        websiteId="{{ $website->id }}"
-                                        class="text-secondary fas fa-copy"></i>
-                                    @endif
+                                        websiteId="{{ $website->id }}" class="text-secondary fas fa-copy"></i>
+                                @endif
                             @endforeach
                         </div>
                     </div>
@@ -344,12 +341,11 @@
                     <div class="mt-2" id="allRefrences">
                         <div class="website-container d-flex flex-wrap">
                             @foreach (References() as $refrnce)
-                            @if( $website->status==0)
-
-                                <button type="button" content="{{ $refrnce->codeLinks }}" id="{{ $refrnce->id }}"
-                                    title="1click:yellow 2click:green 3click:red"
-                                    class="reference btn {{ $refrnce->status == 0 ? 'btn-outline-warning' : ($refrnce->status == 1 ? 'btn-outline-warning' : 'btn-success') }}  hover-cursor mx-1 text-nowrap m-2">{{ $refrnce->title }}</button>
-                                    @endif
+                                @if ($website->status == 0)
+                                    <button type="button" content="{{ $refrnce->codeLinks }}"
+                                        id="{{ $refrnce->id }}" title="1click:yellow 2click:green 3click:red"
+                                        class="reference btn {{ $refrnce->status == 0 ? 'btn-outline-warning' : ($refrnce->status == 1 ? 'btn-outline-warning' : 'btn-success') }}  hover-cursor mx-1 text-nowrap m-2">{{ $refrnce->title }}</button>
+                                @endif
                             @endforeach
                         </div>
                     </div>
@@ -370,7 +366,7 @@
 
                 <div class="mt-2">
                     {{-- <h1 class="text-center">Automation</h1> --}}
-            {{-- @if (boula())
+                    {{-- @if (boula())
                     <div>
                         <div class="modal fade" id="surveyModal" data-bs-backdrop="static" data-bs-keyboard="false"
                             tabindex="-1" aria-labelledby="tasksModalLabel" aria-hidden="true">
@@ -408,44 +404,47 @@
                             <div class="form-group mt-2">
 
                                 <select name="action" class="form-control  text-white " id="selectAction">
-                                <option value="">Select the required action</option>
-                                <option value="16">get multible scripts</option>
-                                <option value="12">desc database</option>
+                                    <option value="">Select the required action</option>
+                                    <option value="16">get multible scripts</option>
+                                    <option value="12">desc database</option>
 
-                                @if (isWithinWorkingHours())   
-                                <option class="" value="15">add script</option>
-                                <option class="" value="15">add module</option>
-                                <option value="23">auto attributes (edit first methodology to avoid filling data)</option>
-                                <option value="0">create new module(or Open newly added module edit first methodology to avoid filling data)</option>
-                                <option value="14">checkout multible module</option>
-                                <option value="6">copy multible modules using repo</option>
-                                <option value="1">Delete multible module</option>
-                                <option value="19">flags manager</option>
-                                <option value="16">get multible modules</option>
-                                <option class="{{ boula() ? '' : 'myTab' }}" value="21">Get Stats</option>
-                                <option value="4">Get files with size bigger than</option>
-                                <option value="18">Image Workspace</option>
-                                <option value="3">Open multible modules</option>
-                                <option value="11">Open Shared Module Files</option>
-                                <option value="9">Prebare multible modules to work on</option>
-                                <option value="2">Rename module</option>
-                                <option value="20">Reblace word in module</option>
-                                <option value="5">Show or Delete project images</option>
-                                <option value="8">Search all attributes at once</option>
-                                <option value="10">search project modules</option>
-                                <option value="7">translate all attributes</option>
-                                <option value="13">translate untranslated words</option>
-                                <option value="25">React post</option>
-                                <option value="26">React get</option>
-                                <option value="30">ReactNative post</option>
-                                <option value="31">ReactNative get</option>
-                                <option value="28">Ajax get</option>
-                                <option value="29">Ajax post</option>
-                                {{-- <option value="22">Open Websites</option> --}}
-                                {{-- <option value="17">Servers Hostings and git default</option> --}}
-                                {{-- <option value="24">Add new template link</option>
+                                    @if (isWithinWorkingHours())
+                                        <option class="" value="15">add script</option>
+                                        <option class="" value="15">add module</option>
+                                        <option value="23">auto attributes (edit first methodology to avoid filling
+                                            data)</option>
+                                        <option value="0">create new module(or Open newly added module edit first
+                                            methodology to avoid filling data)</option>
+                                        <option value="14">checkout multible module</option>
+                                        <option value="6">copy multible modules using repo</option>
+                                        <option value="1">Delete multible module</option>
+                                        <option value="19">flags manager</option>
+                                        <option value="16">get multible modules</option>
+                                        <option class="{{ boula() ? '' : 'myTab' }}" value="21">Get Stats
+                                        </option>
+                                        <option value="4">Get files with size bigger than</option>
+                                        <option value="18">Image Workspace</option>
+                                        <option value="3">Open multible modules</option>
+                                        <option value="11">Open Shared Module Files</option>
+                                        <option value="9">Prebare multible modules to work on</option>
+                                        <option value="2">Rename module</option>
+                                        <option value="20">Reblace word in module</option>
+                                        <option value="5">Show or Delete project images</option>
+                                        <option value="8">Search all attributes at once</option>
+                                        <option value="10">search project modules</option>
+                                        <option value="7">translate all attributes</option>
+                                        <option value="13">translate untranslated words</option>
+                                        <option value="25">React post</option>
+                                        <option value="26">React get</option>
+                                        <option value="30">ReactNative post</option>
+                                        <option value="31">ReactNative get</option>
+                                        <option value="28">Ajax get</option>
+                                        <option value="29">Ajax post</option>
+                                        {{-- <option value="22">Open Websites</option> --}}
+                                        {{-- <option value="17">Servers Hostings and git default</option> --}}
+                                        {{-- <option value="24">Add new template link</option>
                                 <option value="27">Add new googlead link</option> --}}
-                                @endif
+                                    @endif
                                 </select>
                             </div>
 
@@ -463,16 +462,16 @@
                                 </select>
                             </div>
                             @if (boula())
-                            <div class="form-group mt-2">
-                                <input class=d-inline" value="" type="checkbox" name="showActiveWebsites"
-                                    id="showActiveWebsites">
-                                <p class="d-inline pointer-cursor">Show Active Websites</p>
-                            </div>
-                            <div class="form-group mt-2">
-                                <input class=d-inline" value="" type="checkbox" name="showPendingWebsites"
-                                    id="showPendingWebsites">
-                                <p class="d-inline pointer-cursor">Show Pending Websites</p>
-                            </div>
+                                <div class="form-group mt-2">
+                                    <input class=d-inline" value="" type="checkbox" name="showActiveWebsites"
+                                        id="showActiveWebsites">
+                                    <p class="d-inline pointer-cursor">Show Active Websites</p>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <input class=d-inline" value="" type="checkbox" name="showPendingWebsites"
+                                        id="showPendingWebsites">
+                                    <p class="d-inline pointer-cursor">Show Pending Websites</p>
+                                </div>
                                 <div class="form-group mt-2">
                                     <input class=d-inline" value="" type="checkbox" name="showReferences"
                                         id="showReferences">
@@ -515,7 +514,7 @@
                                 <input class=" d-inline" type="checkbox" name="linkPHP" id="linkPHP">
                                 <p class="d-inline pointer-cursor">get links out of php files</p>
                             </div>
- 
+
                             <div class="form-group mt-2">
                                 <input class=" d-inline" value="{{ old('refrence') }}" type="checkbox"
                                     name="refrence" id="refrencePlural">
@@ -573,7 +572,7 @@
                                     name="size" placeholder="Insert file size">
                             </div>
                             <div class="form-group mt-2" id="selectedDBname">
-                                <select class="select form-control" name="dbname" id="db_name" >
+                                <select class="select form-control" name="dbname" id="db_name">
                                     <option value="search for query">Search for db</option>
                                     @foreach (databases() as $database)
                                         <option value="{{ $database->schema_name }}">{{ $database->schema_name }}
@@ -583,8 +582,9 @@
                             </div>
                             <div class="form-group mt-2">
 
-                                <input id="startingOrderLetter" type="number" min=0 class="form-control   text-white" value="0"
-                                    name="startingOrderLetter" placeholder="ex: 3,4,5">
+                                <input id="startingOrderLetter" type="number" min=0
+                                    class="form-control   text-white" value="0" name="startingOrderLetter"
+                                    placeholder="ex: 3,4,5">
                             </div>
                             <div class="form-group mt-2">
                                 <input id="tablename" type="text" class="form-control   text-white"
@@ -666,8 +666,9 @@
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-12">
-                               <div class="">
-                                <h1 class="text-white mb-4">Laravel Backend and React/React Native Frontend Integration</h1>
+                            <div class="">
+                                <h1 class="text-white mb-4">Laravel Backend and React/React Native Frontend Integration
+                                </h1>
 
                                 <h2 class="text-white mt-4">Laravel Backend Part</h2>
 
@@ -679,7 +680,8 @@
                                 Route::get('/getFunction', [ActionController::class, 'getFunction']);
                                 </pre>
 
-                                <h5 class="text-white mt-4">Controller: <code>app/Http/Controllers/API/ActionController.php</code></h5>
+                                <h5 class="text-white mt-4">Controller:
+                                    <code>app/Http/Controllers/API/ActionController.php</code></h5>
                                 <pre class="bg-dark text-white p-3 rounded border overflow-auto">
                                 &lt;?php
 
@@ -737,8 +739,8 @@
 
                                 <h2 class="text-white mt-5">React or React Native Frontend Part</h2>
 
-                            <h5 class="text-white mt-4">POST Request Example</h5>
-                            <pre class="bg-dark text-white p-3 rounded border">
+                                <h5 class="text-white mt-4">POST Request Example</h5>
+                                <pre class="bg-dark text-white p-3 rounded border">
                             const [inputData, setInputData] = useState({});
                               const [images, setImages] = useState([]);
                               const [image, setImage] = useState("");
@@ -895,8 +897,8 @@
 
                             </pre>
 
-                            <h5 class="text-white mt-4">GET Request Example</h5>
-                            <pre class="bg-dark text-white p-3 rounded border">
+                                <h5 class="text-white mt-4">GET Request Example</h5>
+                                <pre class="bg-dark text-white p-3 rounded border">
                                 npm install @react-native-async-storage/async-storage
                                 import AsyncStorage from "@react-native-async-storage/async-storage";
                                 import React, { useEffect, useRef, useState } from "react";
@@ -948,7 +950,7 @@
                                     }, []);
                             </pre>
 
-                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -974,7 +976,8 @@
                                 browser try another account or new browser</p>
                             <p class="text-warning">Listen to tasks and write most important of them in notebook (Most
                                 Important)</p>
-                            <p class="text-warning">alt +dblclick methodology + auto attributes (edit first methodology to avoid filling data) automation option</p>
+                            <p class="text-warning">alt +dblclick methodology + auto attributes (edit first methodology
+                                to avoid filling data) automation option</p>
                             <ul class="text-white">
                                 <li>
                                     write attributes on lines like this and copy them using alt+dblclick
@@ -1004,8 +1007,10 @@
 
                             <p class="text-warning">windows+prntscrren - ctrl+v in whatsapp methodology</p>
                             <hr>
-                            <p class="text-warning">We can open expo app on browser by clicking w after runung npx expo start</p>
-                            <p class="text-warning">To know all details abou a domain or website use this website https://www.whois.com/whois</p>
+                            <p class="text-warning">We can open expo app on browser by clicking w after runung npx expo
+                                start</p>
+                            <p class="text-warning">To know all details abou a domain or website use this website
+                                https://www.whois.com/whois</p>
                             <p class="text-warning">Note:keep mobile out during working hours to avoid distractions</p>
                             <p>Note: when search for a migration use _migrationname to easily find it</p>
                             <p>Note: Enable debug tool in laravel by APP_DEBUG=true in .env file</p>
@@ -1135,29 +1140,29 @@
                             <p title="auto fill password">cls</p>
                             <br>
                             <hr class="text-white">
-                                <p title="auto fill password">
+                            <p title="auto fill password">
                                 fetch('https://yousab-tech.com/workspace/public/api/track', {
                                 method: 'POST',
                                 headers: {
-                                    'Content-Type': 'application/json',
+                                'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    data: "boula900",
-                                    label: "label",
-                                    time: new Date().toISOString(),
+                                data: "boula900",
+                                label: "label",
+                                time: new Date().toISOString(),
                                 }),
                                 })
                                 .catch((err) => {
                                 alert('Failed to send debug log');
                                 });
-                                </p>
+                            </p>
 
-                                            <br>
+                            <br>
                             <hr class="text-white">
                             <p title="auto fill password">DB::table('tracks')->insert([
                                 'dispatch_status' => 'showing data of ' . json_encode(request()->all()),
                                 'created_at' => now(),
-                            ]);</p>
+                                ]);</p>
 
                             <br>
                             <hr class="text-white">
@@ -1303,7 +1308,7 @@
         </div>
     </a> --}}
     @include('navIcon')
-@include('moveIcon')
+    @include('moveIcon')
 
 
 </body>
