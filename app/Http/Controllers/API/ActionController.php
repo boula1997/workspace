@@ -45,11 +45,13 @@ public function getFunction(Request $request)
                 ->where('cost', '>', 0)
                 ->get();
 
-                $renewProjects = Project::whereDate('renewalDate', '>=', Carbon::now()->subMonth())
-                    ->orderBy('renewalDate', 'asc')
-                    ->get();
+            $renewProjects = Project::whereDate('renewalDate', '<=', Carbon::now()->addMonth())
+                ->whereDate('renewalDate', '>=', Carbon::now()) // only future or today
+                ->orderBy('renewalDate', 'asc')
+                ->get();
 
-                $deadlines = Deadline::whereDate('date', '>=', Carbon::now()->subWeek())
+                $deadlines = Deadline::whereDate('date', '<=', Carbon::now()->addWeek())
+                    ->whereDate('date', '>=', Carbon::now()) // ensures deadline is today or in the future
                     ->orderBy('date', 'asc')
                     ->get();
 
