@@ -328,7 +328,9 @@ class TaskController extends Controller
     public function refpro(Request $request)
     {
         try {
-
+          if(!isWithinWorkingHours()){
+              return failedResponse([]);
+          }
 
                 $update=false;
                 $action=false;

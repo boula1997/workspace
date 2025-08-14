@@ -47,6 +47,9 @@ public function getFunction(Request $request)
             $renewProjects = Project::whereDate('renewalDate', '>=', Carbon::now()->subMonth())
                 ->get();
 
+            $deadlines = Deadline::whereDate('date', '>=', Carbon::now()->subMonth())
+                ->get();
+
             if ($moneyProjects->isNotEmpty()) {
                 // Collect all project details into one string
                 $mergedMoneyText = $moneyProjects->map(function ($project) {
@@ -56,7 +59,7 @@ public function getFunction(Request $request)
                 // Push only one notification
                 $notifications[] = "Projects due: " . $mergedMoneyText;
             }
-            if ($renewProjects->isNotEmpty()) {
+            if ($renewProjects->isNotEmpty() && boula()) {
                 // Collect all project details into one string
                 $mergedRenewText = $renewProjects->map(function ($project) {
                     return $project->title . " renewal in " . $project->renewalDate;
@@ -65,6 +68,16 @@ public function getFunction(Request $request)
 
                 // Push only one notification
                 $notifications[] = "Projects renew: " . $mergedRenewText ;
+            }
+            if ($deadlines->isNotEmpty()) {
+                // Collect all project details into one string
+                $mergedDateText = $deadlines->map(function ($deadline) {
+                    return $deadline->title . " in " . $deadline->date;
+                })->implode(', ');
+
+
+                // Push only one notification
+                $notifications[] = "Deadline actions: " . $mergedDateText ;
             }
 
 

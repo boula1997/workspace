@@ -1002,7 +1002,6 @@ function boula()
 
 
 function isWithinWorkingHours(){
-return true;
 
     if(settings()->stopClosing==1)
         return true;    

@@ -1227,13 +1227,13 @@
                             <p>npm install</p>
                             <p>npm ls --depth=0</p>
                             <p>npx expo-doctor</p>
-                            <p title="auto fill password">npx expo start --no-dev --minify</p>
+                            <p title="auto fill password">npx expo start -c --no-dev --minify</p>
                             <p>cls</p>
                             <br>
-                            <hr class="text-white"
-                            <p title="auto fill password">npx expo start --no-dev --minify</p>
+                            <hr class="text-white">
+                            <p>npx expo start --no-dev --minify</p>
                             <br>
-                            <hr class="text-white"
+                            <hr class="text-white">
                             <p title="auto fill password">npx react-native log-android</p>
                             <br>
                             <hr class="text-white">
