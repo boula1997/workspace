@@ -1914,6 +1914,12 @@
                 window.open('accountant');
 
             });
+            $('#navigations').on('click', function(e) {
+                e.preventDefault();
+                window.open('https://yousab-tech.com/workspace/public/en/dashboard/navigations');
+
+
+            });
             $('#tasks').on('click', function(e) {
                 e.preventDefault();
                 window.open('https://yousab-tech.com/elmotahda/public/en/dashboard');

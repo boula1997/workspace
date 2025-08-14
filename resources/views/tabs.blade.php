@@ -32,6 +32,7 @@
         <button class="btn btn-outline-warning col-2" id="{{boula()?'DBCredentials':''}}">DB Credentials</button>
         <button class="btn btn-outline-warning col-2" id="{{boula()?'close':''}}">colse</button>
         <button class="btn btn-outline-warning col-2" id="{{boula()?'dashboard':''}}">Dashboard</button>
+        <button class="btn btn-outline-warning col-2" id="{{boula()?'navigations':''}}">Navigations</button>
     </div>
 
     
