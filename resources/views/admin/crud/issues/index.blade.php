@@ -33,10 +33,10 @@
                                         <tr class="p-0 m-0">
                                             <th>#</th>
 
+                                            <th>{{__('general.title')}}</th>
                                         <th>{{__('general.isOverthinking')}}</th>
 
-
-                                        <th>{{__('general.title')}}</th>
+                                        <th>{{__('general.isNotification')}}</th>
                                             <th class="th-controls">@lang('general.controls')</th>
                                         </tr>
                                     </thead>
@@ -44,11 +44,13 @@
                                         @foreach ($data as $issue)
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $issue->title }}</td>
 
                                                 <td>{{$issue->isOverthinking?__('general.yes'):__('general.no') }}</td>
 
+                                                <td>{{$issue->isNotification?__('general.yes'):__('general.no') }}</td>
 
-                                                <td>{{ $issue->title }}</td>
+
                                                 <td>
                                                     @include('admin.components.controls', [
                                                         'route' => 'issues',

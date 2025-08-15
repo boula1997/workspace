@@ -27,6 +27,7 @@
                                     <form>
                                         <div class="card-body">
                                             <div class="card-body">
+                                                <!-- checkbox input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{ __('general.isNotification') }}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{$issue->isNotification?_('general.yes'):__('general.no')}}</p> </div> </div> </div>
 <!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.codeLinks')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $issue->codeLinks }}</p> </div> </div> </div>
 
 <!-- checkbox input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{ __('general.isOverthinking') }}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{$issue->isOverthinking?_('general.yes'):__('general.no')}}</p> </div> </div> </div>
