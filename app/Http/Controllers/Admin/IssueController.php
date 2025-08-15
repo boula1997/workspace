@@ -64,6 +64,7 @@ class IssueController extends Controller
 
         try {
             $input = $request->all();
+            $input['isNotification']=$request->has('isNotification')?1:0;
             $issue = Issue::create($input);
             return redirect()->route('issues.index')
                 ->with('success', 'Issue created successfully');
@@ -109,7 +110,7 @@ class IssueController extends Controller
     {
         try {
             $input = $request->except('image','profile_avatar_remove');
-
+            $input['isNotification']=$request->has('isNotification')?1:0;
             $issue = Issue::find($id);
             $issue->update($input);
             return redirect()->route('issues.index')
