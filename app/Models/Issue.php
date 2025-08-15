@@ -14,7 +14,5 @@ class Issue extends Model
      *
      * @var array
      */
-    protected $fillable = [
-        'title','script','codeLinks'
-    ];
+    protected $guarded = [];
 }
