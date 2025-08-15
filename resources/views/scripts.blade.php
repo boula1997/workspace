@@ -296,47 +296,47 @@
 
 
     <script>
-        $(document).ready(function() {
-            function fetchTitles() {
-                $.ajax({
-                    url: '/active-websites-titles',
-                    method: 'GET',
-                    success: function(data) {
-                        console.log(data);
+        // $(document).ready(function() {
+        //     function fetchTitles() {
+        //         $.ajax({
+        //             url: '/active-websites-titles',
+        //             method: 'GET',
+        //             success: function(data) {
+        //                 console.log(data);
 
-                        var titlesDiv = $('#websites-titles');
-                        titlesDiv.empty(); // Clear the div before appending
+        //                 var titlesDiv = $('#websites-titles');
+        //                 titlesDiv.empty(); // Clear the div before appending
 
-                        if (data.length > 0) {
-                            var titlesText = '';
-                            $.each(data, function(index, title) {
-                                titlesDiv.append('<p>' + title + '</p>');
-                                titlesText += title + '. ';
-                            });
-                            // Use TTS to read the titles
-                            readTitles(titlesText);
-                        } else {
-                            titlesDiv.append('<p>No active websites found.</p>');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error fetching titles:', error);
-                    }
-                });
-            }
+        //                 if (data.length > 0) {
+        //                     var titlesText = '';
+        //                     $.each(data, function(index, title) {
+        //                         titlesDiv.append('<p>' + title + '</p>');
+        //                         titlesText += title + '. ';
+        //                     });
+        //                     // Use TTS to read the titles
+        //                     readTitles(titlesText);
+        //                 } else {
+        //                     titlesDiv.append('<p>No active websites found.</p>');
+        //                 }
+        //             },
+        //             error: function(xhr, status, error) {
+        //                 console.error('Error fetching titles:', error);
+        //             }
+        //         });
+        //     }
 
-            function readTitles(text) {
-                var speech = new SpeechSynthesisUtterance(text);
-                speech.lang = 'en-US'; // Set language, adjust if needed
-                // window.speechSynthesis.speak(speech);
-            }
+        //     function readTitles(text) {
+        //         var speech = new SpeechSynthesisUtterance(text);
+        //         speech.lang = 'en-US'; // Set language, adjust if needed
+        //         // window.speechSynthesis.speak(speech);
+        //     }
 
-            // Fetch and read titles immediately on page load
-            fetchTitles();
+        //     // Fetch and read titles immediately on page load
+        //     fetchTitles();
 
-            // Set interval to fetch and read titles every 15 minutes (900,000 milliseconds)
-            setInterval(fetchTitles, 900000);
-        });
+        //     // Set interval to fetch and read titles every 15 minutes (900,000 milliseconds)
+        //     setInterval(fetchTitles, 900000);
+        // });
     </script>
 
 
