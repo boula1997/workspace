@@ -53,6 +53,10 @@ public function getFunction(Request $request)
                     ->orderBy('date', 'asc')
                     ->get();
 
+            $issues = Issue::where('isNotification', 1)
+                    ->orderBy('title', 'desc')
+                    ->get();
+
             if ($moneyProjects->isNotEmpty()) {
                 // Collect all project details into one string
                 $mergedMoneyText = $moneyProjects->map(function ($project) {
@@ -72,7 +76,7 @@ public function getFunction(Request $request)
                 // Push only one notification
                 $notifications[] = "Projects renew: " . $mergedRenewText ;
             }
-            if ($deadlines->isNotEmpty()) {
+            if ($deadlines->isNotEmpty() && boula()) {
                 // Collect all project details into one string
                 $mergedDateText = $deadlines->map(function ($deadline) {
                     return $deadline->title . " in " . $deadline->date;
@@ -81,6 +85,16 @@ public function getFunction(Request $request)
 
                 // Push only one notification
                 $notifications[] = "Deadline actions: " . $mergedDateText ;
+            }
+            if ($issues->isNotEmpty() && boula()) {
+                // Collect all project details into one string
+                $mergedIssueText = $issues->map(function ($issue) {
+                    return $issue->title;
+                })->implode(', ');
+
+
+                // Push only one notification
+                $notifications[] = "Important Issues: " . $mergedIssueText ;
             }
 
 
