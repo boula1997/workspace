@@ -510,4 +510,27 @@ return [
 
 "Logout" => "Logout",
 
+    "dbcredentials" => "Dbcredentials",
+    "issues" => "Issues",
+    "show_all" => "Show all",
+    "cancel" => "Cancel",
+    "no_result" => "No result",
+    "isNotification" => "IsNotification",
+    "isOverthinking" => "IsOverthinking",
+    "script" => "Script",
+    "db_host" => "Db host",
+    "db_name" => "Db name",
+    "db_password" => "Db password",
+    "db_username" => "Db username",
+    "renewalDate" => "RenewalDate",
+    "$1" => "$1",
+    "Dashboard" => "Dashboard",
+    "Register" => "Register",
+    "Name" => "Name",
+    "Password" => "Password",
+    "Email" => "Email",
+    "Login" => "Login",
+    "Confirm" => "Confirm",
+    "Logout" => "Logout",
+
 ];
