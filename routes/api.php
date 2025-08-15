@@ -63,8 +63,6 @@ Route::group(['middleware' => ['apiLocalization','cors']], function () {
 
 
 
-Route::post('/postFunction', [ActionController::class, 'postFunction']);
-Route::get('/getFunction', [ActionController::class, 'getFunction']);
 
 Route::middleware('auth:admin-api')->group(function () {
     
@@ -77,6 +75,10 @@ Route::middleware('auth:admin-api')->group(function () {
     Route::get('/apptask/create', [TaskController::class, 'create']);
     Route::get('/apptask/create/finished', [TaskController::class, 'createFinished']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
+
+    
+Route::post('/postFunction', [ActionController::class, 'postFunction']);
+Route::get('/getFunction', [ActionController::class, 'getFunction']);
     
     
     Route::post('/apptask/refpro', [TaskController::class, 'refpro']);
