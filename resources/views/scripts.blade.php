@@ -863,6 +863,8 @@
                         }
                     });
 
+                    $("#stack").hide();
+
             };
 
             // Common elements
@@ -1114,7 +1116,7 @@
                     showTextarea: true,
                     placeholder: 'ex: keyword1, keyword2, keyword3'
                 },
-                'auto attributes (edit first methodology to avoid filling data)': {
+                'auto attributes': {
                     show: ['attribute', 'tablename', 'module', 'type'],
                     placeholders: {
                         attribute: 'add attributes',
@@ -1161,6 +1163,8 @@
             // Handle the selected action
             if (actionConfigs[selectedAction]) {
                 const config = actionConfigs[selectedAction];
+
+                console.log("boulaaa",config);
 
                 // Show regular inputs
                 if (config.show) {
@@ -1359,6 +1363,7 @@
             $('#selectAction').on('change', function(e) {
                 let action = $('#selectAction').find(":selected").text();
                 localStorage.setItem('selectAction', action);
+                alert(500);
                 showSelectedActionInputs();
             });
 
