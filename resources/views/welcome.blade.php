@@ -810,7 +810,7 @@
                                 const response = await fetch('https://yourdomain.com/public/api/postFunction?action=contactus', {
                                 method: 'POST',
                                 headers: {
-                                    Authorization: `Bearer ${AsyncStorage.getItem("token")}`,
+                                    Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
                                 },
                                 body: formData,
                                 });
@@ -915,7 +915,7 @@
                                             fetch(`https://oilminingshah.com/coursesBack/public/api/courses`, {
                                             method: 'GET',
                                             headers: {
-                                                Authorization: `Bearer ${AsyncStorage.getItem("token")}`,
+                                                Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
                                             }
                                             })
                                             .then(async (response) => {
