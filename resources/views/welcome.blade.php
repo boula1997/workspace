@@ -787,6 +787,7 @@
                                 setInputData({ ...inputData, [e.target.name]: e.target.value });
                               };
                           const handleSubmit = async () => {
+                             e.preventDefault();
                             const formData = new FormData();
                             formData.append('name', inputData.name);
                               if (image) {
@@ -807,7 +808,7 @@
                                 });
 
                             try {
-                                const response = await fetch('https://yourdomain.com/public/api/postFunction?action=contactus', {
+                                const response = await fetch('https://yousab-tech.com/workspace/public/api/postFunction?action=searchHotels', {
                                 method: 'POST',
                                 headers: {
                                     Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
