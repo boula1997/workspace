@@ -1876,16 +1876,16 @@
 
                 // $('#time').text(localStorage.getItem('last_time'));
                 //    alert(localStorage.getItem('tomorrow'))
-                if (today >= localStorage.getItem('tomorrow') || localStorage.getItem('tomorrow') == null) {
-                    var remainingDays = getRemainingDays(targetDate);
-                    console.log("Remaining days: " + targetTitile + remainingDays);
-                    alert(remainingDays + " days remaining" + 'to ' + targetTitile);
-                    alert("Check important tasks email!");
-                    alert(
-                        "Move Tasks dashboard page to new desktop to avoid closing it and enjoy speack tasks features");
-                    $('#surveyModal').modal('show');
+                // if (today >= localStorage.getItem('tomorrow') || localStorage.getItem('tomorrow') == null) {
+                //     var remainingDays = getRemainingDays(targetDate);
+                //     console.log("Remaining days: " + targetTitile + remainingDays);
+                //     alert(remainingDays + " days remaining" + 'to ' + targetTitile);
+                //     alert("Check important tasks email!");
+                //     alert(
+                //         "Move Tasks dashboard page to new desktop to avoid closing it and enjoy speack tasks features");
+                //     $('#surveyModal').modal('show');
 
-                }
+                // }
             });
         </script>
     @endif
