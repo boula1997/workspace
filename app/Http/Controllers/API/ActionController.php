@@ -17,6 +17,11 @@ class ActionController extends Controller
 {
     public function postFunction(Request $request)
     {
+
+        header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
         try {
             $action = request()->query('action');
             if ($action == "contactus") {
