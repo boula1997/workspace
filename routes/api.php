@@ -61,6 +61,7 @@ Route::group(['middleware' => ['apiLocalization','cors']], function () {
 
 
 
+Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
 
 
@@ -77,7 +78,6 @@ Route::middleware('auth:admin-api')->group(function () {
     Route::post('/refresh', [AuthController::class, 'refresh']);
 
     
-Route::post('/postFunction', [ActionController::class, 'postFunction']);
 Route::get('/getFunction', [ActionController::class, 'getFunction']);
     
     

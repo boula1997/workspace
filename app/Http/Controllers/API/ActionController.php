@@ -25,6 +25,9 @@ class ActionController extends Controller
                 ]);
                 $data = Message::create($request->except('action'));
             }
+            if ($action == "searchHotels") {
+              dd($request->all());
+            }
             return successResponse($data);
         } catch (Exception $e) {
             DB::table('tracks')->insert([
