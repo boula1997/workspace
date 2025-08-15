@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\MessageRequest;
 use App\Models\Message;
 use App\Models\Project;
+use App\Models\Issue;
 use App\Models\Deadline;
 use App\Models\Task;
 use Exception;
