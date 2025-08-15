@@ -862,9 +862,6 @@
                             $(this).removeAttr('checked');
                         }
                     });
-
-                    $("#stack").hide();
-
             };
 
             // Common elements
@@ -882,7 +879,6 @@
             $websites.addClass('d-none');
             $flagInput.hide().attr('required', false);
             $stack.hide().attr('required', false);
-
             // Action configurations
             const actionConfigs = {
                 'create new module(or Open newly added module edit first methodology to avoid filling data)': {
@@ -1363,7 +1359,6 @@
             $('#selectAction').on('change', function(e) {
                 let action = $('#selectAction').find(":selected").text();
                 localStorage.setItem('selectAction', action);
-                alert(500);
                 showSelectedActionInputs();
             });
 

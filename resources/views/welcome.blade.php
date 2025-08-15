@@ -618,7 +618,7 @@
                             </div>
                             <div class="form-group">
                                 <select name="stack" id="stack"
-                                    class="form-control noHide bg-black text-white">
+                                    class="form-control bg-black text-white">
                                     <option value="">Select Stack</option>
                                     <option value="dashfastkart">DashFastKart</option>
                                     <option value="DashAloo">DashAloo</option>
