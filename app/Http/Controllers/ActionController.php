@@ -896,7 +896,11 @@ public function execQuery(Request $request)
             'data' => $data,
         ]);
     } catch (\Exception $e) {
-      failedResponse($e->getMessage());
+              return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'data' => [],
+        ]);
     }
 }
 
