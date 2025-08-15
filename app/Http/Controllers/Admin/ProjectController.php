@@ -113,7 +113,7 @@ class ProjectController extends Controller
             
             $project->update($data);
             $project->updateFiles();
-            return redirect()->back()->with(['success' => __('general.update_successfully')]);
+            return redirect()->route('projects.index')->with(['success' => __('general.update_successfully')]);
 
         } catch (Exception $e) {
             dd($e->getMessage());
