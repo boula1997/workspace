@@ -77,7 +77,7 @@ public function getFunction(Request $request)
                 // Push only one notification
                 $notifications[] = "Projects renew: " . $mergedRenewText ;
             }
-            if ($deadlines->isNotEmpty() ) {
+            if ($deadlines->isNotEmpty() && boula()) {
                 // Collect all project details into one string
                 $mergedDateText = $deadlines->map(function ($deadline) {
                     return $deadline->title . " in " . $deadline->date;
@@ -87,7 +87,7 @@ public function getFunction(Request $request)
                 // Push only one notification
                 $notifications[] = "Deadline actions: " . $mergedDateText ;
             }
-            if ($issues->isNotEmpty() ) {
+            if ($issues->isNotEmpty() && boula()) {
                 // Collect all project details into one string
                 $mergedIssueText = $issues->map(function ($issue) {
                     return $issue->title;
