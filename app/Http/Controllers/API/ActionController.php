@@ -57,7 +57,6 @@ public function getFunction(Request $request)
                 ->orderBy('deadline', 'asc')
                 ->get();
 
-                dd($commitProjects);
 
             $deadlines = Deadline::whereDate('date', '<=', Carbon::now()->addWeek())
                     ->orderBy('date', 'asc')
