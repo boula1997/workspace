@@ -109,7 +109,8 @@ public function getFunction(Request $request)
             }
 
             // Final output: ONE notification string
-            $data["notification"] = trim($notificationMessage);
+            $data["notification"] = [trim($notificationMessage)];
+            $data["period"] = 3;
         }
 
         return successResponse($data);
