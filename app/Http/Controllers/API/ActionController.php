@@ -53,7 +53,7 @@ public function getFunction(Request $request)
                 ->orderBy('renewalDate', 'asc')
                 ->get();
 
-            $commitProjects = Project::whereDate('deadline', '<=', Carbon::now()->addMonth())
+            $commitProjects = Project::whereDate('deadline', '<=', Carbon::now()->addMonth())->whereDate('deadline', '>=', Carbon::now())
                 ->orderBy('deadline', 'asc')
                 ->get();
 
