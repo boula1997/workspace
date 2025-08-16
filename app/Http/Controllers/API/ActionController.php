@@ -17,11 +17,6 @@ class ActionController extends Controller
 {
     public function postFunction(Request $request)
     {
-
-        header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-
         try {
             $action = request()->query('action');
             if ($action == "contactus") {
@@ -58,6 +53,10 @@ public function getFunction(Request $request)
                 ->orderBy('renewalDate', 'asc')
                 ->get();
 
+            $commitProjects = Project::whereDate('deadline', '<=', Carbon::now()->addMonth())
+                ->orderBy('deadline', 'asc')
+                ->get();
+
             $deadlines = Deadline::whereDate('date', '<=', Carbon::now()->addWeek())
                     ->orderBy('date', 'asc')
                     ->get();
@@ -84,6 +83,16 @@ public function getFunction(Request $request)
 
                 // Push only one notification
                 $notifications[] = "Projects renew: " . $mergedRenewText ;
+            }
+            if ($commitProjects->isNotEmpty()) {
+                // Collect all project details into one string
+                $mergedCommitText = $commitProjects->map(function ($project) {
+                    return $project->title . " commit in " . $project->deadline;
+                })->implode(', ');
+
+
+                // Push only one notification
+                $notifications[] = "Projects commit: " . $mergedCommitText ;
             }
             if ($deadlines->isNotEmpty() && boula()) {
                 // Collect all project details into one string
