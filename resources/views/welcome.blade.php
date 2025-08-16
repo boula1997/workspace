@@ -812,6 +812,8 @@
                                 method: 'POST',
                                 headers: {
                                     Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+                                    'locale': "en"
+
                                 },
                                 body: formData,
                                 });
@@ -917,6 +919,8 @@
                                             method: 'GET',
                                             headers: {
                                                 Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+                                                'locale': "en"
+
                                             }
                                             })
                                             .then(async (response) => {
