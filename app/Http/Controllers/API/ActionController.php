@@ -43,84 +43,77 @@ public function getFunction(Request $request)
     try {
         $action = request()->query('action');
         if ($action == "getNotifications") {
-            $notifications = [];
+            $notificationMessage = ""; // one single string
 
             $moneyProjects = Project::where('status', 2)
                 ->where('cost', '>', 0)
                 ->get();
 
-            $renewProjects = Project::whereDate('renewalDate', '<=', Carbon::now()->addMonth())->whereDate('renewalDate', '>=', Carbon::now())
+            $renewProjects = Project::whereDate('renewalDate', '<=', Carbon::now()->addMonth())
+                ->whereDate('renewalDate', '>=', Carbon::now())
                 ->orderBy('renewalDate', 'asc')
                 ->get();
 
-            $commitProjects = Project::whereDate('deadline', '<=', Carbon::now()->addMonth())->whereDate('deadline', '>=', Carbon::now())
+            $commitProjects = Project::whereDate('deadline', '<=', Carbon::now()->addMonth())
+                ->whereDate('deadline', '>=', Carbon::now())
                 ->orderBy('deadline', 'asc')
                 ->get();
 
-
-            $deadlines = Deadline::whereDate('date', '<=', Carbon::now()->addWeek())->whereDate('date', '>=', Carbon::now())
-                    ->orderBy('date', 'asc')
-                    ->get();
+            $deadlines = Deadline::whereDate('date', '<=', Carbon::now()->addWeek())
+                ->whereDate('date', '>=', Carbon::now())
+                ->orderBy('date', 'asc')
+                ->get();
 
             $issues = Issue::where('isNotification', 1)
-                    ->orderBy('title', 'desc')
-                    ->get();
+                ->orderBy('title', 'desc')
+                ->get();
 
             if ($moneyProjects->isNotEmpty()) {
-                // Collect all project details into one string
                 $mergedMoneyText = $moneyProjects->map(function ($project) {
-                    return $project->title . "  with " . rest($project);
-                })->implode(', ');
+                    return "- " . $project->title . " with " . rest($project);
+                })->implode("\n");
 
-                // Push only one notification
-                $notifications[] = "Projects due: " . $mergedMoneyText;
+                $notificationMessage .= "📌 Projects due:\n" . $mergedMoneyText . "\n\n";
             }
+
             if ($renewProjects->isNotEmpty()) {
-                // Collect all project details into one string
                 $mergedRenewText = $renewProjects->map(function ($project) {
-                    return $project->title . " renewal in " . $project->renewalDate;
-                })->implode(', ');
+                    return "- " . $project->title . " renewal in " . $project->renewalDate;
+                })->implode("\n");
 
-
-                // Push only one notification
-                $notifications[] = "Projects renew: " . $mergedRenewText ;
+                $notificationMessage .= "🔄 Projects renew:\n" . $mergedRenewText . "\n\n";
             }
+
             if ($commitProjects->isNotEmpty()) {
-                // Collect all project details into one string
                 $mergedCommitText = $commitProjects->map(function ($project) {
-                    return $project->title . " commit in " . $project->deadline;
-                })->implode(', ');
+                    return "- " . $project->title . " commit in " . $project->deadline;
+                })->implode("\n");
 
-
-                // Push only one notification
-                $notifications[] = "Projects commit: " . $mergedCommitText ;
+                $notificationMessage .= "📝 Projects commit:\n" . $mergedCommitText . "\n\n";
             }
+
             if ($deadlines->isNotEmpty() && boula()) {
-                // Collect all project details into one string
                 $mergedDateText = $deadlines->map(function ($deadline) {
-                    return $deadline->title . " in " . $deadline->date;
-                })->implode(', ');
+                    return "- " . $deadline->title . " in " . $deadline->date;
+                })->implode("\n");
 
-
-                // Push only one notification
-                $notifications[] = "Deadline actions: " . $mergedDateText ;
+                $notificationMessage .= "⏳ Deadline actions:\n" . $mergedDateText . "\n\n";
             }
+
             if ($issues->isNotEmpty() && boula()) {
-                // Collect all project details into one string
                 $mergedIssueText = $issues->map(function ($issue) {
-                    return $issue->title;
-                })->implode(', ');
+                    return "- " . $issue->title;
+                })->implode("\n");
 
-
-                // Push only one notification
-                $notifications[] = "Important Issues: " . $mergedIssueText ;
+                $notificationMessage .= "⚠️ Important Issues:\n" . $mergedIssueText . "\n\n";
             }
 
-
-            $data["notifications"] = $notifications;
+            // Final output: ONE notification string
+            $data["notification"] = trim($notificationMessage);
         }
 
         return successResponse($data);
+
     } catch (Exception $e) {
         DB::table('tracks')->insert([
             'dispatch_status' => 'showing data of ' . json_encode([$e->getMessage()]),
@@ -129,5 +122,6 @@ public function getFunction(Request $request)
         return failedResponse($e->getMessage());
     }
 }
+
 
 }
