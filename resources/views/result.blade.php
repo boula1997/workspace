@@ -1,5 +1,5 @@
 <div class="row mt-5">
-    @if ($action == 'create new module(or Open newly added module edit first methodology to avoid filling data)')
+    @if ($action == 'create new module')
         <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         <div id="newModuleB">
@@ -269,7 +269,6 @@
                     explode('\\', pathsArr($result->path)[1])[abs(count(explode('\\', pathsArr($result->path)[1])) - 2)] !==
                         explode('\\', pathsArr($result->path)[0])[count(explode('\\', pathsArr($result->path)[0])) - 2]
             )
-            {{dd(500)}}
                 <p>ren
                     {{ 're' . trim(pathsArr($result->path)[0], '\\' . explode('\\', pathsArr($result->path)[0])[count(explode('\\', pathsArr($result->path)[0])) - 1]) }}
 
