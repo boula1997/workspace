@@ -43,7 +43,7 @@ public function getFunction(Request $request)
     try {
         $action = request()->query('action');
         if ($action == "getNotifications") {
-            $notificationMessage = ""; // one single string
+            $notifications = []; // one single string
 
             $moneyProjects = Project::where('status', 2)
                 ->where('cost', '>', 0)
@@ -73,7 +73,7 @@ public function getFunction(Request $request)
                     return "- " . $project->title . " with " . rest($project);
                 })->implode("\n");
 
-                $notificationMessage .= "💰 Projects due:\n" . $mergedMoneyText . "\n\n";
+                $notifications[] = "💰 Projects due:\n" . $mergedMoneyText . "\n\n";
             }
 
             if ($renewProjects->isNotEmpty()) {
@@ -81,7 +81,7 @@ public function getFunction(Request $request)
                     return "- " . $project->title . " renewal in " . $project->renewalDate;
                 })->implode("\n");
 
-                $notificationMessage .= "🔄 Projects renew:\n" . $mergedRenewText . "\n\n";
+                $notifications[] = "🔄 Projects renew:\n" . $mergedRenewText . "\n\n";
             }
 
             if ($commitProjects->isNotEmpty()) {
@@ -89,7 +89,7 @@ public function getFunction(Request $request)
                     return "- " . $project->title . " commit in " . $project->deadline;
                 })->implode("\n");
 
-                $notificationMessage .= "📝 Projects commit:\n" . $mergedCommitText . "\n\n";
+                $notifications[] = "📝 Projects commit:\n" . $mergedCommitText . "\n\n";
             }
 
             if ($deadlines->isNotEmpty() && boula()) {
@@ -97,7 +97,7 @@ public function getFunction(Request $request)
                     return "- " . $deadline->title . " in " . $deadline->date;
                 })->implode("\n");
 
-                $notificationMessage .= "⏳ Deadline actions:\n" . $mergedDateText . "\n\n";
+                $notifications[] = "⏳ Deadline actions:\n" . $mergedDateText . "\n\n";
             }
 
             if ($issues->isNotEmpty() && boula()) {
@@ -105,11 +105,11 @@ public function getFunction(Request $request)
                     return "- " . $issue->title;
                 })->implode("\n");
 
-                $notificationMessage .= "⚠️ Important Issues:\n" . $mergedIssueText . "\n\n";
+                $notifications[] = "⚠️ Important Issues:\n" . $mergedIssueText . "\n\n";
             }
 
             // Final output: ONE notification string
-            $data["notifications"] = [trim($notificationMessage)];
+            $data["notifications"] = $notifications;
             $data["period"] = settings()->period;
         }
 
