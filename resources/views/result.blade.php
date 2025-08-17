@@ -269,6 +269,7 @@
                     explode('\\', pathsArr($result->path)[1])[abs(count(explode('\\', pathsArr($result->path)[1])) - 2)] !==
                         explode('\\', pathsArr($result->path)[0])[count(explode('\\', pathsArr($result->path)[0])) - 2]
             )
+            {{dd(500)}}
                 <p>ren
                     {{ 're' . trim(pathsArr($result->path)[0], '\\' . explode('\\', pathsArr($result->path)[0])[count(explode('\\', pathsArr($result->path)[0])) - 1]) }}
 
