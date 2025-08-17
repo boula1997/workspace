@@ -89,7 +89,7 @@ public function getFunction(Request $request)
                     return "- " . $project->title . " commit in " . $project->deadline;
                 })->implode("\n");
 
-                $notifications[] = "⏰ Projects commit:\n" . $mergedCommitText . "\n\n";
+                $notifications[] = "⏳ Projects commit:\n" . $mergedCommitText . "\n\n";
             }
 
             if ($deadlines->isNotEmpty() && boula()) {
@@ -97,7 +97,7 @@ public function getFunction(Request $request)
                     return "- " . $deadline->title . " in " . $deadline->date;
                 })->implode("\n");
 
-                $notifications[] = "⏳ Deadline actions:\n" . $mergedDateText . "\n\n";
+                $notifications[] = "⏰ Deadline actions:\n" . $mergedDateText . "\n\n";
             }
 
             if ($issues->isNotEmpty() && boula()) {
