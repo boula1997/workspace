@@ -73,7 +73,7 @@ public function getFunction(Request $request)
                     return "- " . $project->title . " with " . rest($project);
                 })->implode("\n");
 
-                $notificationMessage .= "📌 Projects due:\n" . $mergedMoneyText . "\n\n";
+                $notificationMessage .= "💰 Projects due:\n" . $mergedMoneyText . "\n\n";
             }
 
             if ($renewProjects->isNotEmpty()) {
