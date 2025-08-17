@@ -881,7 +881,7 @@
             $stack.hide().attr('required', false);
             // Action configurations
             const actionConfigs = {
-                'create new module(or Open newly added module edit first methodology to avoid filling data)': {
+                'create new module': {
                     show: ['name', 'rname', 'attribute', 'tablename', 'module', 'type'],
                     placeholders: {
                         name: 'current module name',
