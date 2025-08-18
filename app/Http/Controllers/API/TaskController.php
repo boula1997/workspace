@@ -210,7 +210,9 @@ class TaskController extends Controller
             // Prepare response data
             $data = [
                 "projects" => ProjectResource::collection($selectedProjects),
-                "boardProjects" => ProjectResource::collection(Project::latest()->get()),
+                "boardProjects" => ProjectResource::collection(
+                    Project::latest()->get()->sortByDesc(fn($project) => $project->status)
+                ),
                 "avgFees" => $avgFees,
                 "incomeFees" => $incomeFees,
                 "outcomeFees" => $outcomeFees,
