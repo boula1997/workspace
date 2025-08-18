@@ -74,13 +74,8 @@ class TaskController extends Controller
             ->get()
             ->unique('title');     
                 $issues = Issue::where("isOverthinking",0)->orderBy("title","asc")->get();
-                $projects = Project::where("isOverthinking", 0)
-                    ->where(function ($query) {
-                        $query->where("status", "!=", 0)
-                            ->orWhere("deal", 0);
-                    })
-                    ->orderBy("title", "asc")
-                    ->get();
+                $projects = Project::where("isOverthinking",0)->orderBy("title","asc")->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
+                   ; // ✅ sort
 
             }else{
           $tasks = Task::where("status", 0)
@@ -92,7 +87,10 @@ class TaskController extends Controller
             ->take(300)                       // Limit to 300 tasks
             ->get()
             ->unique('title');     
-                $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
+                                $projects = Project::orderBy("title","asc")
+                    ->get()
+                    ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
+                   ; // ✅ sort
                 $issues = Issue::orderBy("title","asc")->get();
             }
 
@@ -103,7 +101,7 @@ class TaskController extends Controller
             "queries"=>$queries,
             "projects"=>ProjectResource::collection($projects),
             "boardProjects" => ProjectResource::collection(
-                Project::latest()
+                Project::orderBy("title","asc")
                     ->get()
                     ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
                     ->sortByDesc(fn($project) => [$project->deal == 0, $project->status]) // ✅ sort
@@ -267,7 +265,11 @@ class TaskController extends Controller
         
 
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
+
+                        $projects = Project::where("isOverthinking",0)->orderBy("title","asc")
+                    ->get()
+                    ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
+                   ; // ✅ sort
 
 
 
