@@ -103,8 +103,8 @@ class TaskController extends Controller
             "queries"=>$queries,
             "projects"=>ProjectResource::collection($projects),
             "boardProjects" => ProjectResource::collection(
-                    Project::where("status","!=",0)->latest()->get()->sortByDesc(function ($project) {
-                        return [$project->deal == 0, $project->status];
+                    Project::latest()->get()->sortByDesc(function ($project) {
+                        return [$project->deal == 0,$project->status != 0, $project->status];
                     })
                 ),
             "tablePprojects"=>ProjectResource::collection($tablePprojects),
