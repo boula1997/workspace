@@ -95,14 +95,12 @@ class TaskController extends Controller
                 $projects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
                 $issues = Issue::orderBy("title","asc")->get();
             }
-                $allProjects = Project::orderBy("title","asc")->get();
 
             $credentials = DBCredential::get();
             $tablePprojects = Project::where("status","!=",0)->orWhere("deal",0)->orderBy("title","asc")->get();
         if(boula())
         $data=[
             "queries"=>$queries,
-            "allProjects"=>ProjectResource::collection($allProjects),
             "projects"=>ProjectResource::collection($projects),
             "tablePprojects"=>ProjectResource::collection($tablePprojects),
             "refrences"=>IssueResource::collection($issues),
@@ -120,7 +118,6 @@ class TaskController extends Controller
         
         else
         $data=[
-            "allProjects"=>ProjectResource::collection($allProjects),
             "projects"=>ProjectResource::collection($projects),
             "credentials"=>$credentials,
             // "refrences"=>IssueResource::collection($issues),
@@ -213,6 +210,7 @@ class TaskController extends Controller
             // Prepare response data
             $data = [
                 "projects" => ProjectResource::collection($selectedProjects),
+                "boardProjects" => ProjectResource::collection(Project::latest()->get()),
                 "avgFees" => $avgFees,
                 "incomeFees" => $incomeFees,
                 "outcomeFees" => $outcomeFees,
