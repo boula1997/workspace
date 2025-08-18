@@ -37,6 +37,16 @@ class Project extends Model
     }
     public function getDealAttribute()
     {
-        return  $this->status==2&&$this->cost==0?0:1;
+        return  $this->deal;
+    }
+
+    public function getStatusAttribute()
+    {
+        if(!$this->tasks()->exists() && rest($this)>0)
+        return 2;
+        else if($this->tasks()->exists() && rest($this)>0)
+        return 1;
+        else 
+        return 0;
     }
 }
