@@ -17,6 +17,7 @@ class ProjectResource extends JsonResource
         return [
             "id" => $this->id,
             'title' => $this->title,
+            'deal' => $this->deal,
             'status' => $this->status,
             'rest' => rest($this),
             'lastPayed' => optional($this->feeses->where('amount', '>', 0)->last())->created_at?->format('d-m-Y'),
