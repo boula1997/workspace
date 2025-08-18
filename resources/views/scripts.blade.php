@@ -1244,66 +1244,66 @@
 
 
 
-            $(".d-flex p").each(function() {
-                let clickCount = 0;
-                let singleClickTimer;
+            // $(".d-flex p").each(function() {
+            //     let clickCount = 0;
+            //     let singleClickTimer;
 
-                $(this).on("click", function(event) {
-                    clickCount++;
+            //     $(this).on("click", function(event) {
+            //         clickCount++;
 
-                        singleClickTimer = setTimeout(() => {
-                            if (clickCount === 1) {
-                                clickCount = 0;
-                                let id = $(this).attr('id');
-                                let url = "{{ route('website.toggle', [':id']) }}".replace(
-                                    ':id', id);
-                                handleEvent(id, url, 1); // Pass 1 for single click
-                            } else if (clickCount === 2) {
-                                clickCount = 0;
-                                let id = $(this).attr('id');
+            //             singleClickTimer = setTimeout(() => {
+            //                 if (clickCount === 1) {
+            //                     clickCount = 0;
+            //                     let id = $(this).attr('id');
+            //                     let url = "{{ route('website.toggle', [':id']) }}".replace(
+            //                         ':id', id);
+            //                     handleEvent(id, url, 1); // Pass 1 for single click
+            //                 } else if (clickCount === 2) {
+            //                     clickCount = 0;
+            //                     let id = $(this).attr('id');
 
-                                let url = "{{ route('website.dbltoggle', [':id']) }}"
-                                    .replace(':id', id);
-                                handleEvent(id, url, 2); // Pass 2 for double click
-                            }
-                        }, 400); // Adjust delay as needed (milliseconds)
-                });
+            //                     let url = "{{ route('website.dbltoggle', [':id']) }}"
+            //                         .replace(':id', id);
+            //                     handleEvent(id, url, 2); // Pass 2 for double click
+            //                 }
+            //             }, 400); // Adjust delay as needed (milliseconds)
+            //     });
 
-                function handleEvent(id, url, eventType) {
-                    $.ajax({
-                        type: "GET",
-                        url: url,
-                        datatype: 'JSON',
-                        success: function(data) {
-                            if (eventType === 1) {
-                                if (data['status'] == 1) {
-                                    $('#' + id).removeClass('bg-secondary bg-success bg-danger')
-                                        .addClass('bg-warning');
-                                } else {
-                                    $('#' + id).removeClass('bg-warning bg-success bg-danger')
-                                        .addClass('bg-secondary');
-                                }
-                            } else if (eventType === 2) {
-                                if (data['status'] == 2 && data.cost==0) {
-                                    $('#' + id).removeClass('bg-secondary bg-warning bg-success')
-                                        .addClass('bg-danger');
-                                }else if(data['status'] == 2 && data.cost!=0){
-                                    $('#' + id).removeClass('bg-danger bg-warning bg-success')
-                                        .addClass('bg-success');
-                                }
-                                 else {
-                                    $('#' + id).removeClass('bg-success bg-warning bg-danger')
-                                        .addClass('bg-secondary');
-                                }
-                            } 
-                            toastNow();
-                        },
-                        error: function(reject) {
-                            console.log(reject);
-                        }
-                    });
-                }
-            });
+            //     function handleEvent(id, url, eventType) {
+            //         $.ajax({
+            //             type: "GET",
+            //             url: url,
+            //             datatype: 'JSON',
+            //             success: function(data) {
+            //                 if (eventType === 1) {
+            //                     if (data['status'] == 1) {
+            //                         $('#' + id).removeClass('bg-secondary bg-success bg-danger')
+            //                             .addClass('bg-warning');
+            //                     } else {
+            //                         $('#' + id).removeClass('bg-warning bg-success bg-danger')
+            //                             .addClass('bg-secondary');
+            //                     }
+            //                 } else if (eventType === 2) {
+            //                     if (data['status'] == 2 && data.cost==0) {
+            //                         $('#' + id).removeClass('bg-secondary bg-warning bg-success')
+            //                             .addClass('bg-danger');
+            //                     }else if(data['status'] == 2 && data.cost!=0){
+            //                         $('#' + id).removeClass('bg-danger bg-warning bg-success')
+            //                             .addClass('bg-success');
+            //                     }
+            //                      else {
+            //                         $('#' + id).removeClass('bg-success bg-warning bg-danger')
+            //                             .addClass('bg-secondary');
+            //                     }
+            //                 } 
+            //                 toastNow();
+            //             },
+            //             error: function(reject) {
+            //                 console.log(reject);
+            //             }
+            //         });
+            //     }
+            // });
 
 
 
