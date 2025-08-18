@@ -102,6 +102,11 @@ class TaskController extends Controller
         $data=[
             "queries"=>$queries,
             "projects"=>ProjectResource::collection($projects),
+            "boardProjects" => ProjectResource::collection(
+                    Project::latest()->get()->sortByDesc(function ($project) {
+                        return [$project->deal == 0, $project->status];
+                    })
+                ),
             "tablePprojects"=>ProjectResource::collection($tablePprojects),
             "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
@@ -119,6 +124,11 @@ class TaskController extends Controller
         else
         $data=[
             "projects"=>ProjectResource::collection($projects),
+            "boardProjects" => ProjectResource::collection(
+                    Project::latest()->get()->sortByDesc(function ($project) {
+                        return [$project->deal == 0, $project->status];
+                    })
+                ),
             "credentials"=>$credentials,
             // "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
