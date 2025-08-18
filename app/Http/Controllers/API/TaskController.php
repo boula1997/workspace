@@ -87,7 +87,7 @@ class TaskController extends Controller
             ->take(300)                       // Limit to 300 tasks
             ->get()
             ->unique('title');     
-                                $projects = Project::orderBy("title","asc")
+                $projects = Project::orderBy("title","asc")
                     ->get()
                     ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
                    ; // ✅ sort

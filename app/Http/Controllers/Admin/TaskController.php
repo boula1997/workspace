@@ -47,7 +47,10 @@ class TaskController extends Controller
     {
         try {
             $employees = Admin::orderBy('name', 'ASC')->get();
-            $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
+             $projects = Project::orderBy("title","asc")
+                    ->get()
+                    ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
+                   ; // ✅ sort;
             $projectIds = activeWebsitesIds();
             $employeeIds = isset($request->employees) ? $request->employees : [];
 
@@ -130,7 +133,10 @@ class TaskController extends Controller
     public function create()
     {
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
+                      $projects = Project::orderBy("title","asc")
+                    ->get()
+                    ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
+                   ; // ✅ sort
         return view('admin.crud.tasks.create', compact('employees', 'projects'));
     }
 
@@ -145,7 +151,10 @@ class TaskController extends Controller
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
+                       $projects = Project::orderBy("title","asc")
+                    ->get()
+                    ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
+                   ; // ✅ sort
         // loadActiveProjects(isset($request->projects)?$request->projects:[]);
         $projectIds = activeWebsitesIds();
         $employeeIds = isset($request->employees) ? $request->employees : [];
@@ -518,7 +527,10 @@ class TaskController extends Controller
     {
         //    dd($task->title);
         $employees = Admin::orderBy('name', 'ASC')->get();
-        $projects = Project::where("status","!=",0)->orWhere("deal",0)->latest()->get();
+                       $projects = Project::orderBy("title","asc")
+                    ->get()
+                    ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
+                   ; // ✅ sort
         $selectedEmployees = Task::where('title', $task->title)->pluck('employee_id')->toArray();
         return view('admin.crud.tasks.edit', compact('task', 'employees', 'projects', 'selectedEmployees'));
     }
