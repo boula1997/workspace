@@ -40,13 +40,17 @@ class Project extends Model
     //     return  $this->deal;
     // }
 
-    public function getStatusAttribute()
-    {
-        if(!$this->tasks()->exists() && rest($this)>0)
+public function getStatusAttribute()
+{
+    $tasksWithStatus0 = $this->tasks()->where('status', 0)->exists();
+
+    if (!$tasksWithStatus0 && rest($this) > 0) {
         return 2;
-        else if($this->tasks()->exists() && rest($this)>0)
+    } elseif ($tasksWithStatus0 && rest($this) > 0) {
         return 1;
-        else 
+    } else {
         return 0;
     }
+}
+
 }
