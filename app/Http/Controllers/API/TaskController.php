@@ -200,21 +200,36 @@ class TaskController extends Controller
 
             // Total of project cost
             $totalCost = $selectedProjects->sum('cost');
+            // Get all projects once
+            $boardProjects = Project::get();
 
-
-            $contractProjects = Project::where('status', 2)
-            ->where('cost', 0)
-            ->get();
-            $moneyProjects=Project::where('status',2)->where("cost",">",0)->get();
+            // Contract projects (status = 2 but cost = 0)
+            $contractProjects = $boardProjects->filter(function ($project) {
+                return $project->status == 2 && $project->cost == 0;
+            });
+            // Projects with status = 2 (money projects)
+            $moneyProjects = $boardProjects->filter(function ($project) {
+                return $project->status == 2 && $project->cost > 0;
+            });
             
             $moneyProjectIds = Project::where('status', 2)
             ->where('cost', '>', 0)
             ->pluck('id'); // returns a collection of IDs
+
+            
             $moneyProjectsList = $selectedProjects->filter(function ($project) use ($moneyProjectIds) {
                 return $moneyProjectIds->contains($project->id);
             });
-            $progressProjects=Project::where('status',1)->get();
-            $finishedProjects=Project::where('status',0)->get();
+
+            // Progress projects (status = 1)
+            $progressProjects = $boardProjects->filter(function ($project) {
+                return $project->status == 1;
+            });
+
+            // Finished projects (status = 0)
+            $finishedProjects = $boardProjects->filter(function ($project) {
+                return $project->status == 0;
+            });
 
             // Prepare response data
             $data = [
