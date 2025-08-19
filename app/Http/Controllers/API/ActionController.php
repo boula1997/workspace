@@ -104,13 +104,13 @@ public function getFunction(Request $request)
                 $notifications[] = "⏰ Deadline actions:\n" . $mergedDateText . "\n\n";
             }
 
-            if ($issues->isNotEmpty() && boula()) {
-                $mergedIssueText = $issues->map(function ($issue) {
-                    return "- " . $issue->title;
-                })->implode("\n");
+            // if ($issues->isNotEmpty() && boula()) {
+            //     $mergedIssueText = $issues->map(function ($issue) {
+            //         return "- " . $issue->title;
+            //     })->implode("\n");
 
-                $notifications[] = "⚠️ Important Issues:\n" . $mergedIssueText . "\n\n";
-            }
+            //     $notifications[] = "⚠️ Important Issues:\n" . $mergedIssueText . "\n\n";
+            // }
 
             // Final output: ONE notification string
             $data["notifications"] = $notifications;
