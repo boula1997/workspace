@@ -284,14 +284,14 @@ class TaskController extends Controller
 
 
             if(!isWithinWorkingHours())
-                              $tasks = Task::where("status", 1)
+            $tasks = Task::where("status", 1)
             ->where("isOverthinking",0)
             ->latest('updated_at') // Then by latest updated time
             ->take(300)            // Limit to 300 tasks
             ->get()
             ->unique('title');     // Remove duplicate tasks by title
         else
-                    $tasks = Task::where("status", 1)
+            $tasks = Task::where("status", 1)
             ->whereHas('project', function ($query) {
                 $query->where('status', '!=', 0);
             })
