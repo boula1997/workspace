@@ -45,10 +45,6 @@ public function getFunction(Request $request)
         if ($action == "getNotifications") {
             $notifications = []; // one single string
             $boardProjects = Project::get();
-            $moneyProjects = Project::where('status', 2)
-                ->where('cost', '>', 0)
-                ->get();
-
             $moneyProjects = $boardProjects->filter(function ($project) {
                 return $project->status == 2 && $project->cost > 0;
             });
