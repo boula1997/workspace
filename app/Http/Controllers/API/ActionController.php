@@ -55,7 +55,9 @@ public function getFunction(Request $request)
                 ->get();
 
             $commitProjects = Project::whereDate('deadline', '<=', Carbon::now()->addMonth())
-                ->whereHas('tasks') // only include projects that have tasks
+                ->whereHas('tasks', function ($q) {
+                    $q->where('status', 0);
+                })
                 ->orderBy('deadline', 'asc')
                 ->get();
 
