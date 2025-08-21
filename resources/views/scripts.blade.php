@@ -1018,7 +1018,8 @@
                     show: ['workingHours','totalCost','endCost'],
                     placeholders: {
                         workingHours: 'Insert count of hours needed for project creation or edit',
-                        totalCost: 'Total cost'
+                        totalCost: 'Total cost',
+                        totalCost: 'End cost',
                     }
                 },
                 'Prebare multible modules to work on': {

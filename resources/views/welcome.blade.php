@@ -569,7 +569,7 @@
                                 <input type="number" value="{{ old('endCost') }}"
                                     class="form-control text-white" id="endCost"
                                     name="endCost" readonly
-                                    placeholder="Total cost">
+                                    placeholder="End cost">
                             </div>
 
                             <div class="form-group mt-2">
