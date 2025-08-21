@@ -49,9 +49,9 @@ public function getFunction(Request $request)
                 return $project->status == 2 && $project->cost > 0;
             });
 
-$renewProjects = Project::whereNotNull('renewalDate')
-    ->orderBy('renewalDate', 'asc')
-    ->get();
+            $renewProjects = Project::whereNotNull('renewalDate')
+                ->orderBy('renewalDate', 'asc')
+                ->get();
 
             $commitProjects = Project::whereDate('deadline', '<=', Carbon::now()->addMonth())
                 ->whereHas('tasks', function ($q) {
