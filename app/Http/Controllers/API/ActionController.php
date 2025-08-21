@@ -49,8 +49,7 @@ public function getFunction(Request $request)
                 return $project->status == 2 && $project->cost > 0;
             });
 
-            $renewProjects = Project::whereDate('renewalDate', '<=', Carbon::now()->addMonth())
-                ->whereDate('renewalDate', '!=', null)
+            $renewProjects = Project::whereDate('renewalDate', '!=', null)
                 ->orderBy('renewalDate', 'asc')
                 ->get();
 
