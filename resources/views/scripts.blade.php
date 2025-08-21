@@ -3244,6 +3244,7 @@
 
                 // multiply equation
                 let total = (pricePerHour + (pricePerHour*editsPercent / 100) + (pricePerHour*negotiatePercent / 100)) * workingHours;
+                let totalEnd = (pricePerHour + (pricePerHour*editsPercent / 100)) * workingHours;
 
                 // show in field
                 $("#totalCost").val(total.toFixed(2));

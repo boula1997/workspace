@@ -565,6 +565,12 @@
                                     name="totalCost" readonly
                                     placeholder="Total cost">
                             </div>
+                            <div class="form-group mt-2"> 
+                                <input type="number" value="{{ old('endCost') }}"
+                                    class="form-control text-white" id="endCost"
+                                    name="endCost" readonly
+                                    placeholder="Total cost">
+                            </div>
 
                             <div class="form-group mt-2">
                                 <input type="text" value="{{ old('googleadName') }}"
