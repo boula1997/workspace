@@ -629,13 +629,13 @@
 
     <script>
         $(document).on('click', '.fa-copy', function() {
-            let id=$(this).attr('websiteId');
+            let id = $(this).attr('websiteId');
             $.ajax({
                 url: `project/${id}`, // The route with the product ID
-                type: 'GET',                   // HTTP method
+                type: 'GET', // HTTP method
                 success: function(response) {
                     // Handle success response
-                    $('#textareapost'+id).val(response.data.codeLinks);
+                    $('#textareapost' + id).val(response.data.codeLinks);
                     // You can update your HTML here with the product data
                 },
                 error: function(xhr, status, error) {
@@ -648,13 +648,13 @@
     </script>
     <script>
         $(document).on('click', '.reference', function() {
-            let id=$(this).attr('id');
+            let id = $(this).attr('id');
             $.ajax({
                 url: `refrence/${id}`, // The route with the product ID
-                type: 'GET',                   // HTTP method
+                type: 'GET', // HTTP method
                 success: function(response) {
                     // Handle success response
-                    $('#textarearef'+id).val(response.data.codeLinks);
+                    $('#textarearef' + id).val(response.data.codeLinks);
 
                     // You can update your HTML here with the product data
                 },
@@ -787,14 +787,14 @@
                     content = highlightAll(content, word);
                 });
 
-                
-                
+
+
                 $(this).html(content);
                 $('#searchInput').val(searchWords[0]);
             });
 
 
-           
+
         });
 
 
@@ -1014,6 +1014,13 @@
                         $selectedDBname.show().attr('required', true);
                     }
                 },
+                'Pricing Center': {
+                    show: ['workingHours','totalCost'],
+                    placeholders: {
+                        workingHours: 'Insert count of hours needed for project creation or edit',
+                        totalCost: 'Total cost'
+                    }
+                },
                 'Prebare multible modules to work on': {
                     show: ['name'],
                     placeholders: {
@@ -1160,7 +1167,7 @@
             if (actionConfigs[selectedAction]) {
                 const config = actionConfigs[selectedAction];
 
-                console.log("boulaaa",config);
+                console.log("boulaaa", config);
 
                 // Show regular inputs
                 if (config.show) {
@@ -1723,7 +1730,7 @@
 
             let queryValue = $('textarea[name="queryCommand"]').val().toLowerCase();
 
-            if(queryValue.includes('select')){
+            if (queryValue.includes('select')) {
                 $('#allResults').removeClass('d-none');
                 $('#allResults').text('Show All');
                 $('#refresh').removeClass('d-none');
@@ -1734,15 +1741,15 @@
                 // Try to extract table name using regex
                 let tableMatch = queryValue.match(/from\s+([^\s;]+)/i);
                 let table = tableMatch ? tableMatch[1] : null;
-                localStorage.setItem('table',table);
-                
+                localStorage.setItem('table', table);
+
             }
 
             let formData = new FormData(this);
             console.log(formData)
             localStorage.setItem('query', null);
             let db = $("#dbname").attr('dbname');
-           
+
             let url = "{{ route('db.data', [':db', ':table', ':query']) }}";
             url = url.replace(':db', db);
 
@@ -1756,27 +1763,27 @@
                 contentType: false,
                 processData: false,
                 success: (response) => {
-                    console.log("boula",response);
+                    console.log("boula", response);
 
-                    if(response.success==false){
-                     toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": false,
-                        "progressBar": true,
-                        "positionClass": "{{ app()->getLocale() == 'ar' ? 'toast-top-right' : 'toast-top-right' }}",
-                        "preventDuplicates": false,
-                        "onclick": null,
-                        "showDuration": "900",
-                        "hideDuration": "2000",
-                        "timeOut": "5000",
-                        "extendedTimeOut": "1000",
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut"
-                    };
-                    toastr.error(response.error);
+                    if (response.success == false) {
+                        toastr.options = {
+                            "closeButton": true,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": true,
+                            "positionClass": "{{ app()->getLocale() == 'ar' ? 'toast-top-right' : 'toast-top-right' }}",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": "900",
+                            "hideDuration": "2000",
+                            "timeOut": "5000",
+                            "extendedTimeOut": "1000",
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                        };
+                        toastr.error(response.error);
                     }
 
                     response.data.forEach((boula, index) => {
@@ -1810,8 +1817,8 @@
 
                 },
                 error: function(response) {
-          
-                    
+
+
 
                 }
             });
@@ -2156,7 +2163,7 @@
 
 
             $(document).on('click', '.showRow', function() {
-                let id=$(this).attr('rowId');
+                let id = $(this).attr('rowId');
                 $('#allResults').text('Show All');
                 $('#allResults').removeClass('d-none');
                 $('#refresh').removeClass('d-none');
@@ -2178,7 +2185,7 @@
 
                 $.ajax({
                     type: "Get",
-                    url: localStorage.getItem('url')+`?id=${id}`,
+                    url: localStorage.getItem('url') + `?id=${id}`,
                     datatype: 'JSON',
                     success: function(data) {
                         console.log(data);
@@ -2210,13 +2217,14 @@
                                 $('#jsonResult').append("<hr>");
                             });
                         } else {
-                       
-                        if (data.updateQuery != null && data.updateQuery !== undefined) {
-                            $('#queryCommand').val(function (index, currentValue) {
-                                return currentValue + '\n' +'++'+ data.updateQuery; // Appends with a newline
-                            });
-                            
-                        }
+
+                            if (data.updateQuery != null && data.updateQuery !== undefined) {
+                                $('#queryCommand').val(function(index, currentValue) {
+                                    return currentValue + '\n' + '++' + data
+                                    .updateQuery; // Appends with a newline
+                                });
+
+                            }
                             // data.data.forEach((boula, index) => {
 
 
@@ -2262,7 +2270,7 @@
             });
 
             $(document).on('click', '.deleteRow', function() {
-                let id=$(this).attr('rowId');
+                let id = $(this).attr('rowId');
                 $('#allResults').text('Show All');
                 $('#allResults').removeClass('d-none');
                 $('#refresh').removeClass('d-none');
@@ -2283,14 +2291,14 @@
                     status = true;
 
                 $.ajax({
-                url: localStorage.getItem('url')+`?id=${id}`+`&delete=${id}`,
+                    url: localStorage.getItem('url') + `?id=${id}` + `&delete=${id}`,
                     datatype: 'JSON',
                     success: function(data) {
                         //                         if (data.updateQuery != null && data.updateQuery !== undefined) {
                         //     $('#queryCommand').val(function (index, currentValue) {
                         //         return currentValue + '\n' +'++'+ data.updateQuery; // Appends with a newline
                         //     });
-                            
+
                         // }
 
 
@@ -2323,8 +2331,9 @@
                         } else {
 
                             if (data.deleteQuery != null && data.deleteQuery !== undefined) {
-                                $('#queryCommand').val(function (index, currentValue) {
-                                    return currentValue + '\n' + data.deleteQuery; // Appends deleteQuery with a newline
+                                $('#queryCommand').val(function(index, currentValue) {
+                                    return currentValue + '\n' + data
+                                    .deleteQuery; // Appends deleteQuery with a newline
                                 });
                             }
 
@@ -2440,11 +2449,12 @@
                     url: localStorage.getItem('url', url),
                     datatype: 'JSON',
                     success: function(data) {
-                                               if (data.updateQuery != null && data.updateQuery !== undefined) {
-                            $('#queryCommand').val(function (index, currentValue) {
-                                return currentValue + '\n' +'++'+ data.updateQuery; // Appends with a newline
+                        if (data.updateQuery != null && data.updateQuery !== undefined) {
+                            $('#queryCommand').val(function(index, currentValue) {
+                                return currentValue + '\n' + '++' + data
+                                .updateQuery; // Appends with a newline
                             });
-                            
+
                         }
                         data.data.forEach((boula, index) => {
                             console.log('boula', boula);
@@ -2489,7 +2499,7 @@
                     $('#jsonResult').empty();
                     let db = $("#dbname").attr('dbname');
                     let table = $(this).attr('table');
-                    localStorage.setItem('table',table);
+                    localStorage.setItem('table', table);
                     let count = $(this).closest('.count');
                     let url = "{{ route('db.data', [':db', ':table', ':query']) }}"
                     url = url.replace(':db', db);
@@ -2504,16 +2514,19 @@
                         success: function(data) {
                             $('#' + table).text('(' + data.count + ')' + ' ' + data
                                 .latestUpdatedAt);
-                                $('#queryCommand').val(function (index, currentValue) {
-                                    return currentValue + '\n' + data.insertString; // Appends with a newline
+                            $('#queryCommand').val(function(index, currentValue) {
+                                return currentValue + '\n' + data
+                                .insertString; // Appends with a newline
+                            });
+
+                            if (data.updateQuery != null && data.updateQuery !==
+                                undefined) {
+                                $('#queryCommand').val(function(index, currentValue) {
+                                    return currentValue + '\n' + '++' + data
+                                        .updateQuery; // Appends with a newline
                                 });
 
-                                                        if (data.updateQuery != null && data.updateQuery !== undefined) {
-                            $('#queryCommand').val(function (index, currentValue) {
-                                return currentValue + '\n' +'++'+ data.updateQuery; // Appends with a newline
-                            });
-                            
-                        }
+                            }
 
                             data.data.forEach((boula, index) => {
                                 console.log('boula', boula);
@@ -3072,151 +3085,177 @@
             });
         </script>
     @endif
- 
-@if (activeDeadline()["deadline"] === now()->toDateString())
+
+    @if (activeDeadline()['deadline'] === now()->toDateString())
+        <script>
+            $(document).ready(function() {
+                setInterval(function() {
+                    $("#deadline").css("visibility", function(_, visibility) {
+                        return visibility === "visible" ? "hidden" : "visible";
+                    });
+                }, 1000);
+            });
+        </script>
+    @endif
+
+
     <script>
-        $(document).ready(function () {
-            setInterval(function () {
-                $("#deadline").css("visibility", function (_, visibility) {
-                    return visibility === "visible" ? "hidden" : "visible";
+        $(document).ready(function() {
+            // Get the "action" query parameter from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const actionParam = urlParams.get('action');
+
+            if (actionParam) {
+                const actionText = actionParam.toLowerCase();
+
+                // Try to select the option in the dropdown
+                $('#selectAction option').each(function() {
+                    const optionText = $(this).text().trim().toLowerCase();
+
+                    if (optionText.includes(actionText)) {
+                        $(this).prop('selected', true);
+                        $('#selectAction').trigger('change');
+                        return false; // Break loop once matched
+                    }
                 });
-            }, 1000);
+
+                // Automatically check checkboxes if the action matches their name or nearby label
+                $('input[type="checkbox"]').each(function() {
+                    const checkboxName = $(this).attr('name')?.toLowerCase();
+                    const checkboxId = $(this).attr('id')?.toLowerCase();
+                    const labelText = $(this).next('p').text().trim().toLowerCase();
+
+                    if (
+                        checkboxName?.includes(actionText) ||
+                        checkboxId?.includes(actionText) ||
+                        labelText.includes(actionText)
+                    ) {
+                        $(this).click();
+                    }
+                });
+            }
         });
     </script>
-@endif
 
 
-<script>
-$(document).ready(function () {
-    // Get the "action" query parameter from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const actionParam = urlParams.get('action');
+    <script>
+        let matchIndex = 0;
+        let matches = [];
 
-    if (actionParam) {
-        const actionText = actionParam.toLowerCase();
+        function highlightMatches(term) {
+            matches = [];
+            matchIndex = 0;
 
-        // Try to select the option in the dropdown
-        $('#selectAction option').each(function () {
-            const optionText = $(this).text().trim().toLowerCase();
+            $('.resultContent').each(function() {
+                const content = $(this).text();
+                const regex = new RegExp(`(${term})`, 'gi');
 
-            if (optionText.includes(actionText)) {
-                $(this).prop('selected', true);
-                $('#selectAction').trigger('change');
-                return false; // Break loop once matched
-            }
-        });
+                const html = content.replace(regex, (match) => {
+                    matches.push(match);
+                    return `<mark class="match-highlight">${match}</mark>`;
+                });
 
-        // Automatically check checkboxes if the action matches their name or nearby label
-        $('input[type="checkbox"]').each(function () {
-            const checkboxName = $(this).attr('name')?.toLowerCase();
-            const checkboxId = $(this).attr('id')?.toLowerCase();
-            const labelText = $(this).next('p').text().trim().toLowerCase();
-
-            if (
-                checkboxName?.includes(actionText) ||
-                checkboxId?.includes(actionText) ||
-                labelText.includes(actionText)
-            ) {
-                $(this).click();
-            }
-        });
-    }
-});
-</script>
-
-
-<script>
-    let matchIndex = 0;
-    let matches = [];
-
-    function highlightMatches(term) {
-        matches = [];
-        matchIndex = 0;
-
-        $('.resultContent').each(function () {
-            const content = $(this).text();
-            const regex = new RegExp(`(${term})`, 'gi');
-
-            const html = content.replace(regex, (match) => {
-                matches.push(match);
-                return `<mark class="match-highlight">${match}</mark>`;
+                $(this).html(html);
             });
 
-            $(this).html(html);
-        });
-
-        scrollToMatch();
-    }
-
-    function scrollToMatch() {
-        $('mark').removeClass('active-match');
-
-        if (matches.length === 0) return;
-
-        const current = $('mark').eq(matchIndex);
-        current.addClass('active-match');
-        $('html, body').animate({ scrollTop: current.offset().top - 100 }, 300);
-    }
-
-
-
-    $('#nextMatch').on('click', function () {
-        const term = $('#searchInput').val().trim();
-        $('.resultContent').each(function () {
-            $('#searchInput').html($('#searchInput').text()); // Reset content
-        });
-
-        if (term) highlightMatches(term);
-
-        if (matches.length === 0) return;
-        matchIndex = (matchIndex + 1) % matches.length;
-        scrollToMatch();
-        $('body').css({
-            'background-color': 'black',
-            'color': 'white'
-        });
-    });
-
-    $('#prevMatch').on('click', function () {
-        const term = $('#searchInput').val().trim();
-        $('.resultContent').each(function () {
-            $('#searchInput').html($('#searchInput').text()); // Reset content
-        });
-
-        if (term) highlightMatches(term);
-
-        if (matches.length === 0) return;
-        matchIndex = (matchIndex - 1 + matches.length) % matches.length;
-        scrollToMatch();
-                $('body').css({
-            'background-color': 'black',
-            'color': 'white'
-        });
-    });
-</script>
-
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const input = document.getElementById('searchHighlight');
-    const context = document.body;
-    const instance = new Mark(context);
-
-    input.addEventListener('input', function () {
-      const keyword = this.value.trim();
-      instance.unmark({
-        done: function () {
-          if (keyword.length > 1) {
-            instance.mark(keyword, {
-              separateWordSearch: false,
-            });
-          }
+            scrollToMatch();
         }
-      });
-    });
-  });
-</script>
 
+        function scrollToMatch() {
+            $('mark').removeClass('active-match');
+
+            if (matches.length === 0) return;
+
+            const current = $('mark').eq(matchIndex);
+            current.addClass('active-match');
+            $('html, body').animate({
+                scrollTop: current.offset().top - 100
+            }, 300);
+        }
+
+
+
+        $('#nextMatch').on('click', function() {
+            const term = $('#searchInput').val().trim();
+            $('.resultContent').each(function() {
+                $('#searchInput').html($('#searchInput').text()); // Reset content
+            });
+
+            if (term) highlightMatches(term);
+
+            if (matches.length === 0) return;
+            matchIndex = (matchIndex + 1) % matches.length;
+            scrollToMatch();
+            $('body').css({
+                'background-color': 'black',
+                'color': 'white'
+            });
+        });
+
+        $('#prevMatch').on('click', function() {
+            const term = $('#searchInput').val().trim();
+            $('.resultContent').each(function() {
+                $('#searchInput').html($('#searchInput').text()); // Reset content
+            });
+
+            if (term) highlightMatches(term);
+
+            if (matches.length === 0) return;
+            matchIndex = (matchIndex - 1 + matches.length) % matches.length;
+            scrollToMatch();
+            $('body').css({
+                'background-color': 'black',
+                'color': 'white'
+            });
+        });
+    </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('searchHighlight');
+            const context = document.body;
+            const instance = new Mark(context);
+
+            input.addEventListener('input', function() {
+                const keyword = this.value.trim();
+                instance.unmark({
+                    done: function() {
+                        if (keyword.length > 1) {
+                            instance.mark(keyword, {
+                                separateWordSearch: false,
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    <script>
+        let pricePerHour = {{ settings()->pricePerHour }};
+        let editsPercent = {{ settings()->editsPercent }};
+        let negotiatePercent = {{ settings()->negotiatePercent }};
+
+        $(document).ready(function() {
+            function calculateTotal() {
+                let workingHours = parseFloat($("#workingHours").val()) || 0;
+
+                // multiply equation
+                let total = (pricePerHour + (pricePerHour*editsPercent / 100) + (pricePerHour*negotiatePercent / 100)) * workingHours;
+
+                // show in field
+                $("#totalCost").val(total.toFixed(2));
+            }
+
+            // trigger on input
+            $("#workingHours").on("input", calculateTotal);
+
+            // run once if value already exists
+            calculateTotal();
+        });
+    </script>
 
 
 

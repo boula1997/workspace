@@ -420,11 +420,12 @@
                                         <option value="16">get multible modules</option>
                                         <option class="{{ boula() ? '' : 'myTab' }}" value="21">Get Stats
                                         </option>
-                                        <option value="4">Get files with size bigger than</option>
                                         <option value="18">Image Workspace</option>
+                                        <option value="4">Get files with size bigger than</option>
                                         <option value="3">Open multible modules</option>
                                         <option value="11">Open Shared Module Files</option>
                                         <option value="9">Prebare multible modules to work on</option>
+                                        <option value="9">Pricing Center</option>
                                         <option value="2">Rename module</option>
                                         <option value="20">Reblace word in module</option>
                                         <option value="5">Show or Delete project images</option>
@@ -552,6 +553,19 @@
                                     class="form-control   text-white" name="templateName"
                                     placeholder="Insert Template Name">
                             </div>
+                            <div class="form-group mt-2"> 
+                                <input type="number" value="{{ old('workingHours') }}"
+                                    class="form-control text-white" id="workingHours"
+                                    name="workingHours"
+                                    placeholder="Insert count of hours needed for project creation or edit">
+                            </div>
+                            <div class="form-group mt-2"> 
+                                <input type="number" value="{{ old('totalCost') }}"
+                                    class="form-control text-white" id="totalCost"
+                                    name="totalCost" readonly
+                                    placeholder="Total cost">
+                            </div>
+
                             <div class="form-group mt-2">
                                 <input type="text" value="{{ old('googleadName') }}"
                                     class="form-control   text-white" name="googleadName"
