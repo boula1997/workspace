@@ -1019,7 +1019,7 @@
                     placeholders: {
                         workingHours: 'Insert count of hours needed for project creation or edit',
                         totalCost: 'Total cost',
-                        totalCost: 'End cost',
+                        endCost: 'End cost',
                     }
                 },
                 'Prebare multible modules to work on': {
@@ -3249,6 +3249,7 @@
 
                 // show in field
                 $("#totalCost").val(total.toFixed(2));
+                $("#endCost").val(totalEnd.toFixed(2));
             }
 
             // trigger on input
