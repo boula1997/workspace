@@ -50,7 +50,7 @@ public function getFunction(Request $request)
             });
 
             $renewProjects = Project::whereDate('renewalDate', '<=', Carbon::now()->addMonth())
-                ->whereDate('renewalDate', '>=', Carbon::now())
+                ->whereDate('renewalDate', '!=', null)
                 ->orderBy('renewalDate', 'asc')
                 ->get();
 
