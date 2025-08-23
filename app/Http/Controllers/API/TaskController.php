@@ -230,10 +230,9 @@ class TaskController extends Controller
             $data = [
                 "projects" => ProjectResource::collection($selectedProjects),
                 "boardProjects" => ProjectResource::collection(
-                    Project::latest()->get()->sortByDesc(function ($project) {
-                        return [$project->deal == 0, $project->status];
-                    })
+                    Project::latest()->get()->sortByDesc(fn($project) => rest($project))
                 ),
+
                 "avgFees" => $avgFees,
                 "incomeFees" => $incomeFees,
                 "outcomeFees" => $outcomeFees,
