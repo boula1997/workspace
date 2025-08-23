@@ -28,6 +28,8 @@
 
                         <div class="col-md-6">  <div class="form-group mb-3"> <label class="input-label" for="renewalDate">@lang('messages.renewalDate')</label> <input type="date" name="renewalDate" id="renewalDate" class="form-control" placeholder="@lang('messages.renewalDate')" value=""> </div> </div>
 
+                        <!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.githubDevModeLink')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="githubDevModeLink" placeholder="{{__('general.githubDevModeLink')}}" class="form-control pl-1 min-h-40px @error('githubDevModeLink') is-invalid @enderror" value="{{ old('githubDevModeLink') }}"> </div> </div> </div>
+
                         {{-- Number Input --}} <div class="col-md-6">
                             <div class="form-group"> <label>{{ __('general.cost') }} <span class="text-danger"> *
                                     </span></label>

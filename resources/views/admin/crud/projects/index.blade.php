@@ -72,8 +72,12 @@
                                             @foreach ($projects as $project)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $project->title }}</td>
-                                        
+                                                    
+                                                                                                                                                      <td>
+                                                        <a href="{{ $projects->githubDevModeLink }}" target="__blank">
+                                                        {{ $projects->title }}
+                                                        </a>
+                                                    </td>
                                                     <td class="cost">{{ $project->cost }}</td>
                                         
                                                     <td>{{ $project->payed }}</td>
