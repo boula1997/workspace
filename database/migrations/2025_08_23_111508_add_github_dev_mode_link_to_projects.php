@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('projects', function (Blueprint $table) {
-          $table->string('githubDevModeLink')->nullable();
+          $table->string('githubDevModeLinkFront')->nullable();
+          $table->string('githubDevModeLinkBack')->nullable();
         });
     }
 
@@ -22,7 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->dropColumn('githubDevModeLink');
+            $table->dropColumn('githubDevModeLinkFront');
+            $table->dropColumn('githubDevModeLinkBack');
         });
     }
 };

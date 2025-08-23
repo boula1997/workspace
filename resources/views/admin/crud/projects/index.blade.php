@@ -46,13 +46,15 @@
                                                 <th>#</th>
                                                 <th>{{ __('general.title') }}</th>
 
+                                                <th>{{ __('general.front') }}</th>
+
+                                                <th>{{ __('general.back') }}</th>
+
                                                 <th>{{ __('general.cost') }}</th>
 
                                                 <th>{{ __('general.payed') }}</th>
 
                                                 <th>{{ __('general.debit') }}</th>
-
-                                                <th>{{ __('general.isYousab') }}</th>
 
                                                 <th>{{ __('general.status') }}</th>
 
@@ -62,7 +64,6 @@
 
                                                 <th>{{__('general.renewalDate')}}</th>
 
-                                                <th>{{ __('general.lastTransaction') }}</th>
 
                                                 <th>{{ __('general.fees') }}</th>
                                                 <th class="th-controls">@lang('general.controls')</th>
@@ -74,17 +75,27 @@
                                                     <td>{{ $loop->iteration }}</td>
                                                     
                                                                                                                                                       <td>
-                                                        <a href="{{ $projects->githubDevModeLink }}" target="__blank">
-                                                        {{ $projects->title }}
+
+                                                        {{ $project->title }}
+                                                    </td>
+                                                                                                                                                      <td>
+                                                        <a href="{{ $project->githubDevModeLinkFront }}" target="__blank">
+                                                        {{ __("general.linkFront") }}
                                                         </a>
                                                     </td>
+                                                                                                                                                      <td>
+                                                        <a href="{{ $project->githubDevModeLinkBack }}" target="__blank">
+                                                        {{ __("general.linkBack") }}
+                                                        </a>
+                                                    </td>
+
                                                     <td class="cost">{{ $project->cost }}</td>
                                         
                                                     <td>{{ $project->payed }}</td>
                                         
                                                     <td class="rest">{{ rest($project) }}</td>
                                         
-                                                    <td>{{ $project->isYousab ? __('general.yes') : __('general.no') }}</td>
+
                                         
                                                     <td>{{ $project->status ? __('general.yes') : __('general.no') }}</td>
                                         
@@ -94,7 +105,6 @@
                                         
                                                    <td>{{ $project->renewalDate }}</td>
                                         
-                                                    <td>{{ $project->lastTransaction }}</td>
                                         
                                                     <td>{{ $project->fees }}</td>
                                         
