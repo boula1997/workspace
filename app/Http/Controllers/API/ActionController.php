@@ -73,7 +73,7 @@ public function getFunction(Request $request)
                     return "- " . $project->title . " with " . rest($project);
                 })->implode("\n");
 
-                $notifications[] = "💰 Projects due:\n" . $mergedMoneyText . "\n\n";
+                $notifications[] = "💰 Projects billing:\n" . $mergedMoneyText . "\n\n";
             }
 
             if ($renewProjects->isNotEmpty() && boula()) {
@@ -86,10 +86,10 @@ public function getFunction(Request $request)
 
             if ($commitProjects->isNotEmpty()) {
                 $mergedCommitText = $commitProjects->map(function ($project) {
-                    return "- " . $project->title . " commit in " . $project->deadline;
+                    return "- " . $project->title . " in " . $project->deadline;
                 })->implode("\n");
 
-                $notifications[] = "⏳ Projects commit:\n" . $mergedCommitText . "\n\n";
+                $notifications[] = "⏳ Projects due:\n" . $mergedCommitText . "\n\n";
             }
 
             if ($deadlines->isNotEmpty() && boula()) {
