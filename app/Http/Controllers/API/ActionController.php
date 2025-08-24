@@ -76,7 +76,7 @@ public function getFunction(Request $request)
                 $notifications[] = "💰 Projects due:\n" . $mergedMoneyText . "\n\n";
             }
 
-            if ($renewProjects->isNotEmpty()) {
+            if ($renewProjects->isNotEmpty() && boula()) {
                 $mergedRenewText = $renewProjects->map(function ($project) {
                     return "- " . $project->title . " renewal in " . $project->renewalDate;
                 })->implode("\n");
