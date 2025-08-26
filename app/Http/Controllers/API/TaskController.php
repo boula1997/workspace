@@ -233,7 +233,14 @@ class TaskController extends Controller
                     Project::latest()->get()->sortByDesc(fn($project) => rest($project))
                 ),
                 "taskProjects" => ProjectResource::collection(
-                    Project::withCount('tasks')->latest()->get()->sortByDesc('tasks_count')
+                    Project::withCount([
+                        'tasks as pending_tasks_count' => function ($q) {
+                            $q->where('status', 0);
+                        }
+                    ])
+                    ->latest()
+                    ->get()
+                    ->sortByDesc('pending_tasks_count')
                 ),
                 "avgFees" => $avgFees,
                 "incomeFees" => $incomeFees,
