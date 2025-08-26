@@ -233,7 +233,7 @@ class TaskController extends Controller
                     Project::latest()->get()->sortByDesc(fn($project) => rest($project))
                 ),
                 "taskProjects" => ProjectResource::collection(
-                    Project::latest()->get()->sortByDesc(fn($project) => count($project->tasks))
+                    Project::withCount('tasks')->latest()->get()->sortByDesc('tasks_count')
                 ),
                 "avgFees" => $avgFees,
                 "incomeFees" => $incomeFees,
