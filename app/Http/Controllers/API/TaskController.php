@@ -243,6 +243,11 @@ class TaskController extends Controller
                     ->get()
                     ->sortByDesc('pending_tasks_count')
                 ),
+                "deadlineProjects" => ProjectResource::collection(
+                    Project::whereNotNull('deadline') // exclude null deadlines
+                        ->orderBy('deadline')         // soonest deadline first
+                        ->get()
+                ),
                 "avgFees" => $avgFees,
                 "incomeFees" => $incomeFees,
                 "outcomeFees" => $outcomeFees,

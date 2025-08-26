@@ -20,11 +20,15 @@ class ProjectResource extends JsonResource
             'deal' => $this->deal,
             'status' => $this->status,
             'cost' => $this->cost,
+            'deadline' => $this->deadline,
+            'days_to_deadline' => $this->deadline
+                ? now()->diffInDays(\Carbon\Carbon::parse($this->deadline), false) // false => allow negative
+                : null,
             'rest' => rest($this),
             'tasksCount' => $this->tasks()
-    ->where('status', 0)
-    ->distinct('title')
-    ->count('title'),
+            ->where('status', 0)
+            ->distinct('title')
+            ->count('title'),
             'lastPayed' => optional($this->feeses->where('amount', '>', 0)->last())->created_at?->format('d-m-Y'),
 
         ];
