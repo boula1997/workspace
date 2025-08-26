@@ -235,7 +235,8 @@ class TaskController extends Controller
                 "taskProjects" => ProjectResource::collection(
                     Project::withCount([
                         'tasks as pending_tasks_count' => function ($q) {
-                            $q->where('status', 0);
+                            $q->where('status', 0)
+                            ->select(DB::raw('COUNT(DISTINCT title)')); // ✅ unique titles only
                         }
                     ])
                     ->latest()
