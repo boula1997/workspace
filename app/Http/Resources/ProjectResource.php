@@ -21,6 +21,7 @@ class ProjectResource extends JsonResource
             'status' => $this->status,
             'cost' => $this->cost,
             'rest' => rest($this),
+            'tasksCount' =>count($this->tasks),
             'lastPayed' => optional($this->feeses->where('amount', '>', 0)->last())->created_at?->format('d-m-Y'),
 
         ];
