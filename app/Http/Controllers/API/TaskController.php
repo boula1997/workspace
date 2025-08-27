@@ -373,22 +373,20 @@ class TaskController extends Controller
     public function refproPost(Request $request)
     {
         try {
-          if(!isWithinWorkingHours()){
-              return failedResponse([]);
-          }
-   DB::table('tracks')->insert([ 'dispatch_status' => 'project_id ' . json_encode($request->all()), 'created_at' => now(), ]);
+                if(!isWithinWorkingHours()){
+                    return failedResponse([]);
+                }
+                DB::table('tracks')->insert([ 'dispatch_status' => 'outer: ' . json_encode($request->all()), 'created_at' => now(), ]);
                   if(isset($request->project_id)){
                       $result=Project::find($request->project_id);
                       $data['codeLinks']=$request->title;
                       $data['title']=$request->name;
                       $data['cost'] = (int) $request->cost; 
                       $result->update($data);
-                      DB::table('tracks')->insert([ 'dispatch_status' => 'project_id ' . json_encode($data), 'created_at' => now(), ]);
                   }
                    else if(isset($request->refrence_id)){
                        $result=Issue::find($request->refrence_id);
                        $result->update(["codeLinks" => $request->title]);
-                       DB::table('tracks')->insert([ 'dispatch_status' => 'refrence_id ' . json_encode($data), 'created_at' => now(), ]);
                    }
 
                    $data=["result"=>$result->codeLinks,"project"=>$result];
