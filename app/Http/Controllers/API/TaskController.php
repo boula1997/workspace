@@ -296,9 +296,9 @@ class TaskController extends Controller
 
         $employees = Admin::orderBy('name', 'ASC')->get();
 
-                $projects = Project::where("isOverthinking",0)->orderBy("title","asc")
+                $projects = Project::orderBy("title","asc")
                     ->get()
-                   ; // ✅ sort
+                   ; 
 
 
 
@@ -318,8 +318,7 @@ class TaskController extends Controller
             ->take(300)            // Limit to 300 tasks
             ->get()
             ->unique('title');  
-               // Remove duplicate tasks by title
-         DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode($projects), 'created_at' => now(), ]);
+
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
