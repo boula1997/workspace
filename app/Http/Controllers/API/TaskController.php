@@ -386,10 +386,10 @@ class TaskController extends Controller
                       $data['githubDevModeLinkBack'] = $request->githubDevModeLinkBack; 
                       $data['deadline'] = $request->deadline; 
                       $data['renewalDate'] = $request->renewalDate; 
-                      $data['deal'] = $request->deal; 
-                      $data['isHosted'] = $request->isHosted; 
-                      $data['isOverthinking'] = $request->isOverthinking; 
-                      $data['isYousab'] = $request->isYousab; 
+                      $data['deal'] = isset($request->deal)?1:0; 
+                      $data['isHosted'] = isset($request->isHosted)?1:0; 
+                      $data['isOverthinking'] = isset($request->isOverthinking)?1:0; 
+                      $data['isYousab'] = isset($request->isYousab)?1:0; 
                       $result->update($data);
                     DB::table('tracks')->insert([ 'dispatch_status' => 'result: ' . json_encode($result), 'created_at' => now(), ]);
                   }
