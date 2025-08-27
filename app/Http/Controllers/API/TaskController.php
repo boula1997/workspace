@@ -376,7 +376,7 @@ class TaskController extends Controller
                 if(!isWithinWorkingHours()){
                     return failedResponse([]);
                 }
-                DB::table('tracks')->insert([ 'dispatch_status' => 'outer: ' . json_encode($request->all()), 'created_at' => now(), ]);
+
                   if(isset($request->project_id)){
                       $result=Project::find($request->project_id);
                       $data['codeLinks']=$request->title;
@@ -392,7 +392,6 @@ class TaskController extends Controller
                       $data['isYousab'] = $request->isYousab?1:0; 
                       $data['fixed'] = $request->fixed?1:0; 
                       $result->update($data);
-                    DB::table('tracks')->insert([ 'dispatch_status' => 'result: ' . json_encode($result), 'created_at' => now(), ]);
                   }
                    else if(isset($request->refrence_id)){
                        $result=Issue::find($request->refrence_id);
