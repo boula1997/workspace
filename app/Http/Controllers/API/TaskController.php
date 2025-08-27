@@ -296,9 +296,8 @@ class TaskController extends Controller
 
         $employees = Admin::orderBy('name', 'ASC')->get();
 
-                        $projects = Project::where("isOverthinking",0)->orderBy("title","asc")
+                $projects = Project::where("isOverthinking",0)->orderBy("title","asc")
                     ->get()
-                    ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
                    ; // ✅ sort
 
 
