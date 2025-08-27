@@ -371,43 +371,54 @@ class TaskController extends Controller
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
         }
     }
-    public function refpro(Request $request)
+    public function refproPost(Request $request)
     {
         try {
           if(!isWithinWorkingHours()){
               return failedResponse([]);
           }
 
-                $update=false;
-                $action=false;
-                $data=$request->except('project_id','refrence_id','name');
-       
                   if(isset($request->project_id)){
-                       $update=$request->project_id==setting()->reqValue && setting()->reqType=="project";
                       $result=Project::find($request->project_id);
                       $data['codeLinks']=$request->title;
                       $data['title']=$request->name;
                       $result->update($data);
-                      setting()->update(["reqType"=>"project","reqValue"=>$request->project_id]);
                   }
                    else if(isset($request->refrence_id)){
-                       $update=$request->refrence_id==setting()->reqValue && setting()->reqType=="refrence";
                        $result=Issue::find($request->refrence_id);
-                      setting()->update(["reqType"=>"refrence","reqValue"=>$request->refrence_id]);
-       
-                   }
-         
-                   if ($result && $update && trim($request->title) !== '') {
-       
                        $result->update(["codeLinks" => $request->title]);
-                       $action=true;
                    }
-       
-       
-                   $data=["result"=>$result->codeLinks,"action"=>$action,"project"=>$result];
+
+                   $data=["result"=>$result->codeLinks,"project"=>$result];
        
                    return successResponse($data);
 
+
+        } catch (Exception $e) {
+            DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(), ]);
+            dd($e->getMessage());
+            return redirect()->back()->with(['error' => __('general.something_wrong')]);
+        }
+    }
+
+
+    public function refproGet(Request $request)
+    {
+        try {
+          if(!isWithinWorkingHours()){
+              return failedResponse([]);
+          }
+       
+                  if(isset($request->project_id)){
+                      $result=Project::find($request->project_id);
+                  }
+                   else if(isset($request->refrence_id)){
+                       $result=Issue::find($request->refrence_id);
+                   }
+       
+                   $data=["result"=>$result->codeLinks,"project"=>$result];
+       
+                   return successResponse($data);
 
         } catch (Exception $e) {
             DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(), ]);

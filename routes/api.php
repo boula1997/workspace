@@ -81,7 +81,8 @@ Route::middleware('auth:admin-api')->group(function () {
 Route::get('/getFunction', [ActionController::class, 'getFunction']);
     
     
-    Route::post('/apptask/refpro', [TaskController::class, 'refpro']);
+    Route::post('/apptask/refproPost', [TaskController::class, 'refproPost']);
+    Route::post('/apptask/refproGet', [TaskController::class, 'refproGet']);
     Route::post('/apptask/store', [TaskController::class, 'store']);
     Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
     Route::post('/execute/query', [TaskController::class, 'execQuery'])->name('query.exec');
