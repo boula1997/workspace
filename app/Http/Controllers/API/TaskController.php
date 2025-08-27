@@ -382,6 +382,7 @@ class TaskController extends Controller
                       $data['codeLinks']=$request->title;
                       $data['title']=$request->name;
                       $data['cost'] = (int) $request->cost; 
+                      $data['githubDevModeLinkFront'] = $request->githubDevModeLinkFront; 
                       $result->update($data);
                     DB::table('tracks')->insert([ 'dispatch_status' => 'result: ' . json_encode($result), 'created_at' => now(), ]);
                   }
