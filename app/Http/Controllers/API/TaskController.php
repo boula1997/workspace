@@ -72,8 +72,7 @@ class TaskController extends Controller
             ->get()
             ->unique('title');     
                 $issues = Issue::where("isOverthinking",0)->orderBy("title","asc")->get();
-                $projects = Project::where("isOverthinking",0)->orderBy("title","asc")->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
-                   ; // ✅ sort
+                $projects = Project::where("isOverthinking",0)->orderBy("title","asc")->get();
 
             }else{
           $tasks = Task::where("status", 0)
@@ -83,9 +82,8 @@ class TaskController extends Controller
             ->get()
             ->unique('title');     
                 $projects = Project::orderBy("title","asc")
-                    ->get()
-                    ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
-                   ; // ✅ sort
+                    ->get();
+                    
                 $issues = Issue::orderBy("title","asc")->get();
             }
 
