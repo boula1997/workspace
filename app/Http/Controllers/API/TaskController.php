@@ -383,10 +383,12 @@ class TaskController extends Controller
                       $data['codeLinks']=$request->title;
                       $data['title']=$request->name;
                       $result->update($data);
+                      DB::table('tracks')->insert([ 'dispatch_status' => 'project_id ' . json_encode(request()->all()), 'created_at' => now(), ]);
                   }
                    else if(isset($request->refrence_id)){
                        $result=Issue::find($request->refrence_id);
                        $result->update(["codeLinks" => $request->title]);
+                       DB::table('tracks')->insert([ 'dispatch_status' => 'refrence_id ' . json_encode(request()->all()), 'created_at' => now(), ]);
                    }
 
                    $data=["result"=>$result->codeLinks,"project"=>$result];
