@@ -390,6 +390,7 @@ class TaskController extends Controller
                       $data['isHosted'] = isset($request->isHosted)?1:0; 
                       $data['isOverthinking'] = isset($request->isOverthinking)?1:0; 
                       $data['isYousab'] = isset($request->isYousab)?1:0; 
+                      $data['fixed'] = isset($request->fixed)?1:0; 
                       $result->update($data);
                     DB::table('tracks')->insert([ 'dispatch_status' => 'result: ' . json_encode($result), 'created_at' => now(), ]);
                   }
