@@ -98,7 +98,7 @@ class TaskController extends Controller
         $data=[
             "queries"=>$queries,
             "projects"=>ProjectResource::collection($projects),
-            "infoProjects"=>ProjectResource::collection($projects),
+            "infoProjects"=>ProjectResource::collection($infoProjects),
             "boardProjects" => ProjectResource::collection(
                 Project::orderBy("title","asc")
                     ->get()
@@ -122,7 +122,7 @@ class TaskController extends Controller
         else
         $data=[
             "projects"=>ProjectResource::collection($projects),
-            "infoProjects"=>ProjectResource::collection($projects),
+            "infoProjects"=>ProjectResource::collection($infoProjects),
             "boardProjects" => ProjectResource::collection(
                     Project::latest()->get()->sortByDesc(function ($project) {
                         return [$project->deal == 0, $project->status];
