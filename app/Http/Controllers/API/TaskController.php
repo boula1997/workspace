@@ -404,6 +404,7 @@ class TaskController extends Controller
 
 
         } catch (Exception $e) {
+            DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(), ]);
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
         }
