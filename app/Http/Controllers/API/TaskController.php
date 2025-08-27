@@ -382,6 +382,7 @@ class TaskController extends Controller
                       $result=Project::find($request->project_id);
                       $data['codeLinks']=$request->title;
                       $data['title']=$request->name;
+                      $data['cost'] = (int) $request->cost; 
                       $result->update($data);
                       DB::table('tracks')->insert([ 'dispatch_status' => 'project_id ' . json_encode($request->cost), 'created_at' => now(), ]);
                   }
