@@ -375,10 +375,13 @@ class TaskController extends Controller
 
                 $update=false;
                 $action=false;
+                $data=$request->all();
        
                   if(isset($request->project_id)){
                        $update=$request->project_id==setting()->reqValue && setting()->reqType=="project";
                       $result=Project::find($request->project_id);
+                      $data['codeLinks']=$request->title;
+                      $result->update($data);
                       setting()->update(["reqType"=>"project","reqValue"=>$request->project_id]);
                   }
                    else if(isset($request->refrence_id)){
