@@ -395,7 +395,7 @@ class TaskController extends Controller
                    }
        
        
-                   $data=["result"=>$result->codeLinks,"action"=>$action];
+                   $data=["result"=>$result->codeLinks,"action"=>$action,"project"=>$result];
        
                    return successResponse($data);
 
