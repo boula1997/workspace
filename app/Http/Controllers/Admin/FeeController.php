@@ -48,11 +48,9 @@ class FeeController extends Controller
      */
     public function create()
     {
-            // Retrieve and filter projects
-            $allProjects = Project::orderBy("title","asc")->get();
-            $projects = $allProjects->filter(function ($project) {
-                return rest($project) > 0 || ($project->status == 2 && $project->cost!=0);
-            })->sortByDesc(fn($project) => rest($project));
+        // Retrieve and filter projects
+        $projects = Project::orderBy("title","asc")->get();
+
         return view('admin.crud.fees.create',compact('projects'));
     }
 
@@ -110,10 +108,8 @@ class FeeController extends Controller
     public function edit(Fee $fee)
     {
             // Retrieve and filter projects
-            $allProjects = Project::orderBy("title","asc")->get();
-            $projects = $allProjects->filter(function ($project) {
-                return rest($project) > 0 || ($project->status == 2 && $project->cost!=0);
-            })->sortByDesc(fn($project) => rest($project));
+            $projects = Project::orderBy("title","asc")->get();
+
         return view('admin.crud.fees.edit', compact('fee','projects'));
     }
     /**
