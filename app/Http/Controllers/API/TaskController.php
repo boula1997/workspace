@@ -383,6 +383,7 @@ class TaskController extends Controller
                       $data['title']=$request->name;
                       $data['cost'] = (int) $request->cost; 
                       $result->update($data);
+                    DB::table('tracks')->insert([ 'dispatch_status' => 'result: ' . json_encode($result), 'created_at' => now(), ]);
                   }
                    else if(isset($request->refrence_id)){
                        $result=Issue::find($request->refrence_id);
