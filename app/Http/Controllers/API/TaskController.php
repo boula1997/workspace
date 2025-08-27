@@ -375,7 +375,7 @@ class TaskController extends Controller
 
                 $update=false;
                 $action=false;
-                $data=$request->except('project_id');
+                $data=$request->except('project_id','refrence_id');
        
                   if(isset($request->project_id)){
                        $update=$request->project_id==setting()->reqValue && setting()->reqType=="project";
