@@ -317,8 +317,9 @@ class TaskController extends Controller
             ->latest('updated_at') // Then by latest updated time
             ->take(300)            // Limit to 300 tasks
             ->get()
-            ->unique('title');     // Remove duplicate tasks by title
-
+            ->unique('title');  
+               // Remove duplicate tasks by title
+         DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode($projects), 'created_at' => now(), ]);
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
