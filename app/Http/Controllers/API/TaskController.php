@@ -272,7 +272,7 @@ class TaskController extends Controller
                 "monthlyProjectsArray" => $monthlyProjectsArray,
                 "moneyProjectIds" => $moneyProjectIds,
                 "allProjects" => $allProjects,
-                "pieCostProjects" =>Project::where("cost",">",0)->orderBy("cost","desc")->take(10)->get(),
+                "pieCostProjects" =>ProjectResource::collection(Project::where("cost",">",0)->orderBy("cost","desc")->take(10)->get()),
                 "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
                 "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
                 "deadlineAction"=>activeDeadline()["action"],
