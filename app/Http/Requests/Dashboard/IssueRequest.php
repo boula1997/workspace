@@ -26,9 +26,6 @@ class IssueRequest extends FormRequest
     {
 
         return [
-        'codeLinks' => 'required',
-
-        'script' => 'required',
 
         'title' => 'required',
 
