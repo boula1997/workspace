@@ -62,7 +62,7 @@ public function getFunction(Request $request)
                 ->orderBy('deadline', 'asc')
                 ->get()
                 ->filter(function ($project) {
-                    return $project->rest > 0; // 👈 only keep projects with positive rest
+                    return rest($project) > 0; // 👈 only keep projects with positive rest
                 });
 
             $deadlines = Deadline::whereNotNull('date')->whereDate('date', '<=', Carbon::now()->addWeek())
