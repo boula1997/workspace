@@ -241,21 +241,22 @@ class TaskController extends Controller
                     Project::withCount([
                         'tasks as pending_tasks_count' => function ($q) {
                             $q->where('status', 0)
-                            ->select(DB::raw('COUNT(DISTINCT title)')); // ✅ unique titles only
+                            ->select(DB::raw('COUNT(DISTINCT title)'));
                         }
                     ])
                     ->latest()
                     ->get()
+                    ->filter(fn($p) => rest($p) > 0) // ✅ filter in PHP
                     ->sortByDesc('pending_tasks_count')
                 ),
+
                 "deadlineProjects" => ProjectResource::collection(
-                    Project::whereNotNull('deadline')        // exclude null deadlines
-                        ->whereDate('deadline', '>=', now()) // exclude passed deadlines
-                              ->whereHas('tasks', function($q) {
-                                    $q->where('status',0); // adjust status column if different
-                                })
-                        ->orderBy('deadline')                // soonest deadline first
+                    Project::whereNotNull('deadline')        
+                        ->whereDate('deadline', '>=', now()) 
+                        ->whereHas('tasks', fn($q) => $q->where('status', 0))
+                        ->orderBy('deadline')                
                         ->get()
+                        ->filter(fn($p) => rest($p) > 0) // ✅ filter in PHP
                 ),
                 "avgFees" => $avgFees,
                 "incomeFees" => $incomeFees,
