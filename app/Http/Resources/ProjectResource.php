@@ -21,7 +21,7 @@ $palette = [
     "#f1c40f", "#7f8c8d", "#e67e22", "#d35400", "#95a5a6",
 ];
 
-$index = crc32($this->id) % count($palette);
+
 
         return [
             "id" => $this->id,
@@ -39,7 +39,7 @@ $index = crc32($this->id) % count($palette);
             ->distinct('title')
             ->count('title'),
             'lastPayed' => optional($this->feeses->where('amount', '>', 0)->last())->created_at?->format('d-m-Y'),
-            "color" => $index ,
+            "color" => crc32($this->id) % count($palette),
 
         ];
     }
