@@ -53,12 +53,17 @@ public function getFunction(Request $request)
                 ->orderBy('renewalDate', 'asc')
                 ->get();
 
-            $commitProjects = Project::whereNotNull('deadline')->whereDate('deadline', '<=', Carbon::now()->addMonth())
+            $commitProjects = Project::whereNotNull('deadline')
+                ->whereDate('deadline', '<=', Carbon::now()->addMonth())
                 ->whereHas('tasks', function ($q) {
                     $q->where('status', 0);
                 })
+                ->with('feeses') // 👈 needed for rest calculation
                 ->orderBy('deadline', 'asc')
-                ->get();
+                ->get()
+                ->filter(function ($project) {
+                    return $project->rest > 0; // 👈 only keep projects with positive rest
+                });
 
             $deadlines = Deadline::whereNotNull('date')->whereDate('date', '<=', Carbon::now()->addWeek())
                 ->orderBy('date', 'asc')
