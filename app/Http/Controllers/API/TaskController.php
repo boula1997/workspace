@@ -251,6 +251,9 @@ class TaskController extends Controller
                 "deadlineProjects" => ProjectResource::collection(
                     Project::whereNotNull('deadline')        // exclude null deadlines
                         ->whereDate('deadline', '>=', now()) // exclude passed deadlines
+                              ->whereHas('tasks', function($q) {
+                                    $q->where('status',0); // adjust status column if different
+                                })
                         ->orderBy('deadline')                // soonest deadline first
                         ->get()
                 ),
