@@ -14,16 +14,14 @@ class ProjectResource extends JsonResource
      */
     public function toArray($request)
     {
-        $palette = [
-    "#6a2eca", // purple
-    "#1abc9c", // teal
-    "#e74c3c", // red
-    "#3498db", // blue
-    "#f39c12", // orange
-    "#2ecc71", // green
-    "#9b59b6", // violet
-    "#34495e", // dark gray-blue
+$palette = [
+    "#6a2eca", "#1abc9c", "#e74c3c", "#3498db", "#f39c12",
+    "#2ecc71", "#9b59b6", "#34495e", "#16a085", "#c0392b",
+    "#2980b9", "#d35400", "#27ae60", "#8e44ad", "#2c3e50",
+    "#f1c40f", "#7f8c8d", "#e67e22", "#d35400", "#95a5a6",
 ];
+
+$index = crc32($this->id) % count($palette);
 
         return [
             "id" => $this->id,
@@ -41,7 +39,7 @@ class ProjectResource extends JsonResource
             ->distinct('title')
             ->count('title'),
             'lastPayed' => optional($this->feeses->where('amount', '>', 0)->last())->created_at?->format('d-m-Y'),
-"color" => $palette[$this->id % count($palette)],
+            "color" => $index ,
 
         ];
     }
