@@ -26,11 +26,6 @@ class IssueRequest extends FormRequest
     {
 
         return [
-        'codeLinks' => 'required',
-
-        'isOverthinking' => 'required',
-
-        'script' => 'required',
 
         'title' => 'required',
 
