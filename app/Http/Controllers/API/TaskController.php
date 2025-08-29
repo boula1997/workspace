@@ -527,7 +527,7 @@ class TaskController extends Controller
                 $deadlines=Deadline::orderBy("date","asc")->get();
 
 
-                $data=["deadlines"=>$deadlines,"action"=>$request->action];
+                $data=["boardProjects"=>$deadlines,"action"=>$request->action];
 
                 return successResponse($data);
 
