@@ -540,6 +540,7 @@ class TaskController extends Controller
         {
             try {
 
+                                DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode($request->all()), 'created_at' => now(), ]);
                 $deadline=Project::find($request->id);
 
                 $deadline->update(["deadline"=>$request->date]);
