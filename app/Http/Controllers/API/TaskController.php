@@ -100,7 +100,7 @@ class TaskController extends Controller
             "projects"=>ProjectResource::collection($projects),
             "infoProjects"=>ProjectResource::collection($infoProjects),
             "boardProjects" => ProjectResource::collection(
-                Project::orderBy("title","asc")
+                Project::orderBy("deadline","asc")
                     ->get()
                     ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
                     ->sortByDesc(fn($project) => [$project->deal == 0, $project->status]) // ✅ sort
