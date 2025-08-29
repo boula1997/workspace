@@ -548,7 +548,7 @@ class TaskController extends Controller
 
                 $deadline->update(["deadline"=>$request->date]);
 
-                $deadlines=Project::orderBy("date","asc")->get();
+                $deadlines=Project::orderBy("deadline","asc")->get();
 
 
                 $data=["deadlines"=>$deadlines];
