@@ -514,27 +514,48 @@ class TaskController extends Controller
 
 
         public function updateDeadline(Request $request)
-    {
-        try {
+        {
+            try {
 
-            $deadline=Deadline::find($request->id);
-             if($request->action=="delete")
-                $deadline->delete();
-            else if(isset($request->date))
-                $deadline->update(["date"=>$request->date]);
+                $deadline=Deadline::find($request->id);
+                if($request->action=="delete")
+                    $deadline->delete();
+                else if(isset($request->date))
+                    $deadline->update(["date"=>$request->date]);
 
-            $deadlines=Deadline::orderBy("date","asc")->get();
-
-
-            $data=["deadlines"=>$deadlines,"action"=>$request->action];
-
-            return successResponse($data);
+                $deadlines=Deadline::orderBy("date","asc")->get();
 
 
-        } catch (Exception $e) {
-            return failedResponse($e->getMessage());
+                $data=["deadlines"=>$deadlines,"action"=>$request->action];
+
+                return successResponse($data);
+
+
+            } catch (Exception $e) {
+                return failedResponse($e->getMessage());
+            }
         }
-    }
+
+        public function updateProjectDeadline(Request $request)
+        {
+            try {
+
+                $deadline=Project::find($request->id);
+
+                $deadline->update(["deadline"=>$request->date]);
+
+                $deadlines=Project::orderBy("date","asc")->get();
+
+
+                $data=["deadlines"=>$deadlines];
+
+                return successResponse($data);
+
+
+            } catch (Exception $e) {
+                return failedResponse($e->getMessage());
+            }
+        }
         public function storeDeadline(Request $request)
     {
         try {
