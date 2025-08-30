@@ -1149,7 +1149,7 @@
                         <p class="text-warning">Always use poweshell because it has memeory</p>
                         <div class="col-md-6">
 
-                            <p class="text-warning">Pined Clipboard elements</p>
+                            <p class="text-warning">Pinned Clipboard elements</p>
 
 
                             <p title="auto fill password">start msedge https://yousab-tech.com/workspace/public/en</p>
@@ -1263,6 +1263,12 @@
                             <br>
                             <hr class="text-white">
                             <p>ssh yousabte@192.185.41.219 -p2222</p>
+                            <br>
+                            <hr class="text-white">
+                            <p>kD[asKgc%ydC</p>
+                            <br>
+                            <hr class="text-white">
+                            <p>mysqldump -u yousabte_workspace -p --complete-insert yousabte_workspace > yousabte_workspace_export.sql</p>
                             <br>
                             <hr class="text-white">
                             <p>request()->segment(count(request()->segments()))</p>
