@@ -102,7 +102,7 @@ class TaskController extends Controller
             "boardProjects" => ProjectResource::collection(
                 Project::orderBy("deadline","asc")
                     ->get()
-                    ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
+                    ->filter(fn($project) => $project->status == 1) 
             ),
             "tablePprojects"=>ProjectResource::collection($tablePprojects),
             "refrences"=>IssueResource::collection($issues),
@@ -125,7 +125,7 @@ class TaskController extends Controller
             "boardProjects" => ProjectResource::collection(
                 Project::orderBy("deadline","asc")
                     ->get()
-                    ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
+                    ->filter(fn($project) => $project->status == 1) 
             ),
             "credentials"=>$credentials,
             // "refrences"=>IssueResource::collection($issues),
@@ -203,6 +203,8 @@ class TaskController extends Controller
             // Get all projects once
             $boardProjects = Project::get();
 
+
+
             // Contract projects (status = 2 but cost = 0)
             $contractProjects = $boardProjects->filter(function ($project) {
                 return $project->status == 2 && $project->cost == 0;
@@ -236,6 +238,10 @@ class TaskController extends Controller
                 "projects" => ProjectResource::collection($selectedProjects),
                 "boardProjects" => ProjectResource::collection(
                     Project::latest()->get()->sortByDesc(fn($project) => rest($project))
+                ),
+                "conMoneyProjects" => ProjectResource::collection(
+                    Project::get()
+                    ->filter(fn($project) => $project->status == 1 || $project->deal==0)->sortByDesc(fn($project) => $project->status)
                 ),
                 "taskProjects" => ProjectResource::collection(
                     Project::withCount([
@@ -550,7 +556,11 @@ class TaskController extends Controller
                 $deadlines=Project::orderBy("deadline","asc")->get();
 
 
-                $data=["deadlines"=>$deadlines];
+                $data=[            "boardProjects" => ProjectResource::collection(
+                Project::orderBy("deadline","asc")
+                    ->get()
+                    ->filter(fn($project) => $project->status != 1) 
+            )];
 
                 return successResponse($data);
 
