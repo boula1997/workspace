@@ -241,7 +241,7 @@ class TaskController extends Controller
                 ),
                 "conMoneyProjects" => ProjectResource::collection(
                     Project::get()
-                    ->filter(fn($project) => $project->status == 1 || $project->deal==0)->sortByDesc(fn($project) => $project->status)
+                    ->filter(fn($project) => $project->status == 2 || $project->deal==0)->sortByDesc(fn($project) => $project->status)
                 ),
                 "taskProjects" => ProjectResource::collection(
                     Project::withCount([
