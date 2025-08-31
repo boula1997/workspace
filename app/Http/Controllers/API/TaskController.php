@@ -110,6 +110,7 @@ class TaskController extends Controller
             "credentials"=>$credentials,
             "tasks"=>TaskResource::collection($tasks),
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
+            "isExpired" => isExpired(),
             "headings"=>[
                 "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
                 "deadlineAction"=>activeDeadline()["action"],
@@ -291,6 +292,8 @@ class TaskController extends Controller
                 "moneyProjects"=>count($moneyProjects),
                 "progressProjects"=>count($progressProjects),
                 "finishedProjects"=>count($finishedProjects),
+                "isExpired" => isExpired(),
+
             ];
 
 
