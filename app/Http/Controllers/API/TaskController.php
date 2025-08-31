@@ -551,7 +551,7 @@ class TaskController extends Controller
                 DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode($request->all()), 'created_at' => now(), ]);
                 $deadline=Project::find($request->id);
 
-               $deadlineTime = Carbon::parse($request->date, 'Africa/Cairo')->setTimezone('UTC');
+               $deadlineTime = Carbon::parse($request->date, 'UTC')->setTimezone('Africa/Cairo');
                $deadline->update(["deadline" => $deadlineTime]);
 
                 $deadlines=Project::orderBy("deadline","asc")->get();
