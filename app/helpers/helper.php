@@ -472,15 +472,21 @@ function rest($project)
     return $project->cost - $totalFee;
 }
 
-function isExpired(){
-    // $projects=Project::where("deadline">now())->orWhere("renwalDate">now())->get();
-    // $deadlines=Deadline::where("date">now())->get();
+function isExpired()
+{
+    $projects = Project::where('deadline', '>', now())
+        ->orWhere('renwalDate', '>', now())
+        ->get();
 
-    // if(count($projects)>0 || count($deadlines)>0)
-    // return true;
-    // else
-    return true;
+    $deadlines = Deadline::where('date', '>', now())->get();
+
+    if ($projects->isNotEmpty() || $deadlines->isNotEmpty()) {
+        return true;
+    }
+
+    return false;
 }
+
 
 function getFollowupTitles($followups)
 {
