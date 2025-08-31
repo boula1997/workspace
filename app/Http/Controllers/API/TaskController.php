@@ -511,8 +511,10 @@ class TaskController extends Controller
            
 
             $deadlines=Deadline::orderBy("date","asc")->get();
+            $data["deadlines"]=$deadlines;
+            $data["isExpired"]=isExpired();
             if(boula())
-             return successResponse($deadlines);
+             return successResponse($data);
              else
              return successResponse([]);
 
