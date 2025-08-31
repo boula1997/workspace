@@ -496,9 +496,9 @@ class TaskController extends Controller
              $links = Navigation::orderBy('title', 'asc')->get();
             else
              $links=[];
-             $data["links"]=$links;
+             $data["links"]=NavigationResource::collection($links);
              $data["isExpired"]=isExpired();
-             return successResponse(NavigationResource::collection($data));
+             return successResponse($data);
 
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
