@@ -341,6 +341,8 @@ class TaskController extends Controller
                 "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
                 "deadlineAction"=>activeDeadline()["action"],
                 "deadlineDate"=>activeDeadline()["deadline"],
+            "isExpired" => isExpired(),
+
 
         ];
 
