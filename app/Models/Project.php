@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-
+use Carbon\Carbon;
 
 class Project extends Model
 {
@@ -17,7 +17,16 @@ class Project extends Model
     protected $guarded = [];
     public $timestamps = true;
 
+   protected $casts = [
+        'deadline' => 'datetime',
+    ];
 
+    public function getDeadlineAttribute($value)
+    {
+        return Carbon::parse($value)
+            ->timezone('Africa/Cairo')
+            ->format('Y-m-d H:i:s'); // or any format you prefer
+    }
 
     public function getPayedAttribute(){
       return $this->cost-rest($this);
