@@ -474,11 +474,8 @@ function rest($project)
 
 function isExpired()
 {
-    $projectsDeadline = Project::where('deadline', '<=', now())
-    
-        ->get();
-    $projectsRenewalDate = Project::where('renewalDate', '<=', now())
-        ->get();
+    $projectsDeadline = Project::where('deadline', '<=', now())->get();
+    $projectsRenewalDate = Project::where('renewalDate', '<=', now())->get();
 
     $deadlines = Deadline::where('date', '<=', now())->get();
     
@@ -1077,6 +1074,3 @@ function databases()
 
     return $databases;
 }
-
-
-
