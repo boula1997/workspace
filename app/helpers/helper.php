@@ -472,21 +472,27 @@ function rest($project)
     return $project->cost - $totalFee;
 }
 
+
 function isExpired()
 {
-    $projectsDeadline = Project::where('deadline', '<=', now())->get();
-    $projectsRenewalDate = Project::where('renewalDate', '<=', now())->get();
-    $deadlines = Deadline::where('date', '<=', now())->get();
+    $nowUtc = Carbon::now('UTC');
 
-    dd(now());
+    $projectsDeadline = Project::where('deadline', '<=', $nowUtc)->get();
+    $projectsRenewalDate = Project::where('renewalDate', '<=', $nowUtc)->get();
+    $deadlines = Deadline::where('date', '<=', $nowUtc)->get();
 
-    if ((count($projectsDeadline)>0 || count($projectsRenewalDate)>0 ||count($deadlines)>0) && boula()) {
+    if (
+        ($projectsDeadline->count() > 0 || 
+         $projectsRenewalDate->count() > 0 || 
+         $deadlines->count() > 0) 
+        && boula()
+    ) {
         return true;
     }
 
     return false;
-
 }
+
 
 
 function getFollowupTitles($followups)
