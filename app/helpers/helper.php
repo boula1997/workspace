@@ -474,18 +474,21 @@ function rest($project)
 
 function isExpired()
 {
-    $projects = Project::where('deadline', '<=', now())
-        ->orWhere('renewalDate', '<=', now())
+    $projectsDeadline = Project::where('deadline', '<=', now())
+    
+        ->get();
+    $projectsRenewalDate = Project::where('renewalDate', '<=', now())
         ->get();
 
     $deadlines = Deadline::where('date', '<=', now())->get();
     
 
     if ((count($projects)>0 || count($deadlines)>0) && boula()) {
-        return false;
+        return count($projectsDeadline).''.count($projectsRenewalDate).''.count($deadlines);
     }
 
-    return false;
+            return count($projectsDeadline).''.count($projectsRenewalDate).''.count($deadlines);
+
 }
 
 
