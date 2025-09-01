@@ -478,7 +478,7 @@ function isExpired()
     $nowUtc = Carbon::now('UTC');
 
 
-    $projectsDeadline = Project::where('deadline', '<', $nowUtc)->get();
+    $projectsDeadline = Project::where('deadline', '<=', $nowUtc)->get();
     $projectsRenewalDate = Project::where('renewalDate', '<=', $nowUtc)->get();
     $deadlines = Deadline::where('date', '<=', $nowUtc)->get();
 
