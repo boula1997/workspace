@@ -482,7 +482,7 @@ function isExpired()
     
 
     if ((count($projects)>0 || count($deadlines)>0) && boula()) {
-        return true;
+        return false;
     }
 
     return false;
