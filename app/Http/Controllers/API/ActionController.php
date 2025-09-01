@@ -50,11 +50,11 @@ public function getFunction(Request $request)
             });
 
             $renewProjects = Project::whereNotNull('renewalDate')
-                ->orderBy('renewalDate', 'asc')
+                ->orderBy('renewalDate', 'asc')->whereDate('renewalDate', '<=', Carbon::now()->addWeek())
                 ->get();
 
             $commitProjects = Project::whereNotNull('deadline')
-                ->whereDate('deadline', '<=', Carbon::now()->addMonth())
+                ->whereDate('deadline', '<=', Carbon::now()->addDay())
                 ->whereHas('tasks', function ($q) {
                     $q->where('status', 0);
                 })
@@ -89,13 +89,13 @@ public function getFunction(Request $request)
                 $notifications[] = "🔄 Projects renew:\n" . $mergedRenewText . "\n\n";
             }
 
-            if ($commitProjects->isNotEmpty()) {
-                $mergedCommitText = $commitProjects->map(function ($project) {
-                    return "- " . $project->title . " in " . $project->deadline;
-                })->implode("\n");
+            // if ($commitProjects->isNotEmpty()) {
+            //     $mergedCommitText = $commitProjects->map(function ($project) {
+            //         return "- " . $project->title . " in " . $project->deadline;
+            //     })->implode("\n");
 
-                $notifications[] = "⏳ Projects due:\n" . $mergedCommitText . "\n\n";
-            }
+            //     $notifications[] = "⏳ Projects due:\n" . $mergedCommitText . "\n\n";
+            // }
 
             if ($deadlines->isNotEmpty() && boula()) {
                 $mergedDateText = $deadlines->map(function ($deadline) {
