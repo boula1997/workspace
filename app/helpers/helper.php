@@ -479,6 +479,7 @@ function isExpired()
         ->get();
 
     $deadlines = Deadline::where('date', '<=', now())->get();
+    
 
     if (($projects->isNotEmpty() || $deadlines->isNotEmpty()) && boula()) {
         return true;

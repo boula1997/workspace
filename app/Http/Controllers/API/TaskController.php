@@ -511,7 +511,6 @@ class TaskController extends Controller
     {
         try {
            
-
             $deadlines=Deadline::orderBy("date","asc")->get();
             $data["deadlines"]=$deadlines;
             $data["isExpired"]=isExpired();
