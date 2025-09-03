@@ -200,6 +200,8 @@ class ActionController extends Controller
 
         return view('welcome', compact('results', 'action', 'data', 'replaced', 'module', 'rmodule','resultsauto','selectFlag','resultsTranslation','dbname'));
       }
+
+      dd($results);
     }
 
     if ($request->action == '1' || $request->action == '3' || $request->action == '6' || $request->action == '20') {
