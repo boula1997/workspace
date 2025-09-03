@@ -196,11 +196,11 @@ class ActionController extends Controller
         $resultsTranslation = DB::connection('dynamic')->select("select db, id, value,`key` from (select '" . $request->dbname . "' as db, ltm_translations.* from " . $request->dbname . ".ltm_translations where value IS NULL) as q;");
         $dbname = $request->dbname;
 
+      dd($request->all());
 
         return view('welcome', compact('results', 'action', 'data', 'replaced', 'module', 'rmodule','resultsauto','selectFlag','resultsTranslation','dbname'));
       }
 
-      dd($request->all());
     }
 
     if ($request->action == '1' || $request->action == '3' || $request->action == '6' || $request->action == '20') {
