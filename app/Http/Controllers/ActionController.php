@@ -139,7 +139,6 @@ class ActionController extends Controller
 
     if ($request->action == '0' || $request->action == '2') {
       $action = $request->action == '0' ? 'create new module' : 'Rename module';
-     dd($request->all());
         
       // auto attributes (edit first methodology to avoid filling data)
       $attributes = explode(',', $request->attribute);
