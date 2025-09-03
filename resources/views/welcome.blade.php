@@ -450,7 +450,7 @@
 
                             <div class="form-group mt-2">
                                 <select name="extension" id="extension" class=" text-white">
-                                    <option value=".php">php</option>
+                                    <option selected value=".php">php</option>
                                     <option value=".blade.php">blade</option>
                                     <option value="">Not</option>
                                     <option value=".js">js</option>

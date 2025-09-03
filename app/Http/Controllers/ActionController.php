@@ -72,6 +72,7 @@ class ActionController extends Controller
   public function store(Request $request)
   {
 
+
       $credential=DBCredential::where('db_name',isset($request->dbname)?$request->dbname:'yousabte_automation')->first();
       $dbHost = isset($credential->db_host)?$credential->db_host:'192.185.41.219';
       $dbName = isset($credential->db_name)?$credential->db_name:'yousabte_automation';
@@ -196,11 +197,9 @@ class ActionController extends Controller
         $resultsTranslation = DB::connection('dynamic')->select("select db, id, value,`key` from (select '" . $request->dbname . "' as db, ltm_translations.* from " . $request->dbname . ".ltm_translations where value IS NULL) as q;");
         $dbname = $request->dbname;
 
-      dd($results,$request->all());
 
         return view('welcome', compact('results', 'action', 'data', 'replaced', 'module', 'rmodule','resultsauto','selectFlag','resultsTranslation','dbname'));
       }
-
     }
 
     if ($request->action == '1' || $request->action == '3' || $request->action == '6' || $request->action == '20') {
