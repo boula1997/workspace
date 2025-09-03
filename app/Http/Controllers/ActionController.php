@@ -72,7 +72,6 @@ class ActionController extends Controller
   public function store(Request $request)
   {
 
-     dd($request->all());
       $credential=DBCredential::where('db_name',isset($request->dbname)?$request->dbname:'yousabte_automation')->first();
       $dbHost = isset($credential->db_host)?$credential->db_host:'192.185.41.219';
       $dbName = isset($credential->db_name)?$credential->db_name:'yousabte_automation';
@@ -140,6 +139,7 @@ class ActionController extends Controller
 
     if ($request->action == '0' || $request->action == '2') {
       $action = $request->action == '0' ? 'create new module' : 'Rename module';
+     dd($request->all());
         
       // auto attributes (edit first methodology to avoid filling data)
       $attributes = explode(',', $request->attribute);
