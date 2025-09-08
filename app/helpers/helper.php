@@ -476,11 +476,12 @@ function rest($project)
 function isExpired()
 {
     $nowUtc = Carbon::now('UTC');
+    $now = Carbon::now();
     $yesterday = Carbon::now('UTC')->subDay();
     $tomorrow = Carbon::now('UTC')->addDay();
 
 
-    $projectsDeadline = Project::where('deadline', '<=', $nowUtc)->get()->filter(fn($project) => $project->status == 1) ;
+    $projectsDeadline = Project::where('deadline', '<=', $now)->get()->filter(fn($project) => $project->status == 1) ;
     $projectsRenewalDate = Project::where('renewalDate', '<=', $tomorrow)->get();
     $deadlines = Deadline::where('date', '<=', $nowUtc)->get();
 
@@ -490,7 +491,7 @@ function isExpired()
          $deadlines->count() > 0) 
         && boula()
     ) {
-        return [true,'pdeadline '.$projectsDeadline->count().' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count().'nowUTC'.$nowUtc];
+        return [true,'pdeadline '.$projectsDeadline->count().' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count().'nowUTC'.$nowUtc.'nowCairo'.$now];
     }
 
     return [false,'pdeadline '.$projectsDeadline->count().' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count().'nowUTC'.$nowUtc];
