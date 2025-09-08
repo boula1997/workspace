@@ -53,7 +53,7 @@ public function getStatusAttribute()
 {
     $tasksWithStatus0 = $this->tasks()->where('status', 0)->exists();
 
-    if (!$tasksWithStatus0 && rest($this) > 0) {
+    if (!$tasksWithStatus0 && rest($this) > 1) {
         return 2;
     } elseif ($tasksWithStatus0 && rest($this) > 0) {
         return 1;
