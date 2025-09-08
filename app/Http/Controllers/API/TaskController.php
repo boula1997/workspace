@@ -110,7 +110,7 @@ class TaskController extends Controller
             "credentials"=>$credentials,
             "tasks"=>TaskResource::collection($tasks),
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
-            "isExpired" => isExpired(),
+            "isExpired" => isExpired()[0],
             "headings"=>[
                 "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
                 "deadlineAction"=>activeDeadline()["action"],
@@ -292,7 +292,7 @@ class TaskController extends Controller
                 "moneyProjects"=>count($moneyProjects),
                 "progressProjects"=>count($progressProjects),
                 "finishedProjects"=>count($finishedProjects),
-                "isExpired" => isExpired(),
+                "isExpired" => isExpired()[0],
 
             ];
 
@@ -341,7 +341,7 @@ class TaskController extends Controller
                 "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
                 "deadlineAction"=>activeDeadline()["action"],
                 "deadlineDate"=>activeDeadline()["deadline"],
-            "isExpired" => isExpired(),
+            "isExpired" => isExpired()[0],
 
 
         ];
@@ -499,7 +499,7 @@ class TaskController extends Controller
             else
              $links=[];
              $data["links"]=NavigationResource::collection($links);
-             $data["isExpired"]=isExpired();
+             $data["isExpired"]=isExpired()[0];
              return successResponse($data);
 
         } catch (Exception $e) {
@@ -513,7 +513,7 @@ class TaskController extends Controller
            
             $deadlines=Deadline::orderBy("date","asc")->get();
             $data["deadlines"]=$deadlines;
-            $data["isExpired"]=isExpired();
+            $data["isExpired"]=isExpired()[0];
             if(boula())
              return successResponse($data);
              else
