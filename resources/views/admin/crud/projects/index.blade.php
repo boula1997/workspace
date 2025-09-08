@@ -97,7 +97,7 @@
                                         
 
                                         
-                                                    <td>{{ $project->status ? __('general.yes') : __('general.no') }}</td>
+                                                    <td>{{ $project->status }}</td>
                                         
                                                     <td>{{ $project->appearance ? __('general.yes') : __('general.no') }}</td>
                                         
