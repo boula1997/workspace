@@ -112,7 +112,7 @@ public function getFunction(Request $request)
 
             //     $notifications[] = "⚠️ Important Issues:\n" . $mergedIssueText . "\n\n";
             // }
-            $notifications[] = 'pdeadline '.$projectsDeadline->count().' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count(). "\n\n";
+                $notifications[] = isExpired()[1] . "\n\n";
 
             // Final output: ONE notification string
             $data["notifications"] = $notifications;
