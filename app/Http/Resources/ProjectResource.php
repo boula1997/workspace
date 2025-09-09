@@ -30,8 +30,8 @@ class ProjectResource extends JsonResource
             ->distinct('title')
             ->count('title'),
             'employees' => $this->tasks()
-            ->join('employees', 'employees.id', '=', 'tasks.employee_id')
-            ->pluck('employees.name')
+            ->join('admins', 'admins.id', '=', 'tasks.admin_id')
+            ->pluck('admins.name')
             ->unique()
             ->implode(', '),
             'lastPayed' => optional($this->feeses->where('amount', '>', 0)->last())->created_at?->format('d-m-Y'),
