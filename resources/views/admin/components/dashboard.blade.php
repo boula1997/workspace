@@ -19,12 +19,12 @@
             <a href="{{ route('dashboard') }}" class="nav-link">@lang('general.home')</a>
         </li>
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <form action="{{route('date.filter')}}" method="post">
                 @csrf
                 <div class="d-flex">
 
-                    {{-- Date input --}} <div class="col-md-5">
+                  <div class="col-md-5">
                         <div class="form-group"> 
                             <div class="input-group">
                                 <div class="input-group-prepend"> <span class="input-group-text"><i
@@ -35,7 +35,7 @@
                         </div>
                     </div>
     
-                    {{-- Date input --}}<div class="col-md-5">
+                  <div class="col-md-5">
                         <div class="form-group"> 
                             <div class="input-group">
                                 <div class="input-group-prepend"> <span class="input-group-text"><i
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </form>
-        </li>
+        </li> --}}
     </ul>
 
     <!-- Right navbar links -->
