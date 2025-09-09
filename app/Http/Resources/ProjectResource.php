@@ -29,7 +29,7 @@ class ProjectResource extends JsonResource
             ->where('status', 0)
             ->distinct('title')
             ->count('title'),
-            'employees' => $this->tasks()
+            'employees' => $this->tasks()->where('status', 0)
                 ->join('admins', 'admins.id', '=', 'tasks.employee_id')
                 ->pluck('admins.name')
                 ->unique()
