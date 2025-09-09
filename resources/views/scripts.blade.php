@@ -2096,6 +2096,7 @@
             $('#backup').on('click', function(e) {
                 e.preventDefault();
                 navigator.clipboard.writeText(
+                    'cd public_html/workspace \n' +
                     'mysqldump -u yousabte_workspace -p --complete-insert yousabte_workspace > yousabte_workspace_export.sql\n' +
                     '\n' +
                     'kD[asKgc%ydC'
