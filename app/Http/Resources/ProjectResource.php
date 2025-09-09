@@ -30,7 +30,7 @@ class ProjectResource extends JsonResource
             ->distinct('title')
             ->count('title'),
             'employees' => $this->tasks()
-            ->join('admins', 'admins.id', '=', 'tasks.admin_id')
+            ->join('admins', 'admins.id', '=', 'tasks.employee_id')
             ->pluck('admins.name')
             ->unique()
             ->implode(', '),
