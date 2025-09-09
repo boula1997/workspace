@@ -9,14 +9,14 @@ class DateFilterScope implements Scope
 {
     public function apply(Builder $builder, Model $model)
     {
-        $startDate = settings()->start_date;
-        $endDate = settings()->end_date;
+        // $startDate = settings()->start_date;
+        // $endDate = settings()->end_date;
 
-        if ($startDate && $endDate) {
-            $builder->where(function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('created_at', [$startDate, $endDate])
-                      ->orWhereBetween('updated_at', [$startDate, $endDate]);
-            });
-        }
+        // if ($startDate && $endDate) {
+        //     $builder->where(function ($query) use ($startDate, $endDate) {
+        //         $query->whereBetween('created_at', [$startDate, $endDate])
+        //               ->orWhereBetween('updated_at', [$startDate, $endDate]);
+        //     });
+        // }
     }
 }
