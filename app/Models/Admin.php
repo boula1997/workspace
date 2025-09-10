@@ -20,6 +20,7 @@ class Admin extends Authenticatable implements JWTSubject // <-- IMPLEMENT INTER
         'name',
         'email',
         'phone',
+        'type',
         'messanger_id',
         'whatsapp',
         'password',
