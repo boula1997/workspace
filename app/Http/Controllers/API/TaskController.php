@@ -57,7 +57,7 @@ class TaskController extends Controller
 
     public function create()
     {
-        $employees = Admin::orderBy('name', 'ASC')->get();
+        $employees = Admin::where("isActive",1)->orderBy('name', 'ASC')->get();
            // Remove duplicate tasks by title
 
            $queries=Query::latest()->get();
@@ -308,7 +308,7 @@ class TaskController extends Controller
     {
         
 
-        $employees = Admin::orderBy('name', 'ASC')->get();
+        $employees = Admin::where("isActive",1)->orderBy('name', 'ASC')->get();
 
                 $projects = Project::orderBy("title","asc")
                     ->get()
