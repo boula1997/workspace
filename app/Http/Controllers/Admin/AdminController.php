@@ -65,6 +65,8 @@ class AdminController extends Controller
         try {
             dectatorBoula();
             $input = $request->except('image','profile_avatar_remove');
+            $input["type"]=$request->type;
+
             $input['password'] = Hash::make($input['password']);
             $admin = Admin::create($input);
             $admin->assignRole($request->input('roles'));
@@ -115,15 +117,16 @@ class AdminController extends Controller
     public function update(AdminRequest $request, $id)
     {
         try {
+            dd($request->input('roles'));
             dectatorBoula();
             $input = $request->except('image','profile_avatar_remove');
+            $input["type"]=$request->type;
             if (!empty($input['password'])) {
                 $input['password'] = Hash::make($input['password']);
             } else {
                 $input = Arr::except($input, array('password'));
             }
             $admin = Admin::find($id);
-            dd($input);
             $admin->update($input);
             DB::table('model_has_roles')->where('model_id', $id)->delete();
             $admin->assignRole($request->input('roles'));
