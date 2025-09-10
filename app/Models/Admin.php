@@ -19,6 +19,7 @@ class Admin extends Authenticatable implements JWTSubject // <-- IMPLEMENT INTER
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
     ];
 
