@@ -57,7 +57,8 @@ class TaskController extends Controller
 
     public function create()
     {
-        $employees = Admin::where("isActive",1)->orderBy('name', 'ASC')->get();
+        $employees = Admin::where("isActive",1)->where("type","!=","client")->orderBy('name', 'ASC')->get();
+        $clients = Admin::where("isActive",1)->where("type","client")->orderBy('name', 'ASC')->get();
            // Remove duplicate tasks by title
 
            $queries=Query::latest()->get();
@@ -105,6 +106,7 @@ class TaskController extends Controller
             "tablePprojects"=>ProjectResource::collection($tablePprojects),
             "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
+            "clients"=>$clients,
             "credentials"=>$credentials,
             "tasks"=>TaskResource::collection($tasks),
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
@@ -129,6 +131,7 @@ class TaskController extends Controller
             "credentials"=>$credentials,
             // "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
+            "clients"=>$clients,
             "tasks"=>TaskResource::collection($tasks),
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
             "tablePprojects"=>ProjectResource::collection($tablePprojects),
@@ -307,6 +310,8 @@ class TaskController extends Controller
         
 
         $employees = Admin::where("isActive",1)->orderBy('name', 'ASC')->get();
+        $clients = Admin::where("isActive",1)->where("type","client")->orderBy('name', 'ASC')->get();
+
 
                 $projects = Project::orderBy("title","asc")
                     ->get(); 
@@ -333,6 +338,7 @@ class TaskController extends Controller
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
+            "clients"=>$clients,
             "tasks"=>TaskResource::collection($tasks),
                 "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
                 "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
