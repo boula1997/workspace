@@ -21,6 +21,7 @@ class Admin extends Authenticatable implements JWTSubject // <-- IMPLEMENT INTER
         'email',
         'phone',
         'password',
+        'isActive',
     ];
 
     protected $hidden = [

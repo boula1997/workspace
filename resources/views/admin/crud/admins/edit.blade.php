@@ -39,6 +39,8 @@
                                     <input type="password" name="password" value="{{ old('password') }}"
                                         class="form-control @error('') invalid @enderror" id="exampleInputPassword" placeholder="@lang('general.password')">
                                 </div>
+
+                                {{-- Checkbox Input --}} <div class="col-md-6 ps-4"> <div class="form-group"> <div class="form-group"> <div class="form-check form-switch"> <input class="form-check-input" @checked(old('isActive')) type="checkbox" id="isActive" name="isActive" value="1"> <label class="form-check-label" for="isActive">{{ __('general.isActive') }} <span class="text-danger"> * </span></label> </div> </div> </div> </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">@lang('general.confirm_password')</label>
                                     <input type="password" name="confirm-password" value="{{ old('confirm-password') }}"
