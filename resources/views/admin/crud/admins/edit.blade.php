@@ -91,7 +91,7 @@
                                     <div class="form-group">
                                         <div class="form-group">
                                             <div class="form-check form-switch"> <input class="form-check-input"
-                                                    @checked(old('isActive')) type="checkbox" id="isActive"
+                                                    @checked(old('isActive',$admin->isActive)) type="checkbox" id="isActive"
                                                     name="isActive" value="1"> <label class="form-check-label"
                                                     for="isActive">{{ __('general.isActive') }} <span class="text-danger">
                                                         * </span></label> </div>
