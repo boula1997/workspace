@@ -74,7 +74,7 @@ class TaskController extends Controller
         foreach ($employees as $employee) {
             $elements[] = [
                 'title' => $employee->name,  
-                'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/projects/".$employee->id."/edit",
+                'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/admins/".$employee->id."/edit",
                 'type'  => "employee",
             ];
         }
