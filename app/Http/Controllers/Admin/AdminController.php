@@ -123,6 +123,7 @@ class AdminController extends Controller
                 $input = Arr::except($input, array('password'));
             }
             $admin = Admin::find($id);
+            dd($input);
             $admin->update($input);
             DB::table('model_has_roles')->where('model_id', $id)->delete();
             $admin->assignRole($request->input('roles'));
