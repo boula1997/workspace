@@ -36,6 +36,9 @@
                                             <th>@lang('general.email')</th>
 
                                             <th>{{ __('general.phone') }}</th>
+                                            <th>{{__('general.messanger_id')}}</th>
+
+<th>{{__('general.whatsapp')}}</th>
                                             <th>{{ __('general.isActive') }}</th>
 
 
@@ -55,6 +58,9 @@
                                                 <td>{{ $admin->name }}</td>
                                                 <td>{{ $admin->email }}</td>
                                                 <td>{{ $admin->phone }}</td>
+                                                <td>{{ $admin->messanger_id }}</td>
+
+<td>{{ $admin->whatsapp }}</td>
                                                 <td>{{ $admin->isActive ? __('general.yes') : __('general.no') }}</td>
 
                                                 <td>

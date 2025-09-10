@@ -36,6 +36,10 @@
 
                                 <!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.phone')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="tel" name="phone" placeholder="{{__('general.phone')}}" class="form-control pl-1 min-h-40px @error('phone') is-invalid @enderror" value="{{ old('phone') }}"> </div> </div> </div>
 
+                                <!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.messanger_id')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="messanger_id" placeholder="{{__('general.messanger_id')}}" class="form-control pl-1 min-h-40px @error('messanger_id') is-invalid @enderror" value="{{ old('messanger_id') }}"> </div> </div> </div>
+
+<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.whatsapp')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="tel" name="whatsapp" placeholder="{{__('general.whatsapp')}}" class="form-control pl-1 min-h-40px @error('whatsapp') is-invalid @enderror" value="{{ old('whatsapp') }}"> </div> </div> </div>
+
                                 {{-- Checkbox Input --}} <div class="col-md-6 ps-4"> <div class="form-group"> <div class="form-group"> <div class="form-check form-switch"> <input class="form-check-input" @checked(old('isActive')) type="checkbox" id="isActive" name="isActive" value="1"> <label class="form-check-label" for="isActive">{{ __('general.isActive') }} <span class="text-danger"> * </span></label> </div> </div> </div> </div>
 
                                 <div class="form-group">
