@@ -33,6 +33,9 @@
                                     <input type="email" name="email" value="{{ old('email') }}" class="form-control @error('') invalid @enderror"
                                         id="exampleInputEmail" placeholder="@lang('general.email')">
                                 </div>
+
+                                <!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.phone')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="tel" name="phone" placeholder="{{__('general.phone')}}" class="form-control pl-1 min-h-40px @error('phone') is-invalid @enderror" value="{{ old('phone') }}"> </div> </div> </div>
+                                
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">@lang('general.password')</label>
                                     <input type="password" name="password" value="{{ old('password') }}"
