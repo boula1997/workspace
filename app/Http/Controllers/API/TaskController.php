@@ -81,7 +81,7 @@ class TaskController extends Controller
 
         foreach ($projects as $project) {
             $elements[] = [
-                'title' => $project->name,  
+                'title' => $project->title,  
                'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/projects/".$project->id."/edit",
                 'type'  => "project",
             ];
