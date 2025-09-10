@@ -59,10 +59,38 @@ class TaskController extends Controller
     {
         $employees = Admin::where("isActive",1)->where("type","!=","client")->orderBy('name', 'ASC')->get();
         $clients = Admin::where("isActive",1)->where("type","client")->orderBy('name', 'ASC')->get();
-           // Remove duplicate tasks by title
+                        $projects = Project::orderBy("title","asc")
+                    ->get(); 
+        // Remove duplicate tasks by title
 
+        foreach ($clients as $client) {
+            $elements[] = [
+                'title' => $client->name,  
+                'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/admins/".$client->id."/edit",
+                'type'  => "client",
+            ];
+        }
+
+        foreach ($employees as $employee) {
+            $elements[] = [
+                'title' => $employee->name,  
+                'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/projects/".$employee->id."/edit",
+                'type'  => "employee",
+            ];
+        }
+
+        foreach ($projects as $project) {
+            $elements[] = [
+                'title' => $project->name,  
+               'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/projects/".$project->id."/edit",
+                'type'  => "project",
+            ];
+        }
+                
+           
+           
+           
            $queries=Query::latest()->get();
-
         
             if(!isWithinWorkingHours()){
                         $tasks = Task::where("status", 0)
@@ -73,8 +101,7 @@ class TaskController extends Controller
             ->get()
             ->unique('title');     
                 $issues = Issue::where("isOverthinking",0)->orderBy("title","asc")->get();
-                $projects = Project::orderBy("title","asc")
-                    ->get(); 
+
                 $infoProjects = Project::where("isOverthinking",0)->orderBy("title","asc")->get(); // ✅ sort
 
             }else{
@@ -84,8 +111,6 @@ class TaskController extends Controller
             ->take(300)                       // Limit to 300 tasks
             ->get()
             ->unique('title');     
-                 $projects = Project::orderBy("title","asc")
-                    ->get(); 
                 $infoProjects = Project::orderBy("title","asc")
                     ->get();
                 $issues = Issue::orderBy("title","asc")->get();
@@ -106,6 +131,7 @@ class TaskController extends Controller
             "tablePprojects"=>ProjectResource::collection($tablePprojects),
             "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
+            "elements"=>$elements,
             "clients"=>$clients,
             "credentials"=>$credentials,
             "tasks"=>TaskResource::collection($tasks),
@@ -122,6 +148,7 @@ class TaskController extends Controller
         else
         $data=[
             "projects"=>ProjectResource::collection($projects),
+            "elements"=>$elements,
             "infoProjects"=>ProjectResource::collection($infoProjects),
             "boardProjects" => ProjectResource::collection(
                 Project::orderBy("deadline","asc")
