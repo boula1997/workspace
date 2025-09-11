@@ -2099,7 +2099,15 @@
                     'cd public_html/workspace \n' +
                     'mysqldump -u yousabte_workspace -p --complete-insert yousabte_workspace > yousabte_workspace_export.sql\n' +
                     '\n' +
-                    'kD[asKgc%ydC'
+                    'kD[asKgc%ydC'+
+                    '\n' +
+                    'git add .'+
+                    '\n' +
+                    'git commit -m "database backup"'+
+                    '\n' +
+                    'git push origin main'+
+                    '\n' +
+                    'cls'
                 );
                 toastNow();
             });
