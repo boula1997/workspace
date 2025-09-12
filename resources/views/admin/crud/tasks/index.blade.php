@@ -477,7 +477,7 @@
                 }
             });
         </script> --}}
-        @if (boula())
+        @if (false)
             <script>
                 let femaleVoice = null;
                 let stopReading = false;
@@ -680,13 +680,13 @@
                     autoWidth: false,
                     paging: false,
                     searching: true,
-                    rowReorder: {
-                        selector: 'td:nth-child(3)'
-                    },
-                    columnDefs: [{
-                        targets: 2,
-                        orderable: true
-                    }]
+                    // rowReorder: {
+                    //     selector: 'td:nth-child(3)'
+                    // },
+                    // columnDefs: [{
+                    //     targets: 2,
+                    //     orderable: true
+                    // }]
                 });
 
 
