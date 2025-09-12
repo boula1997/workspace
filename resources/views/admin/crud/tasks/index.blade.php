@@ -22,11 +22,6 @@
             @endif
             <!-- Main content -->
             <div class="container-fluid p-3">
-                <section class="content pt-2">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <!-- left column -->
-                            <div class="col-md-12">
                                 <!-- general form elements -->
                                 <div class="card">
                                     <div class="card-header">
@@ -238,10 +233,6 @@
                                         </form>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div><!-- /.container-fluid -->
-                </section>
             </div>
             <!-- /.content -->
         </div>
