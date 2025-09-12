@@ -34,7 +34,7 @@ class DbcredentialController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = DBCredential::orderBy('id', 'DESC')->ge();
+            $data = DBCredential::orderBy('id', 'DESC')->get();
             return view('admin.crud.dbcredentials.index', compact('data'))
                 ->with('i', ($request->input('page', 1) - 1) * 5);
         } catch (Exception $e) {
