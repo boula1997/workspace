@@ -515,7 +515,7 @@ function taskEmployees($title)
 {
     $employee_ids = Task::where('title', $title)->pluck('employee_id');
     $names = Admin::whereIn('id', $employee_ids)->pluck('name');
-    return json_encode($names);
+    return $names->implode('<br>');
 }
 
 function products()
