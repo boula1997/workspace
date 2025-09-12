@@ -60,7 +60,7 @@ class TaskController extends Controller
             } elseif (request()->query('taskType')=="tasks") {
                 $status = [0];
             } else {
-                $status = [0, 1];
+            $status = [0];
             }
 
 
