@@ -21,7 +21,7 @@
                 <button id="stopReadingButton">Stop Reading for 60 Minutes</button>
             @endif
             <!-- Main content -->
-            <div class="container-fluid p-3">
+            <div class="container-fluid">
                                 <!-- general form elements -->
                                 <div class="card">
                                     <div class="card-header">
