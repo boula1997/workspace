@@ -140,22 +140,23 @@
                                                 </div>
 
                                             </div>
+                                            <button id="expandAll" class="btn btn-info mb-2">Expand All</button>
+                                            <button id="collapseAll" class="btn btn-warning mb-2">Collapse All</button>
                                             <table id="example1" class="table table-hover">
                                                 <thead>
                                                     <tr>
                                                         <th>Id</th>
                                                         <th>
                                                             {{ __('general.title') }}
-                                           س             </th>
-                                                                                      
-                                                        <th>{{ __('general.project') }}</th>
-                                                                                                                                              <th>{{ __('general.piority') }}</th>
-                                                            @if(boula())
+                                                            س </th>
 
-                                                        <th>{{ __('general.level') }}</th>
+                                                        <th>{{ __('general.project') }}</th>
+                                                        <th>{{ __('general.piority') }}</th>
+                                                        @if (boula())
+                                                            <th>{{ __('general.level') }}</th>
                                                         @endif
                                                         {{-- <th>{{ __('general.counter') }}</th> --}}
-              
+
                                                         <th>{{ __('general.employees') }}</th>
                                                         <th>{{ __('general.actions') }}</th>
                                                         <th class="d-none">{{ __('general.select') }}</th>
@@ -176,7 +177,7 @@
 
                                                             <td>{{ isset($task->project->title) ? $task->project->title : 'None' }}
                                                             </td>
-                                                                                                                <td data-title="{{ $task->title }}" class="togglePiority"
+                                                            <td data-title="{{ $task->title }}" class="togglePiority"
                                                                 data-order="{{ $task->piority ? 1 : 0 }}"
                                                                 style="cursor: pointer;
                                                                     background-color: {{ $task->piority ? 'green' : 'yellow' }};
@@ -184,18 +185,18 @@
                                                                 id="{{ $task->id }}">
                                                                 {{ $task->piority ? 'Active' : 'Pending' }}
                                                             </td>
-                                                            @if(boula())
-                                                            <td class="toggleLevel" style="cursor: pointer"
-                                                                id="{{ $task->id }}">
-                                                                {{ $task->level ? 'Bed' : 'Office' }}
-                                                            </td>
+                                                            @if (boula())
+                                                                <td class="toggleLevel" style="cursor: pointer"
+                                                                    id="{{ $task->id }}">
+                                                                    {{ $task->level ? 'Bed' : 'Office' }}
+                                                                </td>
                                                             @endif
                                                             {{-- <td class="counter" data-task-id="{{ $task->id }}"
                                                                 data-counter="{{ $task->counter }}"
                                                                 style="cursor: pointer;">
                                                                 {{ $task->counter }}
                                                             </td> --}}
-        
+
                                                             <td>{{ taskEmployees($task->title) }}</td>
 
                                                             <td>
@@ -660,8 +661,8 @@
                     type: 'GET', // HTTP method
                     success: function(response) {
                         // Toggle the HTML content based on current value
-                            self.html(response.data);
-   
+                        self.html(response.data);
+
                         console.log(response); // Log the success response
                     },
                     error: function(xhr, status, error) {
@@ -886,6 +887,42 @@
                 setTimeout(function() {
                     $('#readAllTitles').click();
                 }, 10000); // 10000 milliseconds = 10 seconds
+            });
+        </script>
+
+
+        <script>
+            $(document).ready(function() {
+                var table = $("#example1").DataTable();
+
+                // Expand all rows
+                $("#expandAll").on("click", function() {
+                    table.rows().every(function() {
+                        if (!this.child.isShown()) {
+                            this.child(format(this.data())).show();
+                            $(this.node()).addClass("shown");
+                        }
+                    });
+                });
+
+                // Collapse all rows
+                $("#collapseAll").on("click", function() {
+                    table.rows().every(function() {
+                        if (this.child.isShown()) {
+                            this.child.hide();
+                            $(this.node()).removeClass("shown");
+                        }
+                    });
+                });
+
+                // Example child row formatter
+                function format(rowData) {
+                    // You can customize what shows inside expanded rows
+                    return `<div style="padding:10px; background:#f9f9f9;">
+                        <strong>Task:</strong> ${rowData[1]} <br>
+                        <strong>Project:</strong> ${rowData[2]}
+                    </div>`;
+                }
             });
         </script>
     @endpush
