@@ -10,7 +10,7 @@
             }
 
             .employee-column {
-                max-width: 80px;
+                max-width: 50px;
                 /* or whatever fits */
                 white-space: normal;
                 /* allow wrapping */
