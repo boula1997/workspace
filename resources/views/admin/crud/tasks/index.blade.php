@@ -130,7 +130,7 @@
                             <table id="example1" class="table table-hover">
                                 <thead>
                                     <tr>
-                                        {{-- <th>Id</th> --}}
+                                        <th>Id</th>
                                         <th>
                                             {{ __('general.title') }}
                                         </th>
@@ -150,7 +150,7 @@
                                 <tbody>
                                     @foreach ($tasks as $task)
                                         <tr>
-                                            {{-- <td>{{ $task->id }}</td> --}}
+                                            <td>{{ $task->id }}</td>
 
                                             <td class="clickable-text {{ request()->routeIs('tasks.all') && $task->status == 1 ? 'text-success' : '' }} identified"
                                                 style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 500px;"
