@@ -140,8 +140,10 @@
                                                 </div>
 
                                             </div>
-                                            <button id="expandAll" class="btn btn-info mb-2">Expand All</button>
-                                            <button id="collapseAll" class="btn btn-warning mb-2">Collapse All</button>
+                                            <button id="expandAll" type="button" class="btn btn-info mb-2">Expand
+                                                All</button>
+                                            <button id="collapseAll" type="button" class="btn btn-warning mb-2">Collapse
+                                                All</button>
                                             <table id="example1" class="table table-hover">
                                                 <thead>
                                                     <tr>
