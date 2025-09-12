@@ -50,7 +50,7 @@
     }
 </style>
 
-<input type="text" id="searchHighlight" class="noHide" placeholder="Search...">
+{{-- <input type="text" id="searchHighlight" class="noHide" placeholder="Search..."> --}}
 <style>
     /* Set the background and text color for the Select2 container */
     .select2-container--default .select2-selection--single {
