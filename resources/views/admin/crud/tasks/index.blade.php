@@ -8,6 +8,17 @@
             .fullscreen-mode .content-wrapper .thisForm>*:not(.container) {
                 display: none !Active;
             }
+
+            .employee-column {
+                max-width: 120px;
+                /* or whatever fits */
+                white-space: normal;
+                /* allow wrapping */
+                word-break: break-word;
+                /* break long words */
+                vertical-align: top;
+                /* align names to top */
+            }
         </style>
 
 
@@ -159,7 +170,7 @@
                                                 {{ $task->title }}
                                             </td>
 
-                                            <td>{{ taskEmployees($task->title) }}</td>
+                                            <td class="employee-column">{!! taskEmployees($task->title) !!}</td>
 
 
                                             <td>{{ isset($task->project->title) ? $task->project->title : 'None' }}
