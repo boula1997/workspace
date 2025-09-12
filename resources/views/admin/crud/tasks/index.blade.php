@@ -21,7 +21,7 @@
                 <button id="stopReadingButton">Stop Reading for 60 Minutes</button>
             @endif
             <!-- Main content -->
-            <div class="container p-3">
+            <div class="container-fluid p-3">
                 <section class="content pt-2">
                     <div class="container-fluid">
                         <div class="row">
