@@ -140,36 +140,98 @@
                                                 </div>
 
                                             </div>
-                                            <button id="expandAll" type="button" class="btn btn-info mb-2">Expand
-                                                All</button>
-                                            <button id="collapseAll" type="button" class="btn btn-warning mb-2">Collapse
-                                                All</button>
                                             <table id="example1" class="table table-hover">
                                                 <thead>
                                                     <tr>
-                                                        <th></th> {{-- expand/collapse control column --}}
-                                                        <th>ID</th>
-                                                        <th>Title</th>
-                                                        <th>Project</th>
-                                                        <th>Priority</th>
-                                                        <th>Employees</th>
-                                                        <th>Actions</th>
+                                                        <th>Id</th>
+                                                        <th>
+                                                            {{ __('general.title') }}
+                                                            س </th>
+
+                                                        <th>{{ __('general.project') }}</th>
+                                                        <th>{{ __('general.piority') }}</th>
+                                                        @if (boula())
+                                                            <th>{{ __('general.level') }}</th>
+                                                        @endif
+                                                        {{-- <th>{{ __('general.counter') }}</th> --}}
+
+                                                        <th>{{ __('general.employees') }}</th>
+                                                        <th>{{ __('general.actions') }}</th>
+                                                        <th class="d-none">{{ __('general.select') }}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     @foreach ($tasks as $task)
                                                         <tr>
-                                                            <td class="details-control"></td>
                                                             <td>{{ $task->id }}</td>
-                                                            <td>{{ $task->title }}</td>
-                                                            <td>{{ $task->project->title ?? 'None' }}</td>
-                                                            <td>{{ $task->piority ? 'Active' : 'Pending' }}</td>
+
+                                                            <td class="clickable-text {{ request()->routeIs('tasks.all') && $task->status == 1 ? 'text-success' : '' }} identified"
+                                                                style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 500px;"
+                                                                onclick="toggleCheckbox({{ $task->id }})"
+                                                                content="{{ $task->title }}"
+                                                                data-title="{{ $task->title }}">
+                                                                {{ $task->title }}
+                                                            </td>
+
+                                                            <td>{{ isset($task->project->title) ? $task->project->title : 'None' }}
+                                                            </td>
+                                                            <td data-title="{{ $task->title }}" class="togglePiority"
+                                                                data-order="{{ $task->piority ? 1 : 0 }}"
+                                                                style="cursor: pointer;
+                                                                    background-color: {{ $task->piority ? 'green' : 'yellow' }};
+                                                                    color: {{ $task->piority ? 'white' : 'black' }};"
+                                                                id="{{ $task->id }}">
+                                                                {{ $task->piority ? 'Active' : 'Pending' }}
+                                                            </td>
+                                                            @if (boula())
+                                                                <td class="toggleLevel" style="cursor: pointer"
+                                                                    id="{{ $task->id }}">
+                                                                    {{ $task->level ? 'Bed' : 'Office' }}
+                                                                </td>
+                                                            @endif
+                                                            {{-- <td class="counter" data-task-id="{{ $task->id }}"
+                                                                data-counter="{{ $task->counter }}"
+                                                                style="cursor: pointer;">
+                                                                {{ $task->counter }}
+                                                            </td> --}}
+
                                                             <td>{{ taskEmployees($task->title) }}</td>
-                                                            <td>…</td>
+
+                                                            <td>
+                                                                @if (isset($task->created_at))
+                                                                    <a href="{{ route('tasks.edit', $task) }}"
+                                                                        title="edit">
+                                                                        <i class="fas fa-edit  text-secondary  fa-md"></i>
+                                                                    </a>
+
+                                                                    <button class="btn btn-secondary btn-sm mx-1 btn-icon"
+                                                                        data-toggle="modal" data-target="#keywordsModal"
+                                                                        data-task-id="{{ $task->id }}"
+                                                                        data-keywords="{{ $task->keywords }}"
+                                                                        data-task-title="{{ $task->title }}"
+                                                                        type="button">
+                                                                        <i class="fas fa-key fa-md"></i>
+                                                                    </button>
+
+                                                                    <button
+                                                                        class="btn sbtn-secondary btn-sm deleteTask delete-icon btn-icon"
+                                                                        type="button"
+                                                                        data-keywords="{{ $task->keywords }}"
+                                                                        title="@lang('general.delete')">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                @endif
+
+
+                                                            </td>
+                                                            <td class="d-none">
+                                                                <input type="checkbox" name="tasks[]"
+                                                                    value="{{ $task->id }}"
+                                                                    id="checkbox-{{ $task->id }}">
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
-
                                             </table>
                                         </form>
                                     </div>
@@ -183,7 +245,8 @@
         </div>
 
 
-        <div class="modal fade" id="keywordsModal" tabindex="-1" aria-labelledby="keywordsModalLabel" aria-hidden="true">
+        <div class="modal fade" id="keywordsModal" tabindex="-1" aria-labelledby="keywordsModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -608,44 +671,64 @@
         </script>
 
         <script>
-// Toggle individual row on click
-    $('#example1 tbody').on('click', 'td.details-control', function() {
-        var tr = $(this).closest('tr');
-        var row = table.row(tr);
+            $(function() {
+                // ✅ Initialize the DataTable once
+                var table = $("#example1").DataTable({
+                    responsive: true,
+                    lengthChange: false,
+                    autoWidth: false,
+                    paging: false,
+                    searching: true,
+                    // rowReorder: {
+                    //     selector: 'td:nth-child(3)'
+                    // },
+                    // columnDefs: [{
+                    //     targets: 2,
+                    //     orderable: true
+                    // }]
+                });
 
-        if (row.child.isShown()) {
-            // Close it
-            row.child.hide();
-            tr.removeClass('shown');
-        } else {
-            // Open it
-            row.child(format(row.data())).show();
-            tr.addClass('shown');
-        }
-    });
 
-    // Expand all
-    $('#expandAll').on('click', function(e) {
-        e.preventDefault();
-        table.rows().every(function() {
-            if (!this.child.isShown()) {
-                this.child(format(this.data())).show();
-                $(this.node()).addClass('shown');
-            }
-        });
-    });
+                $('#example1').on('row-reorder', function(e, diff, edit) {
+                    console.log('Row order changed');
+                    console.log(diff);
+                });
 
-    // Collapse all
-    $('#collapseAll').on('click', function(e) {
-        e.preventDefault();
-        table.rows().every(function() {
-            if (this.child.isShown()) {
-                this.child.hide();
-                $(this.node()).removeClass('shown');
-            }
-        });
-    });
-});
+                // ✅ Handle priority toggle clicks
+                $('#example1').on('click', '.togglePiority', function() {
+                    let self = $(this);
+                    let level = self.attr('id');
+
+                    $.ajax({
+                        url: `{{ route('piority.toggle', '') }}/${level}`,
+                        type: 'GET',
+                        success: function(response) {
+                            if (self.html().trim() === 'Active') {
+                                self.html('Pending');
+                                self.attr('data-order', 0);
+                                self.css({
+                                    'background-color': 'yellow',
+                                    'color': 'black'
+                                });
+                            } else {
+                                self.html('Active');
+                                self.attr('data-order', 1);
+                                self.css({
+                                    'background-color': 'green',
+                                    'color': 'white'
+                                });
+                            }
+
+                            // ✅ Re-evaluate the whole row to keep sorting/ordering working
+                            let row = table.row(self.closest('tr'));
+                            row.invalidate().draw(false);
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("Error: " + error);
+                        }
+                    });
+                });
+            });
         </script>
 
 
@@ -802,46 +885,6 @@
                 setTimeout(function() {
                     $('#readAllTitles').click();
                 }, 10000); // 10000 milliseconds = 10 seconds
-            });
-        </script>
-
-
-        <script>
-            $(document).ready(function() {
-                var table = $("#example1").DataTable();
-
-                // Expand all rows
-                $("#expandAll").on("click", function() {
-                    table.rows().every(function() {
-                        if (!this.child.isShown()) {
-                            this.child(format(this.data())).show();
-                            $(this.node()).addClass("shown");
-                        }
-                    });
-                });
-
-                // Collapse all rows
-                $("#collapseAll").on("click", function() {
-                    table.rows().every(function() {
-                        if (this.child.isShown()) {
-                            this.child.hide();
-                            $(this.node()).removeClass("shown");
-                        }
-                    });
-                });
-
-                // Example child row formatter
-                function format(d) {
-                    // d is the row's data array
-                    return `
-        <div style="padding:10px; background:#f9f9f9;">
-            <strong>Task:</strong> ${d[2]} <br>
-            <strong>Project:</strong> ${d[3]} <br>
-            <strong>Priority:</strong> ${d[4]} <br>
-            <strong>Employees:</strong> ${d[5]}
-        </div>
-    `;
-                }
             });
         </script>
     @endpush
