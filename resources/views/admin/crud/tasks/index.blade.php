@@ -146,8 +146,9 @@
                                                         <th>Id</th>
                                                         <th>
                                                             {{ __('general.title') }}
-                                                            س </th>
-
+                                                            </th>
+                                                            
+                                                            <th>{{ __('general.employees') }}</th>
                                                         <th>{{ __('general.project') }}</th>
                                                         <th>{{ __('general.piority') }}</th>
                                                         @if (boula())
@@ -155,7 +156,6 @@
                                                         @endif
                                                         {{-- <th>{{ __('general.counter') }}</th> --}}
 
-                                                        <th>{{ __('general.employees') }}</th>
                                                         <th>{{ __('general.actions') }}</th>
                                                         <th class="d-none">{{ __('general.select') }}</th>
                                                     </tr>
@@ -172,6 +172,9 @@
                                                                 data-title="{{ $task->title }}">
                                                                 {{ $task->title }}
                                                             </td>
+
+                                                            <td>{{ taskEmployees($task->title) }}</td>
+
 
                                                             <td>{{ isset($task->project->title) ? $task->project->title : 'None' }}
                                                             </td>
@@ -195,7 +198,6 @@
                                                                 {{ $task->counter }}
                                                             </td> --}}
 
-                                                            <td>{{ taskEmployees($task->title) }}</td>
 
                                                             <td>
                                                                 @if (isset($task->created_at))
