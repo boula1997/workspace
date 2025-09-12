@@ -22,217 +22,203 @@
             @endif
             <!-- Main content -->
             <div class="container-fluid">
-                                <!-- general form elements -->
-                                <div class="card">
-                                    <div class="card-header">
-                                        <div class="row">
-                                            <div class="col-md-6 d-flex justify-content-start">
-                                                @if (request()->route('taskType') == 'task')
-                                                    <h1 class="card-title fw-bold">@lang('general.tasks') (You can order rows by
-                                                        dragging from third column)</h1>
-                                                @elseif(request()->route('taskType') == 'alltasks')
-                                                    <h1 class="card-title fw-bold">@lang('general.alltasks')</h1>
-                                                @else
-                                                    <h1 class="card-title fw-bold">@lang('general.finishedTasks')</h1>
-                                                @endif
-                                            </div>
-                                            <div class="col-md-6 d-flex justify-content-end">
-                                                <a href="{{ route('tasks.create') }}">
-                                                    <button class="btn btn-outline-primary px-5">
-                                                        <i class="fa fa-plus fa-sm px-2" aria-hidden="true"></i>
-                                                        @lang('general.add')
-                                                    </button>
-                                                </a>
-                                            </div>
-                                        </div>
+                <!-- general form elements -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-6 d-flex justify-content-start">
+                                @if (request()->route('taskType') == 'task')
+                                    <h1 class="card-title fw-bold">@lang('general.tasks') (You can order rows by
+                                        dragging from third column)</h1>
+                                @elseif(request()->route('taskType') == 'alltasks')
+                                    <h1 class="card-title fw-bold">@lang('general.alltasks')</h1>
+                                @else
+                                    <h1 class="card-title fw-bold">@lang('general.finishedTasks')</h1>
+                                @endif
+                            </div>
+                            <div class="col-md-6 d-flex justify-content-end">
+                                <a href="{{ route('tasks.create') }}">
+                                    <button class="btn btn-outline-primary px-5">
+                                        <i class="fa fa-plus fa-sm px-2" aria-hidden="true"></i>
+                                        @lang('general.add')
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="">
+                            <button class="btn btn-outline-secondary px-5" id="toggle-fullscreen">
+                                <i class="fa fa-expand" aria-hidden="true"></i> Full Screen
+                            </button>
+
+                        </div>
+                        <form action="{{ route('tasks.bulkAction', ['taskType' => request()->route('taskType')]) }}"
+                            method="POST">
+
+                            @csrf
+                            <div class="row d-flex align-items-center thisForm">
+
+
+                                {{-- Dynamic Select Input for Employees --}}
+                                <div class="col-md-4 mb-4">
+                                    <label class="col-form-label text-right">{{ __('general.employees') }}</label>
+                                    <select class="form-control select2" id="multiSelectEmployees" multiple="multiple"
+                                        name="employees[]">
+                                        @foreach ($employees as $employee)
+                                            <option value="{{ $employee->id }}"
+                                                {{ collect(old('employees', $employeeIds))->contains($employee->id) ? 'selected' : '' }}>
+                                                {{ $employee->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                {{-- Dynamic Select Input for Projects --}}
+                                <div class="col-md-4 mb-4">
+                                    <label class="col-form-label text-right">{{ __('general.projects') }}</label>
+                                    <select class="form-control select2 bg-dark" id="multiSelectProjects"
+                                        multiple="multiple" name="projects[]">
+                                        @foreach ($projects as $project)
+                                            <option value="{{ $project->id }}"
+                                                {{ collect(old('projects', []))->contains($project->id) ? 'selected' : '' }}>
+                                                {{ $project->title }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <label class="col-form-label text-right">{{ __('general.type') }}</label>
+
+                                    {{-- Dynamic Select Input for Projects --}}
+                                    <select class="form-control select2 bg-dark" name="taskType" id="taskTypeSelect">
+                                        <option value="tasks" selected>tasks</option>
+                                        <option value="finishedTasks">finishedTasks</option>
+                                        <option value="allTasks">allTasks</option>
+                                    </select>
+                                </div>
+
+
+
+
+
+
+
+                                <input type="hidden" name="route_name"
+                                    value="{{ isset($type) ? $type : Route::currentRouteName() }}">
+
+                                <div class="col-md-4">
+                                    <div class="">
+                                        <button type="submit" name="action" value="assign" class="btn btn-primary">
+                                            @lang('general.assign_employee')
+                                        </button>
+
                                     </div>
-                                    <div class="card-body">
-                                        <div class="">
-                                            <button class="btn btn-outline-secondary px-5" id="toggle-fullscreen">
-                                                <i class="fa fa-expand" aria-hidden="true"></i> Full Screen
-                                            </button>
+                                    <div class="mt-2">
+                                        <button type="submit" name="action" value="delete" class="btn btn-danger">
+                                            @lang('general.delete_tasks')
+                                        </button>
+                                    </div>
+                                    <div class="mt-2">
+                                        <button type="submit" name="action" value="filterProject" class="btn btn-success">
+                                            {{ __('general.filter_projects') }}
+                                        </button>
+                                    </div>
+                                </div>
 
-                                        </div>
-                                        <form
-                                            action="{{ route('tasks.bulkAction', ['taskType' => request()->route('taskType')]) }}"
-                                            method="POST">
+                            </div>
+                            <table id="example1" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        {{-- <th>Id</th> --}}
+                                        <th>
+                                            {{ __('general.title') }}
+                                        </th>
 
-                                            @csrf
-                                            <div class="row d-flex align-items-center thisForm">
+                                        <th>{{ __('general.employees') }}</th>
+                                        <th>{{ __('general.project') }}</th>
+                                        <th>{{ __('general.piority') }}</th>
+                                        @if (boula())
+                                            <th>{{ __('general.level') }}</th>
+                                        @endif
+                                        {{-- <th>{{ __('general.counter') }}</th> --}}
 
+                                        <th>{{ __('general.actions') }}</th>
+                                        <th class="d-none">{{ __('general.select') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($tasks as $task)
+                                        <tr>
+                                            {{-- <td>{{ $task->id }}</td> --}}
 
-                                                {{-- Dynamic Select Input for Employees --}}
-                                                <div class="col-md-4 mb-4">
-                                                    <label
-                                                        class="col-form-label text-right">{{ __('general.employees') }}</label>
-                                                    <select class="form-control select2" id="multiSelectEmployees"
-                                                        multiple="multiple" name="employees[]">
-                                                        @foreach ($employees as $employee)
-                                                            <option value="{{ $employee->id }}"
-                                                                {{ collect(old('employees', $employeeIds))->contains($employee->id) ? 'selected' : '' }}>
-                                                                {{ $employee->name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                            <td class="clickable-text {{ request()->routeIs('tasks.all') && $task->status == 1 ? 'text-success' : '' }} identified"
+                                                style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 500px;"
+                                                onclick="toggleCheckbox({{ $task->id }})"
+                                                content="{{ $task->title }}" data-title="{{ $task->title }}">
+                                                {{ $task->title }}
+                                            </td>
 
-                                                {{-- Dynamic Select Input for Projects --}}
-                                                <div class="col-md-4 mb-4">
-                                                    <label
-                                                        class="col-form-label text-right">{{ __('general.projects') }}</label>
-                                                    <select class="form-control select2 bg-dark" id="multiSelectProjects"
-                                                        multiple="multiple" name="projects[]">
-                                                        @foreach ($projects as $project)
-                                                            <option value="{{ $project->id }}"
-                                                                {{ collect(old('projects', []))->contains($project->id) ? 'selected' : '' }}>
-                                                                {{ $project->title }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-4 mb-4">
-                                                    <label
-                                                        class="col-form-label text-right">{{ __('general.type') }}</label>
-
-                                                    {{-- Dynamic Select Input for Projects --}}
-                                                    <select class="form-control select2 bg-dark" name="taskType"
-                                                        id="taskTypeSelect">
-                                                        <option value="tasks" selected>tasks</option>
-                                                        <option value="finishedTasks">finishedTasks</option>
-                                                        <option value="allTasks">allTasks</option>
-                                                    </select>
-                                                </div>
+                                            <td>{{ taskEmployees($task->title) }}</td>
 
 
-
-
-
-
-
-                                                <input type="hidden" name="route_name"
-                                                    value="{{ isset($type) ? $type : Route::currentRouteName() }}">
-
-                                                <div class="col-md-4">
-                                                    <div class="">
-                                                        <button type="submit" name="action" value="assign"
-                                                            class="btn btn-primary">
-                                                            @lang('general.assign_employee')
-                                                        </button>
-
-                                                    </div>
-                                                    <div class="mt-2">
-                                                        <button type="submit" name="action" value="delete"
-                                                            class="btn btn-danger">
-                                                            @lang('general.delete_tasks')
-                                                        </button>
-                                                    </div>
-                                                    <div class="mt-2">
-                                                        <button type="submit" name="action" value="filterProject"
-                                                            class="btn btn-success">
-                                                            {{ __('general.filter_projects') }}
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <table id="example1" class="table table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Id</th>
-                                                        <th>
-                                                            {{ __('general.title') }}
-                                                            </th>
-                                                            
-                                                            <th>{{ __('general.employees') }}</th>
-                                                        <th>{{ __('general.project') }}</th>
-                                                        <th>{{ __('general.piority') }}</th>
-                                                        @if (boula())
-                                                            <th>{{ __('general.level') }}</th>
-                                                        @endif
-                                                        {{-- <th>{{ __('general.counter') }}</th> --}}
-
-                                                        <th>{{ __('general.actions') }}</th>
-                                                        <th class="d-none">{{ __('general.select') }}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($tasks as $task)
-                                                        <tr>
-                                                            <td>{{ $task->id }}</td>
-
-                                                            <td class="clickable-text {{ request()->routeIs('tasks.all') && $task->status == 1 ? 'text-success' : '' }} identified"
-                                                                style="cursor: pointer; white-space: normal; word-wrap: break-word; word-break: break-word; width: 500px;"
-                                                                onclick="toggleCheckbox({{ $task->id }})"
-                                                                content="{{ $task->title }}"
-                                                                data-title="{{ $task->title }}">
-                                                                {{ $task->title }}
-                                                            </td>
-
-                                                            <td>{{ taskEmployees($task->title) }}</td>
-
-
-                                                            <td>{{ isset($task->project->title) ? $task->project->title : 'None' }}
-                                                            </td>
-                                                            <td data-title="{{ $task->title }}" class="togglePiority"
-                                                                data-order="{{ $task->piority ? 1 : 0 }}"
-                                                                style="cursor: pointer;
+                                            <td>{{ isset($task->project->title) ? $task->project->title : 'None' }}
+                                            </td>
+                                            <td data-title="{{ $task->title }}" class="togglePiority"
+                                                data-order="{{ $task->piority ? 1 : 0 }}"
+                                                style="cursor: pointer;
                                                                     background-color: {{ $task->piority ? 'green' : 'yellow' }};
                                                                     color: {{ $task->piority ? 'white' : 'black' }};"
-                                                                id="{{ $task->id }}">
-                                                                {{ $task->piority ? 'Active' : 'Pending' }}
-                                                            </td>
-                                                            @if (boula())
-                                                                <td class="toggleLevel" style="cursor: pointer"
-                                                                    id="{{ $task->id }}">
-                                                                    {{ $task->level ? 'Bed' : 'Office' }}
-                                                                </td>
-                                                            @endif
-                                                            {{-- <td class="counter" data-task-id="{{ $task->id }}"
+                                                id="{{ $task->id }}">
+                                                {{ $task->piority ? 'Active' : 'Pending' }}
+                                            </td>
+                                            @if (boula())
+                                                <td class="toggleLevel" style="cursor: pointer" id="{{ $task->id }}">
+                                                    {{ $task->level ? 'Bed' : 'Office' }}
+                                                </td>
+                                            @endif
+                                            {{-- <td class="counter" data-task-id="{{ $task->id }}"
                                                                 data-counter="{{ $task->counter }}"
                                                                 style="cursor: pointer;">
                                                                 {{ $task->counter }}
                                                             </td> --}}
 
 
-                                                            <td>
-                                                                @if (isset($task->created_at))
-                                                                    <a href="{{ route('tasks.edit', $task) }}"
-                                                                        title="edit">
-                                                                        <i class="fas fa-edit  text-secondary  fa-md"></i>
-                                                                    </a>
+                                            <td>
+                                                @if (isset($task->created_at))
+                                                    <a href="{{ route('tasks.edit', $task) }}" title="edit">
+                                                        <i class="fas fa-edit  text-secondary  fa-md"></i>
+                                                    </a>
 
-                                                                    <button class="btn btn-secondary btn-sm mx-1 btn-icon"
-                                                                        data-toggle="modal" data-target="#keywordsModal"
-                                                                        data-task-id="{{ $task->id }}"
-                                                                        data-keywords="{{ $task->keywords }}"
-                                                                        data-task-title="{{ $task->title }}"
-                                                                        type="button">
-                                                                        <i class="fas fa-key fa-md"></i>
-                                                                    </button>
+                                                    <button class="btn btn-secondary btn-sm mx-1 btn-icon"
+                                                        data-toggle="modal" data-target="#keywordsModal"
+                                                        data-task-id="{{ $task->id }}"
+                                                        data-keywords="{{ $task->keywords }}"
+                                                        data-task-title="{{ $task->title }}" type="button">
+                                                        <i class="fas fa-key fa-md"></i>
+                                                    </button>
 
-                                                                    <button
-                                                                        class="btn sbtn-secondary btn-sm deleteTask delete-icon btn-icon"
-                                                                        type="button"
-                                                                        data-keywords="{{ $task->keywords }}"
-                                                                        title="@lang('general.delete')">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </button>
-                                                                @endif
+                                                    <button
+                                                        class="btn sbtn-secondary btn-sm deleteTask delete-icon btn-icon"
+                                                        type="button" data-keywords="{{ $task->keywords }}"
+                                                        title="@lang('general.delete')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                @endif
 
 
-                                                            </td>
-                                                            <td class="d-none">
-                                                                <input type="checkbox" name="tasks[]"
-                                                                    value="{{ $task->id }}"
-                                                                    id="checkbox-{{ $task->id }}">
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </form>
-                                    </div>
-                                </div>
+                                            </td>
+                                            <td class="d-none">
+                                                <input type="checkbox" name="tasks[]" value="{{ $task->id }}"
+                                                    id="checkbox-{{ $task->id }}">
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                </div>
             </div>
             <!-- /.content -->
         </div>
