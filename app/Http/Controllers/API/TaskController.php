@@ -61,9 +61,16 @@ class TaskController extends Controller
         $clients = Admin::where("isActive",1)->where("type","client")->orderBy('name', 'ASC')->get();
                         $projects = Project::orderBy("title","asc")
                     ->get(); 
+
+        $allEmployees = Admin::where("type","!=","client")->orderBy('name', 'ASC')->get();
+        $allClients = Admin::where("type","client")->orderBy('name', 'ASC')->get();
+                        $projects = Project::orderBy("title","asc")
+                    ->get(); 
+
+
         // Remove duplicate tasks by title
 
-        foreach ($clients as $client) {
+        foreach ($allClients as $client) {
             $elements[] = [
                 'title' => $client->name,  
                 'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/admins/".$client->id."/edit",
@@ -71,7 +78,7 @@ class TaskController extends Controller
             ];
         }
 
-        foreach ($employees as $employee) {
+        foreach ($allEmployees as $employee) {
             $elements[] = [
                 'title' => $employee->name,  
                 'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/admins/".$employee->id."/edit",
