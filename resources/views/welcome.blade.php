@@ -1307,8 +1307,7 @@
                             <p>git commit -m "commit"</p>
                             <p>git pull origin main</p>
                             <p>git push origin main</p>
-                            <p>kD[asKgc%ydC</p>
-                            <p>mysqldump -u yousabte_workspace -p --complete-insert yousabte_workspace > yousabte_workspace_export.sql</p>
+                            <p>mysqldump -u yousabte_workspace -p'kD[asKgc%ydC' --complete-insert yousabte_workspace > yousabte_workspace_export.sql</p>
                         </div>
                     </div>
 
