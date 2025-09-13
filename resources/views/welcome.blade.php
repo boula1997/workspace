@@ -1303,11 +1303,12 @@
                             <br>
                             <hr class="text-white">
                             <p>cd public_html/workspace</p>
+                            <p>mysqldump -u yousabte_workspace -p'kD[asKgc%ydC' --complete-insert yousabte_workspace > yousabte_workspace_export.sql</p>
                             <p>git add .</p>
                             <p>git commit -m "commit"</p>
                             <p>git pull origin main</p>
                             <p>git push origin main</p>
-                            <p>mysqldump -u yousabte_workspace -p'kD[asKgc%ydC' --complete-insert yousabte_workspace > yousabte_workspace_export.sql</p>
+                            <p>cls</p>
                         </div>
                     </div>
 
