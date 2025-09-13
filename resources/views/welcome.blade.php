@@ -1302,6 +1302,9 @@
                             <p title="auto fill password">Pa$$w0rd!</p>
                             <br>
                             <hr class="text-white">
+                            <p>cd public_html/workspace </p>
+                            <p>mysqldump -u yousabte_workspace -p --complete-insert yousabte_workspace > yousabte_workspace_export.sql</p>
+                            <p>kD[asKgc%ydC</p>
                             <p>git add .</p>
                             <p>git commit -m "commit"</p>
                             <p>git pull origin main</p>
