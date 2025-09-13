@@ -762,6 +762,8 @@
                                 npm install @react-native-async-storage/async-storage
                                 import AsyncStorage from "@react-native-async-storage/async-storage";
                                 import React, { useEffect, useRef, useState } from "react";
+                                import * as ImagePicker from "expo-image-picker"; // For Expo
+                                import { Image } from 'react-native';
                                 const [data, setData] = useState([]);
                                 const [inputData, setInputData] = useState({});
                                 const [images, setImages] = useState([]);
