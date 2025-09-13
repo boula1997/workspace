@@ -875,6 +875,8 @@
                             }
                             };
 
+                             onChangeText={(text) => handleChange("price", text)}
+
 
                                 {{-- {/* Upload item container */}
                             <View style={{ marginTop: 2, paddingHorizontal: 16 }}>
