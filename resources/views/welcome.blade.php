@@ -1309,7 +1309,6 @@
                             <p>cd public_html/workspace</p>
                             <p>kD[asKgc%ydC</p>
                             <p>mysqldump -u yousabte_workspace -p --complete-insert yousabte_workspace > yousabte_workspace_export.sql</p>
-                            <p>cls</p>
                         </div>
                     </div>
 
