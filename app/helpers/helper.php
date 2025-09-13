@@ -511,11 +511,17 @@ function getFollowupTitles($followups)
 }
 
 
-function taskEmployees($title)
+function taskEmployees($title,$type="web")
 {
     $employee_ids = Task::where('title', $title)->pluck('employee_id');
     $names = Admin::whereIn('id', $employee_ids)->pluck('name');
+
+    if($type=="web")
     return $names->implode('<br>');
+    else
+    return $names->implode(',');
+
+    
 }
 
 function products()

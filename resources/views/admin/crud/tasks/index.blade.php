@@ -170,7 +170,7 @@
                                                 {{ $task->title }}
                                             </td>
 
-                                            <td class="employee-column">{!! taskEmployees($task->title) !!}</td>
+                                            <td class="employee-column">{!! taskEmployees($task->title,"web") !!}</td>
 
 
                                             <td>{{ isset($task->project->title) ? $task->project->title : 'None' }}
