@@ -30,6 +30,7 @@ if (strpos($link, 'www') !== false) {
             'user'=>$this->user,
 
             'password'=>$this->password,
+            'category'=>$this->category,
         ];
     }
 }

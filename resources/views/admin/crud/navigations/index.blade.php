@@ -39,6 +39,7 @@
                                             <th>@lang('general.title')</th>
                                             <th>@lang('general.user')</th>
                                             <th>@lang('general.password')</th>
+                                            <th>{{__('general.category')}}</th>
                                             <th class="th-controls">@lang('general.controls')</th>
                                         </tr>
                                     </thead>
@@ -54,6 +55,7 @@
                                                     </td>
                                                 <td>{{ $navigation->user }}</td>
                                                 <td>{{ $navigation->password }}</td>
+                                                <td>{{ $navigation->category->title }}</td>
                                                 <td>
                                                     @include('admin.components.controls', [
                                                         'route' => 'navigations',
