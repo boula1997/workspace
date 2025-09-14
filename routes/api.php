@@ -65,9 +65,9 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
 
 
-Route::get('/categories', [CategoryController::class, 'index']);
 Route::middleware('auth:admin-api')->group(function () {
     
+    Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
     Route::post('/updateProjectDeadline',[TaskController::class,'updateProjectDeadline']);
     Route::post('/storeDeadline',[TaskController::class,'storeDeadline']);
