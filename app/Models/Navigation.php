@@ -12,9 +12,6 @@ class Navigation extends Model
     protected $guarded=[];
 
 
-    //     public function getLinkAttribute($value)
-    // {
-    //     return  $value.'?user='.$this->user.'&password='.$this->password;
-    // }
+public function category(){ return $this->belongsTo(Category::class,'category_id'); }
 }
 
