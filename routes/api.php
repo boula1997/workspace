@@ -71,17 +71,14 @@ Route::middleware('auth:admin-api')->group(function () {
     Route::post('/updateProjectDeadline',[TaskController::class,'updateProjectDeadline']);
     Route::post('/storeDeadline',[TaskController::class,'storeDeadline']);
     Route::get('/stats', [TaskController::class, 'stats']);
+    Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/links', [TaskController::class, 'links'])->name('links');
     Route::get('/last/{date}', 'App\Http\Controllers\ActionController@lastUpdate')->name('last.update');
     Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
     Route::get('/apptask/create', [TaskController::class, 'create']);
     Route::get('/apptask/create/finished', [TaskController::class, 'createFinished']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
-
-    
-Route::get('/getFunction', [ActionController::class, 'getFunction']);
-    
-    
+    Route::get('/getFunction', [ActionController::class, 'getFunction']);
     Route::post('/apptask/refproPost', [TaskController::class, 'refproPost']);
     Route::post('/apptask/refproGet', [TaskController::class, 'refproGet']);
     Route::post('/apptask/store', [TaskController::class, 'store']);
@@ -91,5 +88,3 @@ Route::get('/getFunction', [ActionController::class, 'getFunction']);
     Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
     });
 });
-
-
