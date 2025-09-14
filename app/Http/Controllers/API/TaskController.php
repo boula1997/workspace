@@ -67,6 +67,11 @@ class TaskController extends Controller
                         $projects = Project::orderBy("title","asc")
                     ->get(); 
 
+        $naviagations = Navigation::orderBy('name', 'ASC')->get();
+
+                        $projects = Project::orderBy("title","asc")
+                    ->get(); 
+
 
         // Remove duplicate tasks by title
 
@@ -91,6 +96,14 @@ class TaskController extends Controller
                 'title' => $project->title,  
                'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/projects/".$project->id."/edit",
                 'type'  => "project",
+            ];
+        }
+
+        foreach ($naviagations as $navigation) {
+            $elements[] = [
+                'title' => $navigation->title,  
+               'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/navigations/".$navigation->id."/edit",
+                'type'  => "navigation",
             ];
         }
                 
