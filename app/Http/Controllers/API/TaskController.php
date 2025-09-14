@@ -69,7 +69,7 @@ class TaskController extends Controller
                     ->get(); 
 
         $naviagations = Navigation::orderBy('title', 'ASC')->get();
-        $categories = Category::orderBy('title', 'ASC')->get();
+        $categories = Category::get();
 
         $projects = Project::orderBy("title","asc")
                     ->get(); 
