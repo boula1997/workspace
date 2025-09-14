@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\NavigationRequest;
 use App\Models\Admin;
 use App\Models\User;
+use App\Models\Category;
 use App\Models\Project;
 use Exception;
 
@@ -53,7 +54,9 @@ class NavigationController extends Controller
     {
         $employees=Admin::orderBy('name', 'ASC')->get();
         // $projects=Project::where('status',1)->latest()->get();
-        return view('admin.crud.navigations.create',compact('employees'));
+        $categories=Category::get();
+
+        return view('admin.crud.navigations.create',compact('employees',"categories"));
     }
     public function bulkAction(Request $request)
     {
@@ -180,7 +183,8 @@ class NavigationController extends Controller
         //    dd($navigation->title);
         $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('status',1)->get();
-        return view('admin.crud.navigations.edit', compact('navigation','employees','projects'));
+        $categories=Category::get();
+        return view('admin.crud.navigations.edit', compact('navigation','employees','projects',"categories"));
     }
     /**
      * Update the specified resource in storage.
