@@ -527,12 +527,12 @@ class TaskController extends Controller
         }
     }
 
-        public function links()
+        public function links($id)
     {
         try {
            
             if(boula())
-             $links = Navigation::orderBy('title', 'asc')->get();
+             $links = Navigation::where("category_id",$id)->orderBy('title', 'asc')->get();
             else
              $links=[];
              $data["links"]=NavigationResource::collection($links);
