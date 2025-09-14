@@ -67,7 +67,8 @@ class TaskController extends Controller
                         $projects = Project::orderBy("title","asc")
                     ->get(); 
 
-        $naviagations = Navigation::orderBy('name', 'ASC')->get();
+        $naviagations = Navigation::orderBy('title', 'ASC')->get();
+        $categories = Category::orderBy('title', 'ASC')->get();
 
                         $projects = Project::orderBy("title","asc")
                     ->get(); 
@@ -104,6 +105,14 @@ class TaskController extends Controller
                 'title' => $navigation->title,  
                'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/navigations/".$navigation->id."/edit",
                 'type'  => "navigation",
+            ];
+        }
+
+        foreach ($categories as $category) {
+            $elements[] = [
+                'title' => $category->title,  
+               'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/categorys/".$category->id."/edit",
+                'type'  => "category",
             ];
         }
                 
