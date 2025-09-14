@@ -843,6 +843,7 @@
                                 if (!response.ok) throw new Error('Request failed');
 
                                 const data = await response.json();
+                                alert("Submitted Successfully");
                                 console.log('Success', data);
 
                                 await fetch('https://yousab-tech.com/workspace/public/api/track', {
