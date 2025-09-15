@@ -516,8 +516,8 @@ class TaskController extends Controller
     {
         try {
 
-             if(!isWithinWorkingHours())
-              return failedResponse([]);
+            //  if(!isWithinWorkingHours())
+            //   return failedResponse([]);
 
                 // Find and toggle the level for the given task ID
                 $task = Task::find($id);
