@@ -516,16 +516,13 @@ class TaskController extends Controller
     {
         try {
 
-            //  if(!isWithinWorkingHours())
-            //   return failedResponse([]);
+    //  if(!isWithinWorkingHours())
+    //   return failedResponse([]);
 
-                // Find and toggle the level for the given task ID
-                $task = Task::find($id);
-                $task->where('title', $task->title)->update(['piority' => !$task->piority]);
-    
-    
-    
-                return response()->json(['success' => __('general.changed_successfully')]);
+        // Find and toggle the level for the given task ID
+        $task = Task::find($id);
+        $task->where('title', $task->title)->update(['piority' => !$task->piority]);
+        return response()->json(['success' => __('general.changed_successfully'.$task->piority)]);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
