@@ -862,6 +862,9 @@
                             $(this).removeAttr('checked');
                         }
                     });
+
+                    $('#totalCost').hide();
+                    $('#endCost').hide();
             };
 
             // Common elements
