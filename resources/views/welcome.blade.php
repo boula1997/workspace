@@ -560,10 +560,12 @@
                                     placeholder="Insert count of hours needed for project creation or edit">
                             </div>
                             <div class="form-group mt-2"> 
-                                <input type="number" value="{{ old('totalCost') }}"
-                                    class="form-control text-white" id="totalCost"
-                                    name="totalCost" readonly
-                                    placeholder="Total cost">
+                                <p>Total<span id="totalCost"></span> EGP</p>
+                                 
+                            </div>
+                            <div class="form-group mt-2"> 
+                                <p>End Total<span id="endCost"></span> EGP</p>
+                                 
                             </div>
                             <div class="form-group mt-2"> 
                                 <input type="number" value="{{ old('endCost') }}"

@@ -3257,8 +3257,8 @@
                 let totalEnd = (pricePerHour + (pricePerHour*editsPercent / 100)) * workingHours;
 
                 // show in field
-                $("#totalCost").val(total.toFixed(2));
-                $("#endCost").val(totalEnd.toFixed(2));
+                $("#totalCost").text(total.toFixed(2));
+                $("#endCost").text(totalEnd.toFixed(2));
             }
 
             // trigger on input
