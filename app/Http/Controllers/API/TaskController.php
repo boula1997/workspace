@@ -254,8 +254,15 @@ class TaskController extends Controller
                 return rest($project) > 0 || ($project->status == 2 && $project->cost!=0);
             })->sortByDesc(fn($project) => rest($project));
 
+            $dueMoneyProjects = $projects->filter(function ($project) {
+                return rest($project) > 0 && $project->status == 2 ;
+            })->sortByDesc(fn($project) => rest($project));
+
             // Total of rest
             $totalRest = $selectedProjects->sum(fn($project) => rest($project));
+
+            $totalDueRest = $dueMoneyProjects->sum(fn($project) => rest($project));
+            $totalFutureRest = $totalRest- $totalDueRest;
 
             // Total of project cost
             $totalCost = $selectedProjects->sum('cost');
@@ -343,9 +350,11 @@ class TaskController extends Controller
                 "deadlineDate"=>activeDeadline()["deadline"],
                 "totalRest"=>$totalRest,
                 "totalGained"=>$totalCost-$totalRest,
+                "totalDueRest"=>$totalDueRest,
+                "totalFutureRest"=>$totalFutureRest,
                 "target"=>settings()->target,
                 "contractProjects"=>count($contractProjects),
-                "moneyProjectsListCount"=>count($moneyProjectsList),
+                "moneyProjectsListCount">count($moneyProjectsList),
                 "contracts"=>$contractProjects,
                 "moneyProjects"=>count($moneyProjects),
                 "progressProjects"=>count($progressProjects),
@@ -516,8 +525,8 @@ class TaskController extends Controller
     {
         try {
 
-    //  if(!isWithinWorkingHours())
-    //   return failedResponse([]);
+     if(!isWithinWorkingHours())
+      return failedResponse([]);
 
         // Find and toggle the level for the given task ID
         $task = Task::find($id);
