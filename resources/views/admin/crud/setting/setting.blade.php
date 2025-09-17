@@ -4,7 +4,7 @@
 @section('fields_content')
     <div class="content-wrapper">
         @method('PUT')
-                <div class="container p-3">
+        <div class="container p-3">
             @include('admin.components.alert-error')
             <div class="card card-custom mb-2">
                 <div class="card-header card-header-tabs-line">
@@ -108,7 +108,21 @@
             <div class="card card-custom">
                 <div class="card-body">
                     <div class="row">
-{{-- Date input --}} <div class="col-md-6"> <div class="form-group"> <label for="dateInput">{{ __('general.home4g') }} <span class="text-danger"> *</span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span> </div> <input type="date" id="dateInput" class="form-control" value="{{ old('home4g', $setting->home4g) }}" name="home4g"> </div> </div> </div>
+                        {{-- Date input --}} <div class="col-md-6">
+                            <div class="form-group"> <label for="dateInput">{{ __('general.home4g') }} <span
+                                        class="text-danger"> *</span></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend"> <span class="input-group-text"><i
+                                                class="fas fa-calendar-alt"></i></span> </div> <input type="date"
+                                        id="dateInput" class="form-control" value="{{ old('home4g', $setting->home4g) }}"
+                                        name="home4g">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Normal title input --> <div class="col-md-6"> <div class="form-group"> <label>{{__('general.dollar')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="number" name="dollar" placeholder="{{__('general.dollar')}}" class="form-control pl-1 min-h-40px @error('dollar') is-invalid @enderror" value="{{ old('dollar', $setting->dollar) }}"> </div> </div> </div>
+
+<!-- Normal title input --> <div class="col-md-6"> <div class="form-group"> <label>{{__('general.ryal')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="number" name="ryal" placeholder="{{__('general.ryal')}}" class="form-control pl-1 min-h-40px @error('ryal') is-invalid @enderror" value="{{ old('ryal', $setting->ryal) }}"> </div> </div> </div>
                         <div class="col-md-6">
                             @include('admin.components.image', [
                                 'label' => __('general.logo'),
