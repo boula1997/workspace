@@ -768,8 +768,6 @@
         });
 
         $(document).ready(function() {
-            $('#totalCost').hide();
-            $('#endCost').hide();
             $('#websites').addClass('d-none');
             $('.resultContent').each(function() {
                 var originalContent = $(this).text();
@@ -1017,7 +1015,7 @@
                     }
                 },
                 'Pricing Center': {
-                    show: ['workingHours', 'totalCost', 'endCost'],
+                    show: ['workingHours','totalCost','endCost'],
                     placeholders: {
                         workingHours: 'Insert count of hours needed for project creation or edit',
                         totalCost: 'Total cost',
@@ -2101,13 +2099,13 @@
                     'cd public_html/workspace \n' +
                     'mysqldump -u yousabte_workspace -p --complete-insert yousabte_workspace > yousabte_workspace_export.sql\n' +
                     '\n' +
-                    'kD[asKgc%ydC' +
+                    'kD[asKgc%ydC'+
                     '\n' +
-                    'git add .' +
+                    'git add .'+
                     '\n' +
-                    'git commit -m "database backup"' +
+                    'git commit -m "database backup"'+
                     '\n' +
-                    'git push origin main' +
+                    'git push origin main'+
                     '\n' +
                     'cls'
                 );
@@ -2233,7 +2231,7 @@
                             if (data.updateQuery != null && data.updateQuery !== undefined) {
                                 $('#queryCommand').val(function(index, currentValue) {
                                     return currentValue + '\n' + '++' + data
-                                        .updateQuery; // Appends with a newline
+                                    .updateQuery; // Appends with a newline
                                 });
 
                             }
@@ -2345,7 +2343,7 @@
                             if (data.deleteQuery != null && data.deleteQuery !== undefined) {
                                 $('#queryCommand').val(function(index, currentValue) {
                                     return currentValue + '\n' + data
-                                        .deleteQuery; // Appends deleteQuery with a newline
+                                    .deleteQuery; // Appends deleteQuery with a newline
                                 });
                             }
 
@@ -2464,7 +2462,7 @@
                         if (data.updateQuery != null && data.updateQuery !== undefined) {
                             $('#queryCommand').val(function(index, currentValue) {
                                 return currentValue + '\n' + '++' + data
-                                    .updateQuery; // Appends with a newline
+                                .updateQuery; // Appends with a newline
                             });
 
                         }
@@ -2528,7 +2526,7 @@
                                 .latestUpdatedAt);
                             $('#queryCommand').val(function(index, currentValue) {
                                 return currentValue + '\n' + data
-                                    .insertString; // Appends with a newline
+                                .insertString; // Appends with a newline
                             });
 
                             if (data.updateQuery != null && data.updateQuery !==
@@ -3245,32 +3243,43 @@
     </script>
 
 
-    <script>
-        let pricePerHour = {{ settings()->pricePerHour }};
-        let editsPercent = {{ settings()->editsPercent }};
-        let negotiatePercent = {{ settings()->negotiatePercent }};
+<script>
+    let pricePerHour = {{ settings()->pricePerHour }};
+    let editsPercent = {{ settings()->editsPercent }};
+    let negotiatePercent = {{ settings()->negotiatePercent }};
+    let dollarRate = {{ settings()->dollar }};
+    let ryalRate = {{ settings()->ryal }};
 
-        $(document).ready(function() {
-            function calculateTotal() {
-                let workingHours = parseFloat($("#workingHours").val()) || 0;
+    $(document).ready(function() {
+        function calculateTotal() {
+            let workingHours = parseFloat($("#workingHours").val()) || 0;
 
-                // multiply equation
-                let total = (pricePerHour + (pricePerHour * editsPercent / 100) + (pricePerHour * negotiatePercent /
-                    100)) * workingHours;
-                let totalEnd = (pricePerHour + (pricePerHour * editsPercent / 100)) * workingHours;
+            // main cost calculations in EGP
+            let totalEGP = (pricePerHour + (pricePerHour * editsPercent / 100) + (pricePerHour * negotiatePercent / 100)) * workingHours;
+            let endEGP = (pricePerHour + (pricePerHour * editsPercent / 100)) * workingHours;
 
-                // show in field
-                $("#totalCost").text(total.toFixed(2));
-                $("#endCost").text(totalEnd.toFixed(2));
-            }
+            // convert to other currencies
+            let totalDollar = totalEGP / dollarRate;
+            let totalRyal = totalEGP / ryalRate;
 
-            // trigger on input
-            $("#workingHours").on("input", calculateTotal);
+            let endDollar = endEGP / dollarRate;
+            let endRyal = endEGP / ryalRate;
 
-            // run once if value already exists
-            calculateTotal();
-        });
-    </script>
+            // show in fields
+            $("#totalCost").val(
+                `${totalEGP.toFixed(2)} EGP — ${totalDollar.toFixed(2)} Dollars — ${totalRyal.toFixed(2)} Ryal`
+            );
+
+            $("#endCost").val(
+                `${endEGP.toFixed(2)} EGP — ${endDollar.toFixed(2)} Dollars — ${endRyal.toFixed(2)} Ryal`
+            );
+        }
+
+        $("#workingHours").on("input", calculateTotal);
+        calculateTotal(); // run once if value already exists
+    });
+</script>
+
 
 
 
