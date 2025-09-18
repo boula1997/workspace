@@ -58,7 +58,11 @@ class TaskController extends Controller
 
     public function create()
     {
-        $employees = Admin::where("isActive",1)->where("type","!=","client")->orderBy('name', 'ASC')->get();
+$employees = Admin::where("isActive",1)
+    ->where("type","!=","client")
+    ->withCount('tasks')   // 👈 adds tasks_count column
+    ->orderBy('name', 'ASC')
+    ->get();
         $clients = Admin::where("isActive",1)->where("type","client")->orderBy('name', 'ASC')->get();
                         $projects = Project::orderBy("title","asc")
                     ->get(); 
