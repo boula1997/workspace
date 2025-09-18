@@ -381,7 +381,13 @@ class TaskController extends Controller
     {
         
 
-        $employees = Admin::where("isActive",1)->where("type","!=","client")->orderBy('name', 'ASC')->get();
+        $employees = Admin::where("isActive",1)
+            ->where("type","!=","client")
+            ->withCount(['tasks as finished_tasks_count' => function ($query) {
+                $query->where('status', 1);   // 👈 only count tasks with status=1
+            }])
+            ->orderBy('name', 'ASC')
+            ->get();
         $clients = Admin::where("isActive",1)->where("type","client")->orderBy('name', 'ASC')->get();
 
 
