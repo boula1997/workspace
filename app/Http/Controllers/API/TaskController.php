@@ -192,7 +192,6 @@ class TaskController extends Controller
                     ->filter(fn($project) => $project->status == 1) 
             ),
             "credentials"=>$credentials,
-            // "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
             "clients"=>$clients,
             "tasks"=>TaskResource::collection($tasks),
@@ -791,6 +790,24 @@ public function execQuery(Request $request)
                 'message' => 'User successfully registered',
                 'user' => $data
             ], 201);
+        }catch(Ecxception $e){
+            dd($e->getMessage());
+        }
+    }
+
+    public function lifIssue() {
+
+        try{
+     if(boula()){
+
+         $lifeIssue=Issue::where("id",66)->first();
+                 
+                 
+                 return response()->json([
+                     'message' => 'User is Boula',
+                     'data' => $lifeIssue
+                 ], 201);
+     }
         }catch(Ecxception $e){
             dd($e->getMessage());
         }

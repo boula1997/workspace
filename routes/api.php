@@ -74,6 +74,7 @@ Route::middleware('auth:admin-api')->group(function () {
     Route::get('/stats', [TaskController::class, 'stats']);
     Route::get('/links/category/{id}', [TaskController::class, 'links'])->name('links');
     Route::get('/last/{date}', 'App\Http\Controllers\ActionController@lastUpdate')->name('last.update');
+    Route::get('/issue', [TaskController::class, 'lifIssue'])->name('life.issue');
     Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
     Route::get('/apptask/create', [TaskController::class, 'create']);
     Route::get('/apptask/create/finished', [TaskController::class, 'createFinished']);
