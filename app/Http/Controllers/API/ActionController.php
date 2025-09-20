@@ -115,9 +115,9 @@ public function getFunction(Request $request)
               //  $notifications[] = isExpired()[1] . "\n\n";
 
             // Final output: ONE notification string
-            if(boula())
+            if(boula()){
             $notifications[] = "Yousab Tech + LapMob Ecommerce + Fixed Salary Programming Job";
-
+            $notifications[]="Your role is Marketting + Project Mangement";}
             $data["notifications"] = $notifications;
             $data["period"] = settings()->period;
         }
