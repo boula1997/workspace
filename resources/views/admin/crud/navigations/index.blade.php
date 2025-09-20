@@ -129,19 +129,19 @@
                 const url = this.href;
 
                 try {
-                    // Copy password
+                    // Copy password first
                     await navigator.clipboard.writeText(password);
-     
 
-                    // Small delay before copying password
+                    // Small delay before copying username
                     setTimeout(async () => {
-                    // Copy username
-                      
-                    await navigator.clipboard.writeText(username);
+                        await navigator.clipboard.writeText(username);
 
-                        
-                        // Finally open the link
-                        window.open(url, "_blank");
+                        // ✅ Check if link starts with http or https before navigating
+                        if (/^https?:\/\//i.test(url)) {
+                            window.open(url, "_blank");
+                        } else {
+                            console.warn("Invalid link, not opening:", url);
+                        }
                     }, 500);
 
                 } catch (err) {
@@ -151,4 +151,5 @@
         });
     });
 </script>
+
 @endpush
