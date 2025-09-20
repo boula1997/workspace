@@ -129,14 +129,16 @@
                 const url = this.href;
 
                 try {
-                    // Copy username
-                    await navigator.clipboard.writeText(username);
-                    alert("Username copied!");
+                    // Copy password
+                    await navigator.clipboard.writeText(password);
+     
 
                     // Small delay before copying password
                     setTimeout(async () => {
-                        await navigator.clipboard.writeText(password);
-                        alert("Password copied!");
+                    // Copy username
+                      
+                    await navigator.clipboard.writeText(username);
+
                         
                         // Finally open the link
                         window.open(url, "_blank");
