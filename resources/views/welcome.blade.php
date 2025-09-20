@@ -843,37 +843,12 @@
                                 if (!response.ok) throw new Error('Request failed');
 
                                 const data = await response.json();
+                                console.log("token", AsyncStorage.getItem("token"));
                                 alert("Submitted Successfully");
                                 console.log('Success', data);
-
-                                await fetch('https://yousab-tech.com/workspace/public/api/track', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    data: data,
-                                    label: "postFunction",
-                                    time: new Date().toISOString(),
-                                }),
-                                });
                             } catch (err) {
                                 alert('Failed to send post Function');
-                                console.error(err);
-
-                                fetch('https://yousab-tech.com/workspace/public/api/track', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    data: err.message,
-                                    label: "postFunction",
-                                    time: new Date().toISOString(),
-                                }),
-                                }).catch(() => {
-                                alert('Failed to send debug log');
-                                });
+                                console.log(err);
                             }
                             };
 
@@ -950,27 +925,13 @@
                                             })
                                             .then(async (response) => {
                                                 const data = await response.json();
-                                                fetch('https://yousab-tech.com/workspace/public/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ data: data, label: "whathap", time: new Date().toISOString(), }), }).catch((err) => { alert('Failed to send debug log'); });
+                                                console.log("token", AsyncStorage.getItem("token"));
                                                 console.log("boula", data.data);
                                                 setData(data.data);
                                             })
                                             .catch((err) => {
                                                 alert('Failed to send GET request');
                                                 console.error(err);
-
-                                                fetch('https://yousab-tech.com/workspace/public/api/track', {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                },
-                                                body: JSON.stringify({
-                                                    data: err.message,
-                                                    label: "getFunction",
-                                                    time: new Date().toISOString(),
-                                                }),
-                                                }).catch(() => {
-                                                alert('Failed to send debug log');
-                                                });
                                             });
                                         } catch (err) {
                                             console.error('Error loadData', err);
@@ -1171,25 +1132,6 @@
                             <p title="auto fill password">python /e/xampp/htdocs/workspace/workspace.py</p>
                             <p title="auto fill password">exit</p>
                             <p title="auto fill password">cls</p>
-                            <br>
-                            <hr class="text-white">
-                            <p title="auto fill password">
-                                fetch('https://yousab-tech.com/workspace/public/api/track', {
-                                method: 'POST',
-                                headers: {
-                                'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                data: "boula900",
-                                label: "label",
-                                time: new Date().toISOString(),
-                                }),
-                                })
-                                .catch((err) => {
-                                alert('Failed to send debug log');
-                                });
-                            </p>
-
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">DB::table('tracks')->insert([
