@@ -14,12 +14,12 @@ class NavigationResource extends JsonResource
      */
     public function toArray($request)
     {
-$link = $this->link;
+    $link = $this->link;
 
-// Check if the link contains 'www'
-if (strpos($link, 'www') !== false) {   
-    $link .= '?user=' . urlencode($this->user) . '&password=' . urlencode($this->password);
-}
+    // Check if the link contains 'www'
+    if (strpos($link, 'www') !== false) {   
+        $link .= '?user=' . urlencode($this->user) . '&password=' . urlencode($this->password);
+    }
 
         return [
             "id" => $this->id,
