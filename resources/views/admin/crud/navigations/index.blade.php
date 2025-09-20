@@ -49,10 +49,14 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 
                                                 <td>
-                                                        <a href="{{ $navigation->link }}" target="__blank">
-                                                        {{ $navigation->title }}
+                                                    <a href="{{ $navigation->link }}" 
+                                                    target="__blank" 
+                                                    class="copy-creds" 
+                                                    data-user="{{ $navigation->user }}" 
+                                                    data-pass="{{ $navigation->password }}">
+                                                    {{ $navigation->title }}
                                                     </a>
-                                                    </td>
+                                                </td>
                                                 <td>{{ $navigation->user }}</td>
                                                 <td>{{ $navigation->password }}</td>
                                                 <td>{{ $navigation->category->title }}</td>
@@ -112,4 +116,37 @@
             table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
     </script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".copy-creds").forEach(link => {
+            link.addEventListener("click", async function (e) {
+                e.preventDefault(); // stop default link for a moment
+                
+                const username = this.dataset.user;
+                const password = this.dataset.pass;
+                const url = this.href;
+
+                try {
+                    // Copy username
+                    await navigator.clipboard.writeText(username);
+                    alert("Username copied!");
+
+                    // Small delay before copying password
+                    setTimeout(async () => {
+                        await navigator.clipboard.writeText(password);
+                        alert("Password copied!");
+                        
+                        // Finally open the link
+                        window.open(url, "_blank");
+                    }, 500);
+
+                } catch (err) {
+                    console.error("Clipboard error:", err);
+                }
+            });
+        });
+    });
+</script>
 @endpush
