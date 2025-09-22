@@ -1247,8 +1247,8 @@
                             <br>
                             <hr class="text-white">
                             <p>mysqldump -u yousabte_workspace -p'kD[asKgc%ydC' --complete-insert yousabte_workspace > yousabte_workspace_export.sql</p>
-                            <p>mysqldump -u yousabte_lapmob -p 'QL3LmB%F]^+V' --complete-insert yousabte_lapmob > yousabte_lapmob_export.sql</p>
-                            <p>mysqldump -u yousabte_db -p 'k6lvnFGg0l0t' --complete-insert yousabte_db > yousabte_db_export.sql</p>
+                            <p>mysqldump -u yousabte_lapmob -p'QL3LmB%F]^+V' --complete-insert yousabte_lapmob > yousabte_lapmob_export.sql</p>
+                            <p>mysqldump -u yousabte_db -p'k6lvnFGg0l0t' --complete-insert yousabte_db > yousabte_db_export.sql</p>
                              <p>cls</p>
                             <br>
                             <hr class="text-white">
