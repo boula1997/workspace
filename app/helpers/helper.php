@@ -490,10 +490,10 @@ function isExpired()
          $deadlines->count() > 0) 
         && boula()
     ) {
-        return [true,'pdeadline '.$projectsDeadline->count().' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count().'nowUTC'.$nowUtc.'nowCairo'.$now];
+        return [true,' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count().'nowUTC'.$nowUtc.'nowCairo'.$now];
     }
 
-    return [false,'pdeadline '.$projectsDeadline->count().' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count().'nowUTC'.$nowUtc];
+    return [false,' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count().'nowUTC'.$nowUtc];
 }
 
 
