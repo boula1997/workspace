@@ -407,7 +407,7 @@ class TaskController extends Controller
         else
             $tasks = Task::where("status", 1)
             ->whereHas('project', function ($query) {
-                $query->where('status', '!=', 0);
+                $query->where('status', '!=', 1);
             })
             ->latest('updated_at') // Then by latest updated time
             ->take(300)            // Limit to 300 tasks
