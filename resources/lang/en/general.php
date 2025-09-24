@@ -552,4 +552,23 @@ return [
     "Confirm" => "Confirm",
     "Logout" => "Logout",
 
+        "show_all" => "Show all",
+    "cancel" => "Cancel",
+    "no_result" => "No result",
+    "category" => "Category",
+    "dollar" => "Dollar",
+    "ryal" => "Ryal",
+    "renewalDate" => "Renewal Date",
+    "messanger_id" => "Messenger",
+    "isActive" => "Is Active",
+    "$1" => "$1",
+    "Dashboard" => "Dashboard",
+    "Register" => "Register",
+    "Name" => "Name",
+    "Password" => "Password",
+    "Email" => "Email",
+    "Login" => "Login",
+    "Confirm" => "Confirm",
+    "Logout" => "Logout",
+
 ];
