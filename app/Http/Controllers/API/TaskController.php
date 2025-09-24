@@ -607,12 +607,9 @@ class TaskController extends Controller
         public function updateDeadline(Request $request)
         {
             try {
-
-
-                DB::table('tracks')->insert([ 'dispatch_status' => 'showing data of ' . json_encode($request->all()), 'created_at' => now(), ]);
                 $deadline=Deadline::find($request->id);
                 if($request->action=="delete")
-                    $deadline->delete();
+                    $deadline->update(["status"=>!$deadline->status]);
                 else if(isset($request->date))
                     $deadline->update(["date"=>$request->date]);
 
