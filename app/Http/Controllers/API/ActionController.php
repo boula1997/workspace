@@ -65,7 +65,7 @@ public function getFunction(Request $request)
                     return rest($project) > 0; // 👈 only keep projects with positive rest
                 });
 
-            $deadlines = Deadline::whereNotNull('date')->whereDate('date', '<=', Carbon::now()->addWeek())
+            $deadlines = Deadline::where("status",0)->whereNotNull('date')->whereDate('date', '<=', Carbon::now()->addWeek())
                 ->orderBy('date', 'asc')
                 ->get();
 
