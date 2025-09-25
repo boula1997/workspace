@@ -73,6 +73,7 @@ Route::middleware('auth:admin-api')->group(function () {
     Route::post('/storeDeadline',[TaskController::class,'storeDeadline']);
     Route::get('/stats', [TaskController::class, 'stats']);
     Route::get('/links/category/{id}', [TaskController::class, 'links'])->name('links');
+    Route::get('/elements/category/{id}', [TaskController::class, 'elements'])->name('elements');
     Route::get('/last/{date}', 'App\Http\Controllers\ActionController@lastUpdate')->name('last.update');
     Route::get('/issue', [TaskController::class, 'lifIssue'])->name('life.issue');
     Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
