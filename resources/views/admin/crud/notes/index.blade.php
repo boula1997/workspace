@@ -37,7 +37,6 @@
                                             <th>#</th>
 
                                             <th>{{ __('general.title') }}</th>
-                                            <th>{{ __('general.type') }}</th>
                                             <th>{{ __('general.isOverthinking') }}</th>
 
                                             <th>{{ __('general.isNotification') }}</th>
