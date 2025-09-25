@@ -43,7 +43,7 @@
                                             <div class="form-check form-switch"> <input class="form-check-input"
                                                     @checked(old('isOverthinking', $note->isOverthinking)) type="checkbox" id="isOverthinking"
                                                     name="isOverthinking" value="1"> <label class="form-check-label"
-                                                    for="isOverthinking">{{ __('general.isPebding') }} <span
+                                                    for="isOverthinking">{{ __('general.isPending') }} <span
                                                         class="text-danger"> * </span></label> </div>
                                         </div>
                                     </div>
