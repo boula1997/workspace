@@ -654,7 +654,7 @@ class TaskController extends Controller
                 $tasks = Task::get();
                 foreach ($tasks as $task) {
                     $elements[] = [
-                        'title' => $task->amount,  
+                        'title' => $task->title,  
                         'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/tasks/".$task->id."/edit",
                         'type'  => "task",
                     ];
