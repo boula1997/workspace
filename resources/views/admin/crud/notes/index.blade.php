@@ -38,8 +38,6 @@
 
                                             <th>{{ __('general.title') }}</th>
                                             <th>{{ __('general.isPending') }}</th>
-
-                                            <th>{{ __('general.isNotification') }}</th>
                                             <th class="th-controls">@lang('general.controls')</th>
                                         </tr>
                                     </thead>
@@ -49,10 +47,6 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $note->title }}</td>
                                                 <td>{{ $note->isOverthinking ? __('general.yes') : __('general.no') }}</td>
-
-                                                <td>{{ $note->isNotification ? __('general.yes') : __('general.no') }}</td>
-
-
                                                 <td>
                                                     @include('admin.components.controls', [
                                                         'route' => 'notes',
