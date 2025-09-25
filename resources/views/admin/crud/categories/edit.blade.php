@@ -4,7 +4,7 @@
 @section('fields_content')
     <div class="content-wrapper">
         @method('PUT')
-                <div class="container p-3">
+        <div class="container p-3">
             @include('admin.components.alert-error')
 
             <div class="card card-custom mb-2">
@@ -72,7 +72,14 @@
             <div class="card card-custom">
                 <div class="card-body mb-5">
 
-                                                    {{-- Static Select Input --}} <div class="col-md-6"> <div class="mb-3"> <label for="" class="form-label">{{ __('general.type') }}</label> <select class="form-select form-select-lg" name="type" id="type"> <option value="">{{ __('general.select') }}</option> <option value="item" {{ old('type',$category->type) == 'item'? 'selected' : '' }}>{{ __('general.item') }}</option> </select> </div> </div>
+                    {{-- Static Select Input --}} <div class="col-md-6">
+                        <div class="mb-3"> <label for="" class="form-label">{{ __('general.type') }}</label>
+                            <select class="form-select form-select-lg" name="type" id="type">
+                                <option value="">{{ __('general.select') }}</option>
+                                <option value="products" {{ old('type', $category->type) == 'products' ? 'selected' : '' }}>
+                                    {{ __('general.products') }}</option>
+                            </select> </div>
+                    </div>
                     <div class="row">
 
                         <div class="col-md-6">

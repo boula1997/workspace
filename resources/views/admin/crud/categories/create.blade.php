@@ -3,11 +3,14 @@
 @section('form_type', 'POST')
 @section('fields_content')
     <div class="content-wrapper">
-                <div class="container p-3">
+        <div class="container p-3">
             @include('admin.components.alert-error')
             <div class="card card-custom mb-2">
                 <div class="card-header card-header-tabs-line">
-                    @include('admin.components.breadcrumb', ['module' => 'categories', 'action' => 'create'])
+                    @include('admin.components.breadcrumb', [
+                        'module' => 'categories',
+                        'action' => 'create',
+                    ])
                 </div>
                 <div class="card-toolbar px-3">
                     <ul class="nav nav-tabs nav-bold nav-tabs-line">
@@ -66,7 +69,14 @@
             <div class="card card-custom">
                 <div class="card-body">
 
-                                                                {{-- Static Select Input --}} <div class="col-md-6"> <div class="mb-3"> <label for="" class="form-label">{{ __('general.type') }}</label> <select class="form-select form-select-lg" name="type" id="type"> <option value="">{{ __('general.select') }}</option> <option value="item" {{ old('type')=='item'?'selected':'' }}>{{ __('general.item') }}</option> </select> </div> </div>
+                    {{-- Static Select Input --}} <div class="col-md-6">
+                        <div class="mb-3"> <label for="" class="form-label">{{ __('general.type') }}</label>
+                            <select class="form-select form-select-lg" name="type" id="type">
+                                <option value="">{{ __('general.select') }}</option>
+                                <option value="products" {{ old('type') == 'products' ? 'selected' : '' }}>{{ __('general.products') }}
+                                </option>
+                            </select> </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             @include('admin.components.image', [
