@@ -37,7 +37,7 @@
                                             <th>#</th>
 
                                             <th>{{ __('general.title') }}</th>
-                                            <th>{{ __('general.isPencommitding') }}</th>
+                                            <th>{{ __('general.isPending') }}</th>
 
                                             <th>{{ __('general.isNotification') }}</th>
                                             <th class="th-controls">@lang('general.controls')</th>
