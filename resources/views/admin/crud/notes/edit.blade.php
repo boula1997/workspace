@@ -51,17 +51,10 @@
 
 
 
-                                <!-- Normal title input -->
                                 <div class="col-md-12">
-                                    <div class="form-group"> <label>{{ __('general.title') }} <span class="text-danger"> *
-                                            </span></label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend"> <span class="input-group-text"><i
-                                                        class="fas fa-pen"></i></span> </div> <input type="text"
-                                                name="title" placeholder="{{ __('general.title') }}"
-                                                class="form-control pl-1 min-h-40px @error('title') is-invalid @enderror"
-                                                value="{{ old('title', $note->title) }}">
-                                        </div>
+                                    <div class="col-form-group"> <label>{{ __('general.title') }} <span class="text-danger">
+                                                * </span></label>
+                                        <textarea rows="100" class=" summernote @error('title') is-invalid @enderror" name="{{ 'title' }}"> {!! old('title', $note->title) !!} </textarea>
                                     </div>
                                 </div>
 

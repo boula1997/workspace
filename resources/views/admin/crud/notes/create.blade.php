@@ -33,7 +33,8 @@
                                                                 id="isNotification" name="isNotification" value="1">
                                                             <label class="form-check-label"
                                                                 for="isNotification">{{ __('general.isNotification') }}
-                                                                <span class="text-danger"> * </span></label> </div>
+                                                                <span class="text-danger"> * </span></label>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -47,23 +48,17 @@
                                                                 id="isOverthinking" name="isOverthinking" value="1">
                                                             <label class="form-check-label"
                                                                 for="isOverthinking">{{ __('general.isOverthinking') }}
-                                                                <span class="text-danger"> * </span></label> </div>
+                                                                <span class="text-danger"> * </span></label>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <!-- Normal title input -->
                                             <div class="col-md-12">
-                                                <div class="form-group"> <label>{{ __('general.title') }} <span
+                                                <div class="col-form-group"> <label>{{ __('general.title') }} <span
                                                             class="text-danger"> * </span></label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend"> <span class="input-group-text"><i
-                                                                    class="fas fa-pen"></i></span> </div> <input
-                                                            type="text" name="title"
-                                                            placeholder="{{ __('general.title') }}"
-                                                            class="form-control pl-1 min-h-40px @error('title') is-invalid @enderror"
-                                                            value="{{ old('title') }}">
-                                                    </div>
+                                                    <textarea rows="100" class=" summernote @error('title') is-invalid @enderror" name="{{ 'title' }}"> {!! old('title') !!} </textarea>
                                                 </div>
                                             </div>
 
