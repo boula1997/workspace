@@ -58,7 +58,7 @@
                                             <div class="col-md-12">
                                                 <div class="col-form-group"> <label>{{ __('general.title') }} <span
                                                             class="text-danger"> * </span></label>
-                                                    <textarea rows="20" class="@error('title') is-invalid @enderror" name="{{ 'title' }}"> {!! old('title') !!} </textarea>
+                                                    <textarea rows="10" class="@error('title') is-invalid @enderror" name="{{ 'title' }}"> {!! old('title') !!} </textarea>
                                                 </div>
                                             </div>
 

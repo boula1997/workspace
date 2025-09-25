@@ -659,7 +659,7 @@
                             </div>
                             <div class="form-group mt-2">
                                 <textarea class="form-control   text-white" name="script" id="textarea"
-                                    placeholder="ex: keyword1, keyword2, keyword3" cols="30" rows="20"></textarea>
+                                    placeholder="ex: keyword1, keyword2, keyword3" cols="30" rows="10"></textarea>
                                 {{-- <input type="text" class="form-control   text-white" name="script" placeholder="Insert script"> --}}
                             </div>
 
