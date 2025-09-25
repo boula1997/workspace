@@ -73,7 +73,9 @@
                         <div class="mb-3"> <label for="" class="form-label">{{ __('general.type') }}</label>
                             <select class="form-select form-select-lg" name="type" id="type">
                                 <option value="">{{ __('general.select') }}</option>
-                                <option value="products" {{ old('type') == 'products' ? 'selected' : '' }}>{{ __('general.products') }}
+                                <option value="navigations" {{ old('type',$category->type) == 'navigations' ? 'selected' : '' }}>{{ __('general.navigations') }}
+                                </option>
+                                <option value="modules" {{ old('type',$category->type) == 'modules' ? 'selected' : '' }}>{{ __('general.modules') }}
                                 </option>
                             </select> </div>
                     </div>
