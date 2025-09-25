@@ -39,7 +39,7 @@
                                             <th>@lang('general.title')</th>
                                             <th>@lang('general.user')</th>
                                             <th>@lang('general.password')</th>
-                                            <th>{{__('general.category')}}</th>
+                                            <th>{{ __('general.category') }}</th>
                                             <th class="th-controls">@lang('general.controls')</th>
                                         </tr>
                                     </thead>
@@ -47,14 +47,12 @@
                                         @foreach ($data as $navigation)
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
-                                                
+
                                                 <td>
-                                                    <a href="{{ $navigation->link }}" 
-                                                    target="__blank" 
-                                                    class="copy-creds" 
-                                                    data-user="{{ $navigation->user }}" 
-                                                    data-pass="{{ $navigation->password }}">
-                                                    {{ $navigation->title }}
+                                                    <a href="{{ $navigation->link }}" target="__blank" class="copy-creds"
+                                                        data-user="{{ $navigation->user }}"
+                                                        data-pass="{{ $navigation->password }}">
+                                                        {{ $navigation->title }}
                                                     </a>
                                                 </td>
                                                 <td>{{ $navigation->user }}</td>
@@ -118,38 +116,37 @@
     </script>
 
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".copy-creds").forEach(link => {
-            link.addEventListener("click", async function (e) {
-                e.preventDefault(); // stop default link for a moment
-                
-                const username = this.dataset.user;
-                const password = this.dataset.pass;
-                const url = this.href;
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".copy-creds").forEach(link => {
+                link.addEventListener("click", async function(e) {
+                    e.preventDefault(); // stop default link for a moment
 
-                try {
-                    // Copy password first
-                    await navigator.clipboard.writeText(password);
+                    const username = this.dataset.user;
+                    const password = this.dataset.pass;
+                    const url = this.href;
 
-                    // Small delay before copying username
-                    setTimeout(async () => {
-                        await navigator.clipboard.writeText(username);
+                    try {
+                        // Copy password first
+                        await navigator.clipboard.writeText(password);
 
-                        // ✅ Check if link starts with http or https before navigating
-                        if (/^https?:\/\//i.test(url)) {
-                            window.open(url, "_blank");
-                        } else {
-                            console.warn("Invalid link, not opening:", url);
-                        }
-                    }, 500);
+                        // Small delay before copying username
+                        setTimeout(async () => {
+                            await navigator.clipboard.writeText(username);
 
-                } catch (err) {
-                    console.error("Clipboard error:", err);
-                }
+                            // ✅ Check if link starts with http or https before navigating
+                            if (/^https?:\/\//i.test(url)) {
+                                window.open(url, "_blank");
+                            } else {
+                                console.warn("Invalid link, not opening:", url);
+                            }
+                        }, 500);
+
+                    } catch (err) {
+                        console.error("Clipboard error:", err);
+                    }
+                });
             });
         });
-    });
-</script>
-
+    </script>
 @endpush
