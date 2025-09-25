@@ -592,10 +592,11 @@ class TaskController extends Controller
         try {
             $elements=[];
              $category=Category::find($id);
+             dd([$category->title=="Products",$category->title]);
              if($category->title=="Products"){
                 foreach ($projects as $project) {
                     $elements[] = [
-                        'title' => $project->title,  
+                    'title' => $project->title,  
                     'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/projects/".$project->id."/edit",
                         'type'  => "project",
                     ];
