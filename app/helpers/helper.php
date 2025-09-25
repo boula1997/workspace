@@ -9,6 +9,7 @@ use App\Models\Issue;
 use App\Models\Message;
 use App\Models\Counter;
 use App\Models\Newsletter;
+use App\Models\Note;
 use App\Models\Contact;
 use App\Models\Gallery;
 use App\Models\Followup;
@@ -443,6 +444,7 @@ function itemsCount($model)
         "issues" => count(Issue::get()),
         "complains" => count(Complain::get()),
         "vaccancies" => count(Vaccancy::get()),
+        "notes" => count(Note::get()),
         
         "dbcredentials" => count(DBCredential::get()),
         "admins" => count(Admin::get()),

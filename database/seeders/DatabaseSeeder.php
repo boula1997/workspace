@@ -53,6 +53,7 @@ class DatabaseSeeder extends Seeder
             
             IssuesSeeder::class,
             DbcredentialsSeeder::class,
+            NotesSeeder::class,
 
         ]);
 

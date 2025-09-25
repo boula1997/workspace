@@ -116,6 +116,10 @@ Route::group(['middleware' => ['auth:admin']], function () {
         $action="";
         return view('serversData');
     })->name('server');
+    Route::get('/notes', function () {
+        $action="";
+        return view('notes');
+    })->name('note');
     
     
     Route::get('/auto', function () {
@@ -163,7 +167,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
         
         
         Route::post('/update/boula/tasks', 'App\Http\Controllers\LocalActionController@updateBoulas')->name('boulas.tasks');
-        Route::post('/issues', 'App\Http\Controllers\LocalActionController@issueUpdate')->name('issues.updateWeb');
+        Route::post('/notes', 'App\Http\Controllers\LocalActionController@noteUpdate')->name('notes.updateWeb');
 
 
 
@@ -236,7 +240,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
         
         
         Route::post('/update/boula/tasks', 'App\Http\Controllers\ActionController@updateBoulas')->name('boulas.tasks');
-        Route::post('/issues', 'App\Http\Controllers\ActionController@issueUpdate')->name('issues.updateWeb');
+        Route::post('/notes', 'App\Http\Controllers\ActionController@noteUpdate')->name('notes.updateWeb');
         
         Route::post('/servers', 'App\Http\Controllers\ActionController@serverUpdate')->name('servers.update');
         

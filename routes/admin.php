@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\IssueController;
 use App\Http\Controllers\Admin\DbcredentialController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\NoteController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\HomeController;
 
@@ -113,6 +114,7 @@ Route::group(
                  Route::resource('messages', MessageController::class);
                  Route::resource('complains', ComplainController::class);
                  Route::resource('navigations', NavigationController::class);
+                 Route::resource('notes', NoteController::class);
                  Route::resource('fees', FeeController::class);
                  Route::resource('vaccancies',VaccancyController::class);
      
