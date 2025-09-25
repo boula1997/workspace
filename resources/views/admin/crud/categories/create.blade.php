@@ -65,6 +65,8 @@
             </div>
             <div class="card card-custom">
                 <div class="card-body">
+
+                                                                {{-- Static Select Input --}} <div class="col-md-6"> <div class="mb-3"> <label for="" class="form-label">{{ __('general.type') }}</label> <select class="form-select form-select-lg" name="type" id="type"> <option value="">{{ __('general.select') }}</option> <option value="item" {{ old('type')=='item'?'selected':'' }}>{{ __('general.item') }}</option> </select> </div> </div>
                     <div class="row">
                         <div class="col-md-6">
                             @include('admin.components.image', [

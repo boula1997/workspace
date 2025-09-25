@@ -28,7 +28,6 @@ class NoteRequest extends FormRequest
         return [
 
         'title' => 'required',
-        'type' => 'required',
 
         ];
     }

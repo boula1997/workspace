@@ -54,7 +54,7 @@
                                                     </div>
                                                 </div>
 
-<!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.type')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $category->type }}</p> </div> </div> </div>
+
                                                 <!-- normal input -->
                                                 <div class="col-md-6">
                                                     <div class="mb-5 bg-light p-3 rounded h-100">

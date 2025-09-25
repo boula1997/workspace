@@ -26,6 +26,8 @@ class CategoryRequest extends FormRequest
         $rules = [
             'image' =>  $image ,
             'icon' =>  'required' ,
+            'type' => 'required',
+
         ];
         foreach (config('translatable.locales') as $locale) {
             $rules += [$locale . '.title' => ['required', 'string']];
