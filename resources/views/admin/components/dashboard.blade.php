@@ -411,7 +411,7 @@
                     <a href="#" class="nav-link">
                         <i class=" px-1 fas fa-notes"></i>
                         <p>
-                            @lang('general.notes')
+                            @lang('general.notes33')
                             <i class=" px-1 fas fa-angle-left right"></i>
                             <span class="badge badge-info right">{{ itemsCount('notes') }}</span>
                         </p>
