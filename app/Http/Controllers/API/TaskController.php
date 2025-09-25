@@ -607,7 +607,7 @@ class TaskController extends Controller
                     ];
                 }
              }else if($category->title=="dbcredentials"){
-                $issues = DBCredential::get();
+                $dbcredentials = DBCredential::get();
                 foreach ($dbcredentials as $dbcredential) {
                     $elements[] = [
                         'title' => $dbcredential->db_name,  
