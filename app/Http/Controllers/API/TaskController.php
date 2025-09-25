@@ -619,7 +619,7 @@ class TaskController extends Controller
                 $issues = Issue::get();
                 foreach ($issues as $issue) {
                     $elements[] = [
-                        'title' => $issue->db_name,  
+                        'title' => $issue->title,  
                         'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/issues/".$issue->id."/edit",
                         'type'  => "issue",
                     ];
