@@ -593,6 +593,7 @@ class TaskController extends Controller
             $elements=[];
              $category=Category::find($id);
              if($category->title=="products"){
+                $projects=Project::get();
                 foreach ($projects as $project) {
                     $elements[] = [
                     'title' => $project->title,  
