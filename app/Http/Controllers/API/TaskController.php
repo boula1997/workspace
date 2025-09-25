@@ -20,7 +20,8 @@ use App\Models\Video;
 use App\Models\Navigation;
 use App\Models\Task;
 use App\Models\DBCredential;
-use App\Models\Role;
+use Spatie\Permission\Models\Role;
+
 use App\Models\Gallery;
 use Exception;
 use Illuminate\Http\Request;
