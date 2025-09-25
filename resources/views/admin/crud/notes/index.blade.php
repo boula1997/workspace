@@ -49,7 +49,6 @@
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $note->title }}</td>
-                                                <td>{{ $category->type }}</td>
                                                 <td>{{ $note->isOverthinking ? __('general.yes') : __('general.no') }}</td>
 
                                                 <td>{{ $note->isNotification ? __('general.yes') : __('general.no') }}</td>
