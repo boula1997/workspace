@@ -19,6 +19,8 @@ use App\Models\Category;
 use App\Models\Navigation;
 use App\Models\Task;
 use App\Models\DBCredential;
+use App\Models\Role;
+use App\Models\Gallery;
 use Exception;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -592,6 +594,69 @@ class TaskController extends Controller
                         'title' => $category->title,  
                         'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/categories/".$category->id."/edit",
                         'type'  => "category",
+                    ];
+                }
+             }else if($category->title=="roles"){
+                $roles = Role::get();
+                foreach ($roles as $role) {
+                    $elements[] = [
+                        'title' => $role->name,  
+                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/roles/".$role->id."/edit",
+                        'type'  => "role",
+                    ];
+                }
+             }else if($category->title=="dbcredentials"){
+                $issues = DBCredential::get();
+                foreach ($dbcredentials as $dbcredential) {
+                    $elements[] = [
+                        'title' => $dbcredential->db_name,  
+                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/dbcredentials/".$dbcredential->id."/edit",
+                        'type'  => "dbcredential",
+                    ];
+                }
+             }else if($category->title=="issues"){
+                $issues = Issue::get();
+                foreach ($issues as $issue) {
+                    $elements[] = [
+                        'title' => $issue->db_name,  
+                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/issues/".$issue->id."/edit",
+                        'type'  => "issue",
+                    ];
+                }
+             }else if($category->title=="portfolios"){
+                $portfolios = Gallery::get();
+                foreach ($portfolios as $portfolio) {
+                    $elements[] = [
+                        'title' => $portfolio->title,  
+                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/portfolios/".$portfolio->id."/edit",
+                        'type'  => "portfolio",
+                    ];
+                }
+             }else if($category->title=="videos"){
+                $videos = Video::get();
+                foreach ($videos as $video) {
+                    $elements[] = [
+                        'title' => $video->youtube_link,  
+                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/videos/".$video->id."/edit",
+                        'type'  => "video",
+                    ];
+                }
+             }else if($category->title=="fees"){
+                $fees = Fee::get();
+                foreach ($fees as $fee) {
+                    $elements[] = [
+                        'title' => $fee->amount,  
+                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/fees/".$fee->id."/edit",
+                        'type'  => "fee",
+                    ];
+                }
+             }else if($category->title=="tasks"){
+                $tasks = Task::get();
+                foreach ($tasks as $task) {
+                    $elements[] = [
+                        'title' => $task->amount,  
+                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/tasks/".$task->id."/edit",
+                        'type'  => "task",
                     ];
                 }
              }
