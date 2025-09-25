@@ -637,7 +637,7 @@ class TaskController extends Controller
                 $videos = Video::get();
                 foreach ($videos as $video) {
                     $elements[] = [
-                        'title' => $video->youtube_link,  
+                        'title' => $video->title,  
                         'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/videos/".$video->id."/edit",
                         'type'  => "video",
                     ];
