@@ -577,19 +577,19 @@ class TaskController extends Controller
                     ];
                 }
              }else if($category->title=="navigations"){
-                $navigations = Navigation::orderBy('name', 'ASC')->get();
+                $navigations = Navigation::orderBy('title', 'ASC')->get();
                 foreach ($navigations as $navigation) {
                     $elements[] = [
-                        'title' => $navigation->name,  
+                        'title' => $navigation->title,  
                         'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/navigations/".$navigation->id."/edit",
                         'type'  => "navigation",
                     ];
                 }
              }else if($category->title=="categories"){
-                $categories = Category::orderBy('name', 'ASC')->get();
+                $categories = Category::orderBy('title', 'ASC')->get();
                 foreach ($categories as $category) {
                     $elements[] = [
-                        'title' => $category->name,  
+                        'title' => $category->title,  
                         'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/categories/".$category->id."/edit",
                         'type'  => "category",
                     ];
