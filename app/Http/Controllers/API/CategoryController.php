@@ -19,7 +19,7 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            $data['categories'] = CategoryResource::collection($this->category->get());
+            $data['categories'] = CategoryResource::collection($this->category->where("type",request()->query('type'))->get());
             return successResponse($data);
         } catch (Exception $e) {
 
