@@ -65,6 +65,7 @@ class NoteController extends Controller
         try {
             $input = $request->all();
             $input['isNotification']=$request->has('isNotification')?1:0;
+            $input["isOverthinking"]=$request->has("isOverthinking")?1:0;
             $note = Note::create($input);
             return redirect()->route('notes.index')
                 ->with('success', 'Note created successfully');
@@ -111,6 +112,7 @@ class NoteController extends Controller
         try {
             $input = $request->except('image','profile_avatar_remove');
             $input['isNotification']=$request->has('isNotification')?1:0;
+            $input[isOverthinking]=$request->has("isOverthinking")?1:0;
             $note = Note::find($id);
             $note->update($input);
             return redirect()->route('notes.index')
