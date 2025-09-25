@@ -47,7 +47,7 @@
                                                                 @checked(old('isOverthinking')) type="checkbox"
                                                                 id="isOverthinking" name="isOverthinking" value="1">
                                                             <label class="form-check-label"
-                                                                for="isOverthinking">{{ __('general.isOverthinking') }}
+                                                                for="isOverthinking">{{ __('general.isActive') }}
                                                                 <span class="text-danger"> * </span></label>
                                                         </div>
                                                     </div>
