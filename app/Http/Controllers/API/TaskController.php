@@ -12,6 +12,7 @@ use App\Models\Project;
 use App\Models\Issue;
 use App\Models\Query;
 use App\Models\Fee;
+use App\Models\Note;
 use App\Models\Admin;
 use App\Models\Deadline;
 use App\Models\Category;
@@ -601,7 +602,17 @@ class TaskController extends Controller
                         'type'  => "project",
                     ];
                 }
+             }else if($category->title=="notes"){
+                $notes=Note::take(3)->get();
+                foreach ($notes as $note) {
+                    $elements[] = [
+                    'title' => $note->title,  
+                    'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/notes/".$note->id."/edit",
+                        'type'  => "note",
+                    ];
+                }
              }
+
              $data["elements"]=$elements;
              $data["isExpired"]=isExpired()[0];
              return successResponse($data);
