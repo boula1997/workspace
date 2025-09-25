@@ -405,26 +405,26 @@
                     </li>
                 @endcan
 
-                {{-- @can('note-list')
-                @endcan --}}
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class=" px-1 fas fa-notes"></i>
-                        <p>
-                            @lang('general.notes33')
-                            <i class=" px-1 fas fa-angle-left right"></i>
-                            <span class="badge badge-info right">{{ itemsCount('notes') }}</span>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('notes.index') }}" class="nav-link">
-                                <i class=" px-1 far fa-circle nav-icon"></i>
-                                <p>@lang('general.show')</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                @can('note-list')
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class=" px-1 fas fa-notes"></i>
+                            <p>
+                                @lang('general.notes')
+                                <i class=" px-1 fas fa-angle-left right"></i>
+                                <span class="badge badge-info right">{{ itemsCount('notes') }}</span>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('notes.index') }}" class="nav-link">
+                                    <i class=" px-1 far fa-circle nav-icon"></i>
+                                    <p>@lang('general.show')</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
                 @can('team-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
