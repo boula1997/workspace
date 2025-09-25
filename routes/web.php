@@ -236,7 +236,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
         
         
         Route::post('/update/boula/tasks', 'App\Http\Controllers\ActionController@updateBoulas')->name('boulas.tasks');
-        Route::post('/issues', 'App\Http\Controllers\ActionController@issueUpdate')->name('issues.update');
+        Route::post('/issues', 'App\Http\Controllers\ActionController@issueUpdate')->name('issues.updateWeb');
         
         Route::post('/servers', 'App\Http\Controllers\ActionController@serverUpdate')->name('servers.update');
         
