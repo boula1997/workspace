@@ -46,7 +46,7 @@
                                                     <div class="mb-5 bg-light p-3 rounded h-100">
                                                         <div class="card-title fw-bold">
                                                             <h5 class="font-weight-bolder text-dark">
-                                                                {{ __('general.isActive') }}:</h5>
+                                                                {{ __('general.isPending') }}:</h5>
                                                             <p style="margin: 0; color: inherit; font-weight: normal;">
                                                                 {{ $note->isOverthinking ? _('general.yes') : __('general.no') }}
                                                             </p>
