@@ -23,7 +23,7 @@ class ProfileRequest extends FormRequest
      */
     public function rules()
     { 
-        $image=request()->isMethod('put')?'nullable':'required';
+        $image=request()->isMethod('put')?'nullable':'nullable';
         // dd(request()->all());
         return [
             'image' => $image,
