@@ -22,7 +22,7 @@ class CategoryRequest extends FormRequest
         //  $this->merge(['user_id' => auth('api')->user()->id]);
 
 
-        $image = request()->isMethod('put') ? 'nullable' : 'required';
+        $image = request()->isMethod('put') ? 'nullable' : 'nullable';
         $rules = [
             'image' =>  $image ,
             'icon' =>  'required' ,
