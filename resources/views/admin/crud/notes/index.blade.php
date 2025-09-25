@@ -82,7 +82,7 @@
 
 
 @push('scripts')
-    <script>
+    {{-- <script>
         $(function() {
             // Define a unique key for your DataTable state in localStorage
             const tableStateKey = "coursesTableState";
@@ -109,5 +109,5 @@
             // Append DataTable buttons to container
             table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
-    </script>
+    </script> --}}
 @endpush
