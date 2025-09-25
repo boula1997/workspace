@@ -558,7 +558,7 @@ class TaskController extends Controller
                         'type'  => "project",
                     ];
                 }
-             }else if($category->title=="notes"){
+             }else if($category->title=="notes" && boula()){
                 $notes=Note::where("isOverthinking",0)->get();
                 foreach ($notes as $note) {
                     $elements[] = [
@@ -586,7 +586,7 @@ class TaskController extends Controller
                     ];
                 }
              }else if($category->title=="categories"){
-                $categories = Category::orderBy('title', 'ASC')->get();
+                $categories = Category::get();
                 foreach ($categories as $category) {
                     $elements[] = [
                         'title' => $category->title,  
