@@ -586,6 +586,29 @@ class TaskController extends Controller
         }
     }
 
+
+        public function elements($id)
+    {
+        try {
+             $category=Category::find($id);
+             if($category->title=="Products"){
+                foreach ($projects as $project) {
+                    $elements[] = [
+                        'title' => $project->title,  
+                    'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/projects/".$project->id."/edit",
+                        'type'  => "project",
+                    ];
+                }
+             }
+             $data["elements"]=$elements;
+             $data["isExpired"]=isExpired()[0];
+             return successResponse($data);
+
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+
         public function deadlines()
     {
         try {
