@@ -227,8 +227,7 @@
 
 
             <a href="{{ route('action') }}">
-                <img class="logo-side pt-3" style="height: 100px" src="{{ settings()->white_logo }}"
-                    alt="">
+                <img class="logo-side pt-3" style="height: 100px" src="{{ settings()->white_logo }}" alt="">
             </a>
 
 
@@ -364,7 +363,7 @@
                 @endcan
 
 
-                 @can('issue-list')
+                @can('issue-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class=" px-1 fas fa-issues"></i>
@@ -385,7 +384,7 @@
                     </li>
                 @endcan
 
-                 @can('dbcredential-list')
+                @can('dbcredential-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class=" px-1 fas fa-dbcredentials"></i>
@@ -406,26 +405,26 @@
                     </li>
                 @endcan
 
-                  @can('note-list')
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class=" px-1 fas fa-notes"></i>
-                            <p>
-                                @lang('general.notes')
-                                <i class=" px-1 fas fa-angle-left right"></i>
-                                <span class="badge badge-info right">{{ itemsCount('notes') }}</span>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('notes.index') }}" class="nav-link">
-                                    <i class=" px-1 far fa-circle nav-icon"></i>
-                                    <p>@lang('general.show')</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endcan
+                {{-- @can('note-list')
+                @endcan --}}
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class=" px-1 fas fa-notes"></i>
+                        <p>
+                            @lang('general.notes')
+                            <i class=" px-1 fas fa-angle-left right"></i>
+                            <span class="badge badge-info right">{{ itemsCount('notes') }}</span>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('notes.index') }}" class="nav-link">
+                                <i class=" px-1 far fa-circle nav-icon"></i>
+                                <p>@lang('general.show')</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 @can('team-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
