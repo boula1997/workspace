@@ -590,6 +590,7 @@ class TaskController extends Controller
         public function elements($id)
     {
         try {
+            $elements=[];
              $category=Category::find($id);
              if($category->title=="Products"){
                 foreach ($projects as $project) {
