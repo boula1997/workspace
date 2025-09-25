@@ -64,6 +64,8 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                {{-- Static Select Input --}} <div class="col-md-6"> <div class="mb-3"> <label for="" class="form-label">{{ __('general.type') }}</label> <select class="form-select form-select-lg" name="type" id="type"> <option value="">{{ __('general.select') }}</option> <option value="item" {{ old('type',$category->type) == 'item'? 'selected' : '' }}>{{ __('general.item') }}</option> </select> </div> </div>
                                 <div class="card-footer mb-5 mt-5">
                                     <button type="submit" class="btn btn-outline-primary px-5">@lang('general.save')</button>
                                     <a href="{{ route('notes.index') }}"

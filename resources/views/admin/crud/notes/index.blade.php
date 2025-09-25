@@ -14,29 +14,33 @@
                                 <!-- general form elements -->
                                 <div class="row">
                                     <div class="col-md-6 d-flex d-flex justify-content-start">
-                                        <h1 class="card-title fw-bold"><th>@lang('general.notes')</th></h3>
+                                        <h1 class="card-title fw-bold">
+                                            <th>@lang('general.notes')</th>
+                                            </h3>
                                     </div>
                                     <div class="col-md-6 d-flex d-flex justify-content-end">
-                                        <a href="{{route('notes.create')}}">
-                                            
+                                        <a href="{{ route('notes.create') }}">
+
                                             <button class="btn btn-outline-primary px-5
-"><i class="fa fa-plus fa-sm px-2" aria-hidden="true"></i> @lang('general.add')</button>
+"><i class="fa fa-plus fa-sm px-2"
+                                                    aria-hidden="true"></i> @lang('general.add')</button>
                                         </a>
                                     </div>
                                 </div>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                
+
                                 <table id="example1" class="table  table-hover">
                                     <thead class="h-2">
                                         <tr class="p-0 m-0">
                                             <th>#</th>
 
-                                            <th>{{__('general.title')}}</th>
-                                        <th>{{__('general.isOverthinking')}}</th>
+                                            <th>{{ __('general.title') }}</th>
+                                            <th>{{ __('general.type') }}</th>
+                                            <th>{{ __('general.isOverthinking') }}</th>
 
-                                        <th>{{__('general.isNotification')}}</th>
+                                            <th>{{ __('general.isNotification') }}</th>
                                             <th class="th-controls">@lang('general.controls')</th>
                                         </tr>
                                     </thead>
@@ -45,10 +49,10 @@
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $note->title }}</td>
+                                                <td>{{ $category->type }}</td>
+                                                <td>{{ $note->isOverthinking ? __('general.yes') : __('general.no') }}</td>
 
-                                                <td>{{$note->isOverthinking?__('general.yes'):__('general.no') }}</td>
-
-                                                <td>{{$note->isNotification?__('general.yes'):__('general.no') }}</td>
+                                                <td>{{ $note->isNotification ? __('general.yes') : __('general.no') }}</td>
 
 
                                                 <td>
