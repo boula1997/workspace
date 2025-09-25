@@ -82,48 +82,6 @@ class TaskController extends Controller
                     ->get(); 
 
 
-        // Remove duplicate tasks by title
-
-        foreach ($allClients as $client) {
-            $elements[] = [
-                'title' => $client->name,  
-                'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/admins/".$client->id."/edit",
-                'type'  => "client",
-            ];
-        }
-
-        foreach ($allEmployees as $employee) {
-            $elements[] = [
-                'title' => $employee->name,  
-                'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/admins/".$employee->id."/edit",
-                'type'  => "employee",
-            ];
-        }
-
-        foreach ($projects as $project) {
-            $elements[] = [
-                'title' => $project->title,  
-               'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/projects/".$project->id."/edit",
-                'type'  => "project",
-            ];
-        }
-
-        foreach ($naviagations as $navigation) {
-            $elements[] = [
-                'title' => $navigation->title,  
-               'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/navigations/".$navigation->id."/edit",
-                'type'  => "navigation",
-            ];
-        }
-
-        foreach ($categories as $category) {
-            $elements[] = [
-                'title' => $category->title,  
-               'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/categories/".$category->id."/edit",
-                'type'  => "category",
-            ];
-        }
-                
            
            
            
@@ -168,7 +126,6 @@ class TaskController extends Controller
             "tablePprojects"=>ProjectResource::collection($tablePprojects),
             "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
-            "elements"=>$elements,
             "clients"=>$clients,
             "credentials"=>$credentials,
             "tasks"=>TaskResource::collection($tasks),
@@ -185,7 +142,6 @@ class TaskController extends Controller
         else
         $data=[
             "projects"=>ProjectResource::collection($projects),
-            "elements"=>$elements,
             "infoProjects"=>ProjectResource::collection($infoProjects),
             "boardProjects" => ProjectResource::collection(
                 Project::orderBy("deadline","asc")
@@ -603,12 +559,39 @@ class TaskController extends Controller
                     ];
                 }
              }else if($category->title=="notes"){
-                $notes=Note::take(3)->get();
+                $notes=Note::get();
                 foreach ($notes as $note) {
                     $elements[] = [
                     'title' => $note->title,  
                     'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/notes/".$note->id."/edit",
                         'type'  => "note",
+                    ];
+                }
+             }else if($category->title=="admins"){
+                $admins = Admin::orderBy('name', 'ASC')->get();
+                foreach ($admins as $admin) {
+                    $elements[] = [
+                        'title' => $admin->name,  
+                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/admins/".$admin->id."/edit",
+                        'type'  => "admin",
+                    ];
+                }
+             }else if($category->title=="navigations"){
+                $navigations = Navigation::orderBy('name', 'ASC')->get();
+                foreach ($navigations as $navigation) {
+                    $elements[] = [
+                        'title' => $navigation->name,  
+                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/navigations/".$navigation->id."/edit",
+                        'type'  => "navigation",
+                    ];
+                }
+             }else if($category->title=="categories"){
+                $categories = Category::orderBy('name', 'ASC')->get();
+                foreach ($categories as $category) {
+                    $elements[] = [
+                        'title' => $category->name,  
+                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/categories/".$category->id."/edit",
+                        'type'  => "category",
                     ];
                 }
              }
