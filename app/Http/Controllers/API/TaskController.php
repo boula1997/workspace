@@ -559,7 +559,7 @@ class TaskController extends Controller
                     ];
                 }
              }else if($category->title=="notes" && boula()){
-                $notes=Note::where("isOverthinking",0)->get();
+                $notes=Note::where("isOverthinking",0)->latest()->get();
                 foreach ($notes as $note) {
                     $elements[] = [
                     'title' => $note->title,  
