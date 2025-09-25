@@ -16,6 +16,7 @@ use App\Models\Note;
 use App\Models\Admin;
 use App\Models\Deadline;
 use App\Models\Category;
+use App\Models\Video;
 use App\Models\Navigation;
 use App\Models\Task;
 use App\Models\DBCredential;
@@ -642,7 +643,7 @@ class TaskController extends Controller
                     ];
                 }
              }else if($category->title=="fees"){
-                $fees = Fee::get();
+                $fees = Fee::latest()->get();
                 foreach ($fees as $fee) {
                     $elements[] = [
                         'title' => "".$fee->amount." EGP",  
