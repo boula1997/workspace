@@ -15,21 +15,21 @@ class AdminResource extends JsonResource
     public function toArray($request)
     {
         return [
-        "counter"=>$this->counter,
         "created_at"=>$this->created_at,
-        "employees"=>$this->employees,
-        "employee_id"=>$this->employee_id,
+        "email"=>$this->email,
+        "email_verified_at"=>$this->email_verified_at,
         "id"=>$this->id,
-        "isOverthinking"=>$this->isOverthinking,
-        "keywords"=>$this->keywords,
-        "level"=>$this->level,
-        "piority"=>$this->piority,
-        "project_id"=>$this->project_id,
-        "status"=>$this->status,
-        "title"=>$this->title,
+        "isActive"=>$this->isActive,
+        "messanger_id"=>$this->messanger_id,
+        "name"=>$this->name,
+        "password"=>$this->password,
+        "phone"=>$this->phone,
+        "remember_token"=>$this->remember_token,
+        "type"=>$this->type,
+        "updated_at"=>$this->updated_at,
+        "whatsapp"=>$this->whatsapp,
         "active_tasks_count"=>5,
         "pending_tasks_count"=>5,
-        "updated_at"=>$this->updated_at,
         ];
 
 
