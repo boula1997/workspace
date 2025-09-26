@@ -282,7 +282,7 @@ class TaskController extends Controller
         } elseif ($action == 'delete') {
             $tasks = Task::whereIn('id', $taskIds)->get();
             foreach ($tasks as $task) {
-                Task::update(['status' => !$task->status]);
+                $task->update(['status' => !$task->status]);
             };
 
             if(isset($request->projects))
