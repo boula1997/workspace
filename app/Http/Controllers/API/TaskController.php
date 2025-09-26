@@ -66,7 +66,7 @@ class TaskController extends Controller
 $employees = Admin::where("isActive", 1)
     ->where("type", "!=", "client")
     ->withCount([
-        'tasks as pending_tasks_count' => function ($query) {
+        'tasks as active_tasks_count' => function ($query) {
             $query->where('status', 0)
                 ->whereRaw("JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))");
         }
