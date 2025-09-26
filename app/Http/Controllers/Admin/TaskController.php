@@ -567,7 +567,7 @@ class TaskController extends Controller
             $twoRoutesAgo = session('twoRoutesAgo');
 
             // Redirect to either the previous or the one before
-            return redirect($twoRoutesAgo)
+            return redirect()->route("tasks.index")
                 ->with(['success' => __('general.updated_successfully')]);
         } catch (Exception $e) {
             dd($e->getMessage());
