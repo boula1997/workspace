@@ -512,9 +512,9 @@ function getFollowupTitles($followups)
 }
 
 
-function taskEmployees($title,$type="web")
+function taskEmployees($task,$type="web")
 {
-    $employee_ids = Task::where('title', $title)->pluck('employee_id');
+    $employee_ids = json_decode($task->employees);
     $names = Admin::whereIn('id', $employee_ids)->pluck('name');
 
     if($type=="web")

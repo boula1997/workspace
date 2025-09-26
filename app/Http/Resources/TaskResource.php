@@ -19,7 +19,7 @@ class TaskResource extends JsonResource
             'title'=>$this->title,
             'status'=>$this->status,
             'piority'=>$this->piority,
-            'employee'=>taskEmployees($this->title,"mobile"),
+            'employee'=>taskEmployees($this,"mobile"),
             'project'=>$this->project->title,
             "editlink"=>"https://yousab-tech.com/workspace/public/en/dashboard/tasks/".$this->id."/edit"
         ];
