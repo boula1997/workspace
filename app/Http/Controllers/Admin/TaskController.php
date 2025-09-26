@@ -183,7 +183,7 @@ class TaskController extends Controller
                     foreach ($request->employees as $employee) {
                         Task::create([
                             'title' => $tasksameTitle->title,
-                            'employee_id' => $employee,
+                            'employee_id' => 1,
                             'project_id' => $tasksameTitle->project_id,
                             'keywords' => $tasksameTitle->keywords
                         ]);
@@ -247,7 +247,7 @@ class TaskController extends Controller
                         History::where('employee_id', $employee)->where('task_id', $tasksameTitle->id)->delete();
                         Task::create([
                             'title' => $tasksameTitle->title,
-                            'employee_id' => $employee,
+                            'employee_id' => 1,
                             'project_id' => $tasksameTitle->project_id,
                             'keywords' => $tasksameTitle->keywords
                         ]);
@@ -422,7 +422,7 @@ class TaskController extends Controller
             foreach ($titles as $title) {
                 Task::create([
                     'title' => $title,
-                    'employee_id' => $employee,
+                    'employee_id' => 1,
                     'project_id' => $request->project_id,
                     'employees' => json_encode($request->employees),
 
@@ -541,7 +541,7 @@ class TaskController extends Controller
 
             $task->update([
                 'title' => $request->title,
-                'employee_id' => $employee,
+                'employee_id' => 1,
                 'project_id' => $request->project_id,
                 'keywords' => $keywords,
                 'piority' => $request->has("piority")?1:0,
