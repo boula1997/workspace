@@ -63,16 +63,13 @@ class TaskController extends Controller
 
     public function create()
     {
-    $employees = Admin::where("isActive", 1)
-        ->where("type", "!=", "client")
-        ->withCount([
-            'tasks as active_tasks_count' => function ($query) {
-                $query->where('status', 0)
-                    ->whereRaw("tasks.employees LIKE CONCAT('%\"', admins.id, '\"%')");
-            }
-        ])
-        ->orderBy('name', 'ASC')
-        ->get();
+        $employees = Admin::where("isActive",1)
+            ->where("type","!=","client")
+            ->withCount(['tasks as active_tasks_count' => function ($query) {
+                $query->where('status', 0);   // 👈 only count tasks with status=0
+            }])
+            ->orderBy('name', 'ASC')
+            ->get();
         $clients = Admin::where("isActive",1)->where("type","client")->orderBy('name', 'ASC')->get();
                         $projects = Project::orderBy("title","asc")
                     ->get(); 
