@@ -57,4 +57,11 @@ class Admin extends Authenticatable implements JWTSubject // <-- IMPLEMENT INTER
     {
         return [];
     }
+
+
+    public function tasksJson()
+{
+    return $this->hasMany(Task::class, 'id', 'id') // dummy relation
+        ->whereRaw("JSON_CONTAINS(tasks.employees, JSON_QUOTE(CAST(admins.id AS CHAR)))");
+}
 }

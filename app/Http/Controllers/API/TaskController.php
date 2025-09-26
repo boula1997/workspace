@@ -63,16 +63,15 @@ class TaskController extends Controller
 
     public function create()
     {
-        $employees = Admin::where("isActive", 1)
-            ->where("type", "!=", "client")
-            ->withCount([
-                'tasks as active_tasks_count' => function ($query) {
-                    $query->where('status', 0)
-                        ->whereRaw("JSON_CONTAINS(tasks.employees, JSON_QUOTE(CAST(admins.id AS CHAR)))");
-                }
-            ])
-            ->orderBy('name', 'ASC')
-            ->get();
+$employees = Admin::where("isActive", 1)
+    ->where("type", "!=", "client")
+    ->withCount([
+        'tasksJson as active_tasks_count' => function ($query) {
+            $query->where('status', 0);
+        }
+    ])
+    ->orderBy('name', 'ASC')
+    ->get();
         $clients = Admin::where("isActive",1)->where("type","client")->orderBy('name', 'ASC')->get();
                         $projects = Project::orderBy("title","asc")
                     ->get(); 
