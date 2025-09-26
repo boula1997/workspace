@@ -544,18 +544,20 @@ class TaskController extends Controller
     public function update(TaskRequest $request, Task $task)
     {
         try {
+            $keywords=$task->keywords;
 
+            Task::where("title",$task->title)->delete();
             foreach ($request->employees as $employee) {
                 Task::create([
                     'title' => $request->title,
                     'employee_id' => $employee,
                     'project_id' => $request->project_id,
-                    'keywords' => $task->keywords,
-                    'piority' => $request->piority,
+                    'keywords' => $keywords,
+                    'piority' => $request->has("piority")?1:0,
 
                 ]);
             }
-            $task->delete();
+            
 
 
 
@@ -565,7 +567,7 @@ class TaskController extends Controller
             $twoRoutesAgo = session('twoRoutesAgo');
 
             // Redirect to either the previous or the one before
-            return redirect($twoRoutesAgo)
+            return redirect()->route("tasks.index")
                 ->with(['success' => __('general.updated_successfully')]);
         } catch (Exception $e) {
             dd($e->getMessage());
