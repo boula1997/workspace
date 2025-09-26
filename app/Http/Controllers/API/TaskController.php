@@ -404,15 +404,13 @@ class TaskController extends Controller
 
             $titles = explode('+', $request->title);
             foreach ($titles as $title) {
-                foreach ($request->employees as $employee) {
-                    Task::create([
-                        'title' => $title,
-                        'employee_id' => $employee,
-                        'project_id' => $request->project_id,
-                        'piority' => $request->piority,
-                        'employees' => json_encode($request->employees),
-                    ]);
-                }
+                Task::create([
+                    'title' => $title,
+                    'employee_id' => $employee,
+                    'project_id' => $request->project_id,
+                    'piority' => $request->piority,
+                    'employees' => json_encode($request->employees),
+                ]);
             }
 
 
