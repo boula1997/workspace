@@ -598,7 +598,7 @@ class TaskController extends Controller
                         'type'  => "category",
                     ];
                 }
-             }else if($category->title=="roles"){
+             }else if($category->title=="roles" && boula()){
                 $roles = Role::get();
                 foreach ($roles as $role) {
                     $elements[] = [
@@ -616,7 +616,7 @@ class TaskController extends Controller
                         'type'  => "dbcredential",
                     ];
                 }
-             }else if($category->title=="issues"){
+             }else if($category->title=="issues" && boula()){
                 $issues = Issue::get();
                 foreach ($issues as $issue) {
                     $elements[] = [
