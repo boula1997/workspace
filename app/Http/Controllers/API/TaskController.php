@@ -410,7 +410,7 @@ class TaskController extends Controller
                         'employee_id' => $employee,
                         'project_id' => $request->project_id,
                         'piority' => $request->piority,
-
+                        'employees' => json_encode($request->employees),
                     ]);
                 }
             }
@@ -501,7 +501,7 @@ class TaskController extends Controller
 
         // Find and toggle the level for the given task ID
         $task = Task::find($id);
-        $task->where('title', $task->title)->update(['piority' => !$task->piority]);
+        $task->update(['piority' => !$task->piority]);
         return response()->json(['success' => __('general.changed_successfully'.$task->piority)]);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
@@ -516,7 +516,7 @@ class TaskController extends Controller
 
                  // Find and toggle the level for the given task ID
                  $task = Task::find($id);
-                 $task->where('title', $task->title)->update(['status' => !$task->status]);
+                 $task->update(['status' => !$task->status]);
      
                  $task = Task::find($id);
      
