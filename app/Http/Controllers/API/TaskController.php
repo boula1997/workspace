@@ -104,12 +104,12 @@ class TaskController extends Controller
                 $infoProjects = Project::where("isOverthinking",0)->orderBy("title","asc")->get(); // ✅ sort
 
             }else{
-          $tasks = Task::where("status", 0)
-            ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
-            ->latest('updated_at')            // Then by latest update
-            ->take(300)                       // Limit to 300 tasks
-            ->get()
-            ;     
+                $tasks = Task::where("status", 0)
+                    ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
+                    ->latest('updated_at')            // Then by latest update
+                    ->take(300)                       // Limit to 300 tasks
+                    ->get()
+                    ;     
                 $infoProjects = Project::orderBy("title","asc")
                     ->get();
                 $issues = Issue::orderBy("title","asc")->get();
@@ -367,9 +367,6 @@ class TaskController extends Controller
             ;     // Remove duplicate tasks by title
         else
             $tasks = Task::where("status", 1)
-            ->whereHas('project', function ($query) {
-                $query->where('status', '!=', 1);
-            })
             ->latest('updated_at') // Then by latest updated time
             ->take(300)            // Limit to 300 tasks
             ->get()
