@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\TaskRequest;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\NavigationResource;
+use App\Http\Resources\AdminResource;
 use App\Http\Resources\IssueResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
@@ -63,13 +64,10 @@ class TaskController extends Controller
 
     public function create()
     {
-        $employees = Admin::where("isActive",1)
+        $employees = AdminResource::collection(Admin::where("isActive",1)
             ->where("type","!=","client")
-            ->withCount(['tasks as active_tasks_count' => function ($query) {
-                $query->where('status', 0);   // 👈 only count tasks with status=0
-            }])
             ->orderBy('name', 'ASC')
-            ->get();
+            ->get());
         $clients = Admin::where("isActive",1)->where("type","client")->orderBy('name', 'ASC')->get();
                         $projects = Project::orderBy("title","asc")
                     ->get(); 
