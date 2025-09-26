@@ -544,18 +544,20 @@ class TaskController extends Controller
     public function update(TaskRequest $request, Task $task)
     {
         try {
+            $keywords=$task->keywords;
 
+            Task::where("title",$task->title)->delete();
             foreach ($request->employees as $employee) {
                 Task::create([
                     'title' => $request->title,
                     'employee_id' => $employee,
                     'project_id' => $request->project_id,
-                    'keywords' => $task->keywords,
-                    'piority' => $request->piority,
+                    'keywords' => $keywords,
+                    'piority' => $request->has("piority")?1:0,
 
                 ]);
             }
-            $task->delete();
+            
 
 
 
