@@ -90,8 +90,7 @@ class NavigationController extends Controller
                                  ->when($hasPhone, function ($query, $hasPhone) {
                                      return $query->where('hasPhone', $hasPhone);
                                  })
-                                 ->get()
-                                 ->unique('title');
+                                 ->get();
         
             return view('admin.crud.navigations.index', compact('navigations', 'employees'))
                 ->with('i', (request()->input('page', 1) - 1) * 5);

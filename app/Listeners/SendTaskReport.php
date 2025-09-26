@@ -38,8 +38,7 @@ class SendTaskReport
     //     // Get tasks
     //     $tasks = Task::where('status', 0)
     //                 ->orderBy('project_id', 'desc')
-    //                 ->get()
-    //                 ->unique('title');
+    //                 ->get();
 
     //     // Construct the email content
     //     $body = '<html lang="en"><head><meta charset="UTF-8"><title>Tasks Report</title></head><body>';

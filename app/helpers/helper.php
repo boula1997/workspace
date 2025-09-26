@@ -171,15 +171,13 @@ function yousabEmails()
                 ->where('status', 0)
                 ->where('piority', 1)
                 ->orderBy('project_id', 'desc')
-                ->get()
-                ->unique('title');
+                ->get();
 
             // Get all tasks
             $tasks = Task::withoutGlobalScope(DateFilterScope::class)
                 ->where('status', 0)
                 ->orderBy('project_id', 'desc')
-                ->get()
-                ->unique('title');
+                ->get();
 
             // Get all projects and filtered types
             $projects = Project::all();
@@ -394,23 +392,23 @@ function failedResponse($data = [], $message = "error", $status = 400)
 function itemsCount($model)
 {
     if (auth()->user() && auth()->user()->type == 'admin') {
-        $tasks = count(Task::where('status', 0)->get()->unique('title'));
-        $finishedTAsks = count(Task::where('status', 1)->get()->unique('title'));
-        $allTAsks = count(Task::get()->unique('title'));
+        $tasks = count(Task::where('status', 0)->get());
+        $finishedTAsks = count(Task::where('status', 1)->get());
+        $allTAsks = count(Task::get());
     } else {
-        $tasks = count(Task::where('status', 0)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get()->unique('title'));
-        $finishedTAsks = count(Task::where('status', 1)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get()->unique('title'));
-        $allTAsks = count(Task::where('employee_id', auth()->user() ? auth()->user()->id : 0)->get()->unique('title'));
+        $tasks = count(Task::where('status', 0)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
+        $finishedTAsks = count(Task::where('status', 1)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
+        $allTAsks = count(Task::where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
     }
 
     if (auth()->user() && auth()->user()->type == 'admin') {
-        $followups = count(Followup::where('status', 0)->get()->unique('title'));
-        $finishedTAsks = count(Followup::where('status', 1)->get()->unique('title'));
-        $allTAsks = count(Followup::get()->unique('title'));
+        $followups = count(Followup::where('status', 0)->get());
+        $finishedTAsks = count(Followup::where('status', 1)->get());
+        $allTAsks = count(Followup::get());
     } else {
-        $followups = count(Followup::where('status', 0)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get()->unique('title'));
-        $finishedTAsks = count(Followup::where('status', 1)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get()->unique('title'));
-        $allTAsks = count(Followup::where('employee_id', auth()->user() ? auth()->user()->id : 0)->get()->unique('title'));
+        $followups = count(Followup::where('status', 0)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
+        $finishedTAsks = count(Followup::where('status', 1)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
+        $allTAsks = count(Followup::where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
     }
 
     $items = [

@@ -69,16 +69,14 @@ class TaskController extends Controller
                     })->where('status',$status)
                     ->latest()
                     
-                    ->get()
-                    ->unique('title');
+                    ->get();
             } else {
                 $tasks = $this->task
                     ->whereIn('status', $status)
                     ->orderBy('status')
                     ->latest()
                     
-                    ->get()
-                    ->unique('title');
+                    ->get();
             }
 
             if (boula()) {
@@ -147,10 +145,10 @@ class TaskController extends Controller
         $taskIds = $request->input('tasks');
         $action = $request->input('action');
         $employees = Admin::orderBy('name', 'ASC')->get();
-                       $projects = Project::orderBy("title","asc")
-                    ->get()
-                    ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
-                   ; // ✅ sort
+        $projects = Project::orderBy("title","asc")
+        ->get()
+        ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
+        ; // ✅ sort
         // loadActiveProjects(isset($request->projects)?$request->projects:[]);
         $projectIds = activeWebsitesIds();
         $employeeIds = isset($request->employees) ? $request->employees : [];
@@ -178,22 +176,13 @@ class TaskController extends Controller
         }
         if ($action == 'assign') {
             foreach ($tasks as $task) {
-                $taskssameTitles = Task::where('title', $task->title)->get();
-                foreach ($taskssameTitles as $tasksameTitle) {
-                    foreach ($request->employees as $employee) {
-                        Task::create([
-                            'title' => $tasksameTitle->title,
-                            'employee_id' => 1,
-                            'project_id' => $tasksameTitle->project_id,
-                            'keywords' => $tasksameTitle->keywords
-                        ]);
-                    }
-                    $tasksameTitle->delete();
-
-
-
-                }
-                clearTasks($task->title);
+                $task->update([
+                    'title' => $task->title,
+                    'employee_id' => 1,
+                    'project_id' => $task->project_id,
+                    'keywords' => $task->keywords,
+                    'employees' => $request->employees
+                ]);
             }
 
 
@@ -201,8 +190,7 @@ class TaskController extends Controller
                 ->orderBy('project_id', 'desc')
                 ->latest('updated_at') // Ensure latest tasks by creation date
                  // Limit the results to 300
-                ->get()
-                ->unique('title');
+                ->get();
 
              
 
@@ -241,23 +229,15 @@ class TaskController extends Controller
             ]);
         } elseif ($action == 'reassign') {
             foreach ($tasks as $task) {
-                $taskssameTitles = Task::where('title', $task->title)->get();
-                foreach ($taskssameTitles as $tasksameTitle) {
-                    foreach ($request->employees as $employee) {
-                        History::where('employee_id', $employee)->where('task_id', $tasksameTitle->id)->delete();
-                        Task::create([
-                            'title' => $tasksameTitle->title,
-                            'employee_id' => 1,
-                            'project_id' => $tasksameTitle->project_id,
-                            'keywords' => $tasksameTitle->keywords
-                        ]);
-                    }
-                    // $tasksameTitle->delete();
 
-
-
-                }
-                clearTasks($task->title);
+                History::where('employee_id', $employee)->where('task_id', $task->id)->delete();
+                $task->update([
+                    'title' => $task->title,
+                    'employee_id' => 1,
+                    'project_id' => $task->project_id,
+                    'keywords' => $task->keywords,
+                    'employees' => $request->employees
+                ]);
             }
 
 
@@ -265,8 +245,7 @@ class TaskController extends Controller
                 ->orderBy('project_id', 'desc')
                 ->latest('updated_at') // Ensure latest tasks by creation date
                  // Limit the results to 300
-                ->get()
-                ->unique('title');
+                ->get();
 
             if (boula()) {
 
@@ -303,29 +282,22 @@ class TaskController extends Controller
         } elseif ($action == 'delete') {
             $tasks = Task::whereIn('id', $taskIds)->get();
             foreach ($tasks as $task) {
-                // notAllowedTaskAction($task->title);
-                if ($task->status == 1)
-                    Task::where('title', $task->title)->update(['status' => !$task->status]);
-                else
-                    Task::where('title', $task->title)->update(['status' => !$task->status]);
-                clearTasks($task->title);
-            }
-            ;
+                Task::update(['status' => !$task->status]);
+            };
+
             if(isset($request->projects))
             $tasks = Task::whereIn('status',$status)->whereIn('project_id', $request->projects)
                 ->orderBy('project_id', 'desc')
                 ->latest('updated_at') // Ensure latest tasks by creation date
                  // Limit the results to 300
-                ->get()
-                ->unique('title');
+                ->get();
                 
                 else
                 $tasks = Task::whereIn('status',$status)
                     ->orderBy('project_id', 'desc')
                     ->latest('updated_at') // Ensure latest tasks by creation date
                      // Limit the results to 300
-                    ->get()
-                    ->unique('title');
+                    ->get();
 
             if (boula()) {
 
@@ -361,8 +333,8 @@ class TaskController extends Controller
             ]);
         } else if ($action == 'filterProject') {
 
-            $tasks = Task::whereIn('project_id', $request->projects)->whereIn('status', $status)->orderBy('project_id', 'desc')->get()->unique('title');
-                $employees = Admin::orderBy('name', 'ASC')->get();
+            $tasks = Task::whereIn('project_id', $request->projects)->whereIn('status', $status)->orderBy('project_id', 'desc')->get();
+            $employees = Admin::orderBy('name', 'ASC')->get();
             $projects = Project::whereHas('tasks', function ($query) {
                 $query->whereNotNull('id'); // Ensures tasks exist
             })->orderBy('title', 'ASC')->get();
@@ -519,7 +491,7 @@ class TaskController extends Controller
                     ->get()
                     ->filter(fn($project) => $project->status != 0 || $project->deal==0) // ⛔ exclude status == 0
                    ; // ✅ sort
-        $selectedEmployees = Task::where('title', $task->title)->pluck('employee_id')->toArray();
+        $selectedEmployees = json_decode($task->employees);
         return view('admin.crud.tasks.edit', compact('task', 'employees', 'projects', 'selectedEmployees'));
     }
     /**

@@ -98,7 +98,7 @@ class TaskController extends Controller
             ->latest('updated_at')            // Then by latest update
             ->take(300)                       // Limit to 300 tasks
             ->get()
-            ->unique('title');     
+            ;     
                 $issues = Issue::where("isOverthinking",0)->orderBy("title","asc")->get();
 
                 $infoProjects = Project::where("isOverthinking",0)->orderBy("title","asc")->get(); // ✅ sort
@@ -109,7 +109,7 @@ class TaskController extends Controller
             ->latest('updated_at')            // Then by latest update
             ->take(300)                       // Limit to 300 tasks
             ->get()
-            ->unique('title');     
+            ;     
                 $infoProjects = Project::orderBy("title","asc")
                     ->get();
                 $issues = Issue::orderBy("title","asc")->get();
@@ -364,7 +364,7 @@ class TaskController extends Controller
             ->latest('updated_at') // Then by latest updated time
             ->take(300)            // Limit to 300 tasks
             ->get()
-            ->unique('title');     // Remove duplicate tasks by title
+            ;     // Remove duplicate tasks by title
         else
             $tasks = Task::where("status", 1)
             ->whereHas('project', function ($query) {
@@ -373,7 +373,7 @@ class TaskController extends Controller
             ->latest('updated_at') // Then by latest updated time
             ->take(300)            // Limit to 300 tasks
             ->get()
-            ->unique('title');  
+            ;  
 
         $data=[
             "projects"=>ProjectResource::collection($projects),
