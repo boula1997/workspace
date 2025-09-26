@@ -68,7 +68,7 @@ $employees = Admin::where("isActive", 1)
     ->withCount([
         'tasks as active_tasks_count' => function ($query) {
             $query->where('status', 0)
-                ->whereRaw("JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))");
+                ->whereRaw("JSON_CONTAINS(tasks.employees, JSON_QUOTE(CAST(admins.id AS CHAR)))");
         }
     ])
     ->orderBy('name', 'ASC')
