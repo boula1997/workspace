@@ -422,18 +422,15 @@ class TaskController extends Controller
     public function store(TaskRequest $request)
     {
         try {
-
-                dd($request->employees);
             $titles = explode('+', $request->title);
             foreach ($titles as $title) {
-                foreach ($request->employees as $employee) {
-                    Task::create([
-                        'title' => $title,
-                        'employee_id' => $employee,
-                        'project_id' => $request->project_id,
+                Task::create([
+                    'title' => $title,
+                    'employee_id' => $employee,
+                    'project_id' => $request->project_id,
+                    'employees' => json_encode($request->employees),
 
-                    ]);
-                }
+                ]);
             }
 
             // Get the previous and the one before the previous route
@@ -467,7 +464,7 @@ class TaskController extends Controller
         try {
             // Find and toggle the level for the given task ID
             $task = Task::find($id);
-            $task->where('title', $task->title)->update(['level' => !$task->level]);
+            $task->update(['level' => !$task->level]);
 
 
 
@@ -481,7 +478,7 @@ class TaskController extends Controller
         try {
             // Find and toggle the level for the given task ID
             $task = Task::find($id);
-            $task->where('title', $task->title)->update(['piority' => !$task->piority]);
+            $task->update(['piority' => !$task->piority]);
 
 
 
@@ -546,17 +543,16 @@ class TaskController extends Controller
         try {
             $keywords=$task->keywords;
 
-            Task::where("title",$task->title)->delete();
-            foreach ($request->employees as $employee) {
-                Task::create([
-                    'title' => $request->title,
-                    'employee_id' => $employee,
-                    'project_id' => $request->project_id,
-                    'keywords' => $keywords,
-                    'piority' => $request->has("piority")?1:0,
+            $task->update([
+                'title' => $request->title,
+                'employee_id' => $employee,
+                'project_id' => $request->project_id,
+                'keywords' => $keywords,
+                'piority' => $request->has("piority")?1:0,
+                'employees' => $request->employees,
 
-                ]);
-            }
+            ]);
+
             
 
 
