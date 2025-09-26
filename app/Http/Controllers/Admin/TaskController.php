@@ -423,7 +423,7 @@ class TaskController extends Controller
     {
         try {
 
-
+                dd($request->employees);
             $titles = explode('+', $request->title);
             foreach ($titles as $title) {
                 foreach ($request->employees as $employee) {
