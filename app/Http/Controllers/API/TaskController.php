@@ -92,11 +92,11 @@ class TaskController extends Controller
            $queries=Query::latest()->get();
         
             if(!isWithinWorkingHours()){
-                        $tasks = Task::where("status", 0)
+            $tasks = Task::where("status", 0)
             ->where("isOverthinking",0)
             ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
             ->latest('updated_at')            // Then by latest update
-            ->take(300)                       // Limit to 300 tasks
+                                 // Limit to 300 tasks
             ->get()
             ;     
                 $issues = Issue::where("isOverthinking",0)->orderBy("title","asc")->get();
@@ -107,7 +107,7 @@ class TaskController extends Controller
                 $tasks = Task::where("status", 0)
                     ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
                     ->latest('updated_at')            // Then by latest update
-                    ->take(300)                       // Limit to 300 tasks
+                                         // Limit to 300 tasks
                     ->get()
                     ;     
                 $infoProjects = Project::orderBy("title","asc")
@@ -362,13 +362,13 @@ class TaskController extends Controller
             $tasks = Task::where("status", 1)
             ->where("isOverthinking",0)
             ->latest('updated_at') // Then by latest updated time
-            ->take(300)            // Limit to 300 tasks
+                      // Limit to 300 tasks
             ->get()
             ;     // Remove duplicate tasks by title
         else
             $tasks = Task::where("status", 1)
             ->latest('updated_at') // Then by latest updated time
-            ->take(300)            // Limit to 300 tasks
+                      // Limit to 300 tasks
             ->get()
             ;  
 
@@ -393,9 +393,7 @@ class TaskController extends Controller
     public function store(TaskRequest $request)
     {
         try {
-        
-
-
+    
             $overthinkingTasks=Task::where("isOverthinking",1)->get();
             $tasks=Task::get();
 
