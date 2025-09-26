@@ -429,13 +429,8 @@ class TaskController extends Controller
                 ]);
             }
 
-            // Get the previous and the one before the previous route
-            $previousRoute = session('previousRoute');
-            $twoRoutesAgo = session('twoRoutesAgo');
-
-
             // Redirect to either the previous or the one before
-            return redirect($twoRoutesAgo)
+            return redirect()->route("tasks.index")
                 ->with(['success' => __('general.created_successfully')]);
 
         } catch (Exception $e) {
@@ -548,15 +543,6 @@ class TaskController extends Controller
                 'employees' => $request->employees,
 
             ]);
-
-            
-
-
-
-
-            // Get the previous and the one before the previous route
-            $previousRoute = session('previousRoute');
-            $twoRoutesAgo = session('twoRoutesAgo');
 
             // Redirect to either the previous or the one before
             return redirect()->route("tasks.index")
