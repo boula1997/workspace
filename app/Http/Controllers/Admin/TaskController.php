@@ -30,14 +30,10 @@ class TaskController extends Controller
 
     public function updateKeywords(Request $request)
     {
-        $theTask = Task::findOrFail($request->task_id);
-        $tasks = Task::where('title', $theTask->title)->get();
-        foreach ($tasks as $task) {
-            $task->keywords = $request->keywords;
-            $task->save();
+        $task = Task::findOrFail($request->task_id);
+        $task->keywords = $request->keywords;
+        $task->save();
 
-            clearTasks($task->title);
-        }
         return response()->json(['success' => 'updated successfully']);
     }
 
