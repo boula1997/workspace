@@ -63,16 +63,16 @@ class TaskController extends Controller
 
     public function create()
     {
-        $employees = Admin::where("isActive", 1)
-            ->where("type", "!=", "client")
-            ->withCount([
-                'tasks as active_tasks_count' => function ($query) {
-                    $query->where('status', 0)
-                        ->whereRaw("JSON_CONTAINS(tasks.employees, JSON_QUOTE(admins.id))");
-                }
-            ])
-            ->orderBy('name', 'ASC')
-            ->get();
+$employees = Admin::where("isActive", 1)
+    ->where("type", "!=", "client")
+    ->withCount([
+        'tasks as pending_tasks_count' => function ($query) {
+            $query->where('status', 0)
+                ->whereRaw("JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))");
+        }
+    ])
+    ->orderBy('name', 'ASC')
+    ->get();
         $clients = Admin::where("isActive",1)->where("type","client")->orderBy('name', 'ASC')->get();
                         $projects = Project::orderBy("title","asc")
                     ->get(); 
@@ -344,16 +344,16 @@ class TaskController extends Controller
     {
         
 
-        $employees = Admin::where("isActive", 1)
-            ->where("type", "!=", "client")
-            ->withCount([
-                'tasks as pending_tasks_count' => function ($query) {
-                    $query->where('status', 1)
-                        ->whereRaw("JSON_CONTAINS(tasks.employees, JSON_QUOTE(admins.id))");
-                }
-            ])
-            ->orderBy('name', 'ASC')
-            ->get();
+$employees = Admin::where("isActive", 1)
+    ->where("type", "!=", "client")
+    ->withCount([
+        'tasks as pending_tasks_count' => function ($query) {
+            $query->where('status', 1)
+                ->whereRaw("JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))");
+        }
+    ])
+    ->orderBy('name', 'ASC')
+    ->get();
 
             
         $clients = Admin::where("isActive",1)->where("type","client")->orderBy('name', 'ASC')->get();
