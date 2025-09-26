@@ -408,7 +408,7 @@ class TaskController extends Controller
                     'title' => $title,
                     'employee_id' => $employee,
                     'project_id' => $request->project_id,
-                    'piority' => $request->piority,
+                    'piority' => $request->has("piority")?1:0,
                     'employees' => json_encode($request->employees),
                 ]);
             }
