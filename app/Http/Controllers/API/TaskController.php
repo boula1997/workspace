@@ -64,7 +64,7 @@ class TaskController extends Controller
     public function create()
     {
         $employees = Admin::where("isActive", 1)
-            ->where("type", "!=", "client")
+            ->where("type", "!=", "client")->where("type","!=","prospective")
             ->select('admins.*')
             ->selectRaw("
                 (
