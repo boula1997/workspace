@@ -52,12 +52,12 @@
 
                                 <!-- Normal title input -->
                                 <div class="col-md-12">
-                                    <div class="form-group"> <label>{{ __('general.messanger_id') }} <span
+                                    <div class="form-group"> <label>{{ __('general.facelinked') }} <span
                                                 class="text-danger"> * </span></label>
                                         <div class="input-group">
                                             <div class="input-group-prepend"> <span class="input-group-text"><i
                                                         class="fas fa-pen"></i></span> </div> <input type="text"
-                                                name="messanger_id" placeholder="{{ __('general.messanger_id') }}"
+                                                name="messanger_id" placeholder="{{ __('general.facelinked') }}"
                                                 class="form-control pl-1 min-h-40px @error('messanger_id') is-invalid @enderror"
                                                 value="{{ old('messanger_id') }}">
                                         </div>
