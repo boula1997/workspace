@@ -83,7 +83,7 @@ class TaskController extends Controller
                 ->get();
  
 
-        $allEmployees = Admin::where("type","!=","client")->orderBy('name', 'ASC')->get();
+        $allEmployees = Admin::where("type","!=","client")->where("type","!=","prospective")->orderBy('name', 'ASC')->get();
         $allClients = Admin::where("type","client")->orderBy('name', 'ASC')->get();
                         $projects = Project::orderBy("title","asc")
                     ->get(); 
