@@ -29,12 +29,12 @@ class AdminRequest extends FormRequest
         return [
             'image' => $image,
             'name' => 'required',
-            'email' => ['required','email',Rule::unique('admins', 'email')->ignore($this->id)],
+            'email' => ['nullable','email',Rule::unique('admins', 'email')->ignore($this->id)],
             'phone' => 'nullable',
             'messanger_id' => 'nullable',
 
-'whatsapp' => 'nullable',
-            'password' => 'required_without:_method|same:confirm-password',
+            'whatsapp' => 'nullable',
+            'password' => 'nullable|same:confirm-password',
             'roles' => 'required'
         ];
     }
