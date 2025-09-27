@@ -76,9 +76,12 @@ class TaskController extends Controller
             ")
             ->orderBy('name', 'ASC')
             ->get();
-        $clients = Admin::where("isActive",1)->where("type","client")->orderBy('name', 'ASC')->get();
-                        $projects = Project::orderBy("title","asc")
-                    ->get(); 
+            $clients = Admin::where("isActive",1)->where("type","client")->orderBy('name', 'ASC')->get();
+            $prospectives = Admin::where("isActive",1)->where("type","prospective")->orderBy('name', 'ASC')->get();
+        
+        $projects = Project::orderBy("title","asc")
+                ->get();
+ 
 
         $allEmployees = Admin::where("type","!=","client")->orderBy('name', 'ASC')->get();
         $allClients = Admin::where("type","client")->orderBy('name', 'ASC')->get();
@@ -137,6 +140,7 @@ class TaskController extends Controller
             "refrences"=>IssueResource::collection($issues),
             "employees"=>$employees,
             "clients"=>$clients,
+            "prospectives"=>$prospectives,
             "credentials"=>$credentials,
             "tasks"=>TaskResource::collection($tasks),
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
@@ -161,6 +165,7 @@ class TaskController extends Controller
             "credentials"=>$credentials,
             "employees"=>$employees,
             "clients"=>$clients,
+            "prospectives"=>$prospectives,
             "tasks"=>TaskResource::collection($tasks),
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
             "tablePprojects"=>ProjectResource::collection($tablePprojects),
@@ -387,6 +392,7 @@ class TaskController extends Controller
             "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
             "clients"=>$clients,
+            "prospectives"=>$prospectives,
             "tasks"=>TaskResource::collection($tasks),
                 "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
                 "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
