@@ -337,8 +337,8 @@ class TaskController extends Controller
                 "progressProjects"=>count($progressProjects),
                 "finishedProjects"=>count($finishedProjects),
                 "isExpired" => isExpired()[0],
-                "clientsCount"=>count(Admin::where("type","client")->get()),
-                "prospectivesCount"=>count(Admin::where("type","prospective")->get()),
+                "clientsCount" => (int) Admin::where("type","client")->count(),
+                "prospectivesCount" => (int) Admin::where("type","prospective")->count(),
             ];
 
 
