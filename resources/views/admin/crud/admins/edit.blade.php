@@ -1,4 +1,4 @@
-general.facelinked@extends('admin.components.form')
+@extends('admin.components.form')
 @section('form_action', route('admins.update', $admin->id))
 @section('form_type', 'POST')
 @section('fields_content')
