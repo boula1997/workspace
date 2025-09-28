@@ -1124,14 +1124,13 @@
                             <p title="auto fill password">cls</p>
                             <br>
                             <hr class="text-white">
-                            <p title="auto fill password">start http://127.0.0.1:8000</p>
-                            <p title="auto fill password">exit</p>
-                            <p title="auto fill password">cls</p>
+                            <p title="auto fill password">https://wa.me/+201208050298</p>
                             <br>
                             <hr class="text-white">
-                            <p title="auto fill password">python /e/xampp/htdocs/workspace/workspace.py</p>
-                            <p title="auto fill password">exit</p>
-                            <p title="auto fill password">cls</p>
+                            <p title="auto fill password">https://drive.google.com/file/d/12K2qENOwpjoM_R8MN2ckVp2PgYgil7Us/view?usp=drivesdk</p>
+                            <br>
+                            <hr class="text-white">
+                            <p title="auto fill password">http://127.0.0.1:8000</p>
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">DB::table('tracks')->insert([
@@ -1234,13 +1233,10 @@
                             <p>npx expo start --no-dev --minify</p>
                             <br>
                             <hr class="text-white">
-                            <p title="auto fill password">npx react-native log-android</p>
-                            <br>
-                            <hr class="text-white">
                             <p title="auto fill password">adb logcat *:S ReactNative:V ReactNativeJS:V</p>
                             <br>
                             <hr class="text-white">
-                            <p title="Pa$$w0rd!">"$2y$10$KGRWYA9/eCPF5rwZ0vx4GevysNBDNrvlVtmsxiSTDRhtLeExnnoXi"</p>
+                            <p title="Pa$$w0rd!">$2y$10$KGRWYA9/eCPF5rwZ0vx4GevysNBDNrvlVtmsxiSTDRhtLeExnnoXi</p>
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">Pa$$w0rd!</p>
