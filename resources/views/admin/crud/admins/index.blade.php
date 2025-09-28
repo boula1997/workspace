@@ -36,7 +36,7 @@
                                             <th>@lang('general.email')</th>
 
                                             <th>{{ __('general.phone') }}</th>
-                                            <th>{{__('general.messanger_id')}}</th>
+                                            <th>{{__('general.facelinked')}}</th>
 
 <th>{{__('general.whatsapp')}}</th>
                                             <th>{{ __('general.isActive') }}</th>

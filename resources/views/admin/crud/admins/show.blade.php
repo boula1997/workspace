@@ -31,7 +31,7 @@
                                     <!-- tel input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{ __('general.phone') }}:</h5> <a href="tel:{{ $admin->phone }}" style="margin: 0; color: inherit; font-weight: normal;">{{ $admin->phone }}</a> </div> </div> </div>
 
 
-                                    <!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.messanger_id')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $admin->messanger_id }}</p> </div> </div> </div>
+                                    <!-- normal input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{__('general.facelinked')}}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{ $admin->messanger_id }}</p> </div> </div> </div>
 
 <!-- tel input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{ __('general.whatsapp') }}:</h5> <a href="tel:{{ $admin->whatsapp }}" style="margin: 0; color: inherit; font-weight: normal;">{{ $admin->whatsapp }}</a> </div> </div> </div>
 
