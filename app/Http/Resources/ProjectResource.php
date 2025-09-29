@@ -20,6 +20,7 @@ class ProjectResource extends JsonResource
             'deal' => $this->deal,
             'status' => $this->status,
             'cost' => $this->cost,
+            'renewalDate' => $this->renewalDate,
             'payed' => $this->payed,
             'deadline' => $this->deadline,
             'days_to_deadline' => $this->deadline
