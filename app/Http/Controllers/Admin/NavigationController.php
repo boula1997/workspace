@@ -54,7 +54,7 @@ class NavigationController extends Controller
     {
         $employees=Admin::orderBy('name', 'ASC')->get();
         // $projects=Project::where('status',1)->latest()->get();
-        $categories=Category::get();
+        $categories=Category::where("type","navigations")->get();
 
         return view('admin.crud.navigations.create',compact('employees',"categories"));
     }
@@ -182,7 +182,7 @@ class NavigationController extends Controller
         //    dd($navigation->title);
         $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('status',1)->get();
-        $categories=Category::get();
+        $categories=Category::where("type","navigations")->get();
         return view('admin.crud.navigations.edit', compact('navigation','employees','projects',"categories"));
     }
     /**
