@@ -287,7 +287,9 @@ class TaskController extends Controller
                     ->filter(fn($project) => $project->status == 2 || $project->deal==0)->sortByDesc(fn($project) => $project->status)
                 ),
                 "renewalProjects" => ProjectResource::collection(
-                    Project::where('renewalDate', '<=', Carbon::now('UTC'))->get()
+                    Project::whereNotNull('renewalDate')
+                ->orderBy('renewalDate', 'asc')->whereDate('renewalDate', '<=', Carbon::now()->addWeek())
+                ->get()
                 ),
                 "taskProjects" => ProjectResource::collection(
                     Project::withCount([
