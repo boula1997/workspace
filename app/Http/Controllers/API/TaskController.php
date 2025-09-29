@@ -286,6 +286,9 @@ class TaskController extends Controller
                     Project::get()
                     ->filter(fn($project) => $project->status == 2 || $project->deal==0)->sortByDesc(fn($project) => $project->status)
                 ),
+                "renewalProjects" => ProjectResource::collection(
+                    Project::where('renewalDate', '<=', Carbon::now('UTC'))->get()
+                ),
                 "taskProjects" => ProjectResource::collection(
                     Project::withCount([
                         'tasks as pending_tasks_count' => function ($q) {
