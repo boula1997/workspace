@@ -391,7 +391,7 @@ function failedResponse($data = [], $message = "error", $status = 400)
 
 function itemsCount($model)
 {
-    if (auth()->user() && auth()->user()->type == 'admin') {
+    if (auth()->user()) {
         $tasks = count(Task::where('status', 0)->get());
         $finishedTAsks = count(Task::where('status', 1)->get());
         $allTAsks = count(Task::get());
