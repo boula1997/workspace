@@ -403,12 +403,12 @@ function itemsCount($model)
 
     if (auth()->user() && auth()->user()->type == 'admin') {
         $followups = count(Followup::where('status', 0)->get());
-        $finishedTAsks = count(Followup::where('status', 1)->get());
-        $allTAsks = count(Followup::get());
+        $finishedFollowups = count(Followup::where('status', 1)->get());
+        $allFollowups = count(Followup::get());
     } else {
         $followups = count(Followup::where('status', 0)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
-        $finishedTAsks = count(Followup::where('status', 1)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
-        $allTAsks = count(Followup::where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
+        $finishedFollowups = count(Followup::where('status', 1)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
+        $allFollowups = count(Followup::where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
     }
 
     $items = [
@@ -429,8 +429,8 @@ function itemsCount($model)
         "teams" => count(Team::get()),
         "fees" => count(Fee::get()),
         "followups" => $followups,
-        "finishedFollowups" => $finishedTAsks,
-        "allfollowups" => $allTAsks,
+        "finishedFollowups" => $finishedFollowups,
+        "allfollowups" => $allFollowups,
         "finishedFees" => count(Fee::get()),
         "partners" => count(Partner::get()),
         "services" => count(Service::get()),
