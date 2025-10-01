@@ -27,9 +27,9 @@ class NavigationRequest extends FormRequest
 
 'title' => 'required',
 
-'user' => 'required',
+'user' => 'nullable',
 
-'password' => 'required',
+'password' => 'nullable',
 'category_id' => 'required'
         ];
         
