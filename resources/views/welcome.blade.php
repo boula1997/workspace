@@ -1127,7 +1127,7 @@
                             <p title="auto fill password">https://wa.me/+201208050298</p>
                             <br>
                             <hr class="text-white">
-                            <p title="auto fill password">https://drive.google.com/file/d/12K2qENOwpjoM_R8MN2ckVp2PgYgil7Us/view?usp=drivesdk</p>
+                            <p title="auto fill password">https://yousab-tech.com/workspace/public/cvs/BoulaNessimResume.pdf</p>
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">http://127.0.0.1:8000</p>
