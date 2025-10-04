@@ -18,7 +18,6 @@ class BusinessHoursMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(boula())
         return $next($request);
          updateStopClosingStatus();
 
