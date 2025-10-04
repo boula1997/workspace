@@ -835,19 +835,18 @@
                                 body: formData,
                                 });
 
-                                //issue detector
-                                alert(response.status);
                                 if (!response.ok) throw new Error('Request failed');
-   
 
                                 const data = await response.json();
                                 console.log("token", AsyncStorage.getItem("token"));
                                 alert("Submitted Successfully");
                                 console.log('Success', data);
                             } catch (err) {
-                              //issue detector
-                              alert(err.status);
-                              alert('Failed to send post Function');
+                                //issue detector
+                                    alert(err.status);
+                                    alert("400=sql or validation issue 500 error in code no status at all= incorrect api link");
+                                //issue detector
+                                alert('Failed to send post Function');
                                 console.log(err);
                             }
                             };
@@ -924,18 +923,18 @@
                                             }
                                             })
                                             .then(async (response) => {
-                                                //issue detector
-                                                alert(response.status);
                                                 const data = await response.json();
                                                 console.log("token", AsyncStorage.getItem("token"));
                                                 console.log("boula", data.data);
                                                 setData(data.data);
                                             })
                                             .catch((err) => {
-                                                //issue detector
-                                                alert(response.status);
                                                 alert('Failed to send GET request');
                                                 console.error(err);
+                                                //issue detector
+                                                    alert(err.status);
+                                                    alert("400=sql or validation issue 500 error in code no status at all= incorrect api link");
+                                                //issue detector
                                             });
                                         } catch (err) {
                                             console.error('Error loadData', err);
