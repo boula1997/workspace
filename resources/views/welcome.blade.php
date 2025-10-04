@@ -553,23 +553,18 @@
                                     class="form-control   text-white" name="templateName"
                                     placeholder="Insert Template Name">
                             </div>
-                            <div class="form-group mt-2"> 
+                            <div class="form-group mt-2">
                                 <input type="number" value="{{ old('workingHours') }}"
-                                    class="form-control text-white" id="workingHours"
-                                    name="workingHours"
+                                    class="form-control text-white" id="workingHours" name="workingHours"
                                     placeholder="Insert count of hours needed for project creation or edit">
                             </div>
-                            <div class="form-group mt-2"> 
-                                <input type="text" value="{{ old('totalCost') }}"
-                                    class="form-control text-white" id="totalCost"
-                                    name="totalCost" readonly
-                                    placeholder="Total cost">
+                            <div class="form-group mt-2">
+                                <input type="text" value="{{ old('totalCost') }}" class="form-control text-white"
+                                    id="totalCost" name="totalCost" readonly placeholder="Total cost">
                             </div>
-                            <div class="form-group mt-2"> 
-                                <input type="text" value="{{ old('endCost') }}"
-                                    class="form-control text-white" id="endCost"
-                                    name="endCost" readonly
-                                    placeholder="End cost">
+                            <div class="form-group mt-2">
+                                <input type="text" value="{{ old('endCost') }}" class="form-control text-white"
+                                    id="endCost" name="endCost" readonly placeholder="End cost">
                             </div>
 
                             <div class="form-group mt-2">
@@ -636,8 +631,7 @@
                                     class="form-control   text-white" name="attribute" placeholder="item1,item2,...">
                             </div>
                             <div class="form-group">
-                                <select name="stack" id="stack"
-                                    class="form-control bg-black text-white">
+                                <select name="stack" id="stack" class="form-control bg-black text-white">
                                     <option value="">Select Stack</option>
                                     <option value="dashfastkart">DashFastKart</option>
                                     <option value="DashAloo">DashAloo</option>
@@ -699,7 +693,8 @@
                                 </pre>
 
                                 <h5 class="text-white mt-4">Controller:
-                                    <code>app/Http/Controllers/API/ActionController.php</code></h5>
+                                    <code>app/Http/Controllers/API/ActionController.php</code>
+                                </h5>
                                 <pre class="bg-dark text-white p-3 rounded border overflow-auto">
                                 &lt;?php
 
@@ -840,14 +835,19 @@
                                 body: formData,
                                 });
 
+                                //issue detector
+                                alert(response.status);
                                 if (!response.ok) throw new Error('Request failed');
+   
 
                                 const data = await response.json();
                                 console.log("token", AsyncStorage.getItem("token"));
                                 alert("Submitted Successfully");
                                 console.log('Success', data);
                             } catch (err) {
-                                alert('Failed to send post Function');
+                              //issue detector
+                              alert(err.status);
+                              alert('Failed to send post Function');
                                 console.log(err);
                             }
                             };
@@ -924,12 +924,16 @@
                                             }
                                             })
                                             .then(async (response) => {
+                                                //issue detector
+                                                alert(response.status);
                                                 const data = await response.json();
                                                 console.log("token", AsyncStorage.getItem("token"));
                                                 console.log("boula", data.data);
                                                 setData(data.data);
                                             })
                                             .catch((err) => {
+                                                //issue detector
+                                                alert(response.status);
                                                 alert('Failed to send GET request');
                                                 console.error(err);
                                             });
@@ -1127,7 +1131,8 @@
                             <p title="auto fill password">https://wa.me/+201208050298</p>
                             <br>
                             <hr class="text-white">
-                            <p title="auto fill password">https://yousab-tech.com/workspace/public/cvs/BoulaNessimResume.pdf</p>
+                            <p title="auto fill password">
+                                https://yousab-tech.com/workspace/public/cvs/BoulaNessimResume.pdf</p>
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">http://127.0.0.1:8000</p>
@@ -1236,10 +1241,13 @@
                             <p title="auto fill password">Pa$$w0rd!</p>
                             <br>
                             <hr class="text-white">
-                            <p>mysqldump -u yousabte_workspace -p'kD[asKgc%ydC' --complete-insert yousabte_workspace > yousabte_workspace_export.sql</p>
-                            <p>mysqldump -u yousabte_lapmob -p'QL3LmB%F]^+V' --complete-insert yousabte_lapmob > yousabte_lapmob_export.sql</p>
-                            <p>mysqldump -u yousabte_db -p'k6lvnFGg0l0t' --complete-insert yousabte_db > yousabte_db_export.sql</p>
-                             <p>cls</p>
+                            <p>mysqldump -u yousabte_workspace -p'kD[asKgc%ydC' --complete-insert yousabte_workspace >
+                                yousabte_workspace_export.sql</p>
+                            <p>mysqldump -u yousabte_lapmob -p'QL3LmB%F]^+V' --complete-insert yousabte_lapmob >
+                                yousabte_lapmob_export.sql</p>
+                            <p>mysqldump -u yousabte_db -p'k6lvnFGg0l0t' --complete-insert yousabte_db >
+                                yousabte_db_export.sql</p>
+                            <p>cls</p>
                             <br>
                             <hr class="text-white">
                             <p>cd public_html/workspace</p>
