@@ -842,10 +842,8 @@
                                 alert("Submitted Successfully");
                                 console.log('Success', data);
                             } catch (err) {
-                                //issue detector
                                     alert(err.status);
                                     alert("400= sql or validation issue 500= error in code no status at all= incorrect api link");
-                                //issue detector
                                 alert('Failed to send post Function');
                                 console.log(err);
                             }
@@ -931,10 +929,8 @@
                                             .catch((err) => {
                                                 alert('Failed to send GET request');
                                                 console.error(err);
-                                                //issue detector
                                                     alert(err.status);
                                                     alert("400= sql or validation issue 500= error in code no status at all= incorrect api link");
-                                                //issue detector
                                             });
                                         } catch (err) {
                                             console.error('Error loadData', err);
@@ -1245,10 +1241,8 @@
                             .catch((err) => {
                                 alert('Failed to send GET request');
                                 console.error(err);
-                                //issue detector
                                     alert(err.status);
                                     alert("400= sql or validation issue, 500= error in code no status at all= incorrect api link");
-                                //issue detector
                             });
                             </p>
 
