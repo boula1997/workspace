@@ -19,13 +19,12 @@ class BusinessHoursMiddleware
     public function handle(Request $request, Closure $next): Response
     {
 
-        if ($request->is('login') || !boula()) {
+    if ($request->is('login') || !boula()) {
         return $next($request);
     }
 
 
 
-        return $next($request);
          updateStopClosingStatus();
 
         if(settings()->stopClosing)
