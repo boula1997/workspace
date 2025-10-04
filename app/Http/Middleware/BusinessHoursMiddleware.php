@@ -18,11 +18,7 @@ class BusinessHoursMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->is('en/dashboard/login')) {
-            return $next($request);
-        }
-
-
+        return $next($request);
          updateStopClosingStatus();
 
         if(settings()->stopClosing)
