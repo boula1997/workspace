@@ -19,7 +19,7 @@ class BusinessHoursMiddleware
     public function handle(Request $request, Closure $next): Response
     {
 
-    if ($request->is('login') || !boula()) {
+    if ($request->routeIs('admin.login-view') || !boula()) {
         return $next($request);
     }
 
