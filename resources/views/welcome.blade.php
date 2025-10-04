@@ -1144,6 +1144,19 @@
 
                             <br>
                             <hr class="text-white">
+                            <p title="auto fill password">
+                                .catch((err) => {
+                                    alert('Failed to send GET request');
+                                    console.error(err);
+                                    //issue detector
+                                        alert(err.status);
+                                        alert("400=sql or validation issue 500 error in code no status at all= incorrect api link");
+                                    //issue detector
+                                });
+                            </p>
+
+                            <br>
+                            <hr class="text-white">
                             <code>
                                 if (App::environment('local')) {
                                 Route::get(&#39;routes&#39;, function () {
