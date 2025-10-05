@@ -20,7 +20,9 @@ class Authenticate extends Middleware
             return redirect(route('admin.login-view'));
         }else{
 
-
+          if(boula()){
+            return response()->view('closed');
+          }
         updateStopClosingStatus();
 
         if(settings()->stopClosing)
