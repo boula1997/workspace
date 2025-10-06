@@ -842,10 +842,26 @@
                                 alert("Submitted Successfully");
                                 console.log('Success', data);
                             } catch (err) {
-                                    alert(err.status);
-                                    alert("400= sql or validation issue 500= error in code no status at all= incorrect api link");
-                                alert('Failed to send post Function');
-                                console.log(err);
+                                if (err.response) {
+                                    // Server responded with a status code outside 2xx
+                                    console.log("❌ Server Error Details:", err.response.data);
+                                    console.log("Status:", err.response.status);
+                                    console.log("Headers:", err.response.headers);
+
+                                    alert(
+                                    `Error ${err.response.status}: ${
+                                        JSON.stringify(err.response.data)
+                                    }`
+                                    );
+                                } else if (err.request) {
+                                    // Request was made but no response
+                                    console.log("⚠️ No response from server:", err.request);
+                                    alert("No response from server. Check API link or network.");
+                                } else {
+                                    // Something else happened
+                                    console.log("⚙️ Error setting up request:", err.message);
+                                    alert(`Error: ${err.message}`);
+                                }
                             }
                             };
 
@@ -927,10 +943,26 @@
                                                 setData(data.data);
                                             })
                                             .catch((err) => {
-                                                alert('Failed to send GET request');
-                                                console.error(err);
-                                                    alert(err.status);
-                                                    alert("400= sql or validation issue 500= error in code no status at all= incorrect api link");
+                                                if (err.response) {
+                                                    // Server responded with a status code outside 2xx
+                                                    console.log("❌ Server Error Details:", err.response.data);
+                                                    console.log("Status:", err.response.status);
+                                                    console.log("Headers:", err.response.headers);
+
+                                                    alert(
+                                                    `Error ${err.response.status}: ${
+                                                        JSON.stringify(err.response.data)
+                                                    }`
+                                                    );
+                                                } else if (err.request) {
+                                                    // Request was made but no response
+                                                    console.log("⚠️ No response from server:", err.request);
+                                                    alert("No response from server. Check API link or network.");
+                                                } else {
+                                                    // Something else happened
+                                                    console.log("⚙️ Error setting up request:", err.message);
+                                                    alert(`Error: ${err.message}`);
+                                                }
                                             });
                                         } catch (err) {
                                             console.error('Error loadData', err);
