@@ -1173,7 +1173,7 @@
                             <br>
                             <hr class="text-white">
 
-                            <pre>
+                            <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px;">
                                 if (App::environment('local')) {
                                 Route::get(&#39;routes&#39;, function () {
                                 $routeCollection = Route::getRoutes();
@@ -1211,7 +1211,7 @@
                             <br>
                             <hr class="text-white">
 
-                            <pre>
+                           <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px;">
                                 &#123;
                                 &quot;name&quot;: &quot;John Doe&quot;,
                                 &quot;phone&quot;: &quot;+201234567890&quot;,
@@ -1270,21 +1270,21 @@
                             <br>
                             <hr class="text-white">
                             <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px;">
-.catch((err) => {
-    if (err.response) {
-        console.log("❌ Server Error Details:", err.response.data);
-        console.log("Status:", err.response.status);
-        console.log("Headers:", err.response.headers);
-        alert(`Error ${err.response.status}: ${JSON.stringify(err.response.data)}`);
-    } else if (err.request) {
-        console.log("⚠️ No response from server:", err.request);
-        alert("No response from server. Check API link or network.");
-    } else {
-        console.log("⚙️ Error setting up request:", err.message);
-        alert(`Error: ${err.message}`);
-    }
-});
-</pre>
+                            .catch((err) => {
+                                if (err.response) {
+                                    console.log("❌ Server Error Details:", err.response.data);
+                                    console.log("Status:", err.response.status);
+                                    console.log("Headers:", err.response.headers);
+                                    alert(`Error ${err.response.status}: ${JSON.stringify(err.response.data)}`);
+                                } else if (err.request) {
+                                    console.log("⚠️ No response from server:", err.request);
+                                    alert("No response from server. Check API link or network.");
+                                } else {
+                                    console.log("⚙️ Error setting up request:", err.message);
+                                    alert(`Error: ${err.message}`);
+                                }
+                            });
+                            </pre>
 
 
                             <br>
