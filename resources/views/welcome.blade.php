@@ -1269,30 +1269,23 @@
                             <p title="auto fill password">Pa$$w0rd!</p>
                             <br>
                             <hr class="text-white">
-                            <pre title="auto fill password text-white">
-                            .catch((err) => {
-                                if (err.response) {
-                                    // Server responded with a status code outside 2xx
-                                    console.log("❌ Server Error Details:", err.response.data);
-                                    console.log("Status:", err.response.status);
-                                    console.log("Headers:", err.response.headers);
+                            <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px;">
+.catch((err) => {
+    if (err.response) {
+        console.log("❌ Server Error Details:", err.response.data);
+        console.log("Status:", err.response.status);
+        console.log("Headers:", err.response.headers);
+        alert(`Error ${err.response.status}: ${JSON.stringify(err.response.data)}`);
+    } else if (err.request) {
+        console.log("⚠️ No response from server:", err.request);
+        alert("No response from server. Check API link or network.");
+    } else {
+        console.log("⚙️ Error setting up request:", err.message);
+        alert(`Error: ${err.message}`);
+    }
+});
+</pre>
 
-                                    alert(
-                                    `Error ${err.response.status}: ${
-                                        JSON.stringify(err.response.data)
-                                    }`
-                                    );
-                                } else if (err.request) {
-                                    // Request was made but no response
-                                    console.log("⚠️ No response from server:", err.request);
-                                    alert("No response from server. Check API link or network.");
-                                } else {
-                                    // Something else happened
-                                    console.log("⚙️ Error setting up request:", err.message);
-                                    alert(`Error: ${err.message}`);
-                                }
-                            });
-                            </pre>
 
                             <br>
                             <hr class="text-white">
