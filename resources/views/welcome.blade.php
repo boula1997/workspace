@@ -693,7 +693,7 @@
                                 </pre>
 
                                 <h5 class="text-white mt-4">Controller:
-                                    <code>app/Http/Controllers/API/ActionController.php</code>
+                                    <pre>app/Http/Controllers/API/ActionController.php</pre>
                                 </h5>
                                 <pre class="bg-dark text-white p-3 rounded border overflow-auto">
                                 &lt;?php
@@ -1118,7 +1118,7 @@
                         <p class="text-warning">Testing script: to continously submit forms and see validations</p>
                         <p>It is used with multi open links or link by link when using routes to
                             see links and choose only used links to test or open all links</p>
-                        <code>
+                        <pre>
                             $(document).ready(function(){
                             if (window.location.href.includes(&quot;localhost/&quot;)) {
                             setTimeout(function() {
@@ -1140,7 +1140,7 @@
                             }
                             });
                             &lt;/code&gt;
-                        </code>
+                        </pre>
 
                     </div>
                     <div class="row mt-5">
@@ -1173,7 +1173,7 @@
                             <br>
                             <hr class="text-white">
 
-                            <code>
+                            <pre>
                                 if (App::environment('local')) {
                                 Route::get(&#39;routes&#39;, function () {
                                 $routeCollection = Route::getRoutes();
@@ -1206,12 +1206,12 @@
                                 });
                                 }
 
-                            </code>
-                            </code>
+                            </pre>
+                            </pre>
                             <br>
                             <hr class="text-white">
 
-                            <code>
+                            <pre>
                                 &#123;
                                 &quot;name&quot;: &quot;John Doe&quot;,
                                 &quot;phone&quot;: &quot;+201234567890&quot;,
@@ -1233,7 +1233,7 @@
                                 &#125;
                                 ]
                                 &#125;
-                            </code>
+                            </pre>
                             <br>
                             <hr class="text-white">
                             <p>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</p>
@@ -1269,7 +1269,7 @@
                             <p title="auto fill password">Pa$$w0rd!</p>
                             <br>
                             <hr class="text-white">
-                            <pre title="auto fill password">
+                            <pre title="auto fill password text-white">
                             .catch((err) => {
                                 if (err.response) {
                                     // Server responded with a status code outside 2xx
