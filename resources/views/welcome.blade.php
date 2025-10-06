@@ -1269,7 +1269,7 @@
                             <p title="auto fill password">Pa$$w0rd!</p>
                             <br>
                             <hr class="text-white">
-                            <p title="auto fill password">
+                            <pre title="auto fill password">
                             .catch((err) => {
                                 if (err.response) {
                                     // Server responded with a status code outside 2xx
@@ -1292,7 +1292,7 @@
                                     alert(`Error: ${err.message}`);
                                 }
                             });
-                            </p>
+                            </pre>
 
                             <br>
                             <hr class="text-white">
