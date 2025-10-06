@@ -30,12 +30,7 @@ class BusinessHoursMiddleware
         $dayOfWeek = date('w'); // 0 (Sunday) to 6 (Saturday)
         $currentHour = (int) date('G'); // 24-hour format without leading zeros
 
-        //Holly Mass Timings
 
-        if(($dayOfWeek == 0 || $dayOfWeek == 5) && $currentHour >= 5 && $currentHour < 15){
-            return $next($request);
-
-        }
 
 
         if ($dayOfWeek == 6 || $dayOfWeek == 5) {
