@@ -1118,7 +1118,7 @@
                         <p class="text-warning">Testing script: to continously submit forms and see validations</p>
                         <p>It is used with multi open links or link by link when using routes to
                             see links and choose only used links to test or open all links</p>
-                        <pre>
+                        <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
                             $(document).ready(function(){
                             if (window.location.href.includes(&quot;localhost/&quot;)) {
                             setTimeout(function() {
@@ -1173,7 +1173,7 @@
                             <br>
                             <hr class="text-white">
 
-                            <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px;">
+                            <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
                                 if (App::environment('local')) {
                                 Route::get(&#39;routes&#39;, function () {
                                 $routeCollection = Route::getRoutes();
@@ -1211,7 +1211,7 @@
                             <br>
                             <hr class="text-white">
 
-                           <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px;">
+                           <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
                                 &#123;
                                 &quot;name&quot;: &quot;John Doe&quot;,
                                 &quot;phone&quot;: &quot;+201234567890&quot;,
@@ -1269,7 +1269,7 @@
                             <p title="auto fill password">Pa$$w0rd!</p>
                             <br>
                             <hr class="text-white">
-                            <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px;">
+                            <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
                             .catch((err) => {
                                 if (err.response) {
                                     console.log("❌ Server Error Details:", err.response.data);
