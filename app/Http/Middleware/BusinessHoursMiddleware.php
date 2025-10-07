@@ -42,7 +42,7 @@ class BusinessHoursMiddleware
 
 
         // Sunday to Thursday: Open 11 AM to 7 PM
-        if ($currentHour >= 11 && $currentHour < 19) {
+        if (($currentHour >= 11 && $currentHour < 19) || ($currentHour >= 22 && $currentHour < 24)) {
             return $next($request);
         }
 
