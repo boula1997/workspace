@@ -35,7 +35,7 @@
     <h1>We're currently closed.</h1>
     <p>Our business hours are:</p>
     <ul style="list-style: none; padding: 0;">
-        <li>All week: 11 AM – 7 PM</li>
+        <li>All week: 11 AM – 7 PM && 10 PM – 12 AM</li>
         <li>Saturday & Friday: Closed</li>
     </ul>
     <p>Please visit us during those hours.</p>
