@@ -12,6 +12,7 @@ use App\Models\Post;
 use App\Models\Project;
 use App\Models\Query;
 use App\Models\Sample;
+use App\Models\Navigation;
 use App\Models\Script;
 use App\Models\Server;
 use App\Models\Setting;
@@ -52,6 +53,16 @@ class ActionController extends Controller
       // Return them as JSON response
       return response()->json([
           'data' => $templates
+      ]);
+  }
+  public function excavations()
+  {
+      // Fetch all templates
+      $excavations = Navigation::all();
+
+      // Return them as JSON response
+      return response()->json([
+          'data' => $excavations
       ]);
   }
   public function googleads()

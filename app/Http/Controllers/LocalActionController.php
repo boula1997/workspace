@@ -15,6 +15,7 @@ use App\Models\Sample;
 use App\Models\DBCredential;
 use App\Models\Script;
 use App\Models\Server;
+use App\Models\Navigation;
 use App\Models\Setting;
 use App\Models\Time;
 use App\Models\Website;
@@ -52,6 +53,17 @@ class LocalActionController extends Controller
       // Return them as JSON response
       return response()->json([
           'data' => $templates
+      ]);
+  }
+
+    public function excavations()
+  {
+      // Fetch all templates
+      $excavations = Navigation::all();
+
+      // Return them as JSON response
+      return response()->json([
+          'data' => $excavations
       ]);
   }
   public function googleads()

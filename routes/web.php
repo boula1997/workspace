@@ -203,6 +203,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
         });
         
         Route::get('/templates', [LocalActionController::class, 'templates'])->name('templates');
+        Route::get('/excavations', [LocalActionController::class, 'excavations'])->name('excavations');
         Route::get('/googleads', [LocalActionController::class, 'googleads'])->name('googleads');
     }
      else {
@@ -275,6 +276,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
         });
         
         Route::get('/templates', [ActionController::class, 'templates'])->name('templates');
+        Route::get('/excavations', [ActionController::class, 'excavations'])->name('excavations');
         Route::get('/googleads', [ActionController::class, 'googleads'])->name('googleads');
     }
     

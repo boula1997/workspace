@@ -20,6 +20,7 @@ class BusinessHoursMiddleware
     {
  
         
+        return $next($request);
          updateStopClosingStatus();
         if(settings()->stopClosing || !boula())
         return $next($request);

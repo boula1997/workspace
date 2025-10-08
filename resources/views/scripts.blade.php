@@ -1907,7 +1907,7 @@
                 hrefs.push($(this).text());
             });
 
-            console.log(hrefs);
+            console.log("boulaa",hrefs);
 
 
             $('#openDashboard').on('click', function(e) {
@@ -2019,6 +2019,39 @@
                     }
                 });
             });
+
+
+
+            $('#excavations').on('click', function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: '{{ route('excavations') }}', // Replace with your API endpoint
+                    method: 'GET',
+                    success: function(response) {
+                        // Assuming the response contains a list of excavations
+                        var excavations = response.data;
+
+                        // Loop through excavation
+                        excavations.forEach(function(excavation) {
+                            console.log(excavation);
+                            // You can use excavation.link or excavation.id etc. here as needed
+
+                            // Example of opening a link (excavation.link)
+                            window.open(excavation.link);
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching excavations:', error);
+                    }
+                });
+            });
+
+
+
+
+
+
             $('#googleads').on('click', function(e) {
                 e.preventDefault();
 
