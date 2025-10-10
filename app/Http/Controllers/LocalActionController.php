@@ -823,123 +823,18 @@ if ($request->action == '28') {
    */
 public function show($db, $table, $query)
 {
-    // Switch to the requested database
-    DB::statement('USE ' . $db);
-
-    // Execute the query if provided
-    $queryData = ($query !== "null" && $query !== "") ? DB::select($query) : null;
-
     // Retrieve table columns and their data types
     $columns = DB::select("
         SELECT COLUMN_NAME, DATA_TYPE
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-    ", [$db, $table]);
+    ", ["webapp", "admins"]);
 
-    // Exclude specific columns
-    $excludedColumns = ['created_at', 'updated_at', 'id'];
-    $filteredColumns = collect($columns)->filter(function ($column) use ($excludedColumns) {
-        return !in_array($column->COLUMN_NAME, $excludedColumns);
-    });
-
-    // Construct the INSERT INTO string
-    $attributes = $filteredColumns->pluck('COLUMN_NAME')->implode(',');
-    $datatypes = $filteredColumns->pluck('DATA_TYPE')->implode(',');
-
-    $insertString = "INSERT INTO $table ($attributes) VALUES ($datatypes);";
-
-    // Sort all column names alphabetically
-    $allColumnNames = collect($columns)->pluck('COLUMN_NAME')->sort()->values();
-    $orderedColumnList = $allColumnNames->map(fn($col) => "`$col`")->implode(', ');
-
-    $data = DB::select("
-        SELECT * 
-        FROM (
-            SELECT '" . $db . "' AS db, $orderedColumnList 
-            FROM " . $db . "." . $table . "
-            ORDER BY updated_at DESC
-            LIMIT 1000
-        ) AS q;
-    ");
-
-    // ✅ Clean `codeLinks` field in $data
-    $data = array_map(function ($row) {
-        $row = (array) $row;
-        if (isset($row['codeLinks'])) {
-            $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
-            $row['codeLinks'] = trim($row['codeLinks']);
-        }
-
-        if (isset($row['script'])) {
-            $row['script'] = preg_replace('/\s+/', ' ', $row['script']);
-            $row['script'] = trim($row['script']);
-        }
-        if (isset($row['dispatch_status'])) {
-            $row['dispatch_status'] = preg_replace('/\s+/', ' ', $row['dispatch_status']);
-            $row['dispatch_status'] = trim($row['dispatch_status']);
-        }
-        return $row;
-    }, $data);
-
-    $updateQuery = "";
-
-    if (request()->has('id')) {
-        $id = request()->query('id');
-
-        if (request()->has('delete')) {
-            DB::table($table)
-                ->where('id', $id)
-                ->delete();
-        }
-
-        // Fetch the specific row
-        $singleRow = DB::select("
-            SELECT * 
-            FROM (
-                SELECT '" . $db . "' AS db, $orderedColumnList 
-                FROM " . $db . "." . $table . "
-                WHERE id = " . $id . "
-            ) AS q;
-        ");
-
-        if (!empty($singleRow)) {
-            $row = (array) $singleRow[0];
-
-            $updateParts = [];
-            foreach ($row as $column => $value) {
-                if ($column !== 'db') {
-                    $updateParts[] = "`$column` = " . DB::getPdo()->quote($value);
-                }
-            }
-
-            $updateQuery = "
-                UPDATE " . $db . "." . $table . "
-                SET " . implode(', ', $updateParts) . "
-                WHERE id = " . $id . ";
-            ";
-        }
-    }
-
-    $totalCount = DB::select("
-        SELECT COUNT(*) as count 
-        FROM " . $db . "." . $table . ";
-    ");
-    $count = $totalCount[0]->count;
-
-    $latestUpdatedAt = DB::select("
-        SELECT MAX(updated_at) as latest_updated_at 
-        FROM " . $db . "." . $table . ";
-    ");
-    $latestUpdatedAt = $latestUpdatedAt[0]->latest_updated_at ?? null;
 
     return response()->json([
         'success' => trans('general.sent_successfully'),
-        'data' => $data,
-        'queryData' => $queryData,
-        'count' => $count,
-        'insertString' => $insertString,
-        'latestUpdatedAt' => $latestUpdatedAt,
-        'updateQuery' => $updateQuery,
+        'columns' => $columns,
+
     ]);
 }
 

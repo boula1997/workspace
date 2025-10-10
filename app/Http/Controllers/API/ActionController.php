@@ -134,4 +134,143 @@ public function getFunction(Request $request)
 }
 
 
+public function show($table, $itemId)
+{
+    // Retrieve table columns and their data types
+    $columns = DB::select("
+        SELECT COLUMN_NAME, DATA_TYPE
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+    ", ["webapp", $table]);
+
+    // Convert columns to array (for easy manipulation)
+    $columns = collect($columns)->map(function ($col) {
+        return (array) $col;
+    })->toArray();
+
+    // ✅ Add an extra "image" column manually
+    $columns[] = [
+        "COLUMN_NAME" => "image",
+        "DATA_TYPE" => "image",
+    ];
+    
+    $columns[] = [
+        "COLUMN_NAME" => "images",
+        "DATA_TYPE" => "multimages",
+    ];
+
+    // Retrieve record data
+    $data = DB::select("
+        SELECT * FROM {$table} WHERE id = ?
+    ", [$itemId]);
+
+    // Convert data to array and add the fake "image" field
+    $data = collect($data)->map(function ($item) {
+        $row = (array) $item;
+        $row["image"] = "https://via.placeholder.com/150"; // ✅ Example image link
+        $row["images"] = ["https://via.placeholder.com/150","https://via.placeholder.com/140"]; // ✅ Example images links
+        return $row;
+    })->toArray();
+
+    return response()->json([
+        'success' => trans('general.sent_successfully'),
+        'columns' => $columns,
+        'data' => $data,
+    ]);
+}
+public function deleteItem($table, $itemId)
+{
+    // Retrieve table columns and their data types
+    $columns = DB::select("
+        SELECT COLUMN_NAME, DATA_TYPE
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+    ", ["webapp", $table]);
+
+    // Convert columns to array (for easy manipulation)
+    $columns = collect($columns)->map(function ($col) {
+        return (array) $col;
+    })->toArray();
+
+    // ✅ Add an extra "image" column manually
+    $columns[] = [
+        "COLUMN_NAME" => "image",
+        "DATA_TYPE" => "image",
+    ];
+    
+    $columns[] = [
+        "COLUMN_NAME" => "images",
+        "DATA_TYPE" => "multimages",
+    ];
+
+    // Retrieve record data
+    $data = DB::select("
+        delete FROM {$table} WHERE id = ?
+    ", [$itemId]);
+
+
+
+    return response()->json([
+        'success' => trans('general.sent_successfully'),
+        'columns' => $columns,
+        'data' => $data,
+    ]);
+}
+
+
+public function table($table)
+{
+    // Retrieve table columns and their data types
+    $columns = DB::select("
+        SELECT COLUMN_NAME, DATA_TYPE
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+    ", ["webapp", $table]);
+
+    // Convert columns to array (for easy manipulation)
+    $columns = collect($columns)->map(function ($col) {
+        return (array) $col;
+    })->toArray();
+
+        // ✅ Add an extra "image" column manually
+    $columns[] = [
+        "COLUMN_NAME" => "image",
+        "DATA_TYPE" => "image",
+    ];
+
+
+
+    // Retrieve record data
+    $data = DB::select("SELECT * FROM {$table}");
+
+
+        // Convert data to array and add the fake "image" field
+    $data = collect($data)->map(function ($item) {
+        $row = (array) $item;
+        $row["image"] = settings()->logo; // ✅ Example image link
+        return $row;
+    })->toArray();
+
+
+    return response()->json([
+        'success' => trans('general.sent_successfully'),
+        'columns' => $columns,
+        'data' => $data,
+    ]);
+}
+
+
+public function tableNames()
+{
+   
+
+      $tables = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . "webapp" . "' order by TABLE_NAME;");
+
+          return response()->json([
+        'success' => trans('general.sent_successfully'),
+        'tables' => $tables,
+    ]);
+    
+
+}
 }

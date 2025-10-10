@@ -65,7 +65,13 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
 
 
-Route::middleware('auth:admin-api')->group(function () {
+    Route::get('/data/{table}/{itemId}', [ActionController::class, 'show']);
+    Route::get('/deleteData/{table}/{itemId}', [ActionController::class, 'deleteItem']);
+    Route::get('/allData/{table}', [ActionController::class, 'table']);
+    Route::get('/tables', [ActionController::class, 'tableNames']);
+
+
+    Route::middleware('auth:admin-api')->group(function () {
     
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);

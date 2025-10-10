@@ -1053,6 +1053,7 @@ public function show($db, $table, $query)
         'data' => $data,
         'queryData' => $queryData,
         'count' => $count,
+        'columns' => $columns,
         'insertString' => $insertString,
         'latestUpdatedAt' => $latestUpdatedAt,
         'updateQuery' => $updateQuery,
