@@ -196,37 +196,42 @@ public function index($table)
         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
     ", ["webapp", $table]);
 
-    // Convert columns to array (for easy manipulation)
-    $columns = collect($columns)->map(function ($col) {
-        return (array) $col;
-    })->toArray();
+    $columns = collect($columns)->map(fn($col) => (array)$col)->toArray();
 
-        // ✅ Add an extra "image" column manually
+    // Add an extra "image" column manually
     $columns[] = [
         "COLUMN_NAME" => "image",
         "DATA_TYPE" => "image",
     ];
 
+    // Use Laravel's paginate method with 10 items per page
+    $dataQuery = DB::table($table);
 
+    // Get current page from request query string (?page=2)
+    $perPage = 10;
 
-    // Retrieve record data
-    $data = DB::select("SELECT * FROM {$table}");
+    $data = $dataQuery->paginate($perPage);
 
-
-        // Convert data to array and add the fake "image" field
-    $data = collect($data)->map(function ($item) {
+    // Add the fake "image" field to each row
+    $data->getCollection()->transform(function ($item) {
         $row = (array) $item;
-        $row["image"] = settings()->logo; // ✅ Example image link
-        return $row;
-    })->toArray();
-
+        $row["image"] = settings()->logo;
+        return (object)$row;
+    });
 
     return response()->json([
         'success' => trans('general.sent_successfully'),
         'columns' => $columns,
-        'data' => $data,
+        'data' => $data->items(),
+        'pagination' => [
+            'current_page' => $data->currentPage(),
+            'last_page' => $data->lastPage(),
+            'per_page' => $data->perPage(),
+            'total' => $data->total(),
+        ],
     ]);
 }
+
 
 
 public function tableNames()
