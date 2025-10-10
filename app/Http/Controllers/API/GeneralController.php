@@ -152,11 +152,11 @@ public function showEditCreate($table, $itemId)
             FROM INFORMATION_SCHEMA.COLUMNS
             WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
         ", [$db, $translationTable]);
-$foreignKey = Str::singular($table) . '_id';
-        $transColumns = collect($transColumns)->pluck('COLUMN_NAME')
-            ->reject(fn($col) => in_array($col, ['id', 'locale', $foreignKey, 'created_at', 'updated_at', 'deleted_at']))
-            ->values()
-            ->toArray();
+            $foreignKey = Str::singular($table) . '_id';
+                    $transColumns = collect($transColumns)->pluck('COLUMN_NAME')
+                        ->reject(fn($col) => in_array($col, ['id', 'locale', $foreignKey, 'created_at', 'updated_at', 'deleted_at']))
+                        ->values()
+                        ->toArray();
             
                     // Fetch translations
             $translations = DB::table($translationTable)
