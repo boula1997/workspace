@@ -239,56 +239,97 @@ public function deleteItem($table, $itemId)
 
 public function index($table)
 {
+    // 1. Get base columns
+$columns = DB::select("
+    SELECT COLUMN_NAME, DATA_TYPE
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+", [env('DB_DATABASE'), $table]);
 
-    // Retrieve table columns and their data types
-    $columns = DB::select("
+$columns = collect($columns)->map(fn($col) => (array)$col)->toArray();
+
+// 2. Translation handling
+$translationTable = Str::singular($table) . '_translations';
+$locale = request('locale', 'en');
+
+$translationExists = Schema::hasTable($translationTable);
+
+$translatedSelects = [];
+
+if ($translationExists) {
+    $translationColumns = DB::select("
         SELECT COLUMN_NAME, DATA_TYPE
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-    ", [env('DB_DATABASE'), $table]);
+    ", [env('DB_DATABASE'), $translationTable]);
 
-    $columns = collect($columns)->map(fn($col) => (array)$col)->toArray();
+    $excluded = ['id', Str::singular($table) . '_id', 'locale', 'created_at', 'updated_at', 'deleted_at'];
 
-    // Add an extra "image" column manually
-    $columns[] = [
-        "COLUMN_NAME" => "image",
-        "DATA_TYPE" => "image",
-    ];
+    $filtered = collect($translationColumns)
+        ->map(fn($col) => (array)$col)
+        ->filter(fn($col) => !in_array($col['COLUMN_NAME'], $excluded))
+        ->toArray();
 
-    // Use Laravel's paginate method with 10 items per page
-   $dataQuery = DB::table($table);
+    // Append simplified translation columns to columns array
+    foreach ($filtered as $col) {
+        $columns[] = [
+            'COLUMN_NAME' => $col['COLUMN_NAME'], // ✅ no prefix
+            'DATA_TYPE' => $col['DATA_TYPE'],
+        ];
 
-    // Apply filters from query string
-    foreach (request()->query() as $key => $value) {
-        if (!in_array($key, ['page'])) { // don't filter by 'page'
-            $dataQuery->where($key, 'like', '%' . $value . '%');
-        }
+        // Select as alias
+        $translatedSelects[] = "$translationTable.{$col['COLUMN_NAME']} as {$col['COLUMN_NAME']}";
     }
-
-    // Get current page from request query string (?page=2)
-    $perPage = 10;
-
-    $data = $dataQuery->paginate($perPage);
-
-    // Add the fake "image" field to each row
-    $data->getCollection()->transform(function ($item) {
-        $row = (array) $item;
-        $row["image"] = settings()->logo;
-        return (object)$row;
-    });
-
-    return response()->json([
-        'success' => trans('general.sent_successfully'),
-        'columns' => $columns,
-        'data' => $data->items(),
-        'pagination' => [
-            'current_page' => $data->currentPage(),
-            'last_page' => $data->lastPage(),
-            'per_page' => $data->perPage(),
-            'total' => $data->total(),
-        ],
-    ]);
 }
+
+// 3. Add image column
+$columns[] = [
+    "COLUMN_NAME" => "image",
+    "DATA_TYPE" => "image",
+];
+
+// 4. Build query
+$dataQuery = DB::table($table)->select($table . '.*');
+
+if ($translationExists) {
+    $dataQuery->leftJoin($translationTable, "$translationTable." . Str::singular($table) . "_id", '=', "$table.id")
+              ->where("$translationTable.locale", $locale);
+
+    $dataQuery->addSelect($translatedSelects);
+}
+
+// 5. Filters
+foreach (request()->query() as $key => $value) {
+    if (!in_array($key, ['page'])) {
+        $dataQuery->where($key, 'like', '%' . $value . '%');
+    }
+}
+
+// 6. Pagination
+$paginated = $dataQuery->paginate(10);
+
+// 7. Add image to each row
+$paginated->getCollection()->transform(function ($item) {
+    $row = (array) $item;
+    $row['image'] = settings()->logo;
+    return (object) $row;
+});
+
+// 8. Return response
+return response()->json([
+    'success' => trans('general.sent_successfully'),
+    'columns' => $columns,
+    'data' => $paginated->items(),
+    'pagination' => [
+        'current_page' => $paginated->currentPage(),
+        'last_page' => $paginated->lastPage(),
+        'per_page' => $paginated->perPage(),
+        'total' => $paginated->total(),
+    ],
+]);
+
+}
+
 
 
 
