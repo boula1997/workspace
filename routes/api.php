@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\FaqController;
 use App\Http\Controllers\API\MessageController;
 use App\Http\Controllers\API\ActionController;
+use App\Http\Controllers\API\GeneralController;
 use App\Http\Controllers\API\CounterController;
 use App\Http\Controllers\API\NewsletterController;
 use App\Http\Controllers\API\ContactController;
@@ -65,10 +66,11 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
 
 
-    Route::get('/data/{table}/{itemId}', [ActionController::class, 'show']);
-    Route::get('/deleteData/{table}/{itemId}', [ActionController::class, 'deleteItem']);
-    Route::get('/allData/{table}', [ActionController::class, 'table']);
-    Route::get('/tables', [ActionController::class, 'tableNames']);
+    Route::get('/showEditCreate/{table}/{itemId}', [GeneralController::class, 'showEditCreate']);
+    Route::post('/storeUpdate/{table}/{itemId}', [GeneralController::class, 'storeUpdate']);
+    Route::get('/deleteItem/{table}/{itemId}', [GeneralController::class, 'deleteItem']);
+    Route::get('/index/{table}', [GeneralController::class, 'index']);
+    Route::get('/tables', [GeneralController::class, 'tableNames']);
 
 
     Route::middleware('auth:admin-api')->group(function () {
