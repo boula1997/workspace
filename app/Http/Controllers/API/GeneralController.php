@@ -101,7 +101,7 @@ public function showEditCreate($table, $itemId)
         SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-    ", ["webapp", $table]);
+    ", [env('DB_DATABASE'), $table]);
 
     // Step 2: Convert and format columns
     $columns = collect($columns)->map(function ($col) {
@@ -154,7 +154,7 @@ public function deleteItem($table, $itemId)
         SELECT COLUMN_NAME, DATA_TYPE
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-    ", ["webapp", $table]);
+    ", [env('DB_DATABASE'), $table]);
 
     // Convert columns to array (for easy manipulation)
     $columns = collect($columns)->map(function ($col) {
@@ -194,7 +194,7 @@ public function index($table)
         SELECT COLUMN_NAME, DATA_TYPE
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-    ", ["webapp", $table]);
+    ", [env('DB_DATABASE'), $table]);
 
     $columns = collect($columns)->map(fn($col) => (array)$col)->toArray();
 
@@ -239,7 +239,7 @@ public function tableNames()
     // Step 1: Get all table names in the schema
     $allTables = DB::table('INFORMATION_SCHEMA.COLUMNS')
         ->select('TABLE_NAME')
-        ->where('TABLE_SCHEMA', 'webapp')
+        ->where('TABLE_SCHEMA', env('DB_DATABASE'))
         ->distinct()
         ->orderBy('TABLE_NAME')
         ->pluck('TABLE_NAME'); // Returns collection of strings
