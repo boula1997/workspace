@@ -304,98 +304,98 @@ public function deleteItem($table, $itemId)
 }
 
 
-public function index($table)
-{
-    // 1. Get base columns
-$columns = DB::select("
-    SELECT COLUMN_NAME, DATA_TYPE
-    FROM INFORMATION_SCHEMA.COLUMNS
-    WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-", [env('DB_DATABASE'), $table]);
+            public function index($table)
+            {
+                // 1. Get base columns
+            $columns = DB::select("
+                SELECT COLUMN_NAME, DATA_TYPE
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+            ", [env('DB_DATABASE'), $table]);
 
-$columns = collect($columns)->map(fn($col) => (array)$col)->toArray();
+            $columns = collect($columns)->map(fn($col) => (array)$col)->toArray();
 
-// 2. Translation handling
-$translationTable = Str::singular($table) . '_translations';
-$locale = request('locale', 'en');
+            // 2. Translation handling
+            $translationTable = Str::singular($table) . '_translations';
+            $locale = request('locale', 'en');
 
-$translationExists = Schema::hasTable($translationTable);
+            $translationExists = Schema::hasTable($translationTable);
 
-$translatedSelects = [];
+            $translatedSelects = [];
 
-if ($translationExists) {
-    $translationColumns = DB::select("
-        SELECT COLUMN_NAME, DATA_TYPE
-        FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-    ", [env('DB_DATABASE'), $translationTable]);
+            if ($translationExists) {
+                $translationColumns = DB::select("
+                    SELECT COLUMN_NAME, DATA_TYPE
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+                ", [env('DB_DATABASE'), $translationTable]);
 
-    $excluded = ['id', Str::singular($table) . '_id', 'locale', 'created_at', 'updated_at', 'deleted_at'];
+                $excluded = ['id', Str::singular($table) . '_id', 'locale', 'created_at', 'updated_at', 'deleted_at'];
 
-    $filtered = collect($translationColumns)
-        ->map(fn($col) => (array)$col)
-        ->filter(fn($col) => !in_array($col['COLUMN_NAME'], $excluded))
-        ->toArray();
+                $filtered = collect($translationColumns)
+                    ->map(fn($col) => (array)$col)
+                    ->filter(fn($col) => !in_array($col['COLUMN_NAME'], $excluded))
+                    ->toArray();
 
-    // Append simplified translation columns to columns array
-    foreach ($filtered as $col) {
-        $columns[] = [
-            'COLUMN_NAME' => $col['COLUMN_NAME'], // ✅ no prefix
-            'DATA_TYPE' => $col['DATA_TYPE'],
-        ];
+                // Append simplified translation columns to columns array
+                foreach ($filtered as $col) {
+                    $columns[] = [
+                        'COLUMN_NAME' => $col['COLUMN_NAME'], // ✅ no prefix
+                        'DATA_TYPE' => $col['DATA_TYPE'],
+                    ];
 
-        // Select as alias
-        $translatedSelects[] = "$translationTable.{$col['COLUMN_NAME']} as {$col['COLUMN_NAME']}";
-    }
-}
+                    // Select as alias
+                    $translatedSelects[] = "$translationTable.{$col['COLUMN_NAME']} as {$col['COLUMN_NAME']}";
+                }
+            }
 
-// 3. Add image column
-$columns[] = [
-    "COLUMN_NAME" => "image",
-    "DATA_TYPE" => "image",
-];
+            // 3. Add image column
+            $columns[] = [
+                "COLUMN_NAME" => "image",
+                "DATA_TYPE" => "image",
+            ];
 
-// 4. Build query
-$dataQuery = DB::table($table)->select($table . '.*');
+            // 4. Build query
+            $dataQuery = DB::table($table)->select($table . '.*');
 
-if ($translationExists) {
-    $dataQuery->leftJoin($translationTable, "$translationTable." . Str::singular($table) . "_id", '=', "$table.id")
-              ->where("$translationTable.locale", $locale);
+            if ($translationExists) {
+                $dataQuery->leftJoin($translationTable, "$translationTable." . Str::singular($table) . "_id", '=', "$table.id")
+                        ->where("$translationTable.locale", $locale);
 
-    $dataQuery->addSelect($translatedSelects);
-}
+                $dataQuery->addSelect($translatedSelects);
+            }
 
-// 5. Filters
-foreach (request()->query() as $key => $value) {
-    if (!in_array($key, ['page'])) {
-        $dataQuery->where($key, 'like', '%' . $value . '%');
-    }
-}
+            // 5. Filters
+            foreach (request()->query() as $key => $value) {
+                if (!in_array($key, ['page'])) {
+                    $dataQuery->where($key, 'like', '%' . $value . '%');
+                }
+            }
 
-// 6. Pagination
-$paginated = $dataQuery->paginate(10);
+            // 6. Pagination
+            $paginated = $dataQuery->paginate(10);
 
-// 7. Add image to each row
-$paginated->getCollection()->transform(function ($item) {
-    $row = (array) $item;
-    $row['image'] = settings()->logo;
-    return (object) $row;
-});
+            // 7. Add image to each row
+            $paginated->getCollection()->transform(function ($item) {
+                $row = (array) $item;
+                $row['image'] = settings()->logo;
+                return (object) $row;
+            });
 
-// 8. Return response
-return response()->json([
-    'success' => trans('general.sent_successfully'),
-    'columns' => $columns,
-    'data' => $paginated->items(),
-    'pagination' => [
-        'current_page' => $paginated->currentPage(),
-        'last_page' => $paginated->lastPage(),
-        'per_page' => $paginated->perPage(),
-        'total' => $paginated->total(),
-    ],
-]);
+            // 8. Return response
+            return response()->json([
+                'success' => trans('general.sent_successfully'),
+                'columns' => $columns,
+                'data' => $paginated->items(),
+                'pagination' => [
+                    'current_page' => $paginated->currentPage(),
+                    'last_page' => $paginated->lastPage(),
+                    'per_page' => $paginated->perPage(),
+                    'total' => $paginated->total(),
+                ],
+            ]);
 
-}
+            }
 
 
 
