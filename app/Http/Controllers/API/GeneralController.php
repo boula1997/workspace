@@ -12,7 +12,10 @@ use App\Models\Task;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 class GeneralController extends Controller
 {
   
@@ -96,56 +99,94 @@ public function storeUpdate(Request $request, $table, $itemId = null)
 
 public function showEditCreate($table, $itemId)
 {
-    // Step 1: Retrieve table columns with data type and nullability
+    $db = env('DB_DATABASE');
+
+    // Step 1: Base table columns
     $columns = DB::select("
         SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-    ", [env('DB_DATABASE'), $table]);
+    ", [$db, $table]);
 
-    // Step 2: Convert and format columns
     $columns = collect($columns)->map(function ($col) {
         return [
             'COLUMN_NAME' => $col->COLUMN_NAME,
             'DATA_TYPE' => $col->DATA_TYPE,
-            'IS_NULLABLE' => $col->IS_NULLABLE === 'YES' ? true : false,
+            'IS_NULLABLE' => $col->IS_NULLABLE === 'YES',
         ];
     })->toArray();
 
-    // Step 3: Add virtual image fields
+    // Step 2: Add virtual image fields
     $columns[] = [
         "COLUMN_NAME" => "image",
         "DATA_TYPE" => "image",
         "IS_NULLABLE" => true,
     ];
-    
     $columns[] = [
         "COLUMN_NAME" => "images",
         "DATA_TYPE" => "multimages",
         "IS_NULLABLE" => true,
     ];
 
-    // Step 4: Retrieve data for editing
-    $data = DB::select("SELECT * FROM {$table} WHERE id = ?", [$itemId]);
+    // Step 3: Get main record
+    $data = DB::table($table)->where('id', $itemId)->first();
 
-    // Step 5: Map and append placeholder image fields
-    $data = collect($data)->map(function ($item) {
-        $row = (array) $item;
-        $row["image"] = "https://via.placeholder.com/150";
-        $row["images"] = [
-            "https://via.placeholder.com/150",
-            "https://via.placeholder.com/140"
-        ];
-        return $row;
-    })->toArray();
+    if (!$data) {
+        return response()->json(['error' => 'Not found'], 404);
+    }
 
-    // Step 6: Return API response
+    $data = (array) $data;
+    $data["image"] = "https://via.placeholder.com/150";
+    $data["images"] = [
+        "https://via.placeholder.com/150",
+        "https://via.placeholder.com/140"
+    ];
+
+    // Step 4: Handle translations
+    $translationTable = Str::singular($table) . '_translations';
+
+    if (Schema::hasTable($translationTable)) {
+        // Get translation fields (excluding system fields)
+        $transColumns = DB::select("
+            SELECT COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+        ", [$db, $translationTable]);
+$foreignKey = Str::singular($table) . '_id';
+        $transColumns = collect($transColumns)->pluck('COLUMN_NAME')
+            ->reject(fn($col) => in_array($col, ['id', 'locale', $foreignKey, 'created_at', 'updated_at', 'deleted_at']))
+            ->values()
+            ->toArray();
+            
+                    // Fetch translations
+            $translations = DB::table($translationTable)
+                ->where($foreignKey, $itemId)
+                ->get();
+
+        foreach ($translations as $translation) {
+            foreach ($transColumns as $col) {
+                $key = "{$translation->locale}[$col]";
+                $data[$key] = $translation->$col;
+            }
+
+            // Optional: add these translation fields to the columns array
+            foreach ($transColumns as $col) {
+                $columns[] = [
+                    "COLUMN_NAME" => "{$translation->locale}[$col]",
+                    "DATA_TYPE" => "text", // or "translatable" if you want to treat it specially in frontend
+                    "IS_NULLABLE" => true,
+                ];
+            }
+        }
+    }
+
     return response()->json([
         'success' => trans('general.sent_successfully'),
         'columns' => $columns,
-        'data' => $data,
+        'data' => [$data], // Send as array to match frontend format
     ]);
 }
+
 
 public function deleteItem($table, $itemId)
 {
