@@ -222,17 +222,37 @@ public function index($table)
 
 public function tableNames()
 {
-   
+    // Step 1: Get all table names in the schema
+    $allTables = DB::table('INFORMATION_SCHEMA.COLUMNS')
+        ->select('TABLE_NAME')
+        ->where('TABLE_SCHEMA', 'webapp')
+        ->distinct()
+        ->orderBy('TABLE_NAME')
+        ->pluck('TABLE_NAME'); // Returns collection of strings
 
-      $tables = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . "webapp" . "' order by TABLE_NAME;");
+    // Step 2: Get blocked table names from blocked_modules table
+    $blockedTables = DB::table('blocked_modules')->pluck('table_name');
 
-          return response()->json([
+    // Step 3: Exclude blocked tables
+    $filteredTables = $allTables
+        ->diff($blockedTables) // Remove blocked tables
+        ->reject(function ($table) {
+            return str_contains($table, '_translation'); // Remove *_translation tables
+        })
+        ->values(); // Re-index the collection
+
+    // Step 4: Map to desired structure: [{ TABLE_NAME: '...' }]
+    $structuredTables = $filteredTables->map(function ($table) {
+        return ['TABLE_NAME' => $table];
+    });
+
+    return response()->json([
         'success' => trans('general.sent_successfully'),
-        'tables' => $tables,
+        'tables' => $structuredTables,
     ]);
-    
-
 }
+
+
 
 
 
