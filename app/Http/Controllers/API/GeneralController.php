@@ -96,48 +96,57 @@ public function storeUpdate(Request $request, $table, $itemId = null)
 
 public function showEditCreate($table, $itemId)
 {
-    // Retrieve table columns and their data types
+    // Step 1: Retrieve table columns with data type and nullability
     $columns = DB::select("
-        SELECT COLUMN_NAME, DATA_TYPE
+        SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
     ", ["webapp", $table]);
 
-    // Convert columns to array (for easy manipulation)
+    // Step 2: Convert and format columns
     $columns = collect($columns)->map(function ($col) {
-        return (array) $col;
+        return [
+            'COLUMN_NAME' => $col->COLUMN_NAME,
+            'DATA_TYPE' => $col->DATA_TYPE,
+            'IS_NULLABLE' => $col->IS_NULLABLE === 'YES' ? true : false,
+        ];
     })->toArray();
 
-    // ✅ Add an extra "image" column manually
+    // Step 3: Add virtual image fields
     $columns[] = [
         "COLUMN_NAME" => "image",
         "DATA_TYPE" => "image",
+        "IS_NULLABLE" => true,
     ];
     
     $columns[] = [
         "COLUMN_NAME" => "images",
         "DATA_TYPE" => "multimages",
+        "IS_NULLABLE" => true,
     ];
 
-    // Retrieve record data
-    $data = DB::select("
-        SELECT * FROM {$table} WHERE id = ?
-    ", [$itemId]);
+    // Step 4: Retrieve data for editing
+    $data = DB::select("SELECT * FROM {$table} WHERE id = ?", [$itemId]);
 
-    // Convert data to array and add the fake "image" field
+    // Step 5: Map and append placeholder image fields
     $data = collect($data)->map(function ($item) {
         $row = (array) $item;
-        $row["image"] = "https://via.placeholder.com/150"; // ✅ Example image link
-        $row["images"] = ["https://via.placeholder.com/150","https://via.placeholder.com/140"]; // ✅ Example images links
+        $row["image"] = "https://via.placeholder.com/150";
+        $row["images"] = [
+            "https://via.placeholder.com/150",
+            "https://via.placeholder.com/140"
+        ];
         return $row;
     })->toArray();
 
+    // Step 6: Return API response
     return response()->json([
         'success' => trans('general.sent_successfully'),
         'columns' => $columns,
         'data' => $data,
     ]);
 }
+
 public function deleteItem($table, $itemId)
 {
     // Retrieve table columns and their data types
