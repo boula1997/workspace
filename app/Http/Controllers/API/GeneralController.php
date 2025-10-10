@@ -128,11 +128,73 @@ public function showEditCreate($table, $itemId = null)
         "IS_NULLABLE" => true,
     ];
 
+
+        $relatedOptions = [];
+
+        foreach ($columns as $col) {
+            $colName = $col['COLUMN_NAME'];
+
+            if (Str::endsWith($colName, '_id')) {
+                $baseTable = Str::plural(Str::beforeLast($colName, '_id'));
+                $singular = Str::singular($baseTable);
+                $translationTable = "{$singular}_translations";
+
+                if (!Schema::hasTable($baseTable)) {
+                    continue;
+                }
+
+                $mainColumns = Schema::getColumnListing($baseTable);
+
+                // Try to find a label column in the main table
+                $labelColumn = collect(['title', 'name', 'fullname'])->first(function ($field) use ($mainColumns) {
+                    return in_array($field, $mainColumns);
+                });
+
+                if ($labelColumn) {
+                    $relatedData = DB::table($baseTable)
+                        ->select('id', DB::raw("$labelColumn as label"))
+                        ->get();
+                } 
+
+                // Check in translations table if main table has no label column
+                elseif (Schema::hasTable($translationTable)) {
+                    $translationColumns = Schema::getColumnListing($translationTable);
+
+                    $translationLabel = collect(['title', 'name', 'fullname'])->first(function ($field) use ($translationColumns) {
+                        return in_array($field, $translationColumns);
+                    });
+
+                    if ($translationLabel) {
+                        $relatedData = DB::table($baseTable)
+                            ->leftJoin($translationTable, "{$translationTable}.{$singular}_id", '=', "{$baseTable}.id")
+                            ->where("{$translationTable}.locale", 'en')
+                            ->select("{$baseTable}.id", "{$translationTable}.{$translationLabel} as label")
+                            ->get();
+                    } else {
+                        // Fallback: Use just ID as label
+                        $relatedData = DB::table($baseTable)
+                            ->selectRaw("id, CONCAT('ID: ', id) as label")
+                            ->get();
+                    }
+                } 
+                // If no label column in either, fallback to ID
+                else {
+                    $relatedData = DB::table($baseTable)
+                        ->selectRaw("id, CONCAT('ID: ', id) as label")
+                        ->get();
+                }
+
+                $relatedOptions[$colName] = $relatedData;
+            }
+        }
+
     // ✅ Step 3: Skip data fetch if $itemId is null, "undefined", or not numeric
     if (!$itemId || $itemId === "undefined" || !is_numeric($itemId)) {
         return response()->json([
             'success' => trans('general.sent_successfully'),
             'columns' => $columns,
+            'related' => $relatedOptions, // ✅ send related options to the frontend
+
             'data' => [],
         ]);
     }
@@ -188,9 +250,14 @@ public function showEditCreate($table, $itemId = null)
         }
     }
 
+
+
+
+
     return response()->json([
         'success' => trans('general.sent_successfully'),
         'columns' => $columns,
+        'related' => $relatedOptions, // ✅ send related options to the frontend
         'data' => [$data],
     ]);
 }
