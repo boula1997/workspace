@@ -97,7 +97,7 @@ public function storeUpdate(Request $request, $table, $itemId = null)
 
 
 
-public function showEditCreate($table, $itemId)
+public function showEditCreate($table, $itemId = null)
 {
     $db = env('DB_DATABASE');
 
@@ -128,7 +128,16 @@ public function showEditCreate($table, $itemId)
         "IS_NULLABLE" => true,
     ];
 
-    // Step 3: Get main record
+    // ✅ Step 3: Skip data fetch if $itemId is null, "undefined", or not numeric
+    if (!$itemId || $itemId === "undefined" || !is_numeric($itemId)) {
+        return response()->json([
+            'success' => trans('general.sent_successfully'),
+            'columns' => $columns,
+            'data' => [],
+        ]);
+    }
+
+    // Step 4: Get main record
     $data = DB::table($table)->where('id', $itemId)->first();
 
     if (!$data) {
@@ -142,26 +151,26 @@ public function showEditCreate($table, $itemId)
         "https://via.placeholder.com/140"
     ];
 
-    // Step 4: Handle translations
+    // Step 5: Handle translations
     $translationTable = Str::singular($table) . '_translations';
 
     if (Schema::hasTable($translationTable)) {
-        // Get translation fields (excluding system fields)
         $transColumns = DB::select("
             SELECT COLUMN_NAME
             FROM INFORMATION_SCHEMA.COLUMNS
             WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
         ", [$db, $translationTable]);
-            $foreignKey = Str::singular($table) . '_id';
-                    $transColumns = collect($transColumns)->pluck('COLUMN_NAME')
-                        ->reject(fn($col) => in_array($col, ['id', 'locale', $foreignKey, 'created_at', 'updated_at', 'deleted_at']))
-                        ->values()
-                        ->toArray();
-            
-                    // Fetch translations
-            $translations = DB::table($translationTable)
-                ->where($foreignKey, $itemId)
-                ->get();
+
+        $foreignKey = Str::singular($table) . '_id';
+
+        $transColumns = collect($transColumns)->pluck('COLUMN_NAME')
+            ->reject(fn($col) => in_array($col, ['id', 'locale', $foreignKey, 'created_at', 'updated_at', 'deleted_at']))
+            ->values()
+            ->toArray();
+
+        $translations = DB::table($translationTable)
+            ->where($foreignKey, $itemId)
+            ->get();
 
         foreach ($translations as $translation) {
             foreach ($transColumns as $col) {
@@ -169,11 +178,10 @@ public function showEditCreate($table, $itemId)
                 $data[$key] = $translation->$col;
             }
 
-            // Optional: add these translation fields to the columns array
             foreach ($transColumns as $col) {
                 $columns[] = [
                     "COLUMN_NAME" => "{$translation->locale}[$col]",
-                    "DATA_TYPE" => "text", // or "translatable" if you want to treat it specially in frontend
+                    "DATA_TYPE" => "text",
                     "IS_NULLABLE" => true,
                 ];
             }
@@ -183,9 +191,10 @@ public function showEditCreate($table, $itemId)
     return response()->json([
         'success' => trans('general.sent_successfully'),
         'columns' => $columns,
-        'data' => [$data], // Send as array to match frontend format
+        'data' => [$data],
     ]);
 }
+
 
 
 public function deleteItem($table, $itemId)
@@ -230,6 +239,7 @@ public function deleteItem($table, $itemId)
 
 public function index($table)
 {
+
     // Retrieve table columns and their data types
     $columns = DB::select("
         SELECT COLUMN_NAME, DATA_TYPE
@@ -246,7 +256,14 @@ public function index($table)
     ];
 
     // Use Laravel's paginate method with 10 items per page
-    $dataQuery = DB::table($table);
+   $dataQuery = DB::table($table);
+
+    // Apply filters from query string
+    foreach (request()->query() as $key => $value) {
+        if (!in_array($key, ['page'])) { // don't filter by 'page'
+            $dataQuery->where($key, 'like', '%' . $value . '%');
+        }
+    }
 
     // Get current page from request query string (?page=2)
     $perPage = 10;
