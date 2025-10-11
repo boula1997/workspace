@@ -20,7 +20,7 @@ class GeneralController extends Controller
 {
   
 
-public function storeUpdate(Request $request, $table, $itemId = null)
+public function storeUpdate(Request $request,$dbname, $table, $itemId = null)
 {
  
     // Get table columns from the database
@@ -97,9 +97,9 @@ public function storeUpdate(Request $request, $table, $itemId = null)
 
 
 
-public function showEditCreate($table, $itemId = null)
+public function showEditCreate($dbname,$table, $itemId = null)
 {
-    $db = env('DB_DATABASE');
+    $db = $dbname;
 
     // Step 1: Base table columns
     $columns = DB::select("
@@ -264,54 +264,54 @@ public function showEditCreate($table, $itemId = null)
 
 
 
-            public function deleteItem($table, $itemId)
-            {
-                // Retrieve table columns and their data types
-                $columns = DB::select("
-                    SELECT COLUMN_NAME, DATA_TYPE
-                    FROM INFORMATION_SCHEMA.COLUMNS
-                    WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-                ", [env('DB_DATABASE'), $table]);
+public function deleteItem($dbname,$table, $itemId)
+{
+    // Retrieve table columns and their data types
+    $columns = DB::select("
+        SELECT COLUMN_NAME, DATA_TYPE
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+    ", [$dbname, $table]);
 
-                // Convert columns to array (for easy manipulation)
-                $columns = collect($columns)->map(function ($col) {
-                    return (array) $col;
-                })->toArray();
+    // Convert columns to array (for easy manipulation)
+    $columns = collect($columns)->map(function ($col) {
+        return (array) $col;
+    })->toArray();
 
-                // ✅ Add an extra "image" column manually
-                $columns[] = [
-                    "COLUMN_NAME" => "image",
-                    "DATA_TYPE" => "image",
-                ];
-                
-                $columns[] = [
-                    "COLUMN_NAME" => "images",
-                    "DATA_TYPE" => "multimages",
-                ];
+    // ✅ Add an extra "image" column manually
+    $columns[] = [
+        "COLUMN_NAME" => "image",
+        "DATA_TYPE" => "image",
+    ];
+    
+    $columns[] = [
+        "COLUMN_NAME" => "images",
+        "DATA_TYPE" => "multimages",
+    ];
 
-                // Retrieve record data
-                $data = DB::select("
-                    delete FROM {$table} WHERE id = ?
-                ", [$itemId]);
-
-
-
-                return response()->json([
-                    'success' => trans('general.sent_successfully'),
-                    'columns' => $columns,
-                    'data' => $data,
-                ]);
-            }
+    // Retrieve record data
+    $data = DB::select("
+        delete FROM {$table} WHERE id = ?
+    ", [$itemId]);
 
 
-            public function index($table)
+
+    return response()->json([
+        'success' => trans('general.sent_successfully'),
+        'columns' => $columns,
+        'data' => $data,
+    ]);
+}
+
+
+            public function index($dbname,$table)
             {
                 // 1. Get base columns
             $columns = DB::select("
                 SELECT COLUMN_NAME, DATA_TYPE
                 FROM INFORMATION_SCHEMA.COLUMNS
                 WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-            ", [env('DB_DATABASE'), $table]);
+            ", [$dbname, $table]);
 
             $columns = collect($columns)->map(fn($col) => (array)$col)->toArray();
 
@@ -328,7 +328,7 @@ public function showEditCreate($table, $itemId = null)
                     SELECT COLUMN_NAME, DATA_TYPE
                     FROM INFORMATION_SCHEMA.COLUMNS
                     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-                ", [env('DB_DATABASE'), $translationTable]);
+                ", [$dbname, $translationTable]);
 
                 $excluded = ['id', Str::singular($table) . '_id', 'locale', 'created_at', 'updated_at', 'deleted_at'];
 
@@ -400,12 +400,12 @@ public function showEditCreate($table, $itemId = null)
 
 
 
-public function tableNames()
+public function tableNames($dbname)
 {
     // Step 1: Get all table names in the schema
     $allTables = DB::table('INFORMATION_SCHEMA.COLUMNS')
         ->select('TABLE_NAME')
-        ->where('TABLE_SCHEMA', env('DB_DATABASE'))
+        ->where('TABLE_SCHEMA', $dbname)
         ->distinct()
         ->orderBy('TABLE_NAME')
         ->pluck('TABLE_NAME'); // Returns collection of strings
