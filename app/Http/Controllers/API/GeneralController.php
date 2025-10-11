@@ -264,44 +264,44 @@ public function showEditCreate($table, $itemId = null)
 
 
 
-public function deleteItem($table, $itemId)
-{
-    // Retrieve table columns and their data types
-    $columns = DB::select("
-        SELECT COLUMN_NAME, DATA_TYPE
-        FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-    ", [env('DB_DATABASE'), $table]);
+            public function deleteItem($table, $itemId)
+            {
+                // Retrieve table columns and their data types
+                $columns = DB::select("
+                    SELECT COLUMN_NAME, DATA_TYPE
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+                ", [env('DB_DATABASE'), $table]);
 
-    // Convert columns to array (for easy manipulation)
-    $columns = collect($columns)->map(function ($col) {
-        return (array) $col;
-    })->toArray();
+                // Convert columns to array (for easy manipulation)
+                $columns = collect($columns)->map(function ($col) {
+                    return (array) $col;
+                })->toArray();
 
-    // ✅ Add an extra "image" column manually
-    $columns[] = [
-        "COLUMN_NAME" => "image",
-        "DATA_TYPE" => "image",
-    ];
-    
-    $columns[] = [
-        "COLUMN_NAME" => "images",
-        "DATA_TYPE" => "multimages",
-    ];
+                // ✅ Add an extra "image" column manually
+                $columns[] = [
+                    "COLUMN_NAME" => "image",
+                    "DATA_TYPE" => "image",
+                ];
+                
+                $columns[] = [
+                    "COLUMN_NAME" => "images",
+                    "DATA_TYPE" => "multimages",
+                ];
 
-    // Retrieve record data
-    $data = DB::select("
-        delete FROM {$table} WHERE id = ?
-    ", [$itemId]);
+                // Retrieve record data
+                $data = DB::select("
+                    delete FROM {$table} WHERE id = ?
+                ", [$itemId]);
 
 
 
-    return response()->json([
-        'success' => trans('general.sent_successfully'),
-        'columns' => $columns,
-        'data' => $data,
-    ]);
-}
+                return response()->json([
+                    'success' => trans('general.sent_successfully'),
+                    'columns' => $columns,
+                    'data' => $data,
+                ]);
+            }
 
 
             public function index($table)
