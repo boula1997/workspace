@@ -24,6 +24,32 @@ class GeneralController extends Controller
 
 public function storeUpdate(Request $request,$dbname, $table, $itemId = null)
 {
+
+        // Step 0: Get DB credentials
+    $credential = DBCredential::where('db_name', $dbname)->first();
+
+    $dbHost = $credential->db_host ?? '192.185.41.219';
+    $dbName = $credential->db_name ?? 'automation';
+    $dbUser = $credential->db_username ?? 'root';
+    $dbPass = $credential->db_password ?? '';
+
+    // Step 1: Configure dynamic connection
+    config([
+        'database.connections.dynamic' => [
+            'driver' => 'mysql',
+            'host' => $dbHost,
+            'database' => $dbName,
+            'username' => $dbUser,
+            'password' => $dbPass,
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+    ]);
+
+    DB::purge('dynamic');
+    DB::reconnect('dynamic');
+    DB::connection('dynamic')->statement('USE ' . $dbName);
+
  
     // Get table columns from the database
     $columns = DB::select("
@@ -83,7 +109,7 @@ public function storeUpdate(Request $request,$dbname, $table, $itemId = null)
         ]);
     } else {
         // Insert
-        $newId = DB::table($table)->insertGetId($data);
+        $newId = DB::connection('dynamic')->table($table)->insertGetId($data);
 
         return response()->json([
             'success' => true,
@@ -101,14 +127,43 @@ public function storeUpdate(Request $request,$dbname, $table, $itemId = null)
 
 public function showEditCreate($dbname,$table, $itemId = null)
 {
-    $db = $dbname;
+
+
+        // Step 0: Get DB credentials
+    $credential = DBCredential::where('db_name', $dbname)->first();
+
+    $dbHost = $credential->db_host ?? '192.185.41.219';
+    $dbName = $credential->db_name ?? 'automation';
+    $dbUser = $credential->db_username ?? 'root';
+    $dbPass = $credential->db_password ?? '';
+
+    // Step 1: Configure dynamic connection
+    config([
+        'database.connections.dynamic' => [
+            'driver' => 'mysql',
+            'host' => $dbHost,
+            'database' => $dbName,
+            'username' => $dbUser,
+            'password' => $dbPass,
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+    ]);
+
+    DB::purge('dynamic');
+    DB::reconnect('dynamic');
+    DB::connection('dynamic')->statement('USE ' . $dbName);
+
+
+
+  
 
     // Step 1: Base table columns
-    $columns = DB::select("
+    $columns = DB::connection('dynamic')->select("
         SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-    ", [$db, $table]);
+    ", [$dbName, $table]);
 
     $columns = collect($columns)->map(function ($col) {
         return [
@@ -153,8 +208,8 @@ public function showEditCreate($dbname,$table, $itemId = null)
                 });
 
                 if ($labelColumn) {
-                    $relatedData = DB::table($baseTable)
-                        ->select('id', DB::raw("$labelColumn as label"))
+                    $relatedData = DB::connection('dynamic')->table($baseTable)
+                        ->select('id', DB::connection('dynamic')->raw("$labelColumn as label"))
                         ->get();
                 } 
 
@@ -167,21 +222,21 @@ public function showEditCreate($dbname,$table, $itemId = null)
                     });
 
                     if ($translationLabel) {
-                        $relatedData = DB::table($baseTable)
+                        $relatedData = DB::connection('dynamic')->table($baseTable)
                             ->leftJoin($translationTable, "{$translationTable}.{$singular}_id", '=', "{$baseTable}.id")
                             ->where("{$translationTable}.locale", 'en')
                             ->select("{$baseTable}.id", "{$translationTable}.{$translationLabel} as label")
                             ->get();
                     } else {
                         // Fallback: Use just ID as label
-                        $relatedData = DB::table($baseTable)
+                        $relatedData = DB::connection('dynamic')->table($baseTable)
                             ->selectRaw("id, CONCAT('ID: ', id) as label")
                             ->get();
                     }
                 } 
                 // If no label column in either, fallback to ID
                 else {
-                    $relatedData = DB::table($baseTable)
+                    $relatedData = DB::connection('dynamic')->table($baseTable)
                         ->selectRaw("id, CONCAT('ID: ', id) as label")
                         ->get();
                 }
@@ -202,7 +257,7 @@ public function showEditCreate($dbname,$table, $itemId = null)
     }
 
     // Step 4: Get main record
-    $data = DB::table($table)->where('id', $itemId)->first();
+    $data = DB::connection('dynamic')->table($table)->where('id', $itemId)->first();
 
     if (!$data) {
         return response()->json(['error' => 'Not found'], 404);
@@ -219,11 +274,11 @@ public function showEditCreate($dbname,$table, $itemId = null)
     $translationTable = Str::singular($table) . '_translations';
 
     if (Schema::hasTable($translationTable)) {
-        $transColumns = DB::select("
+        $transColumns = DB::connection('dynamic')->select("
             SELECT COLUMN_NAME
             FROM INFORMATION_SCHEMA.COLUMNS
             WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-        ", [$db, $translationTable]);
+        ", [$dbName, $translationTable]);
 
         $foreignKey = Str::singular($table) . '_id';
 
@@ -232,7 +287,7 @@ public function showEditCreate($dbname,$table, $itemId = null)
             ->values()
             ->toArray();
 
-        $translations = DB::table($translationTable)
+        $translations = DB::connection('dynamic')->table($translationTable)
             ->where($foreignKey, $itemId)
             ->get();
 
@@ -268,8 +323,35 @@ public function showEditCreate($dbname,$table, $itemId = null)
 
 public function deleteItem($dbname,$table, $itemId)
 {
+
+        // Step 0: Get DB credentials
+    $credential = DBCredential::where('db_name', $dbname)->first();
+
+    $dbHost = $credential->db_host ?? '192.185.41.219';
+    $dbName = $credential->db_name ?? 'automation';
+    $dbUser = $credential->db_username ?? 'root';
+    $dbPass = $credential->db_password ?? '';
+
+    // Step 1: Configure dynamic connection
+    config([
+        'database.connections.dynamic' => [
+            'driver' => 'mysql',
+            'host' => $dbHost,
+            'database' => $dbName,
+            'username' => $dbUser,
+            'password' => $dbPass,
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+    ]);
+
+    DB::purge('dynamic');
+    DB::reconnect('dynamic');
+    DB::connection('dynamic')->statement('USE ' . $dbName);
+
+
     // Retrieve table columns and their data types
-    $columns = DB::select("
+    $columns = DB::connection('dynamic')->select("
         SELECT COLUMN_NAME, DATA_TYPE
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
@@ -292,7 +374,7 @@ public function deleteItem($dbname,$table, $itemId)
     ];
 
     // Retrieve record data
-    $data = DB::select("
+    $data = DB::connection('dynamic')->select("
         delete FROM {$table} WHERE id = ?
     ", [$itemId]);
 
@@ -308,8 +390,35 @@ public function deleteItem($dbname,$table, $itemId)
 
             public function index($dbname,$table)
             {
+
+
+                    // Step 0: Get DB credentials
+    $credential = DBCredential::where('db_name', $dbname)->first();
+
+    $dbHost = $credential->db_host ?? '192.185.41.219';
+    $dbName = $credential->db_name ?? 'automation';
+    $dbUser = $credential->db_username ?? 'root';
+    $dbPass = $credential->db_password ?? '';
+
+    // Step 1: Configure dynamic connection
+    config([
+        'database.connections.dynamic' => [
+            'driver' => 'mysql',
+            'host' => $dbHost,
+            'database' => $dbName,
+            'username' => $dbUser,
+            'password' => $dbPass,
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+    ]);
+
+    DB::purge('dynamic');
+    DB::reconnect('dynamic');
+    DB::connection('dynamic')->statement('USE ' . $dbName);
+
                 // 1. Get base columns
-            $columns = DB::select("
+            $columns = DB::connection('dynamic')->select("
                 SELECT COLUMN_NAME, DATA_TYPE
                 FROM INFORMATION_SCHEMA.COLUMNS
                 WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
@@ -326,7 +435,7 @@ public function deleteItem($dbname,$table, $itemId)
             $translatedSelects = [];
 
             if ($translationExists) {
-                $translationColumns = DB::select("
+                $translationColumns = DB::connection('dynamic')->select("
                     SELECT COLUMN_NAME, DATA_TYPE
                     FROM INFORMATION_SCHEMA.COLUMNS
                     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
@@ -358,7 +467,7 @@ public function deleteItem($dbname,$table, $itemId)
             ];
 
             // 4. Build query
-            $dataQuery = DB::table($table)->select($table . '.*');
+            $dataQuery = DB::connection('dynamic')->table($table)->select($table . '.*');
 
             if ($translationExists) {
                 $dataQuery->leftJoin($translationTable, "$translationTable." . Str::singular($table) . "_id", '=', "$table.id")
