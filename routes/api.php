@@ -71,11 +71,11 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
     Route::middleware('auth:admin-api')->group(function () {
 
-    Route::get('/showEditCreate/{dbname/}{table}/{itemId}', [GeneralController::class, 'showEditCreate']);
-    Route::post('/storeUpdate/{dbname/}{table}/{itemId}', [GeneralController::class, 'storeUpdate']);
-    Route::get('/deleteItem/{dbname/}{table}/{itemId}', [GeneralController::class, 'deleteItem']);
-    Route::get('/index/{dbname/}{table}', [GeneralController::class, 'index']);
-    Route::get('/tables/{dbname/}', [GeneralController::class, 'tableNames']);
+    Route::get('/showEditCreate/{dbname}/{table}/{itemId}', [GeneralController::class, 'showEditCreate']);
+    Route::post('/storeUpdate/{dbname}/{table}/{itemId}', [GeneralController::class, 'storeUpdate']);
+    Route::get('/deleteItem/{dbname}/{table}/{itemId}', [GeneralController::class, 'deleteItem']);
+    Route::get('/index/{dbname}/{table}', [GeneralController::class, 'index']);
+    Route::get('/tables/{dbname}', [GeneralController::class, 'tableNames']);
     
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
