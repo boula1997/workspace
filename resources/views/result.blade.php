@@ -1066,7 +1066,7 @@
                 <div class="d-flex">
             <button id="runQueryBtn" class="btn btn-primary">Run Query in New Tab</button>
 
-            <button id="reactDashboard" dbname="{{$dbname}}" class="btn btn-primary">Open React Dashboard</button>
+            <button id="reactDashboard" dbname="{{$dbname}}" class="btn btn-primary">Open React Dashboard {{{{$dbname}}}}</button>
             
              <p class="mx-5">{{$dbname}}</p>
                 </div>
@@ -1531,8 +1531,9 @@
       const dbname = $(this).attr('dbname');
 
       if (dbname) {
-        // Save dbname to localStorage
-        localStorage.setItem('dbname', dbname);
+          // Save dbname to localStorage
+          localStorage.setItem('dbname', dbname);
+          alert(localStorage.getItem('dbname'));
         // Redirect to React dashboard
         window.open(`http://localhost:5173/dashboard`);
 
