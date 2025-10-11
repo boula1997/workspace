@@ -13,6 +13,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use App\Models\DBCredential;
+
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -402,8 +404,32 @@ public function deleteItem($dbname,$table, $itemId)
 
 public function tableNames($dbname)
 {
+
+
+    $credential = DBCredential::where('db_name', $dbname)->first();
+
+    $dbHost = isset($credential->db_host)?$credential->db_host:'192.185.41.219';
+    $dbName = $credential->db_name ?? 'automation';
+    $dbUser = $credential->db_username ?? 'root';
+    $dbPass = $credential->db_password ?? '';
+
+    config([
+        'database.connections.dynamic' => [
+            'driver' => 'mysql',
+            'host' => $dbHost,
+            'database' => $dbName,
+            'username' => $dbUser,
+            'password' => $dbPass,
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+    ]);
+
+    DB::purge('dynamic');
+    DB::reconnect('dynamic');
+    DB::connection('dynamic')->statement('USE ' . $dbName);
     // Step 1: Get all table names in the schema
-    $allTables = DB::table('INFORMATION_SCHEMA.COLUMNS')
+    $allTables = DB::connection('dynamic')->table('INFORMATION_SCHEMA.COLUMNS')
         ->select('TABLE_NAME')
         ->where('TABLE_SCHEMA', $dbname)
         ->distinct()
@@ -411,7 +437,7 @@ public function tableNames($dbname)
         ->pluck('TABLE_NAME'); // Returns collection of strings
 
     // Step 2: Get blocked table names from blocked_modules table
-    $blockedTables = DB::table('blocked_modules')->pluck('table_name');
+    $blockedTables = DB::connection('dynamic')->table('blocked_modules')->pluck('table_name');
 
     // Step 3: Exclude blocked tables
     $filteredTables = $allTables
