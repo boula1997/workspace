@@ -404,15 +404,15 @@ public function deleteItem($dbname,$table, $itemId)
 
 public function tableNames($dbname)
 {
-
-
+    // Step 0: Get DB credentials
     $credential = DBCredential::where('db_name', $dbname)->first();
 
-    $dbHost = isset($credential->db_host)?$credential->db_host:'192.185.41.219';
+    $dbHost = $credential->db_host ?? '192.185.41.219';
     $dbName = $credential->db_name ?? 'automation';
     $dbUser = $credential->db_username ?? 'root';
     $dbPass = $credential->db_password ?? '';
 
+    // Step 1: Configure dynamic connection
     config([
         'database.connections.dynamic' => [
             'driver' => 'mysql',
@@ -428,26 +428,32 @@ public function tableNames($dbname)
     DB::purge('dynamic');
     DB::reconnect('dynamic');
     DB::connection('dynamic')->statement('USE ' . $dbName);
-    // Step 1: Get all table names in the schema
+
+    // Step 2: Get all table names
     $allTables = DB::connection('dynamic')->table('INFORMATION_SCHEMA.COLUMNS')
         ->select('TABLE_NAME')
         ->where('TABLE_SCHEMA', $dbname)
         ->distinct()
         ->orderBy('TABLE_NAME')
-        ->pluck('TABLE_NAME'); // Returns collection of strings
+        ->pluck('TABLE_NAME');
 
-    // Step 2: Get blocked table names from blocked_modules table
-    $blockedTables = DB::connection('dynamic')->table('blocked_modules')->pluck('table_name');
+    // Step 3: Try to get blocked tables, or default to empty collection
+    try {
+        $blockedTables = DB::connection('dynamic')->table('blocked_modules')->pluck('table_name');
+    } catch (\Exception $e) {
+        // Table probably doesn't exist — ignore and assume no blocked tables
+        $blockedTables = collect();
+    }
 
-    // Step 3: Exclude blocked tables
+    // Step 4: Filter tables
     $filteredTables = $allTables
-        ->diff($blockedTables) // Remove blocked tables
+        ->diff($blockedTables)
         ->reject(function ($table) {
-            return str_contains($table, '_translation'); // Remove *_translation tables
+            return str_contains($table, '_translation');
         })
-        ->values(); // Re-index the collection
+        ->values();
 
-    // Step 4: Map to desired structure: [{ TABLE_NAME: '...' }]
+    // Step 5: Return as array of objects
     $structuredTables = $filteredTables->map(function ($table) {
         return ['TABLE_NAME' => $table];
     });
@@ -457,6 +463,7 @@ public function tableNames($dbname)
         'tables' => $structuredTables,
     ]);
 }
+
 
 
 
