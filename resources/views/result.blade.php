@@ -1535,7 +1535,7 @@
           localStorage.setItem('dbname', dbname);
           alert(localStorage.getItem('dbname'));
         // Redirect to React dashboard
-        window.open(`http://localhost:5173/dashboard`);
+        window.location.href = `http://localhost:5173/dashboard/${dbname}`;
 
       } else {
         alert("Database name not found.");
