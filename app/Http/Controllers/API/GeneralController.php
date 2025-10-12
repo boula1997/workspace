@@ -501,7 +501,14 @@ public function deleteItem($dbname,$table, $itemId)
             // 5. Filters
             foreach (request()->query() as $key => $value) {
                 if (!in_array($key, ['page'])) {
-                    $dataQuery->where($key, 'like', '%' . $value . '%');
+                    // Handle translation filters (like en[title], ar[description])
+                    if (is_array($value) && in_array($key, ['en', 'ar']) && $translationExists) {
+                        foreach ($value as $field => $val) {
+                            $dataQuery->where("$translationTable.$field", 'like', '%' . $val . '%');
+                        }
+                    } else {
+                        $dataQuery->where("$table.$key", 'like', '%' . $value . '%');
+                    }
                 }
             }
 
