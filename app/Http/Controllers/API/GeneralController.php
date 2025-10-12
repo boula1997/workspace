@@ -49,7 +49,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     DB::reconnect('dynamic');
     DB::connection('dynamic')->statement('USE ' . $dbName);
 
-    // Get main table columns
+    // Step 2: Get main table columns
     $columns = DB::connection('dynamic')->select("
         SELECT COLUMN_NAME
         FROM INFORMATION_SCHEMA.COLUMNS
@@ -58,11 +58,10 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     ", [$table]);
 
     $columnNames = collect($columns)->pluck('COLUMN_NAME')->toArray();
-
     $exclude = ['id', 'created_at', 'updated_at'];
-
     $data = [];
 
+    // Step 3: Collect column values
     foreach ($columnNames as $column) {
         if (in_array($column, $exclude)) continue;
 
@@ -89,31 +88,30 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         }
     }
 
-    // Insert or Update Main Record
+    // Step 4: Insert or update main record
     if ($itemId && $itemId !== "undefined") {
         DB::connection('dynamic')->table($table)->where('id', $itemId)->update($data);
     } else {
         $itemId = DB::connection('dynamic')->table($table)->insertGetId($data);
     }
 
-    // 🧠 STEP: Handle translations like en[title], ar[description], etc.
-    $translationData = [];
+    // Step 5: Handle translations (only if translation table exists)
+    $translationTable = Str::singular($table) . '_translations';
+    $foreignKey = Str::singular($table) . '_id';
 
-    foreach ($request->all() as $key => $value) {
-        if (preg_match('/^([a-z]{2})\[(.+)\]$/', $key, $matches)) {
-            $locale = $matches[1];
-            $field = $matches[2];
+    if (Schema::connection('dynamic')->hasTable($translationTable)) {
+        $translationData = [];
 
-            $translationData[$locale][$field] = $value;
+        foreach ($request->all() as $key => $value) {
+            if (preg_match('/^([a-z]{2})\[(.+)\]$/', $key, $matches)) {
+                $locale = $matches[1];
+                $field = $matches[2];
+
+                $translationData[$locale][$field] = $value;
+            }
         }
-    }
-
-    if (!empty($translationData)) {
-        $translationTable = Str::singular($table) . '_translations';
-        $foreignKey = Str::singular($table) . '_id';
 
         foreach ($translationData as $locale => $fields) {
-            // Add required fields
             $fields[$foreignKey] = $itemId;
             $fields['locale'] = $locale;
 
@@ -141,6 +139,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         'id' => $itemId
     ]);
 }
+
 
 
 
