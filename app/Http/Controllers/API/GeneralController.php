@@ -272,7 +272,6 @@ public function showEditCreate($dbname,$table, $itemId = null)
 
     // Step 5: Handle translations
     $translationTable = Str::singular($table) . '_translations';
-    dd($translationTable);
 
     if (Schema::hasTable($translationTable)) {
         $transColumns = DB::connection('dynamic')->select("
