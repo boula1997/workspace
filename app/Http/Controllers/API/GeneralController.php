@@ -22,10 +22,9 @@ class GeneralController extends Controller
 {
   
 
-public function storeUpdate(Request $request,$dbname, $table, $itemId = null)
+public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
 {
-
-        // Step 0: Get DB credentials
+    // Step 0: Get DB credentials
     $credential = DBCredential::where('db_name', $dbname)->first();
 
     $dbHost = $credential->db_host ?? '192.185.41.219';
@@ -50,35 +49,28 @@ public function storeUpdate(Request $request,$dbname, $table, $itemId = null)
     DB::reconnect('dynamic');
     DB::connection('dynamic')->statement('USE ' . $dbName);
 
- 
-    // Get table columns from the database
-    $columns = DB::select("
+    // Get main table columns
+    $columns = DB::connection('dynamic')->select("
         SELECT COLUMN_NAME
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = DATABASE()
         AND TABLE_NAME = ?;
     ", [$table]);
 
-    // Convert to array of column names
     $columnNames = collect($columns)->pluck('COLUMN_NAME')->toArray();
 
-    // Columns to exclude (e.g., auto-increment ID, timestamps)
     $exclude = ['id', 'created_at', 'updated_at'];
 
-    // Build insert/update data dynamically
     $data = [];
 
     foreach ($columnNames as $column) {
-        if (in_array($column, $exclude)) {
-            continue;
-        }
+        if (in_array($column, $exclude)) continue;
 
-        // Handle special columns like image or images
         if ($column === 'image') {
             if ($request->hasFile('image')) {
                 $data[$column] = $request->file('image')->store('uploads', 'public');
             } elseif (!$itemId) {
-                $data[$column] = null; // For insert, ensure image column is not skipped
+                $data[$column] = null;
             }
         } elseif ($column === 'images') {
             if ($request->hasFile('images')) {
@@ -97,28 +89,59 @@ public function storeUpdate(Request $request,$dbname, $table, $itemId = null)
         }
     }
 
-    // Check if updating or inserting
-    if ($itemId && $itemId!="undefined") {
-        // Update
-        DB::table($table)->where('id', $itemId)->update($data);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Record updated successfully.',
-            'data' => $data
-        ]);
+    // Insert or Update Main Record
+    if ($itemId && $itemId !== "undefined") {
+        DB::connection('dynamic')->table($table)->where('id', $itemId)->update($data);
     } else {
-        // Insert
-        $newId = DB::connection('dynamic')->table($table)->insertGetId($data);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Record inserted successfully.',
-            'data' => $data,
-            'id' => $newId
-        ]);
+        $itemId = DB::connection('dynamic')->table($table)->insertGetId($data);
     }
+
+    // 🧠 STEP: Handle translations like en[title], ar[description], etc.
+    $translationData = [];
+
+    foreach ($request->all() as $key => $value) {
+        if (preg_match('/^([a-z]{2})\[(.+)\]$/', $key, $matches)) {
+            $locale = $matches[1];
+            $field = $matches[2];
+
+            $translationData[$locale][$field] = $value;
+        }
+    }
+
+    if (!empty($translationData)) {
+        $translationTable = Str::singular($table) . '_translations';
+        $foreignKey = Str::singular($table) . '_id';
+
+        foreach ($translationData as $locale => $fields) {
+            // Add required fields
+            $fields[$foreignKey] = $itemId;
+            $fields['locale'] = $locale;
+
+            // Check if translation exists
+            $existing = DB::connection('dynamic')->table($translationTable)
+                ->where($foreignKey, $itemId)
+                ->where('locale', $locale)
+                ->first();
+
+            if ($existing) {
+                DB::connection('dynamic')->table($translationTable)
+                    ->where($foreignKey, $itemId)
+                    ->where('locale', $locale)
+                    ->update($fields);
+            } else {
+                DB::connection('dynamic')->table($translationTable)->insert($fields);
+            }
+        }
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => $itemId ? 'Record updated successfully.' : 'Record inserted successfully.',
+        'data' => $data,
+        'id' => $itemId
+    ]);
 }
+
 
 
 
