@@ -1090,7 +1090,7 @@ function databases()
         $databases = DB::connection('dynamic')->select("SELECT db_name as schema_name FROM d_b_credentials");
 
         // Exclude 'yousabte_workspace' only if boula() returns true
-        if (boula()) {
+        if (!boula()) {
             $databases = array_filter($databases, function ($db) {
                 return $db->schema_name !== 'yousabte_workspace';
             });
