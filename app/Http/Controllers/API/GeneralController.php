@@ -148,11 +148,9 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
 
 
 
-public function showEditCreate($dbname,$table, $itemId = null)
+public function showEditCreate($dbname, $table, $itemId = null)
 {
-
-
-        // Step 0: Get DB credentials
+    // Step 0: Get DB credentials
     $credential = DBCredential::where('db_name', $dbname)->first();
 
     $dbHost = $credential->db_host ?? '192.185.41.219';
@@ -177,11 +175,7 @@ public function showEditCreate($dbname,$table, $itemId = null)
     DB::reconnect('dynamic');
     DB::connection('dynamic')->statement('USE ' . $dbName);
 
-
-
-  
-
-    // Step 1: Base table columns
+    // Step 2: Base table columns
     $columns = DB::connection('dynamic')->select("
         SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE
         FROM INFORMATION_SCHEMA.COLUMNS
@@ -196,7 +190,7 @@ public function showEditCreate($dbname,$table, $itemId = null)
         ];
     })->toArray();
 
-    // Step 2: Add virtual image fields
+    // Step 3: Add virtual image fields
     $columns[] = [
         "COLUMN_NAME" => "image",
         "DATA_TYPE" => "image",
@@ -208,83 +202,66 @@ public function showEditCreate($dbname,$table, $itemId = null)
         "IS_NULLABLE" => true,
     ];
 
+    // Step 4: Prepare related dropdown options for foreign keys
+    $relatedOptions = [];
 
-        $relatedOptions = [];
+    foreach ($columns as $col) {
+        $colName = $col['COLUMN_NAME'];
 
-        foreach ($columns as $col) {
-            $colName = $col['COLUMN_NAME'];
+        if (Str::endsWith($colName, '_id')) {
+            $baseTable = Str::plural(Str::beforeLast($colName, '_id'));
+            $singular = Str::singular($baseTable);
+            $translationTable = "{$singular}_translations";
 
-            if (Str::endsWith($colName, '_id')) {
-                $baseTable = Str::plural(Str::beforeLast($colName, '_id'));
-                $singular = Str::singular($baseTable);
-                $translationTable = "{$singular}_translations";
+            if (!Schema::connection('dynamic')->hasTable($baseTable)) {
+                continue;
+            }
 
-                if (!Schema::connection('dynamic')->hasTable($baseTable)) {
-                    continue;
-                }
+            $mainColumns = Schema::connection('dynamic')->getColumnListing($baseTable);
 
-                $mainColumns = Schema::connection('dynamic')->getColumnListing($baseTable);
+            // Try to find a label column in the main table
+            $labelColumn = collect(['fullname', 'name', 'title', 'username', 'id'])
+                ->first(fn($field) => in_array($field, $mainColumns));
 
-                // Try to find a label column in the main table
-                $labelColumn = collect(['fullname', 'name', 'title', 'username','id'])
-                    ->first(fn($field) => in_array($field, $mainColumns));
+            // If a valid label column is found in the main table
+            if ($labelColumn) {
+                $relatedData = DB::connection('dynamic')->table($baseTable)
+                    ->select('id', DB::raw("`$labelColumn` as label"))
+                    ->get();
+            }
+            // Check in translations table if main table has no label column
+            elseif (Schema::connection('dynamic')->hasTable($translationTable)) {
+                $translationColumns = Schema::connection('dynamic')->getColumnListing($translationTable);
 
-                // If a valid label column is found in the main table
-                if ($labelColumn) {
+                $translationLabel = collect(['title', 'name', 'fullname', 'id'])->first(function ($field) use ($translationColumns) {
+                    return in_array($field, $translationColumns);
+                });
+
+                if ($translationLabel) {
                     $relatedData = DB::connection('dynamic')->table($baseTable)
-                        ->select('id', DB::raw("`$labelColumn` as label"))
+                        ->leftJoin($translationTable, "{$translationTable}.{$singular}_id", '=', "{$baseTable}.id")
+                        ->where("{$translationTable}.locale", 'en')
+                        ->select("{$baseTable}.id", "{$translationTable}.{$translationLabel} as label")
                         ->get();
-                }
-
-                // Check in translations table if main table has no label column
-                elseif (Schema::connection('dynamic')->hasTable($translationTable)) {
-                    $translationColumns = Schema::connection('dynamic')->getColumnListing($translationTable);
-
-                    $translationLabel = collect(['title', 'name', 'fullname','id'])->first(function ($field) use ($translationColumns) {
-                        return in_array($field, $translationColumns);
-                    });
-
-                    if ($translationLabel) {
-                        $relatedData = DB::connection('dynamic')->table($baseTable)
-                            ->leftJoin($translationTable, "{$translationTable}.{$singular}_id", '=', "{$baseTable}.id")
-                            ->where("{$translationTable}.locale", 'en')
-                            ->select("{$baseTable}.id", "{$translationTable}.{$translationLabel} as label")
-                            ->get();
-                    } else {
-                        // Fallback: Use just ID as label
-                        $relatedData = DB::connection('dynamic')->table($baseTable)
-                            ->selectRaw("id, CONCAT('ID: ', id) as label")
-                            ->get();
-                    }
-                } 
-                // If no label column in either, fallback to ID
-                else {
+                } else {
+                    // Fallback: Use just ID as label
                     $relatedData = DB::connection('dynamic')->table($baseTable)
                         ->selectRaw("id, CONCAT('ID: ', id) as label")
                         ->get();
                 }
-
-                $relatedOptions[$colName] = $relatedData;
             }
+            // If no label column in either, fallback to ID
+            else {
+                $relatedData = DB::connection('dynamic')->table($baseTable)
+                    ->selectRaw("id, CONCAT('ID: ', id) as label")
+                    ->get();
+            }
+
+            $relatedOptions[$colName] = $relatedData;
         }
-
-
-
-    // Step 4: Get main record
-    $data = DB::connection('dynamic')->table($table)->where('id', $itemId)->first();
-
-    if (!$data) {
-        return response()->json(['error' => 'Not found'], 404);
     }
 
-    $data = (array) $data;
-    $data["image"] = "https://via.placeholder.com/150";
-    $data["images"] = [
-        "https://via.placeholder.com/150",
-        "https://via.placeholder.com/140"
-    ];
-
-    // Step 5: Handle translations
+    // Step 5: Handle translation columns - always add these for create & edit
     $translationTable = Str::singular($table) . '_translations';
 
     if (Schema::connection('dynamic')->hasTable($translationTable)) {
@@ -301,6 +278,51 @@ public function showEditCreate($dbname,$table, $itemId = null)
             ->values()
             ->toArray();
 
+        // Define supported locales
+        $locales = ['en', 'ar'];
+
+        // Add translation fields for each locale to columns
+        foreach ($locales as $locale) {
+            foreach ($transColumns as $col) {
+                $columns[] = [
+                    "COLUMN_NAME" => "{$locale}[$col]",
+                    "DATA_TYPE" => "text",
+                    "IS_NULLABLE" => true,
+                ];
+            }
+        }
+    }
+
+    // Step 6: If no valid $itemId, return columns and related options only
+    if (!$itemId || $itemId === "undefined" || !is_numeric($itemId)) {
+        return response()->json([
+            'success' => trans('general.sent_successfully'),
+            'columns' => $columns,
+            'related' => $relatedOptions,
+            'data' => [],
+        ]);
+    }
+
+    // Step 7: Fetch main record for edit
+    $data = DB::connection('dynamic')->table($table)->where('id', $itemId)->first();
+
+    if (!$data) {
+        return response()->json(['error' => 'Not found'], 404);
+    }
+
+    $data = (array) $data;
+
+    // Optional: placeholder images (adjust or remove if you want)
+    $data["image"] = $data["image"] ?? "https://via.placeholder.com/150";
+    $data["images"] = $data["images"] ?? [
+        "https://via.placeholder.com/150",
+        "https://via.placeholder.com/140"
+    ];
+
+    // Step 8: Fetch translations data for this record
+    if (Schema::connection('dynamic')->hasTable($translationTable)) {
+        $foreignKey = Str::singular($table) . '_id';
+
         $translations = DB::connection('dynamic')->table($translationTable)
             ->where($foreignKey, $itemId)
             ->get();
@@ -310,37 +332,14 @@ public function showEditCreate($dbname,$table, $itemId = null)
                 $key = "{$translation->locale}[$col]";
                 $data[$key] = $translation->$col;
             }
-
-            foreach ($transColumns as $col) {
-                $columns[] = [
-                    "COLUMN_NAME" => "{$translation->locale}[$col]",
-                    "DATA_TYPE" => "text",
-                    "IS_NULLABLE" => true,
-                ];
-            }
         }
     }
 
-
-        // ✅ Step 3: Skip data fetch if $itemId is null, "undefined", or not numeric
-    if (!$itemId || $itemId === "undefined" || !is_numeric($itemId)) {
-        return response()->json([
-            'success' => trans('general.sent_successfully'),
-            'columns' => $columns,
-            'related' => $relatedOptions, // ✅ send related options to the frontend
-
-            'data' => [],
-        ]);
-    }
-
-
-
-
-
+    // Step 9: Return data, columns, and related dropdown options
     return response()->json([
         'success' => trans('general.sent_successfully'),
         'columns' => $columns,
-        'related' => $relatedOptions, // ✅ send related options to the frontend
+        'related' => $relatedOptions,
         'data' => [$data],
     ]);
 }
