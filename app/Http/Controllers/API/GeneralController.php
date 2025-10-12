@@ -268,16 +268,7 @@ public function showEditCreate($dbname,$table, $itemId = null)
             }
         }
 
-    // ✅ Step 3: Skip data fetch if $itemId is null, "undefined", or not numeric
-    if (!$itemId || $itemId === "undefined" || !is_numeric($itemId)) {
-        return response()->json([
-            'success' => trans('general.sent_successfully'),
-            'columns' => $columns,
-            'related' => $relatedOptions, // ✅ send related options to the frontend
 
-            'data' => [],
-        ]);
-    }
 
     // Step 4: Get main record
     $data = DB::connection('dynamic')->table($table)->where('id', $itemId)->first();
@@ -328,6 +319,18 @@ public function showEditCreate($dbname,$table, $itemId = null)
                 ];
             }
         }
+    }
+
+
+        // ✅ Step 3: Skip data fetch if $itemId is null, "undefined", or not numeric
+    if (!$itemId || $itemId === "undefined" || !is_numeric($itemId)) {
+        return response()->json([
+            'success' => trans('general.sent_successfully'),
+            'columns' => $columns,
+            'related' => $relatedOptions, // ✅ send related options to the frontend
+
+            'data' => [],
+        ]);
     }
 
 
