@@ -572,6 +572,13 @@ public function tableNames($dbname)
         'tables' => $structuredTables,
     ]);
 }
+public function databases()
+{
+    return response()->json([
+        'success' => trans('general.sent_successfully'),
+        'databases' => databases(),
+    ]);
+}
 
 
 
