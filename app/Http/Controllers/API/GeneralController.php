@@ -58,7 +58,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     ", [$table]);
 
     $columnNames = collect($columns)->pluck('COLUMN_NAME')->toArray();
-    $exclude = ['id', 'created_at', 'updated_at'];
+    $exclude = ['id'];
     $data = [];
 
     // Step 3: Collect column values
