@@ -203,7 +203,7 @@ public function showEditCreate($dbname,$table, $itemId = null)
                 $mainColumns = Schema::getColumnListing($baseTable);
 
                 // Try to find a label column in the main table
-                $labelColumn = collect(['fullname', 'name', 'title', 'username'])
+                $labelColumn = collect(['fullname', 'name', 'title', 'username','id'])
                     ->first(fn($field) => in_array($field, $mainColumns));
 
                 // If a valid label column is found in the main table
@@ -217,7 +217,7 @@ public function showEditCreate($dbname,$table, $itemId = null)
                 elseif (Schema::hasTable($translationTable)) {
                     $translationColumns = Schema::getColumnListing($translationTable);
 
-                    $translationLabel = collect(['title', 'name', 'fullname'])->first(function ($field) use ($translationColumns) {
+                    $translationLabel = collect(['title', 'name', 'fullname','id'])->first(function ($field) use ($translationColumns) {
                         return in_array($field, $translationColumns);
                     });
 
