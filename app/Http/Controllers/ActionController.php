@@ -58,7 +58,7 @@ class ActionController extends Controller
   public function excavations()
   {
       // Fetch all templates
-       $excavations = Navigation::whereIn("category_id",[5,10,9,26])->get();
+       $excavations = Navigation::where("isExcavation",1)->get();
 
       // Return them as JSON response
       return response()->json([
