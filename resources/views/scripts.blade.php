@@ -3320,6 +3320,26 @@
 </script>
 
 
+<script>
+  $(document).ready(function () {
+    $('#reactDashboard').on('click', function () {
+      const dbname = $(this).attr('dbname');
+
+      if (dbname) {
+          // Save dbname to localStorage
+          localStorage.setItem('dbname', dbname);
+          alert(localStorage.getItem('dbname'));
+        // Redirect to React dashboard
+        window.location.href = `http://localhost:5173/dashboard/${dbname}`;
+
+      } else {
+        alert("Database name not found.");
+      }
+    });
+  });
+</script>
+
+
 
 
 
