@@ -271,41 +271,41 @@ public function showEditCreate($dbname,$table, $itemId = null)
     ];
 
     // Step 5: Handle translations
-    $translationTable = Str::singular($table) . '_translations';
+    // $translationTable = Str::singular($table) . '_translations';
 
-    if (Schema::hasTable($translationTable)) {
-        $transColumns = DB::connection('dynamic')->select("
-            SELECT COLUMN_NAME
-            FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-        ", [$dbName, $translationTable]);
+    // if (Schema::hasTable($translationTable)) {
+    //     $transColumns = DB::connection('dynamic')->select("
+    //         SELECT COLUMN_NAME
+    //         FROM INFORMATION_SCHEMA.COLUMNS
+    //         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+    //     ", [$dbName, $translationTable]);
 
-        $foreignKey = Str::singular($table) . '_id';
+    //     $foreignKey = Str::singular($table) . '_id';
 
-        $transColumns = collect($transColumns)->pluck('COLUMN_NAME')
-            ->reject(fn($col) => in_array($col, ['id', 'locale', $foreignKey, 'created_at', 'updated_at', 'deleted_at']))
-            ->values()
-            ->toArray();
+    //     $transColumns = collect($transColumns)->pluck('COLUMN_NAME')
+    //         ->reject(fn($col) => in_array($col, ['id', 'locale', $foreignKey, 'created_at', 'updated_at', 'deleted_at']))
+    //         ->values()
+    //         ->toArray();
 
-        $translations = DB::connection('dynamic')->table($translationTable)
-            ->where($foreignKey, $itemId)
-            ->get();
+    //     $translations = DB::connection('dynamic')->table($translationTable)
+    //         ->where($foreignKey, $itemId)
+    //         ->get();
 
-        foreach ($translations as $translation) {
-            foreach ($transColumns as $col) {
-                $key = "{$translation->locale}[$col]";
-                $data[$key] = $translation->$col;
-            }
+    //     foreach ($translations as $translation) {
+    //         foreach ($transColumns as $col) {
+    //             $key = "{$translation->locale}[$col]";
+    //             $data[$key] = $translation->$col;
+    //         }
 
-            foreach ($transColumns as $col) {
-                $columns[] = [
-                    "COLUMN_NAME" => "{$translation->locale}[$col]",
-                    "DATA_TYPE" => "text",
-                    "IS_NULLABLE" => true,
-                ];
-            }
-        }
-    }
+    //         foreach ($transColumns as $col) {
+    //             $columns[] = [
+    //                 "COLUMN_NAME" => "{$translation->locale}[$col]",
+    //                 "DATA_TYPE" => "text",
+    //                 "IS_NULLABLE" => true,
+    //             ];
+    //         }
+    //     }
+    // }
 
 
 
@@ -558,7 +558,7 @@ public function tableNames($dbname)
     $filteredTables = $allTables
         ->diff($blockedTables)
         ->reject(function ($table) {
-            return str_contains($table, '_translation');
+            return str_contains($table, '_translationskipfornow');
         })
         ->values();
 
