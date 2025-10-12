@@ -1928,6 +1928,12 @@
 
 
             });
+            $('#reactdashboard').on('click', function(e) {
+                e.preventDefault();
+                window.open('http://reactdashboard.yousab-tech.com/dashboard');
+
+
+            });
             $('#tasks').on('click', function(e) {
                 e.preventDefault();
                 window.open('https://yousab-tech.com/elmotahda/public/en/dashboard');

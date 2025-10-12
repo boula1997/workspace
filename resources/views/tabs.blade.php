@@ -34,6 +34,7 @@
         <button class="btn btn-outline-warning col-2" id="{{boula()?'dashboard':''}}">Dashboard</button>
         <button class="btn btn-outline-warning col-2" id="{{boula()?'navigations':''}}">Navigations</button>
         <button class="btn btn-outline-warning col-2" id="{{boula()?'excavations':''}}">Excavations</button>
+        <button class="btn btn-outline-warning col-2" id="{{boula()?'reactdashboard':''}}">React Dashboard</button>
 
     </div>
 
