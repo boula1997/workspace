@@ -3254,7 +3254,7 @@
     </script>
 
 
-    {{-- <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             const input = document.getElementById('searchHighlight');
             const context = document.body;
@@ -3273,7 +3273,7 @@
                 });
             });
         });
-    </script> --}}
+    </script>
 
 
 <script>
