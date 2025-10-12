@@ -203,15 +203,15 @@ public function showEditCreate($dbname,$table, $itemId = null)
                 $mainColumns = Schema::getColumnListing($baseTable);
 
                 // Try to find a label column in the main table
-                $labelColumn = collect(['title', 'name', 'fullname'])->first(function ($field) use ($mainColumns) {
-                    return in_array($field, $mainColumns);
-                });
+                $labelColumn = collect(['fullname', 'name', 'title', 'username'])
+                    ->first(fn($field) => in_array($field, $mainColumns));
 
+                // If a valid label column is found in the main table
                 if ($labelColumn) {
                     $relatedData = DB::connection('dynamic')->table($baseTable)
-                        ->select('id', DB::connection('dynamic')->raw("$labelColumn as label"))
+                        ->select('id', DB::raw("`$labelColumn` as label"))
                         ->get();
-                } 
+                }
 
                 // Check in translations table if main table has no label column
                 elseif (Schema::hasTable($translationTable)) {
