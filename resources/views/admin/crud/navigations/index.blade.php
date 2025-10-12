@@ -40,6 +40,7 @@
                                             <th>@lang('general.user')</th>
                                             <th>@lang('general.password')</th>
                                             <th>{{ __('general.category') }}</th>
+                                            <th>{{__('general.isExcavation')}}</th>
                                             <th class="th-controls">@lang('general.controls')</th>
                                         </tr>
                                     </thead>
@@ -58,6 +59,7 @@
                                                 <td>{{ $navigation->user }}</td>
                                                 <td>{{ $navigation->password }}</td>
                                                 <td>{{ $navigation->category->title }}</td>
+                                                <td>{{$navigation->isExcavation?__('general.yes'):__('general.no') }}</td>
                                                 <td>
                                                     @include('admin.components.controls', [
                                                         'route' => 'navigations',

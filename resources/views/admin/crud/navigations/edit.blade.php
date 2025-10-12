@@ -80,6 +80,10 @@
                                 </div>
                             </div>
                         </div>
+
+
+                        
+{{-- Checkbox Input --}} <div class="col-md-6 ps-4"> <div class="form-group"> <div class="form-group"> <div class="form-check form-switch"> <input class="form-check-input" @checked(old('isExcavation',$navigation->isExcavation)) type="checkbox" id="isExcavation" name="isExcavation" value="1"> <label class="form-check-label" for="isExcavation">{{ __('general.isExcavation') }} <span class="text-danger"> * </span></label> </div> </div> </div> </div>
                     </div>
                 </div>
                 <div class="card-footer mb-5">

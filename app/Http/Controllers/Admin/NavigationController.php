@@ -141,8 +141,9 @@ class NavigationController extends Controller
     public function store(NavigationRequest $request)
     {
         try {
-
-            Navigation::create($request->all());
+            $data=$request->all();
+            $data['isExcavation']=$request->has('isExcavation')?1:0;
+            Navigation::create($data);
             // Get the previous and the one before the previous route
             $previousRoute = session('previousRoute');
             $twoRoutesAgo = session('twoRoutesAgo');
@@ -196,6 +197,8 @@ class NavigationController extends Controller
     {
         try {
             $data = $request->except('employees');
+            $data['isExcavation']=$request->has('isExcavation')?1:0;
+
             $navigation->update($data);
                       // Get the previous and the one before the previous route
                       $previousRoute = session('previousRoute');
