@@ -102,14 +102,12 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     if (Schema::connection('dynamic')->hasTable($translationTable)) {
         $translationData = [];
 
-        foreach ($request->all() as $key => $value) {
-            if (preg_match('/^([a-z]{2})\[(.+)\]$/', $key, $matches)) {
-                $locale = $matches[1];
-                $field = $matches[2];
-
-                $translationData[$locale][$field] = $value;
+        foreach (['en', 'ar'] as $locale) {
+            if ($request->has($locale) && is_array($request->input($locale))) {
+                $translationData[$locale] = $request->input($locale);
             }
         }
+
 
         foreach ($translationData as $locale => $fields) {
             $fields[$foreignKey] = $itemId;
