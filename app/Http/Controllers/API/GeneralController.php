@@ -196,11 +196,11 @@ public function showEditCreate($dbname,$table, $itemId = null)
                 $singular = Str::singular($baseTable);
                 $translationTable = "{$singular}_translations";
 
-                if (!Schema::hasTable($baseTable)) {
+                if (!Schema::connection('dynamic')->hasTable($baseTable)) {
                     continue;
                 }
 
-                $mainColumns = Schema::getColumnListing($baseTable);
+                $mainColumns = Schema::connection('dynamic')->getColumnListing($baseTable);
 
                 // Try to find a label column in the main table
                 $labelColumn = collect(['fullname', 'name', 'title', 'username','id'])
@@ -214,8 +214,8 @@ public function showEditCreate($dbname,$table, $itemId = null)
                 }
 
                 // Check in translations table if main table has no label column
-                elseif (Schema::hasTable($translationTable)) {
-                    $translationColumns = Schema::getColumnListing($translationTable);
+                elseif (Schema::connection('dynamic')->hasTable($translationTable)) {
+                    $translationColumns = Schema::connection('dynamic')->getColumnListing($translationTable);
 
                     $translationLabel = collect(['title', 'name', 'fullname','id'])->first(function ($field) use ($translationColumns) {
                         return in_array($field, $translationColumns);
@@ -271,41 +271,41 @@ public function showEditCreate($dbname,$table, $itemId = null)
     ];
 
     // Step 5: Handle translations
-    // $translationTable = Str::singular($table) . '_translations';
+    $translationTable = Str::singular($table) . '_translations';
 
-    // if (Schema::hasTable($translationTable)) {
-    //     $transColumns = DB::connection('dynamic')->select("
-    //         SELECT COLUMN_NAME
-    //         FROM INFORMATION_SCHEMA.COLUMNS
-    //         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-    //     ", [$dbName, $translationTable]);
+    if (Schema::connection('dynamic')->hasTable($translationTable)) {
+        $transColumns = DB::connection('dynamic')->select("
+            SELECT COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+        ", [$dbName, $translationTable]);
 
-    //     $foreignKey = Str::singular($table) . '_id';
+        $foreignKey = Str::singular($table) . '_id';
 
-    //     $transColumns = collect($transColumns)->pluck('COLUMN_NAME')
-    //         ->reject(fn($col) => in_array($col, ['id', 'locale', $foreignKey, 'created_at', 'updated_at', 'deleted_at']))
-    //         ->values()
-    //         ->toArray();
+        $transColumns = collect($transColumns)->pluck('COLUMN_NAME')
+            ->reject(fn($col) => in_array($col, ['id', 'locale', $foreignKey, 'created_at', 'updated_at', 'deleted_at']))
+            ->values()
+            ->toArray();
 
-    //     $translations = DB::connection('dynamic')->table($translationTable)
-    //         ->where($foreignKey, $itemId)
-    //         ->get();
+        $translations = DB::connection('dynamic')->table($translationTable)
+            ->where($foreignKey, $itemId)
+            ->get();
 
-    //     foreach ($translations as $translation) {
-    //         foreach ($transColumns as $col) {
-    //             $key = "{$translation->locale}[$col]";
-    //             $data[$key] = $translation->$col;
-    //         }
+        foreach ($translations as $translation) {
+            foreach ($transColumns as $col) {
+                $key = "{$translation->locale}[$col]";
+                $data[$key] = $translation->$col;
+            }
 
-    //         foreach ($transColumns as $col) {
-    //             $columns[] = [
-    //                 "COLUMN_NAME" => "{$translation->locale}[$col]",
-    //                 "DATA_TYPE" => "text",
-    //                 "IS_NULLABLE" => true,
-    //             ];
-    //         }
-    //     }
-    // }
+            foreach ($transColumns as $col) {
+                $columns[] = [
+                    "COLUMN_NAME" => "{$translation->locale}[$col]",
+                    "DATA_TYPE" => "text",
+                    "IS_NULLABLE" => true,
+                ];
+            }
+        }
+    }
 
 
 
@@ -392,30 +392,30 @@ public function deleteItem($dbname,$table, $itemId)
             {
 
 
-                    // Step 0: Get DB credentials
-    $credential = DBCredential::where('db_name', $dbname)->first();
+            // Step 0: Get DB credentials
+            $credential = DBCredential::where('db_name', $dbname)->first();
 
-    $dbHost = $credential->db_host ?? '192.185.41.219';
-    $dbName = $credential->db_name ?? 'automation';
-    $dbUser = $credential->db_username ?? 'root';
-    $dbPass = $credential->db_password ?? '';
+            $dbHost = $credential->db_host ?? '192.185.41.219';
+            $dbName = $credential->db_name ?? 'automation';
+            $dbUser = $credential->db_username ?? 'root';
+            $dbPass = $credential->db_password ?? '';
 
-    // Step 1: Configure dynamic connection
-    config([
-        'database.connections.dynamic' => [
-            'driver' => 'mysql',
-            'host' => $dbHost,
-            'database' => $dbName,
-            'username' => $dbUser,
-            'password' => $dbPass,
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-        ],
-    ]);
+            // Step 1: Configure dynamic connection
+            config([
+                'database.connections.dynamic' => [
+                    'driver' => 'mysql',
+                    'host' => $dbHost,
+                    'database' => $dbName,
+                    'username' => $dbUser,
+                    'password' => $dbPass,
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                ],
+            ]);
 
-    DB::purge('dynamic');
-    DB::reconnect('dynamic');
-    DB::connection('dynamic')->statement('USE ' . $dbName);
+            DB::purge('dynamic');
+            DB::reconnect('dynamic');
+            DB::connection('dynamic')->statement('USE ' . $dbName);
 
                 // 1. Get base columns
             $columns = DB::connection('dynamic')->select("
@@ -430,7 +430,7 @@ public function deleteItem($dbname,$table, $itemId)
             $translationTable = Str::singular($table) . '_translations';
             $locale = request('locale', 'en');
 
-            $translationExists = Schema::hasTable($translationTable);
+            $translationExists = Schema::connection('dynamic')->hasTable($translationTable);
 
             $translatedSelects = [];
 
@@ -511,74 +511,74 @@ public function deleteItem($dbname,$table, $itemId)
 
 
 
-public function tableNames($dbname)
-{
-    // Step 0: Get DB credentials
-    $credential = DBCredential::where('db_name', $dbname)->first();
+                public function tableNames($dbname)
+                {
+                    // Step 0: Get DB credentials
+                    $credential = DBCredential::where('db_name', $dbname)->first();
 
-    $dbHost = $credential->db_host ?? '192.185.41.219';
-    $dbName = $credential->db_name ?? 'automation';
-    $dbUser = $credential->db_username ?? 'root';
-    $dbPass = $credential->db_password ?? '';
+                    $dbHost = $credential->db_host ?? '192.185.41.219';
+                    $dbName = $credential->db_name ?? 'automation';
+                    $dbUser = $credential->db_username ?? 'root';
+                    $dbPass = $credential->db_password ?? '';
 
-    // Step 1: Configure dynamic connection
-    config([
-        'database.connections.dynamic' => [
-            'driver' => 'mysql',
-            'host' => $dbHost,
-            'database' => $dbName,
-            'username' => $dbUser,
-            'password' => $dbPass,
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-        ],
-    ]);
+                    // Step 1: Configure dynamic connection
+                    config([
+                        'database.connections.dynamic' => [
+                            'driver' => 'mysql',
+                            'host' => $dbHost,
+                            'database' => $dbName,
+                            'username' => $dbUser,
+                            'password' => $dbPass,
+                            'charset' => 'utf8mb4',
+                            'collation' => 'utf8mb4_unicode_ci',
+                        ],
+                    ]);
 
-    DB::purge('dynamic');
-    DB::reconnect('dynamic');
-    DB::connection('dynamic')->statement('USE ' . $dbName);
+                    DB::purge('dynamic');
+                    DB::reconnect('dynamic');
+                    DB::connection('dynamic')->statement('USE ' . $dbName);
 
-    // Step 2: Get all table names
-    $allTables = DB::connection('dynamic')->table('INFORMATION_SCHEMA.COLUMNS')
-        ->select('TABLE_NAME')
-        ->where('TABLE_SCHEMA', $dbname)
-        ->distinct()
-        ->orderBy('TABLE_NAME')
-        ->pluck('TABLE_NAME');
+                    // Step 2: Get all table names
+                    $allTables = DB::connection('dynamic')->table('INFORMATION_SCHEMA.COLUMNS')
+                        ->select('TABLE_NAME')
+                        ->where('TABLE_SCHEMA', $dbname)
+                        ->distinct()
+                        ->orderBy('TABLE_NAME')
+                        ->pluck('TABLE_NAME');
 
-    // Step 3: Try to get blocked tables, or default to empty collection
-    try {
-        $blockedTables = DB::connection('dynamic')->table('blocked_modules')->pluck('table_name');
-    } catch (\Exception $e) {
-        // Table probably doesn't exist — ignore and assume no blocked tables
-        $blockedTables = collect();
-    }
+                    // Step 3: Try to get blocked tables, or default to empty collection
+                    try {
+                        $blockedTables = DB::connection('dynamic')->table('blocked_modules')->pluck('table_name');
+                    } catch (\Exception $e) {
+                        // Table probably doesn't exist — ignore and assume no blocked tables
+                        $blockedTables = collect();
+                    }
 
-    // Step 4: Filter tables
-    $filteredTables = $allTables
-        ->diff($blockedTables)
-        ->reject(function ($table) {
-            return str_contains($table, '_translationskipfornow');
-        })
-        ->values();
+                    // Step 4: Filter tables
+                    $filteredTables = $allTables
+                        ->diff($blockedTables)
+                        ->reject(function ($table) {
+                            return str_contains($table, '_translation');
+                        })
+                        ->values();
 
-    // Step 5: Return as array of objects
-    $structuredTables = $filteredTables->map(function ($table) {
-        return ['TABLE_NAME' => $table];
-    });
+                    // Step 5: Return as array of objects
+                    $structuredTables = $filteredTables->map(function ($table) {
+                        return ['TABLE_NAME' => $table];
+                    });
 
-    return response()->json([
-        'success' => trans('general.sent_successfully'),
-        'tables' => $structuredTables,
-    ]);
-}
-public function databases()
-{
-    return response()->json([
-        'success' => trans('general.sent_successfully'),
-        'databases' => databases(),
-    ]);
-}
+                    return response()->json([
+                        'success' => trans('general.sent_successfully'),
+                        'tables' => $structuredTables,
+                    ]);
+                }
+                public function databases()
+                {
+                    return response()->json([
+                        'success' => trans('general.sent_successfully'),
+                        'databases' => databases(),
+                    ]);
+                }
 
 
 
