@@ -529,11 +529,22 @@ public function deleteItem($dbname,$table, $itemId)
             $paginated = $dataQuery->paginate(10);
 
             // 7. Add image to each row
-            $paginated->getCollection()->transform(function ($item) {
+            // 7. Add image to each row
+            $paginated->getCollection()->transform(function ($item) use ($table) {
                 $row = (array) $item;
-                $row['image'] = settings()->logo;
+
+                $fileableType = 'App\\Models\\' . Str::studly(Str::singular($table));
+
+                $imageUrl = DB::connection('dynamic')->table('files')
+                    ->where('fileable_type', $fileableType)
+                    ->where('fileable_id', $row['id'])
+                    ->value('url'); // gets the first (single) image
+
+                $row['image'] = $imageUrl ? asset($imageUrl) : settings()->logo;
+
                 return (object) $row;
             });
+
 
             // 8. Return response
             return response()->json([
