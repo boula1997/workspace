@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('blocked_modules', function (Blueprint $table) {
-            $table->string("table_name");
+            $table->string("dbname");
             
         });
     }
@@ -23,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('blocked_modules', function (Blueprint $table) {
-            $table->dropColumn("table_name");
+            $table->dropColumn("dbname");
             
         });
     }
