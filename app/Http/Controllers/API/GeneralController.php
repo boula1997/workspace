@@ -190,12 +190,12 @@ public function showEditCreate($dbname, $table, $itemId = null)
     // Step 3: Add virtual image fields
     $columns[] = [
         "COLUMN_NAME" => "image",
-        "DATA_TYPE" => "image",
+        "DATA_TYPE" => "Image",
         "IS_NULLABLE" => true,
     ];
     $columns[] = [
         "COLUMN_NAME" => "images",
-        "DATA_TYPE" => "multimages",
+        "DATA_TYPE" => "Multimages",
         "IS_NULLABLE" => true,
     ];
 
