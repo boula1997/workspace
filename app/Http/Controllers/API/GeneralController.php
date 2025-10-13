@@ -92,10 +92,12 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
             ->where('fileable_id', $itemId)
             ->delete();
 
-        $imagePath = $request->file('image')->store('uploads', 'public');
+            $file = request()->file('image');
+            $image = request()->image->store('images');
+            $file->move('images',  $image);
 
         DB::connection('dynamic')->table('files')->insert([
-            'url' => $imagePath,
+            'url' => $image,
             'fileable_type' => $fileableType,
             'fileable_id' => $itemId,
             'created_at' => now(),
