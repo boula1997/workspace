@@ -97,7 +97,9 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                 File::delete($currentImage->url);
             }
             if($currentImage){
-                $currentImage->delete();
+                DB::connection('dynamic')->table('files')
+                ->where('id', $currentImage->id)
+                ->delete();
             }
             
 
