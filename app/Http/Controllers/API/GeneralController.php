@@ -87,10 +87,10 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     // Handle single image
     if ($request->hasFile('image')) {
         // Delete previous single image if exists
-        DB::connection('dynamic')->table('files')
-            ->where('fileable_type', $fileableType)
-            ->where('fileable_id', $itemId)
-            ->delete();
+        // DB::connection('dynamic')->table('files')
+        //     ->where('fileable_type', $fileableType)
+        //     ->where('fileable_id', $itemId)
+        //     ->delete();
 
         $imagePath = $request->file('image')->store('uploads', 'public');
 
