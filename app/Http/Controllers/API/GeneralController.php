@@ -119,16 +119,28 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     // Handle multiple images
     if ($request->hasFile('images')) {
         // Delete previous multi-images
-        DB::connection('dynamic')->table('files')
+        $currentImages=DB::connection('dynamic')->table('files')
             ->where('fileable_type', $fileableType)
             ->where('fileable_id', $itemId)
-            ->delete();
+            ->get();
+
+            foreach($currentImages as $currentImage){
+                if($currentImage && file_exists($currentImage->url)){
+                    File::delete($currentImage->url);
+                }
+                if($currentImage){
+                    DB::connection('dynamic')->table('files')
+                    ->where('id', $currentImage->id)
+                    ->delete();
+                }
+            }
 
         foreach ($request->file('images') as $file) {
-            $multiImagePath = $file->store('uploads', 'public');
+            $data['image'] = $file->store('images');
+            $file->move('images', $data['image']);
 
             DB::connection('dynamic')->table('files')->insert([
-                'url' => $multiImagePath,
+                'url' => $data['image'],
                 'fileable_type' => $fileableType,
                 'fileable_id' => $itemId,
                 'created_at' => now(),
