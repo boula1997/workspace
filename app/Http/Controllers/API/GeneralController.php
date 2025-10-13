@@ -146,7 +146,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                 'url' => $data['image'],
                 'fileable_type' => $fileableType,
                 'fileable_id' => $itemId,
-                'isMultiply' => 0,
+                'isMultiply' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
