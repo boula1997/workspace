@@ -309,10 +309,24 @@ public function showEditCreate($dbname, $table, $itemId = null)
 
     $data = (array) $data;
 
+    // Fetch related images from files table (polymorphic)
+    $files = DB::connection('dynamic')->table('files')
+        ->where('fileable_type', 'App\\Models\\' . Str::studly(Str::singular($table)))
+        ->where('fileable_id', $itemId)
+        ->pluck('url')
+        ->toArray();
+
+    // If you want to store full URLs (optional)
+    $baseUrl = url('storage'); // Or use asset(), depending on where files are stored
+
+    $data['image'] = $files[0] ?? null;
+    $data['images'] = $files;
+
+
     // Optional: placeholder images (adjust or remove if you want)
     $data["image"] = $data["image"] ?? settings()->logo;
     $data["images"] = $data["images"] ?? [
-       settings()->logo,
+        settings()->logo,
         settings()->logo
     ];
 
