@@ -568,6 +568,39 @@ public function deleteItem($dbname,$table, $itemId)
             // 4. Build query
             $dataQuery = DB::connection('dynamic')->table($table)->select($table . '.*');
 
+            $existingTables = DB::connection('dynamic')->select("SHOW TABLES");
+$existingTables = collect($existingTables)->map(fn($t) => array_values((array)$t)[0]);
+
+// For every *_id field, try to join related table
+foreach ($columns as $col) {
+    if (!Str::endsWith($col['COLUMN_NAME'], '_id')) continue;
+
+    $foreignKey = $col['COLUMN_NAME'];      // e.g., admin_id
+    $relatedTable = Str::plural(str_replace('_id', '', $foreignKey)); // e.g., admins
+
+    if (!$existingTables->contains($relatedTable)) continue;
+
+    $titleColumnAlias = "{$foreignKey}_title"; // e.g., admin_id_title
+
+    // Join base table
+    $dataQuery->leftJoin($relatedTable, "$relatedTable.id", '=', "$table.$foreignKey");
+
+    // Try to join translation table
+    $translationTable = Str::singular($relatedTable) . '_translations';
+
+    if ($existingTables->contains($translationTable)) {
+        $dataQuery->leftJoin($translationTable, function ($join) use ($translationTable, $relatedTable, $locale) {
+            $join->on("$translationTable." . Str::singular($relatedTable) . "_id", '=', "$relatedTable.id")
+                 ->where("$translationTable.locale", $locale);
+        });
+
+        $dataQuery->addSelect(DB::raw("COALESCE($relatedTable.title, $translationTable.title) as `$titleColumnAlias`"));
+    } else {
+        $dataQuery->addSelect(DB::raw("$relatedTable.title as `$titleColumnAlias`"));
+    }
+}
+
+
             if ($translationExists) {
                 $dataQuery->leftJoin($translationTable, "$translationTable." . Str::singular($table) . "_id", '=', "$table.id")
                         ->where("$translationTable.locale", $locale);
