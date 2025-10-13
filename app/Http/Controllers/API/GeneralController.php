@@ -594,7 +594,35 @@ foreach ($columns as $col) {
                  ->where("$translationTable.locale", $locale);
         });
 
-        $dataQuery->addSelect(DB::raw("COALESCE($relatedTable.title, $translationTable.title) as `$titleColumnAlias`"));
+        // Check if 'title' exists in related base table
+        $relatedColumns = DB::connection('dynamic')->select("
+            SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
+        ", [$dbname, $relatedTable]);
+
+        $relatedHasTitle = collect($relatedColumns)->pluck('COLUMN_NAME')->contains('title');
+
+        // Translation fallback
+        $translationHasTitle = false;
+
+        if ($existingTables->contains($translationTable)) {
+            $translationColumns = DB::connection('dynamic')->select("
+                SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
+            ", [$dbname, $translationTable]);
+
+            $translationHasTitle = collect($translationColumns)->pluck('COLUMN_NAME')->contains('title');
+        }
+
+        // Dynamically build select based on existence
+        if ($relatedHasTitle && $translationHasTitle) {
+            $dataQuery->addSelect(DB::raw("COALESCE($relatedTable.title, $translationTable.title) as `$titleColumnAlias`"));
+        } elseif ($relatedHasTitle) {
+            $dataQuery->addSelect(DB::raw("$relatedTable.title as `$titleColumnAlias`"));
+        } elseif ($translationHasTitle) {
+            $dataQuery->addSelect(DB::raw("$translationTable.title as `$titleColumnAlias`"));
+        }
+
     } else {
         $dataQuery->addSelect(DB::raw("$relatedTable.title as `$titleColumnAlias`"));
     }
