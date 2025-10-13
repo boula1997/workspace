@@ -167,8 +167,8 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         ->where('fileable_id', $itemId)
         ->get();
 
-    $image = $files->where('is_multiple', null)->first()?->url ?? null;
-    $images = $files->where('is_multiple', true)->pluck('url')->map(fn($url) => asset('storage/' . $url))->toArray();
+    $image = $files->first()?->url ?? null;
+    $images = $files->pluck('url')->map(fn($url) => asset('storage/' . $url))->toArray();
 
     return response()->json([
         'success' => true,
