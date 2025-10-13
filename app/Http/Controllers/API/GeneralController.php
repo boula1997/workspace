@@ -90,7 +90,6 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         DB::connection('dynamic')->table('files')
             ->where('fileable_type', $fileableType)
             ->where('fileable_id', $itemId)
-            ->whereNull('is_multiple')
             ->delete();
 
         $imagePath = $request->file('image')->store('uploads', 'public');
@@ -99,7 +98,6 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
             'url' => $imagePath,
             'fileable_type' => $fileableType,
             'fileable_id' => $itemId,
-            'is_multiple' => null,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -111,7 +109,6 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         DB::connection('dynamic')->table('files')
             ->where('fileable_type', $fileableType)
             ->where('fileable_id', $itemId)
-            ->where('is_multiple', true)
             ->delete();
 
         foreach ($request->file('images') as $file) {
@@ -121,7 +118,6 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                 'url' => $multiImagePath,
                 'fileable_type' => $fileableType,
                 'fileable_id' => $itemId,
-                'is_multiple' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
