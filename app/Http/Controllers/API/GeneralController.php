@@ -578,7 +578,7 @@ public function index($dbname, $table)
         if (!in_array($relatedBase, $tablesList)) {
             continue;
         }
-        $aliasTitle = $relatedKey . '_title'; // e.g. product_id_title
+        $aliasTitle = $relatedKey; // e.g. product_id_title
 
         // Join base related table
         $dataQuery->leftJoin($relatedBase, "$relatedBase.id", '=', "$table.$relatedKey");
@@ -605,15 +605,15 @@ public function index($dbname, $table)
 
             // And select COALESCE if both exist
             if ($hasRelTitle) {
-                $dataQuery->addSelect(DB::raw("COALESCE($relatedBase.title, $relatedTrans.title) as `$aliasTitle`"));
+                $dataQuery->addSelect(DB::raw("COALESCE($relatedBase.title, $relatedTrans.title) as $aliasTitle"));
             } else {
                 // no title in base, use translation only
-                $dataQuery->addSelect("$relatedTrans.title as `$aliasTitle`");
+                $dataQuery->addSelect("$relatedTrans.title as $aliasTitle");
             }
         } else {
             // No translation table, so if base has title, use it
             if ($hasRelTitle) {
-                $dataQuery->addSelect("$relatedBase.title as `$aliasTitle`");
+                $dataQuery->addSelect("$relatedBase.title as $aliasTitle");
             }
         }
     }
