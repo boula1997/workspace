@@ -91,6 +91,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         $currentImage=DB::connection('dynamic')->table('files')
             ->where('fileable_type', $fileableType)
             ->where('fileable_id', $itemId)
+            ->where('isMultiply', 0)
             ->first();
 
             if($currentImage && file_exists($currentImage->url)){
@@ -111,6 +112,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                 'url' => $image,
                 'fileable_type' => $fileableType,
                 'fileable_id' => $itemId,
+                'isMultiply' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -122,6 +124,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         $currentImages=DB::connection('dynamic')->table('files')
             ->where('fileable_type', $fileableType)
             ->where('fileable_id', $itemId)
+            ->where('isMultiply', 1)
             ->get();
 
             foreach($currentImages as $currentImage){
@@ -143,6 +146,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                 'url' => $data['image'],
                 'fileable_type' => $fileableType,
                 'fileable_id' => $itemId,
+                'isMultiply' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -186,9 +190,15 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     $files = DB::connection('dynamic')->table('files')
         ->where('fileable_type', $fileableType)
         ->where('fileable_id', $itemId)
+        ->where('isMultiply', 1)
         ->get();
+    $file = DB::connection('dynamic')->table('files')
+        ->where('fileable_type', $fileableType)
+        ->where('fileable_id', $itemId)
+        ->where('isMultiply', 0)
+        ->first();
 
-    $image = $files->first()?->url ?? null;
+    $image = $file->url ?? null;
     $images = $files->pluck('url')->map(fn($url) => asset('storage/' . $url))->toArray();
 
     return response()->json([
@@ -377,13 +387,23 @@ public function showEditCreate($dbname, $table, $itemId = null)
     $files = DB::connection('dynamic')->table('files')
         ->where('fileable_type', 'App\\Models\\' . Str::studly(Str::singular($table)))
         ->where('fileable_id', $itemId)
+        ->where('isMultiply', 1)
         ->pluck('url')
         ->map(function ($url) {
             return asset($url);
         })
         ->toArray();
+    $file = DB::connection('dynamic')->table('files')
+        ->where('fileable_type', 'App\\Models\\' . Str::studly(Str::singular($table)))
+        ->where('fileable_id', $itemId)
+        ->where('isMultiply', 0)
+        ->pluck('url')
+        ->map(function ($url) {
+            return asset($url);
+        })
+        ->first();
 
-    $data['image'] = $files[0] ?? null;
+    $data['image'] = $file  ?? null;
     $data['images'] = $files;
 
 
@@ -641,6 +661,7 @@ public function index($dbname, $table)
         $img = DB::connection('dynamic')->table('files')
             ->where('fileable_type', $fileableType)
             ->where('fileable_id', $row['id'])
+            ->where('isMultiply', 0)
             ->value('url');
         $row['image'] = $img ? asset($img) : settings()->logo;
         return (object)$row;
