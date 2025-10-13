@@ -61,30 +61,16 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     $exclude = ['id'];
     $data = [];
 
-    // Step 3: Collect column values
+    // Step 3: Collect column values (excluding image/images)
     foreach ($columnNames as $column) {
         if (in_array($column, $exclude)) continue;
 
-        if ($column === 'image') {
-            if ($request->hasFile('image')) {
-                $data[$column] = $request->file('image')->store('uploads', 'public');
-            } elseif (!$itemId) {
-                $data[$column] = null;
-            }
-        } elseif ($column === 'images') {
-            if ($request->hasFile('images')) {
-                $data[$column] = json_encode(array_map(function ($file) {
-                    return $file->store('uploads', 'public');
-                }, $request->file('images')));
-            } elseif (!$itemId) {
-                $data[$column] = null;
-            }
-        } else {
-            if ($request->has($column)) {
-                $data[$column] = $request->input($column);
-            } elseif (!$itemId) {
-                $data[$column] = null;
-            }
+        if (in_array($column, ['image', 'images'])) continue; // Skip files for now
+
+        if ($request->has($column)) {
+            $data[$column] = $request->input($column);
+        } elseif (!$itemId) {
+            $data[$column] = null;
         }
     }
 
@@ -95,7 +81,54 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         $itemId = DB::connection('dynamic')->table($table)->insertGetId($data);
     }
 
-    // Step 5: Handle translations (only if translation table exists)
+    // Step 4.1: Handle image & images via files table
+    $fileableType = 'App\\Models\\' . Str::studly(Str::singular($table));
+
+    // Handle single image
+    if ($request->hasFile('image')) {
+        // Delete previous single image if exists
+        DB::connection('dynamic')->table('files')
+            ->where('fileable_type', $fileableType)
+            ->where('fileable_id', $itemId)
+            ->whereNull('is_multiple')
+            ->delete();
+
+        $imagePath = $request->file('image')->store('uploads', 'public');
+
+        DB::connection('dynamic')->table('files')->insert([
+            'url' => $imagePath,
+            'fileable_type' => $fileableType,
+            'fileable_id' => $itemId,
+            'is_multiple' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+
+    // Handle multiple images
+    if ($request->hasFile('images')) {
+        // Delete previous multi-images
+        DB::connection('dynamic')->table('files')
+            ->where('fileable_type', $fileableType)
+            ->where('fileable_id', $itemId)
+            ->where('is_multiple', true)
+            ->delete();
+
+        foreach ($request->file('images') as $file) {
+            $multiImagePath = $file->store('uploads', 'public');
+
+            DB::connection('dynamic')->table('files')->insert([
+                'url' => $multiImagePath,
+                'fileable_type' => $fileableType,
+                'fileable_id' => $itemId,
+                'is_multiple' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+    }
+
+    // Step 5: Handle translations (if translation table exists)
     $translationTable = Str::singular($table) . '_translations';
     $foreignKey = Str::singular($table) . '_id';
 
@@ -108,12 +141,10 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
             }
         }
 
-
         foreach ($translationData as $locale => $fields) {
             $fields[$foreignKey] = $itemId;
             $fields['locale'] = $locale;
 
-            // Check if translation exists
             $existing = DB::connection('dynamic')->table($translationTable)
                 ->where($foreignKey, $itemId)
                 ->where('locale', $locale)
@@ -130,13 +161,25 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         }
     }
 
+    // Step 6: Return response with asset URLs
+    $files = DB::connection('dynamic')->table('files')
+        ->where('fileable_type', $fileableType)
+        ->where('fileable_id', $itemId)
+        ->get();
+
+    $image = $files->where('is_multiple', null)->first()?->url ?? null;
+    $images = $files->where('is_multiple', true)->pluck('url')->map(fn($url) => asset('storage/' . $url))->toArray();
+
     return response()->json([
         'success' => true,
         'message' => $itemId ? 'Record updated successfully.' : 'Record inserted successfully.',
         'data' => $data,
-        'id' => $itemId
+        'id' => $itemId,
+        'image' => $image ? asset('storage/' . $image) : null,
+        'images' => $images,
     ]);
 }
+
 
 
 
