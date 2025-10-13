@@ -591,7 +591,7 @@ foreach ($columns as $col) {
     if ($existingTables->contains($translationTable)) {
         $dataQuery->leftJoin($translationTable, function ($join) use ($translationTable, $relatedTable, $locale) {
             $join->on("$translationTable." . Str::singular($relatedTable) . "_id", '=', "$relatedTable.id")
-                 ->where("$translationTable.locale", $locale);
+                 ->where("$translationTable.locale", "en");
         });
 
         // Check if 'title' exists in related base table
