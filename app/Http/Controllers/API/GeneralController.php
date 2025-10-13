@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use App\Models\DBCredential;
+use Illuminate\Support\Facades\File;
 
 
 use Carbon\Carbon;
@@ -87,10 +88,18 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     // Handle single image
     if ($request->hasFile('image')) {
         // Delete previous single image if exists
-        DB::connection('dynamic')->table('files')
+        $currentImage=DB::connection('dynamic')->table('files')
             ->where('fileable_type', $fileableType)
             ->where('fileable_id', $itemId)
-            ->delete();
+            ->first();
+
+            if($currentImage && file_exists($currentImage->url)){
+                File::delete($currentImage->url);
+            }
+            if($currentImage){
+                $currentImage->delete();
+            }
+            
 
             $file = request()->file('image');
             $image = request()->image->store('images');
