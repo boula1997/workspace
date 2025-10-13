@@ -664,67 +664,72 @@ public function index($dbname, $table)
 
 
 
-                public function tableNames($dbname)
-                {
-                    // Step 0: Get DB credentials
-                    $credential = DBCredential::where('db_name', $dbname)->first();
+public function tableNames($dbname)
+{
+    // Step 0: Get DB credentials
+    $credential = DBCredential::where('db_name', $dbname)->first();
 
-                    $dbHost = $credential->db_host ?? '192.185.41.219';
-                    $dbName = $credential->db_name ?? 'automation';
-                    $dbUser = $credential->db_username ?? 'root';
-                    $dbPass = $credential->db_password ?? '';
+    $dbHost = $credential->db_host ?? '192.185.41.219';
+    $dbName = $credential->db_name ?? 'automation';
+    $dbUser = $credential->db_username ?? 'root';
+    $dbPass = $credential->db_password ?? '';
 
-                    // Step 1: Configure dynamic connection
-                    config([
-                        'database.connections.dynamic' => [
-                            'driver' => 'mysql',
-                            'host' => $dbHost,
-                            'database' => $dbName,
-                            'username' => $dbUser,
-                            'password' => $dbPass,
-                            'charset' => 'utf8mb4',
-                            'collation' => 'utf8mb4_unicode_ci',
-                        ],
-                    ]);
+    // Step 1: Configure dynamic connection
+    config([
+        'database.connections.dynamic' => [
+            'driver' => 'mysql',
+            'host' => $dbHost,
+            'database' => $dbName,
+            'username' => $dbUser,
+            'password' => $dbPass,
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+    ]);
 
-                    DB::purge('dynamic');
-                    DB::reconnect('dynamic');
-                    DB::connection('dynamic')->statement('USE ' . $dbName);
+    DB::purge('dynamic');
+    DB::reconnect('dynamic');
+    DB::connection('dynamic')->statement('USE ' . $dbName);
 
-                    // Step 2: Get all table names
-                    $allTables = DB::connection('dynamic')->table('INFORMATION_SCHEMA.COLUMNS')
-                        ->select('TABLE_NAME')
-                        ->where('TABLE_SCHEMA', $dbname)
-                        ->distinct()
-                        ->orderBy('TABLE_NAME')
-                        ->pluck('TABLE_NAME');
+    // Step 2: Get all table names
+    $allTables = DB::connection('dynamic')->table('INFORMATION_SCHEMA.COLUMNS')
+        ->select('TABLE_NAME')
+        ->where('TABLE_SCHEMA', $dbname)
+        ->distinct()
+        ->orderBy('TABLE_NAME')
+        ->pluck('TABLE_NAME');
 
-                    // Step 3: Try to get blocked tables, or default to empty collection
-                    try {
-                        $blockedTables = DB::connection('dynamic')->table('blocked_modules')->pluck('table_name');
-                    } catch (\Exception $e) {
-                        // Table probably doesn't exist — ignore and assume no blocked tables
-                        $blockedTables = collect();
-                    }
+    // Step 3: Get blocked tables filtered by dbname
+    try {
+        $blockedTables = DB::connection('dynamic')->table('blocked_modules')
+            ->where('dbname', $dbname)
+            ->pluck('table_name');
+    } catch (\Exception $e) {
+        $blockedTables = collect();
+    }
 
-                    // Step 4: Filter tables
-                    $filteredTables = $allTables
-                        ->diff($blockedTables)
-                        ->reject(function ($table) {
-                            return str_contains($table, '_translation');
-                        })
-                        ->values();
+    // Step 4: Filter tables
+    $filteredTables = $allTables
+        ->diff($blockedTables)
+        ->reject(function ($table) {
+            return str_contains($table, '_translation');
+        })
+        ->values();
 
-                    // Step 5: Return as array of objects
-                    $structuredTables = $filteredTables->map(function ($table) {
-                        return ['TABLE_NAME' => $table];
-                    });
+    // Step 5: Return as array of objects
+    $structuredTables = $filteredTables->map(function ($table) {
+        return ['TABLE_NAME' => $table];
+    });
 
-                    return response()->json([
-                        'success' => trans('general.sent_successfully'),
-                        'tables' => $structuredTables,
-                    ]);
-                }
+    return response()->json([
+        'success' => trans('general.sent_successfully'),
+        'tables' => $structuredTables,
+    ]);
+}
+
+
+
+
                 public function databases()
                 {
                     return response()->json([
