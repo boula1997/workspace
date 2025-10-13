@@ -310,10 +310,10 @@ public function showEditCreate($dbname, $table, $itemId = null)
     $data = (array) $data;
 
     // Optional: placeholder images (adjust or remove if you want)
-    $data["image"] = $data["image"] ?? "https://via.placeholder.com/150";
+    $data["image"] = $data["image"] ?? settings()->logo;
     $data["images"] = $data["images"] ?? [
-        "https://via.placeholder.com/150",
-        "https://via.placeholder.com/140"
+       settings()->logo,
+        settings()->logo
     ];
 
     // Step 8: Fetch translations data for this record
