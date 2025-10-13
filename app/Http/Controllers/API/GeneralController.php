@@ -105,13 +105,13 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
             $image = request()->image->store('images');
             $file->move('images',  $image);
 
-        DB::connection('dynamic')->table('files')->insert([
-            'url' => $image,
-            'fileable_type' => $fileableType,
-            'fileable_id' => $itemId,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+            DB::connection('dynamic')->table('files')->insert([
+                'url' => $image,
+                'fileable_type' => $fileableType,
+                'fileable_id' => $itemId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
     }
 
     // Handle multiple images
