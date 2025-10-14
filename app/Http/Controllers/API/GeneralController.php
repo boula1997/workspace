@@ -292,7 +292,7 @@ public function showEditCreate($dbname, $table, $itemId = null)
 
             // Try to find a label column in the main table
             $labelColumn = collect([
-                'title',])
+                'title','name'])
                 ->first(fn($field) => in_array($field, $mainColumns));
 
             // If a valid label column is found in the main table
@@ -305,7 +305,7 @@ public function showEditCreate($dbname, $table, $itemId = null)
             elseif (Schema::connection('dynamic')->hasTable($translationTable)) {
                 $translationColumns = Schema::connection('dynamic')->getColumnListing($translationTable);
 
-                $translationLabel = collect(['title'])->first(function ($field) use ($translationColumns) {
+                $translationLabel = collect(['title','name'])->first(function ($field) use ($translationColumns) {
                     return in_array($field, $translationColumns);
                 });
 
