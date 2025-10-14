@@ -615,28 +615,46 @@ public function index($dbname, $table)
             WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
         ", [$dbName, $relatedBase]);
         $relCols = collect($relCols)->pluck('COLUMN_NAME')->toArray();
-        $hasRelTitle = in_array('title', $relCols);
+// Try to find the best "display column" in related base table
+$displayCandidates = ['title', 'name', 'full_name', 'label'];
+$baseDisplayCol = collect($displayCandidates)->first(function ($col) use ($relCols) {
+    return in_array($col, $relCols);
+});
 
-        if ($hasRelTrans) {
-            // join translation table for that related
-            $dataQuery->leftJoin($relatedTrans, function ($join) use ($relatedTrans, $relatedBase, $locale) {
-                $join->on("$relatedTrans." . Str::singular($relatedBase) . "_id", '=', "$relatedBase.id")
-                     ->where("$relatedTrans.locale", $locale);
-            });
+// Same for the translation table, if exists
+$transDisplayCol = null;
+if ($hasRelTrans) {
+    $transCols = DB::connection('dynamic')->select("
+        SELECT COLUMN_NAME
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
+    ", [$dbName, $relatedTrans]);
+    $transCols = collect($transCols)->pluck('COLUMN_NAME')->toArray();
 
-            // And select COALESCE if both exist
-            if ($hasRelTitle) {
-                $dataQuery->addSelect(DB::raw("COALESCE($relatedBase.title, $relatedTrans.title) as $aliasTitle"));
-            } else {
-                // no title in base, use translation only
-                $dataQuery->addSelect("$relatedTrans.title as $aliasTitle");
-            }
-        } else {
-            // No translation table, so if base has title, use it
-            if ($hasRelTitle) {
-                $dataQuery->addSelect("$relatedBase.title as $aliasTitle");
-            }
-        }
+    $transDisplayCol = collect($displayCandidates)->first(function ($col) use ($transCols) {
+        return in_array($col, $transCols);
+    });
+}
+
+// Build select statement
+if ($hasRelTrans && $transDisplayCol) {
+    $dataQuery->leftJoin($relatedTrans, function ($join) use ($relatedTrans, $relatedBase, $locale) {
+        $join->on("$relatedTrans." . Str::singular($relatedBase) . "_id", '=', "$relatedBase.id")
+             ->where("$relatedTrans.locale", $locale);
+    });
+
+    if ($baseDisplayCol) {
+        // Prefer base + translation using COALESCE
+        $dataQuery->addSelect(DB::raw("COALESCE($relatedBase.$baseDisplayCol, $relatedTrans.$transDisplayCol) as $aliasTitle"));
+    } else {
+        // Use only translation
+        $dataQuery->addSelect("$relatedTrans.$transDisplayCol as $aliasTitle");
+    }
+} elseif ($baseDisplayCol) {
+    // No translation table, use base only
+    $dataQuery->addSelect("$relatedBase.$baseDisplayCol as $aliasTitle");
+}
+
     }
 
     // 6. Filters (same as before)
