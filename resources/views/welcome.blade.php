@@ -1155,7 +1155,25 @@
                             <p title="auto fill password">cls</p>
                             <br>
                             <hr class="text-white">
-                            <p title="auto fill password">https://wa.me/+201208050298</p>
+                            <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
+                             🚀 عايز موقع أو تطبيق موبايل احترافي ومبرمج خصيصًا لمشروعك؟
+                            احنا في Yousab Tech بنصمم ونبرمج مواقع وتطبيقات موبايل برمجة خاصة بالكامل باستخدام Laravel + React و React Native
+                            مش قوالب جاهزة – كل مشروع بيتبني من الصفر حسب نشاطك واحتياجاتك 💪
+
+                            بنوفرلك:
+                            ✅ تصميم عصري ومتجاوب مع كل الأجهزة
+                            ✅ سرعة وأداء قوي جدًا
+                            ✅ أمان عالي ولوحة تحكم سهلة الاستخدام
+                            ✅ استضافة + دومين + دعم فني مجاني لمدة سنة كاملة
+                            ✅ تسليم الموقع جاهز بـ SEO قوي علشان يظهر في نتائج البحث الأولى
+                            ✅ تسليم سريع وسعر يناسب ميزانيتك
+
+                            📂 شوف أعمالنا بنفسك:
+                            👉 https://yousab-portofolioo.vercel.app/
+
+                            📞 تواصل معنا مباشرة على واتساب:
+                            👉 https://wa.me/+201208050298
+                            </pre>
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">
@@ -1206,7 +1224,6 @@
                                 });
                                 }
 
-                            </pre>
                             </pre>
                             <br>
                             <hr class="text-white">
