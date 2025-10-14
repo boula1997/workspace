@@ -16,6 +16,6 @@ class Accountant extends Model
     public $translatedAttributes = ['title'];
     public $timestamps = true;
 
-    public function employee(){ return $this->belongsTo(Admin::class,'employee_id'); }
+    public function employee(){ return $this->belongsTo(Admin::class,'admin_id'); }
     
 }

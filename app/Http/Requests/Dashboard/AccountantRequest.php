@@ -25,7 +25,7 @@ class AccountantRequest extends FormRequest
         $rules = [
 'received' => 'required',
 
-'employee_id' => 'required',
+'admin_id' => 'required',
 
 'has' => 'required',
         ];

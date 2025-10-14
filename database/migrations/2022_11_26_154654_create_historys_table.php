@@ -17,7 +17,7 @@ class CreateHistorysTable extends Migration
             $table->id();
             $table->unsignedBigInteger('task_id')->nullable(); $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
 
-            $table->unsignedBigInteger('employee_id')->nullable(); $table->foreign('employee_id')->references('id')->on('admins')->onDelete('cascade');
+            $table->unsignedBigInteger('admin_id')->nullable(); $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
             
             $table->string('action')->nullable();
             $table->timestamps();

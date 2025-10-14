@@ -17,8 +17,8 @@ class CreateFollowupsTable extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->boolean('status')->default(0);            
-            $table->unsignedBigInteger('employee_id')->nullable(); 
-            $table->foreign('employee_id')->references('id')->on('admins')->onDelete('cascade');
+            $table->unsignedBigInteger('admin_id')->nullable(); 
+            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
             $table->boolean('difficulty')->default(0);
             $table->timestamps();
         });

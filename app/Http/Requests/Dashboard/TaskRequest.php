@@ -27,7 +27,7 @@ class TaskRequest extends FormRequest
 
         'status' => 'nullable',
 
-        'employee_id' => 'array',
+        'admin_id' => 'array',
 
         'project_id' => 'required',
         ];

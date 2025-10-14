@@ -43,7 +43,7 @@ class Admin extends Authenticatable implements JWTSubject // <-- IMPLEMENT INTER
 
     public function tasks()
     {
-        return $this->hasMany(Task::class, 'employee_id');
+        return $this->hasMany(Task::class, 'admin_id');
     }
 
     // ✅ ADD THESE METHODS REQUIRED BY JWTSubject

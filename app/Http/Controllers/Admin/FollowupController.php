@@ -55,7 +55,7 @@ class FollowupController extends Controller
                 $followups = $this->followup
                 ->whereIn('status', $status)
                 ->where(function ($query) {
-                    $query->where('employee_id', auth()->user()->id)
+                    $query->where('admin_id', auth()->user()->id)
                           ->orWhereHas('employee', function ($query) {
                               $query->where('name', 'All');
                           });
@@ -76,7 +76,7 @@ class FollowupController extends Controller
                 $followups = $this->followup
                 ->whereIn('status', $status)
                 ->where(function ($query) {
-                    $query->where('employee_id', auth()->user()->id)
+                    $query->where('admin_id', auth()->user()->id)
                           ->orWhereHas('employee', function ($query) {
                               $query->where('name', 'All');
                           });
@@ -159,7 +159,7 @@ class FollowupController extends Controller
                     foreach($request->employees as $employee){
                     Followup::create([
                         'title'=>$followupsameTitle->title,
-                        'employee_id'=>$employee,
+                        'admin_id'=>$employee,
                     ]);
                 }
                 $followupsameTitle->delete();
@@ -196,7 +196,7 @@ class FollowupController extends Controller
                 foreach ($request->employees as $employee) {
                     Followup::create([
                         'title' => $title,
-                        'employee_id' => $employee,
+                        'admin_id' => $employee,
                         'difficulty' => $data['difficulty'],
                         'hasPhone' => $data['hasPhone'],
                     ]);
@@ -241,7 +241,7 @@ class FollowupController extends Controller
         //    dd($followup->title);
         $employees=Admin::orderBy('name', 'ASC')->get();
         $projects=Project::where('status',1)->get();
-        $selectedEmployees=Followup::where('title',$followup->title)->pluck('employee_id');;
+        $selectedEmployees=Followup::where('title',$followup->title)->pluck('admin_id');;
         return view('admin.crud.followups.edit', compact('followup','employees','projects','selectedEmployees'));
     }
     /**

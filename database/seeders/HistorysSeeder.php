@@ -23,7 +23,7 @@ class HistorysSeeder extends Seeder
             $history = History::create([
                  'task_id'=>$task[0],
 
-                'employee_id'=>$employee[0],
+                'admin_id'=>$employee[0],
                 
                  'action'=>$action[0],
             ]);

@@ -69,8 +69,8 @@ function clearTasks($taskTitle)
     // Fetch tasks with the given title
     $tasks = Task::where('title', $taskTitle)->get();
 
-    // Group tasks by employee_id
-    $groupedTasks = $tasks->groupBy('employee_id');
+    // Group tasks by admin_id
+    $groupedTasks = $tasks->groupBy('admin_id');
 
     foreach ($groupedTasks as $employeeId => $employeeTasks) {
         // Filter tasks by status
@@ -131,7 +131,7 @@ function dectatorBoula()
 
 function notAllowedTaskAction($taskTitle)
 {
-    $taskIds = Task::where('title', $taskTitle)->pluck('employee_id')->toArray();  // Convert to array
+    $taskIds = Task::where('title', $taskTitle)->pluck('admin_id')->toArray();  // Convert to array
     if (!in_array(auth()->user() ? auth()->user()->id : 0, $taskIds)) {
         return redirect()->back()->with(['error' => __('general.you_are_not_allowed_to_do_this_assignit_to_you_first')]);
     }
@@ -139,7 +139,7 @@ function notAllowedTaskAction($taskTitle)
 
 function received($admin)
 {
-    $received = Accountant::where('employee_id', $admin->id)->sum('received');
+    $received = Accountant::where('admin_id', $admin->id)->sum('received');
     if (isset($received) && (auth()->user()->email == $admin->email || boula()))
         return $received;
     else
@@ -147,7 +147,7 @@ function received($admin)
 }
 function has($admin)
 {
-    $has = Accountant::where('employee_id', $admin->id)->sum('has');
+    $has = Accountant::where('admin_id', $admin->id)->sum('has');
     if (isset($has) && (auth()->user()->email == $admin->email || boula()))
         return $has;
     else
@@ -396,9 +396,9 @@ function itemsCount($model)
         $finishedTAsks = count(Task::where('status', 1)->get());
         $allTAsks = count(Task::get());
     } else {
-        $tasks = count(Task::where('status', 0)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
-        $finishedTAsks = count(Task::where('status', 1)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
-        $allTAsks = count(Task::where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
+        $tasks = count(Task::where('status', 0)->where('admin_id', auth()->user() ? auth()->user()->id : 0)->get());
+        $finishedTAsks = count(Task::where('status', 1)->where('admin_id', auth()->user() ? auth()->user()->id : 0)->get());
+        $allTAsks = count(Task::where('admin_id', auth()->user() ? auth()->user()->id : 0)->get());
     }
 
     if (auth()->user() && auth()->user()->type == 'admin') {
@@ -406,9 +406,9 @@ function itemsCount($model)
         $finishedFollowups = count(Followup::where('status', 1)->get());
         $allFollowups = count(Followup::get());
     } else {
-        $followups = count(Followup::where('status', 0)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
-        $finishedFollowups = count(Followup::where('status', 1)->where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
-        $allFollowups = count(Followup::where('employee_id', auth()->user() ? auth()->user()->id : 0)->get());
+        $followups = count(Followup::where('status', 0)->where('admin_id', auth()->user() ? auth()->user()->id : 0)->get());
+        $finishedFollowups = count(Followup::where('status', 1)->where('admin_id', auth()->user() ? auth()->user()->id : 0)->get());
+        $allFollowups = count(Followup::where('admin_id', auth()->user() ? auth()->user()->id : 0)->get());
     }
 
     $items = [
@@ -513,8 +513,8 @@ function getFollowupTitles($followups)
 
 function taskEmployees($task,$type="web")
 {
-    $employee_ids = json_decode($task->employees);
-    $names = Admin::whereIn('id', $employee_ids)->pluck('name');
+    $admin_ids = json_decode($task->employees);
+    $names = Admin::whereIn('id', $admin_ids)->pluck('name');
 
     if($type=="web")
     return $names->implode('<br>');
@@ -533,8 +533,8 @@ function products()
 
 function followupEmployees($title)
 {
-    $employee_ids = Followup::where('title', $title)->pluck('employee_id');
-    $names = Admin::whereIn('id', $employee_ids)->pluck('name');
+    $admin_ids = Followup::where('title', $title)->pluck('admin_id');
+    $names = Admin::whereIn('id', $admin_ids)->pluck('name');
     return json_encode($names);
 }
 

@@ -111,7 +111,7 @@ class NavigationController extends Controller
                     foreach($request->employees as $employee){
                     Navigation::create([
                         'title'=>$navigationsameTitle->title,
-                        'employee_id'=>$employee,
+                        'admin_id'=>$employee,
                     ]);
                 }
                 $navigationsameTitle->delete();

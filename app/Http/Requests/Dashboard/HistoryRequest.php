@@ -25,7 +25,7 @@ class HistoryRequest extends FormRequest
         $rules = [
         'task_id' => 'required',
 
-        'employee_id' => 'required',
+        'admin_id' => 'required',
 
         'action' => 'required',
         ];

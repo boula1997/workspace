@@ -30,7 +30,7 @@ class Task extends Model
      */
     public function employee()
     {
-        return $this->belongsTo(Admin::class, 'employee_id');
+        return $this->belongsTo(Admin::class, 'admin_id');
     }
 
     /**

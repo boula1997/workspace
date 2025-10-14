@@ -26,7 +26,7 @@ class Followup extends Model
     //     return $this->belongsTo(Project::class,'project_id');
     // }
     public function employee(){
-        return $this->belongsTo(Admin::class,'employee_id');
+        return $this->belongsTo(Admin::class,'admin_id');
     }
     
 }

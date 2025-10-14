@@ -34,11 +34,11 @@
                         {{-- Dynamic Select Input --}} <div class="col-md-6">
                             <div class="mb-3"> <label for=""
                                     class="form-label">{{ __('general.employee') }}</label> <select
-                                    class="form-select form-select-lg" name="employee_id" id="employee">
+                                    class="form-select form-select-lg" name="admin_id" id="employee">
                                     <option value="">{{ __('general.select') }}</option>
                                     @foreach ($employees as $employee)
                                         <option value="{{ $employee->id }}"
-                                            {{ old('employee_id', $accountant->employee_id) == $employee->id ? 'selected' : '' }}>
+                                            {{ old('admin_id', $accountant->admin_id) == $employee->id ? 'selected' : '' }}>
                                             {{ $employee->name }} </option>
                                     @endforeach
                                 </select> </div>

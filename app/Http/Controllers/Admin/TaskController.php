@@ -95,7 +95,7 @@ class TaskController extends Controller
                 //         'title' => 'Doing some task or updating tasks for ' . $value,
                 //         'keywords' => null,
                 //         'status' => 0,
-                //         'employee_id' => 1,
+                //         'admin_id' => 1,
                 //         'project_id' => 3,
                 //         'counter' => 20,
                 //         'level' => 0,
@@ -178,7 +178,7 @@ class TaskController extends Controller
             foreach ($tasks as $task) {
                 $task->update([
                     'title' => $task->title,
-                    'employee_id' => 1,
+                    'admin_id' => 1,
                     'project_id' => $task->project_id,
                     'keywords' => $task->keywords,
                     'employees' => $request->employees
@@ -210,7 +210,7 @@ class TaskController extends Controller
                     //     'title' => 'Doing some task or updating tasks for ' . $value,
                     //     'keywords' => null,
                     //     'status' => 0,
-                    //     'employee_id' => 1,
+                    //     'admin_id' => 1,
                     //     'project_id' => 3,
                     //     'counter' => 20,
                     //     'level' => 0,
@@ -230,10 +230,10 @@ class TaskController extends Controller
         } elseif ($action == 'reassign') {
             foreach ($tasks as $task) {
 
-                History::where('employee_id', $employee)->where('task_id', $task->id)->delete();
+                History::where('admin_id', $employee)->where('task_id', $task->id)->delete();
                 $task->update([
                     'title' => $task->title,
-                    'employee_id' => 1,
+                    'admin_id' => 1,
                     'project_id' => $task->project_id,
                     'keywords' => $task->keywords,
                     'employees' => $request->employees
@@ -263,7 +263,7 @@ class TaskController extends Controller
                     //     'title' => 'Doing some task or updating tasks for ' . $value,
                     //     'keywords' => null,
                     //     'status' => 0,
-                    //     'employee_id' => 1,
+                    //     'admin_id' => 1,
                     //     'project_id' => 3,
                     //     'counter' => 20,
                     //     'level' => 0,
@@ -315,7 +315,7 @@ class TaskController extends Controller
                     //     'title' => 'Doing some task or updating tasks for ' . $value,
                     //     'keywords' => null,
                     //     'status' => 0,
-                    //     'employee_id' => 1,
+                    //     'admin_id' => 1,
                     //     'project_id' => 3,
                     //     'counter' => 20,
                     //     'level' => 0,
@@ -356,7 +356,7 @@ class TaskController extends Controller
                     //     'title' => 'Doing some task or updating tasks for ' . $value,
                     //     'keywords' => null,
                     //     'status' => 0,
-                    //     'employee_id' => 1,
+                    //     'admin_id' => 1,
                     //     'project_id' => 3,
                     //     'counter' => 20,
                     //     'level' => 0,
@@ -394,7 +394,7 @@ class TaskController extends Controller
             foreach ($titles as $title) {
                 Task::create([
                     'title' => $title,
-                    'employee_id' => 1,
+                    'admin_id' => 1,
                     'project_id' => $request->project_id,
                     'employees' => json_encode($request->employees),
 
@@ -508,7 +508,7 @@ class TaskController extends Controller
 
             $task->update([
                 'title' => $request->title,
-                'employee_id' => 1,
+                'admin_id' => 1,
                 'project_id' => $request->project_id,
                 'keywords' => $keywords,
                 'piority' => $request->has("piority")?1:0,

@@ -23,7 +23,7 @@ class AccountantsSeeder extends Seeder
             $accountant = Accountant::create([
                  'received'=>$received[0],
 
-                 'employee_id'=>$employee[0],
+                 'admin_id'=>$employee[0],
                 
                  'has'=>$has[0],
             ]);

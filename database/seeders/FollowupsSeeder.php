@@ -27,7 +27,7 @@ class FollowupsSeeder extends Seeder
 
                'status'=>$status[0],
                 
-                 'employee_id'=>$employee[0],
+                 'admin_id'=>$employee[0],
                 
                  'difficulty'=>$difficulty[0],
                  'hasPhone'=>$hasPhone[0],
