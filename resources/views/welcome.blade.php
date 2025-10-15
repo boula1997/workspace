@@ -686,207 +686,207 @@
 
                                 <h5 class="text-white mt-3">Routes (web.php or api.php):</h5>
                                 <pre class="bg-dark text-white p-3 rounded border">
-                                use App\Http\Controllers\API\ActionController;
+use App\Http\Controllers\API\ActionController;
 
-                                Route::post('/postFunction', [ActionController::class, 'postFunction']);
-                                Route::get('/getFunction', [ActionController::class, 'getFunction']);
+Route::post('/postFunction', [ActionController::class, 'postFunction']);
+Route::get('/getFunction', [ActionController::class, 'getFunction']);
                                 </pre>
 
                                 <h5 class="text-white mt-4">Controller:
                                     <pre>app/Http/Controllers/API/ActionController.php</pre>
                                 </h5>
                                 <pre class="bg-dark text-white p-3 rounded border overflow-auto">
-                                &lt;?php
+&lt;?php
 
-                                namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API;
 
-                                use App\Http\Controllers\Controller;
-                                use App\Http\Requests\API\MessageRequest;
-                                use App\Models\Message;
-                                use App\Models\Task;
-                                use Exception;
-                                use Illuminate\Http\Request;
-                                use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\API\MessageRequest;
+use App\Models\Message;
+use App\Models\Task;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-                                class ActionController extends Controller
-                                {
-                                    public function postFunction(Request $request)
-                                    {
-                                        try {
-                                            $action = request()->query('action');
-                                            if ($action == "contactus") {
-                                                $request->validate([
-                                                    'message' => 'required',
-                                                ]);
-                                                $data = Message::create($request->except('action'));
-                                            }
-                                            return successResponse($data);
-                                        } catch (Exception $e) {
-                                            DB::table('tracks')->insert([
-                                                'dispatch_status' => 'showing data of ' . json_encode([$e->getMessage()]),
-                                                'created_at' => now(),
-                                            ]);
-                                            return failedResponse($e->getMessage());
-                                        }
-                                    }
+class ActionController extends Controller
+{
+    public function postFunction(Request $request)
+    {
+        try {
+            $action = request()->query('action');
+            if ($action == "contactus") {
+                $request->validate([
+                    'message' => 'required',
+                ]);
+                $data = Message::create($request->except('action'));
+            }
+            return successResponse($data);
+        } catch (Exception $e) {
+            DB::table('tracks')->insert([
+                'dispatch_status' => 'showing data of ' . json_encode([$e->getMessage()]),
+                'created_at' => now(),
+            ]);
+            return failedResponse($e->getMessage());
+        }
+    }
 
-                                    public function getFunction(Request $request)
-                                    {
-                                        try {
-                                            $action = request()->query('action');
-                                            if ($action == "getTasks"){
+    public function getFunction(Request $request)
+    {
+        try {
+            $action = request()->query('action');
+            if ($action == "getTasks"){
 
-                                                $data = Task::get();
-                                            }
-                                            return successResponse($data);
-                                        } catch (Exception $e) {
-                                            DB::table('tracks')->insert([
-                                                'dispatch_status' => 'showing data of ' . json_encode([$e->getMessage()]),
-                                                'created_at' => now(),
-                                            ]);
-                                            return failedResponse($e->getMessage());
-                                        }
-                                    }
-                                }
+                $data = Task::get();
+            }
+            return successResponse($data);
+        } catch (Exception $e) {
+            DB::table('tracks')->insert([
+                'dispatch_status' => 'showing data of ' . json_encode([$e->getMessage()]),
+                'created_at' => now(),
+            ]);
+            return failedResponse($e->getMessage());
+        }
+    }
+}
                                 </pre>
 
                                 <h2 class="text-white mt-5">React or React Native Frontend Part</h2>
 
                                 <h5 class="text-white mt-4">POST Request Example</h5>
                                 <pre class="bg-dark text-white p-3 rounded border">
-                                npm install @react-native-async-storage/async-storage
-                                expo install expo-image-picker
-                                import AsyncStorage from "@react-native-async-storage/async-storage";
-                                import React, { useEffect, useRef, useState } from "react";
-                                import * as ImagePicker from "expo-image-picker"; // For Expo
-                                import { Image } from 'react-native';
-                                const [data, setData] = useState([]);
-                                const [inputData, setInputData] = useState({});
-                                const [images, setImages] = useState([]);
-                                const [image, setImage] = useState("");
+npm install @react-native-async-storage/async-storage
+expo install expo-image-picker
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useRef, useState } from "react";
+import * as ImagePicker from "expo-image-picker"; // For Expo
+import { Image } from 'react-native';
+const [data, setData] = useState([]);
+const [inputData, setInputData] = useState({});
+const [images, setImages] = useState([]);
+const [image, setImage] = useState("");
 
-                                const pickImages = async () => {
-                                try {
-                                let result = await ImagePicker.launchImageLibraryAsync({
-                                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                                    allowsMultipleSelection: true,
-                                    quality: 1,
-                                });
-                            
-                                if (!result?.assets || result.canceled) {
-                                    console.warn("No images selected");
-                                    return;
-                                }
-                            
-                                const newImages = result.assets.map((asset) => asset.uri);
-                                setImages((prevImages) => [...prevImages, ...newImages]); // Store only product images
-                                } catch (error) {
-                                console.error("Error picking images:", error);
-                                }
-                            };
+const pickImages = async () => {
+try {
+let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsMultipleSelection: true,
+    quality: 1,
+});
 
+if (!result?.assets || result.canceled) {
+    console.warn("No images selected");
+    return;
+}
 
-                            const pickMainImage = async () => {
-                            try {
-                                const result = await ImagePicker.launchImageLibraryAsync({
-                                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                                quality: 1,
-                                });
-
-                                if (!result?.assets || result.canceled) return;
-
-                                setImage(result.assets[0].uri); // Save main image URI
-                            } catch (error) {
-                                console.error("Error picking main image:", error);
-                            }
-                            };
-                            const handleChange = (e) => {
-                                setInputData({ ...inputData, [e.target.name]: e.target.value });
-                              };
-                          const handleSubmit = async () => {
-                             e.preventDefault();
-                            const formData = new FormData();
-                            formData.append('name', inputData.name);
-                              if (image) {
-                                formData.append('image', {
-                                    uri: image,
-                                    name: 'main_image.jpg',
-                                    type: 'image/jpeg',
-                                });
-                                }
-
-                                // Append images
-                                images.forEach((uri, index) => {
-                                formData.append('images[]', {
-                                    uri,
-                                    name: `product_image_${index}.jpg`,
-                                    type: 'image/jpeg',
-                                });
-                                });
-
-                            try {
-                                const response = await fetch('https://yousab-tech.com/workspace/public/api/postFunction?action=searchHotels', {
-                                method: 'POST',
-                                headers: {
-                                    Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
-                                    'locale': "en"
-
-                                },
-                                body: formData,
-                                });
-
-                                if (!response.ok) throw new Error('Request failed');
-
-                                const data = await response.json();
-                                console.log("token", AsyncStorage.getItem("token"));
-                                alert("Submitted Successfully");
-                                console.log('Success', data);
-                            } catch (err) {
-                                if (err.response) {
-                                    // Server responded with a status code outside 2xx
-                                    console.log("❌ Server Error Details:", err.response.data);
-                                    console.log("Status:", err.response.status);
-                                    console.log("Headers:", err.response.headers);
-
-                                    alert(
-                                    `Error ${err.response.status}: ${
-                                        JSON.stringify(err.response.data)
-                                    }`
-                                    );
-                                } else if (err.request) {
-                                    // Request was made but no response
-                                    console.log("⚠️ No response from server:", err.request);
-                                    alert("No response from server. Check API link or network.");
-                                } else {
-                                    // Something else happened
-                                    console.log("⚙️ Error setting up request:", err.message);
-                                    alert(`Error: ${err.message}`);
-                                }
-                            }
-                            };
-
-                             onChangeText={(text) => handleChange("price", text)}
+const newImages = result.assets.map((asset) => asset.uri);
+setImages((prevImages) => [...prevImages, ...newImages]); // Store only product images
+} catch (error) {
+console.error("Error picking images:", error);
+}
+};
 
 
-                                {{-- {/* Upload item container */}
-                            <View style={{ marginTop: 2, paddingHorizontal: 16 }}>
-                            <Text style={styles.subTitle}>Upload Photo/License</Text>
+const pickMainImage = async () => {
+try {
+const result = await ImagePicker.launchImageLibraryAsync({
+mediaTypes: ImagePicker.MediaTypeOptions.Images,
+quality: 1,
+});
 
-                            <FlatList
-                            data={images}
-                            keyExtractor={(item, index) => index.toString()}
-                            numColumns={3}
-                            renderItem={({ item }) => (
-                                <View style={styles.imageContainer}>
-                                <Image source={{ uri: item }} style={styles.image} />
-                                </View>
-                            )}
-                            ListFooterComponent={
-                                <TouchableOpacity onPress={pickImages} style={styles.uploadButton}>
-                                <Ionicons name="cloud-upload-outline" size={40} color="black" />
-                                </TouchableOpacity>
-                            }
-                            />
+if (!result?.assets || result.canceled) return;
+
+setImage(result.assets[0].uri); // Save main image URI
+} catch (error) {
+console.error("Error picking main image:", error);
+}
+};
+const handleChange = (e) => {
+setInputData({ ...inputData, [e.target.name]: e.target.value });
+  };
+const handleSubmit = async () => {
+e.preventDefault();
+const formData = new FormData();
+formData.append('name', inputData.name);
+if (image) {
+formData.append('image', {
+    uri: image,
+    name: 'main_image.jpg',
+    type: 'image/jpeg',
+});
+}
+
+// Append images
+images.forEach((uri, index) => {
+formData.append('images[]', {
+    uri,
+    name: `product_image_${index}.jpg`,
+    type: 'image/jpeg',
+});
+});
+
+try {
+const response = await fetch('https://yousab-tech.com/workspace/public/api/postFunction?action=searchHotels', {
+method: 'POST',
+headers: {
+    Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+    'locale': "en"
+
+},
+body: formData,
+});
+
+if (!response.ok) throw new Error('Request failed');
+
+const data = await response.json();
+console.log("token", AsyncStorage.getItem("token"));
+alert("Submitted Successfully");
+console.log('Success', data);
+} catch (err) {
+if (err.response) {
+    // Server responded with a status code outside 2xx
+    console.log("❌ Server Error Details:", err.response.data);
+    console.log("Status:", err.response.status);
+    console.log("Headers:", err.response.headers);
+
+    alert(
+    `Error ${err.response.status}: ${
+        JSON.stringify(err.response.data)
+    }`
+    );
+} else if (err.request) {
+    // Request was made but no response
+    console.log("⚠️ No response from server:", err.request);
+    alert("No response from server. Check API link or network.");
+} else {
+    // Something else happened
+    console.log("⚙️ Error setting up request:", err.message);
+    alert(`Error: ${err.message}`);
+}
+}
+};
+
+onChangeText={(text) => handleChange("price", text)}
+
+
+{{-- {/* Upload item container */}
+<View style={{ marginTop: 2, paddingHorizontal: 16 }}>
+<Text style={styles.subTitle}>Upload Photo/License</Text>
+
+<FlatList
+data={images}
+keyExtractor={(item, index) => index.toString()}
+numColumns={3}
+renderItem={({ item }) => (
+<View style={styles.imageContainer}>
+<Image source={{ uri: item }} style={styles.image} />
+</View>
+)}
+ListFooterComponent={
+<TouchableOpacity onPress={pickImages} style={styles.uploadButton}>
+<Ionicons name="cloud-upload-outline" size={40} color="black" />
+</TouchableOpacity>
+}
+/>
 
 
                             </View>
@@ -918,61 +918,61 @@
 
                                 <h5 class="text-white mt-4">GET Request Example</h5>
                                 <pre class="bg-dark text-white p-3 rounded border">
-                                npm install @react-native-async-storage/async-storage
-                                import AsyncStorage from "@react-native-async-storage/async-storage";
-                                import React, { useEffect, useRef, useState } from "react";
-                                   const [data, setData] = useState([]);
+npm install @react-native-async-storage/async-storage
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useRef, useState } from "react";
+    const [data, setData] = useState([]);
 
 
-                                    useEffect(() => {
-                                        const loadData = async () => {
+    useEffect(() => {
+        const loadData = async () => {
 
-                                        try {
-                                            fetch(`https://oilminingshah.com/coursesBack/public/api/courses`, {
-                                            method: 'GET',
-                                            headers: {
-                                                Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
-                                                'locale': "en"
+        try {
+            fetch(`https://oilminingshah.com/coursesBack/public/api/courses`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+                'locale': "en"
 
-                                            }
-                                            })
-                                            .then(async (response) => {
-                                                const data = await response.json();
-                                                console.log("token", AsyncStorage.getItem("token"));
-                                                console.log("boula", data.data);
-                                                setData(data.data);
-                                            })
-                                            .catch((err) => {
-                                                if (err.response) {
-                                                    // Server responded with a status code outside 2xx
-                                                    console.log("❌ Server Error Details:", err.response.data);
-                                                    console.log("Status:", err.response.status);
-                                                    console.log("Headers:", err.response.headers);
+            }
+            })
+            .then(async (response) => {
+                const data = await response.json();
+                console.log("token", AsyncStorage.getItem("token"));
+                console.log("boula", data.data);
+                setData(data.data);
+            })
+            .catch((err) => {
+                if (err.response) {
+                    // Server responded with a status code outside 2xx
+                    console.log("❌ Server Error Details:", err.response.data);
+                    console.log("Status:", err.response.status);
+                    console.log("Headers:", err.response.headers);
 
-                                                    alert(
-                                                    `Error ${err.response.status}: ${
-                                                        JSON.stringify(err.response.data)
-                                                    }`
-                                                    );
-                                                } else if (err.request) {
-                                                    // Request was made but no response
-                                                    console.log("⚠️ No response from server:", err.request);
-                                                    alert("No response from server. Check API link or network.");
-                                                } else {
-                                                    // Something else happened
-                                                    console.log("⚙️ Error setting up request:", err.message);
-                                                    alert(`Error: ${err.message}`);
-                                                }
-                                            });
-                                        } catch (err) {
-                                            console.error('Error loadData', err);
-                                        }
-                                        };
+                    alert(
+                    `Error ${err.response.status}: ${
+                        JSON.stringify(err.response.data)
+                    }`
+                    );
+                } else if (err.request) {
+                    // Request was made but no response
+                    console.log("⚠️ No response from server:", err.request);
+                    alert("No response from server. Check API link or network.");
+                } else {
+                    // Something else happened
+                    console.log("⚙️ Error setting up request:", err.message);
+                    alert(`Error: ${err.message}`);
+                }
+            });
+        } catch (err) {
+            console.error('Error loadData', err);
+        }
+        };
 
 
-                                        loadData();
+        loadData();
 
-                                    }, []);
+    }, []);
                             </pre>
 
                             </div>
@@ -1026,9 +1026,9 @@
                             <p class="text-warning">Use this script to have a console for websites on mobile. Just put
                                 it in the website footer:</p>
                             <pre class="text-white">
-                        &lt;script src="https://cdn.jsdelivr.net/npm/eruda"&gt;&lt;/script&gt;
-                        &lt;script&gt;eruda.init();&lt;/script&gt;
-                        </pre>
+&lt;script src="https://cdn.jsdelivr.net/npm/eruda"&gt;&lt;/script&gt;
+&lt;script&gt;eruda.init();&lt;/script&gt;
+                             </pre>
 
                             <p class="text-warning">windows+prntscrren - ctrl+v in whatsapp methodology</p>
                             <hr>
@@ -1119,27 +1119,27 @@
                         <p>It is used with multi open links or link by link when using routes to
                             see links and choose only used links to test or open all links</p>
                         <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
-                            $(document).ready(function(){
-                            if (window.location.href.includes(&quot;localhost/&quot;)) {
-                            setTimeout(function() {
-                            // Check if the body does not contain any tables
-                            if ($(&#39;body&#39;).find(&#39;table&#39;).length === 0) {
-                            $(&#39;form&#39;).each(function() {
-                            var action = $(this).attr(&#39;action&#39;);
-                            var method = $(this).attr(&#39;method&#39;);
+$(document).ready(function(){
+if (window.location.href.includes(&quot;localhost/&quot;)) {
+setTimeout(function() {
+// Check if the body does not contain any tables
+if ($(&#39;body&#39;).find(&#39;table&#39;).length === 0) {
+$(&#39;form&#39;).each(function() {
+var action = $(this).attr(&#39;action&#39;);
+var method = $(this).attr(&#39;method&#39;);
 
-                            if (action !== &quot;&#123;&#123; route(&#39;logout&#39;) &#125;&#125;&quot;) {
-                            $(this).find(&#39;button[type=&quot;submit&quot;]&#39;).not(&#39;.btn.btn-navbar&#39;).each(function()
-                            {
-                            $(this).click(); // Trigger the click event
-                            });
-                            }
-                            });
-                            }
-                            }, 10000); // 10,000 milliseconds = 10 seconds
-                            }
-                            });
-                            &lt;/code&gt;
+if (action !== &quot;&#123;&#123; route(&#39;logout&#39;) &#125;&#125;&quot;) {
+$(this).find(&#39;button[type=&quot;submit&quot;]&#39;).not(&#39;.btn.btn-navbar&#39;).each(function()
+{
+$(this).click(); // Trigger the click event
+});
+}
+});
+}
+}, 10000); // 10,000 milliseconds = 10 seconds
+}
+});
+&lt;/code&gt;
                         </pre>
 
                     </div>
@@ -1303,20 +1303,20 @@
                             <br>
                             <hr class="text-white">
                             <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
-                            .catch((err) => {
-                                if (err.response) {
-                                    console.log("❌ Server Error Details:", err.response.data);
-                                    console.log("Status:", err.response.status);
-                                    console.log("Headers:", err.response.headers);
-                                    alert(`Error ${err.response.status}: ${JSON.stringify(err.response.data)}`);
-                                } else if (err.request) {
-                                    console.log("⚠️ No response from server:", err.request);
-                                    alert("No response from server. Check API link or network.");
-                                } else {
-                                    console.log("⚙️ Error setting up request:", err.message);
-                                    alert(`Error: ${err.message}`);
-                                }
-                            });
+.catch((err) => {
+    if (err.response) {
+        console.log("❌ Server Error Details:", err.response.data);
+        console.log("Status:", err.response.status);
+        console.log("Headers:", err.response.headers);
+        alert(`Error ${err.response.status}: ${JSON.stringify(err.response.data)}`);
+    } else if (err.request) {
+        console.log("⚠️ No response from server:", err.request);
+        alert("No response from server. Check API link or network.");
+    } else {
+        console.log("⚙️ Error setting up request:", err.message);
+        alert(`Error: ${err.message}`);
+    }
+});
                             </pre>
 
 
