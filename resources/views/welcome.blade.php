@@ -1208,37 +1208,37 @@ $(this).click(); // Trigger the click event
                             <hr class="text-white">
 
                             <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
-                                if (App::environment('local')) {
-                                Route::get(&#39;routes&#39;, function () {
-                                $routeCollection = Route::getRoutes();
+if (App::environment('local')) {
+Route::get(&#39;routes&#39;, function () {
+$routeCollection = Route::getRoutes();
 
-                                echo &quot;&lt;table style=&#39;width:100%; border: 1px solid black; border-collapse:
-                                collapse;&#39;&gt;&quot;;
-                                echo &quot;&lt;tr&gt;&quot;;
-                                echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;HTTP
-                                Method&lt;/th&gt;&quot;;
-                                echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Route&lt;/th&gt;&quot;;
-                                echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Name&lt;/th&gt;&quot;;
-                                echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Corresponding
-                                Action&lt;/th&gt;&quot;;
-                                echo &quot;&lt;/tr&gt;&quot;;
+echo &quot;&lt;table style=&#39;width:100%; border: 1px solid black; border-collapse:
+collapse;&#39;&gt;&quot;;
+echo &quot;&lt;tr&gt;&quot;;
+echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;HTTP
+Method&lt;/th&gt;&quot;;
+echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Route&lt;/th&gt;&quot;;
+echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Name&lt;/th&gt;&quot;;
+echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Corresponding
+Action&lt;/th&gt;&quot;;
+echo &quot;&lt;/tr&gt;&quot;;
 
-                                foreach ($routeCollection as $value) {
-                                echo &quot;&lt;tr&gt;&quot;;
-                                echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; .
-                                $value-&gt;methods()[0] . &quot;&lt;/td&gt;&quot;;
-                                echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; . $value-&gt;uri()
-                                . &quot;&lt;/td&gt;&quot;;
-                                echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; .
-                                ($value-&gt;getName() ?? &#39;N/A&#39;) . &quot;&lt;/td&gt;&quot;;
-                                echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; .
-                                $value-&gt;getActionName() . &quot;&lt;/td&gt;&quot;;
-                                echo &quot;&lt;/tr&gt;&quot;;
-                                }
+foreach ($routeCollection as $value) {
+echo &quot;&lt;tr&gt;&quot;;
+echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; .
+$value-&gt;methods()[0] . &quot;&lt;/td&gt;&quot;;
+echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; . $value-&gt;uri()
+. &quot;&lt;/td&gt;&quot;;
+echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; .
+($value-&gt;getName() ?? &#39;N/A&#39;) . &quot;&lt;/td&gt;&quot;;
+echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; .
+$value-&gt;getActionName() . &quot;&lt;/td&gt;&quot;;
+echo &quot;&lt;/tr&gt;&quot;;
+}
 
-                                echo &quot;&lt;/table&gt;&quot;;
-                                });
-                                }
+echo &quot;&lt;/table&gt;&quot;;
+});
+}
 
                             </pre>
                             <br>
