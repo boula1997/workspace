@@ -1245,27 +1245,27 @@
                             <hr class="text-white">
 
                            <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
-                                &#123;
-                                &quot;name&quot;: &quot;John Doe&quot;,
-                                &quot;phone&quot;: &quot;+201234567890&quot;,
-                                &quot;email&quot;: &quot;john.doe@example.com&quot;,
-                                &quot;address&quot;: &quot;1234 Main St, Cairo, Egypt&quot;,
-                                &quot;totalPrice&quot;: 150.00,
-                                &quot;items&quot;: [
-                                &#123;
-                                &quot;id&quot;: 1,
-                                &quot;qty&quot;: 2,
-                                &quot;totalPrice&quot;: 50.00,
-                                &quot;for_agency&quot;: 1
-                                &#125;,
-                                &#123;
-                                &quot;id&quot;: 2,
-                                &quot;qty&quot;: 1,
-                                &quot;totalPrice&quot;: 50.00,
-                                &quot;for_agency&quot;: 0
-                                &#125;
-                                ]
-                                &#125;
+&#123;
+&quot;name&quot;: &quot;John Doe&quot;,
+&quot;phone&quot;: &quot;+201234567890&quot;,
+&quot;email&quot;: &quot;john.doe@example.com&quot;,
+&quot;address&quot;: &quot;1234 Main St, Cairo, Egypt&quot;,
+&quot;totalPrice&quot;: 150.00,
+&quot;items&quot;: [
+&#123;
+&quot;id&quot;: 1,
+&quot;qty&quot;: 2,
+&quot;totalPrice&quot;: 50.00,
+&quot;for_agency&quot;: 1
+&#125;,
+&#123;
+&quot;id&quot;: 2,
+&quot;qty&quot;: 1,
+&quot;totalPrice&quot;: 50.00,
+&quot;for_agency&quot;: 0
+&#125;
+]
+&#125;
                             </pre>
                             <br>
                             <hr class="text-white">
