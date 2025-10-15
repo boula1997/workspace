@@ -1155,7 +1155,7 @@
                             <p title="auto fill password">cls</p>
                             <br>
                             <hr class="text-white">
-                             <textarea name="" id="" cols="30" rows="10">
+                             <textarea name="" readonly id="" cols="100" rows="50">
                                                             🚀 عايز موقع أو تطبيق موبايل احترافي ومبرمج خصيصًا لمشروعك؟
                             احنا في Yousab Tech بنصمم ونبرمج مواقع وتطبيقات موبايل برمجة خاصة بالكامل باستخدام Laravel + React و React Native
                             مش قوالب جاهزة – كل مشروع بيتبني من الصفر حسب نشاطك واحتياجاتك 💪
