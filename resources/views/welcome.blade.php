@@ -1155,7 +1155,7 @@ $(this).click(); // Trigger the click event
                             <p title="auto fill password">cls</p>
                             <br>
                             <hr class="text-white">
-                             <textarea name="" readonly id="" cols="25" rows="50">
+                             <textarea name="" readonly id="" cols="100" rows="25">
 🚀 عايز موقع أو تطبيق موبايل احترافي ومبرمج خصيصًا لمشروعك؟
 احنا في Yousab Tech بنصمم ونبرمج مواقع وتطبيقات موبايل برمجة خاصة بالكامل باستخدام Laravel + React و React Native
 مش قوالب جاهزة – كل مشروع بيتبني من الصفر حسب نشاطك واحتياجاتك 💪
@@ -1178,7 +1178,7 @@ $(this).click(); // Trigger the click event
                              </textarea>
                             <br>
                             <hr class="text-white">
-                             <textarea name="" readonly id="" cols="20" rows="50">
+                             <textarea name="" readonly id="" cols="100" rows="20">
 اتفضل مع حضرتك المهندس بولا نسيم، خبرة أكتر من 5 سنين في برمجة مواقع الويب وتطبيقات الموبايل.
 بستخدم Laravel + React للويب وReact Native للموبايل علشان أضمن لك السرعة، الأداء العالي، وجودة في محركات البحث (SEO).
 هنفذ لك المطلوب بسرعة وجودة ممتازة بإذن الله.
