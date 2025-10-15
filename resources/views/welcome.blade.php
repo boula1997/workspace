@@ -685,7 +685,7 @@
                                 <h2 class="text-white mt-4">Laravel Backend Part</h2>
 
                                 <h5 class="text-white mt-3">Routes (web.php or api.php):</h5>
-                                <textarea readonly class="bg-dark text-white p-3 rounded border">
+                                <pre class="bg-dark text-white p-3 rounded border">
                                 use App\Http\Controllers\API\ActionController;
 
                                 Route::post('/postFunction', [ActionController::class, 'postFunction']);
@@ -693,9 +693,9 @@
                                 </pre>
 
                                 <h5 class="text-white mt-4">Controller:
-                                    <textarea readonly>app/Http/Controllers/API/ActionController.php</pre>
+                                    <pre>app/Http/Controllers/API/ActionController.php</pre>
                                 </h5>
-                                <textarea readonly class="bg-dark text-white p-3 rounded border overflow-auto">
+                                <pre class="bg-dark text-white p-3 rounded border overflow-auto">
                                 &lt;?php
 
                                 namespace App\Http\Controllers\API;
@@ -753,7 +753,7 @@
                                 <h2 class="text-white mt-5">React or React Native Frontend Part</h2>
 
                                 <h5 class="text-white mt-4">POST Request Example</h5>
-                                <textarea readonly class="bg-dark text-white p-3 rounded border">
+                                <pre class="bg-dark text-white p-3 rounded border">
                                 npm install @react-native-async-storage/async-storage
                                 expo install expo-image-picker
                                 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -917,7 +917,7 @@
                             </pre>
 
                                 <h5 class="text-white mt-4">GET Request Example</h5>
-                                <textarea readonly class="bg-dark text-white p-3 rounded border">
+                                <pre class="bg-dark text-white p-3 rounded border">
                                 npm install @react-native-async-storage/async-storage
                                 import AsyncStorage from "@react-native-async-storage/async-storage";
                                 import React, { useEffect, useRef, useState } from "react";
@@ -1025,7 +1025,7 @@
                             <hr>
                             <p class="text-warning">Use this script to have a console for websites on mobile. Just put
                                 it in the website footer:</p>
-                            <textarea readonly class="text-white">
+                            <pre class="text-white">
                         &lt;script src="https://cdn.jsdelivr.net/npm/eruda"&gt;&lt;/script&gt;
                         &lt;script&gt;eruda.init();&lt;/script&gt;
                         </pre>
@@ -1118,7 +1118,7 @@
                         <p class="text-warning">Testing script: to continously submit forms and see validations</p>
                         <p>It is used with multi open links or link by link when using routes to
                             see links and choose only used links to test or open all links</p>
-                        <textarea readonly style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
+                        <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
                             $(document).ready(function(){
                             if (window.location.href.includes(&quot;localhost/&quot;)) {
                             setTimeout(function() {
@@ -1155,8 +1155,8 @@
                             <p title="auto fill password">cls</p>
                             <br>
                             <hr class="text-white">
-                            <textarea readonly style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
-                             🚀 عايز موقع أو تطبيق موبايل احترافي ومبرمج خصيصًا لمشروعك؟
+                             <textarea name="" id="" cols="30" rows="10">
+                                                            🚀 عايز موقع أو تطبيق موبايل احترافي ومبرمج خصيصًا لمشروعك؟
                             احنا في Yousab Tech بنصمم ونبرمج مواقع وتطبيقات موبايل برمجة خاصة بالكامل باستخدام Laravel + React و React Native
                             مش قوالب جاهزة – كل مشروع بيتبني من الصفر حسب نشاطك واحتياجاتك 💪
 
@@ -1173,7 +1173,7 @@
 
                             📞 تواصل معنا مباشرة على واتساب:
                             👉 https://wa.me/+201208050298
-                            </pre>
+                             </textarea>
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">
@@ -1191,7 +1191,7 @@
                             <br>
                             <hr class="text-white">
 
-                            <textarea readonly style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
+                            <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
                                 if (App::environment('local')) {
                                 Route::get(&#39;routes&#39;, function () {
                                 $routeCollection = Route::getRoutes();
@@ -1228,7 +1228,7 @@
                             <br>
                             <hr class="text-white">
 
-                           <textarea readonly style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
+                           <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
                                 &#123;
                                 &quot;name&quot;: &quot;John Doe&quot;,
                                 &quot;phone&quot;: &quot;+201234567890&quot;,
@@ -1286,7 +1286,7 @@
                             <p title="auto fill password">Pa$$w0rd!</p>
                             <br>
                             <hr class="text-white">
-                            <textarea readonly style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
+                            <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
                             .catch((err) => {
                                 if (err.response) {
                                     console.log("❌ Server Error Details:", err.response.data);
