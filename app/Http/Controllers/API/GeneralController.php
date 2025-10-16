@@ -710,6 +710,8 @@ public function index($dbname, $table)
 
 public function tableNames($dbname)
 {
+    $user = auth()->user(); // current logged in user
+
     // Step 0: Get DB credentials
     $credential = DBCredential::where('db_name', $dbname)->first();
 
@@ -752,15 +754,23 @@ public function tableNames($dbname)
         $blockedTables = collect();
     }
 
-    // Step 4: Filter tables
+    // Step 4: Filter tables by blocked and translations
     $filteredTables = $allTables
         ->diff($blockedTables)
         ->reject(function ($table) {
             return str_contains($table, '_translation');
-        })
-        ->values();
+        });
 
-    // Step 5: Return as array of objects
+    // Step 5: Filter tables by user permissions
+    $filteredTables = $filteredTables->filter(function ($table) use ($user) {
+        // Convert table name to permission name, e.g. admins -> admin-list
+        // Customize this logic based on your permission naming conventions
+        $permissionName = str_replace('_', '-', $table) . '-list';
+
+        return $user->can($permissionName);
+    })->values();
+
+    // Step 6: Format output
     $structuredTables = $filteredTables->map(function ($table) {
         return ['TABLE_NAME' => $table];
     });
@@ -774,13 +784,14 @@ public function tableNames($dbname)
 
 
 
-                public function databases()
-                {
-                    return response()->json([
-                        'success' => trans('general.sent_successfully'),
-                        'databases' => databases(),
-                    ]);
-                }
+
+    public function databases()
+    {
+        return response()->json([
+            'success' => trans('general.sent_successfully'),
+            'databases' => databases(),
+        ]);
+    }
 
 
 
