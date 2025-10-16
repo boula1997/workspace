@@ -710,8 +710,6 @@ public function index($dbname, $table)
 
 public function tableNames($dbname)
 {
-    $user = auth("admin-api")->user(); // current logged in user
-
     // Step 0: Get DB credentials
     $credential = DBCredential::where('db_name', $dbname)->first();
 
@@ -754,22 +752,15 @@ public function tableNames($dbname)
         $blockedTables = collect();
     }
 
-    // Step 4: Filter tables by blocked and translations
+    // Step 4: Filter tables
     $filteredTables = $allTables
         ->diff($blockedTables)
         ->reject(function ($table) {
             return str_contains($table, '_translation');
-        });
+        })
+        ->values();
 
-    // Step 5: Filter tables by user permissions
-    $filteredTables = $filteredTables->filter(function ($table) use ($user) {
-        // Convert table name to singular and replace underscores with hyphens
-        $permissionName = Str::singular(str_replace('_', '-', $table)) . '-list';
-
-        return $user->can($permissionName);
-    })->values();
-
-    // Step 6: Format output
+    // Step 5: Return as array of objects
     $structuredTables = $filteredTables->map(function ($table) {
         return ['TABLE_NAME' => $table];
     });
@@ -779,7 +770,6 @@ public function tableNames($dbname)
         'tables' => $structuredTables,
     ]);
 }
-
 
 
 
