@@ -710,7 +710,7 @@ public function index($dbname, $table)
 
 public function tableNames($dbname)
 {
-    $user = auth()->user(); // current logged in user
+    $user = auth("admin-api")->user(); // current logged in user
 
     // Step 0: Get DB credentials
     $credential = DBCredential::where('db_name', $dbname)->first();
