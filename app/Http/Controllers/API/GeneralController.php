@@ -763,9 +763,8 @@ public function tableNames($dbname)
 
     // Step 5: Filter tables by user permissions
     $filteredTables = $filteredTables->filter(function ($table) use ($user) {
-        // Convert table name to permission name, e.g. admins -> admin-list
-        // Customize this logic based on your permission naming conventions
-        $permissionName = str_replace('_', '-', $table) . '-list';
+        // Convert table name to singular and replace underscores with hyphens
+        $permissionName = Str::singular(str_replace('_', '-', $table)) . '-list';
 
         return $user->can($permissionName);
     })->values();
