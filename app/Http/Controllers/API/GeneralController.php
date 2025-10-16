@@ -69,9 +69,14 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         if (in_array($column, ['image', 'images'])) continue; // Skip files for now
 
         if ($request->has($column)) {
-            $data[$column] = $request->input($column);
-        } elseif (!$itemId) {
-            $data[$column] = null;
+            $value = $request->input($column);
+
+            // If the column is 'password', hash it before storing
+            if ($column === 'password' && !empty($value)) {
+                $data[$column] = \Illuminate\Support\Facades\Hash::make($value);
+            } else {
+                $data[$column] = $value;
+            }
         }
     }
 
