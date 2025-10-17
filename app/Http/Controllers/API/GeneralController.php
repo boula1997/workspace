@@ -616,6 +616,16 @@ public function index($dbname, $table)
         $dataQuery->addSelect($translatedSelects);
     }
 
+
+    // ✅ Fetch mapping table rows (same logic as in showEditCreate)
+$mappingRows = DB::connection('dynamic')->table('mapping')
+    ->select('attribute_id', 'table_name', 'title_name')
+    ->whereNotNull('attribute_id')
+    ->whereNotNull('table_name')
+    ->whereNotNull('title_name')
+    ->get()
+    ->keyBy('attribute_id');
+
     // 5. Dynamic joins for *_id fields
     // Get list of all tables in the DB
     $tablesList = DB::connection('dynamic')->select("SHOW TABLES");
@@ -628,7 +638,16 @@ public function index($dbname, $table)
         if (!Str::endsWith($colName, '_id')) continue;
 
         $relatedKey = $colName; // e.g. product_id
-        $relatedBase = Str::plural(str_replace('_id', '', $relatedKey)); // e.g. products
+        // Try to use mapping first
+        if ($mappingRows->has($colName)) {
+            $map = $mappingRows->get($colName);
+            $relatedBase = $map->table_name;   // From mapping
+            $displayFieldOverride = $map->title_name;
+        } else {
+            $relatedBase = Str::plural(str_replace('_id', '', $relatedKey));
+            $displayFieldOverride = null;
+        }
+
         if (!in_array($relatedBase, $tablesList)) {
             continue;
         }
@@ -649,10 +668,11 @@ public function index($dbname, $table)
         ", [$dbName, $relatedBase]);
         $relCols = collect($relCols)->pluck('COLUMN_NAME')->toArray();
         // Try to find the best "display column" in related base table
-        $displayCandidates = ['title', 'name', 'full_name', 'label'];
-        $baseDisplayCol = collect($displayCandidates)->first(function ($col) use ($relCols) {
-            return in_array($col, $relCols);
-        });
+$displayCandidates = ['title', 'name', 'full_name', 'label'];
+
+$baseDisplayCol = $displayFieldOverride
+    ? $displayFieldOverride
+    : collect($displayCandidates)->first(fn($col) => in_array($col, $relCols));
 
         // Same for the translation table, if exists
         $transDisplayCol = null;
