@@ -279,43 +279,40 @@ public function showEditCreate($dbname, $table, $itemId = null)
     ];
 
     // Step 4: Prepare related dropdown options for foreign keys
-    $relatedOptions = [];
+// Step 4: Prepare related dropdown options for foreign keys
+$relatedOptions = [];
 
-// Define your _id mapping configuration here
-$customIdMappings = [
-    'attribute_id' => [
-        'table_name' => 'admins',
-        'title_name' => 'name',
-    ],
-    'pharmacist_id' => [
-        'table_name' => 'pharmacists',
-        'title_name' => 'name',
-    ],
-    // Add more as needed...
-];
+// Fetch all mappings from the 'mapping' table
+$mappingRows = DB::connection('dynamic')->table('mapping')
+    ->select('attribute_id', 'table_name', 'title_name')
+    ->whereNotNull('attribute_id')
+    ->get()
+    ->keyBy('attribute_id'); // So we can easily lookup by attribute_id
 
 foreach ($columns as $col) {
     $colName = $col['COLUMN_NAME'];
 
     if (Str::endsWith($colName, '_id')) {
-        // Check if this column has a custom mapping
-        if (array_key_exists($colName, $customIdMappings)) {
-            $tableName = $customIdMappings[$colName]['table_name'];
-            $titleColumn = $customIdMappings[$colName]['title_name'];
+        // Check for mapping
+        if ($mappingRows->has($colName)) {
+            $map = $mappingRows->get($colName);
 
-            if (!Schema::connection('dynamic')->hasTable($tableName)) {
+            $mappedTable = $map->table_name;
+            $labelField = $map->title_name;
+
+            if (!Schema::connection('dynamic')->hasTable($mappedTable)) {
                 continue;
             }
 
-            $relatedData = DB::connection('dynamic')->table($tableName)
-                ->select('id', DB::raw("`$titleColumn` as label"))
+            $relatedData = DB::connection('dynamic')->table($mappedTable)
+                ->select('id', DB::raw("`$labelField` as label"))
                 ->get();
 
             $relatedOptions[$colName] = $relatedData;
-            continue; // Skip the default logic if mapped
+            continue; // Skip fallback logic
         }
 
-        // Fallback to default logic if no mapping exists
+        // Fallback logic (what you already had)
         $baseTable = Str::plural(Str::beforeLast($colName, '_id'));
         $singular = Str::singular($baseTable);
         $translationTable = "{$singular}_translations";
@@ -327,7 +324,7 @@ foreach ($columns as $col) {
         $mainColumns = Schema::connection('dynamic')->getColumnListing($baseTable);
 
         // Try to find a label column in the main table
-        $labelColumn = collect(['title', 'name'])
+        $labelColumn = collect(['title','name'])
             ->first(fn($field) => in_array($field, $mainColumns));
 
         if ($labelColumn) {
@@ -337,7 +334,7 @@ foreach ($columns as $col) {
         } elseif (Schema::connection('dynamic')->hasTable($translationTable)) {
             $translationColumns = Schema::connection('dynamic')->getColumnListing($translationTable);
 
-            $translationLabel = collect(['title', 'name'])->first(function ($field) use ($translationColumns) {
+            $translationLabel = collect(['title','name'])->first(function ($field) use ($translationColumns) {
                 return in_array($field, $translationColumns);
             });
 
@@ -361,7 +358,6 @@ foreach ($columns as $col) {
         $relatedOptions[$colName] = $relatedData;
     }
 }
-
 
     // Step 5: Handle translation columns - always add these for create & edit
     $translationTable = Str::singular($table) . '_translations';
