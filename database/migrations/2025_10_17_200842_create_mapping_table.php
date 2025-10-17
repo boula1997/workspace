@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("attribute_id");
             $table->string("table_name");
             $table->string("title_name");
+            $table->string("type")->nullable();
             $table->timestamps();
         });
     }
