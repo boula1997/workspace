@@ -259,7 +259,9 @@ class GeneralController extends Controller
             WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
         ", [$dbName, $table]);
 
-        $columns = collect($columns)->map(function ($col) {
+        $columns = collect($columns)->filter(function ($col) {
+            return strtolower(trim($col->COLUMN_COMMENT)) !== 'hide'; // Exclude hidden
+        })->map(function ($col) {
             return [
                 'COLUMN_NAME' => $col->COLUMN_NAME,
                 'DATA_TYPE' => $col->DATA_TYPE,
