@@ -688,6 +688,7 @@ class GeneralController extends Controller
 
             $relatedKey = $colName;
 
+            // 6.1 Check override from `mapping` table
             if ($mappingRows->has($colName)) {
                 $map = $mappingRows->get($colName);
                 $relatedBase = $map->table_name;
@@ -698,20 +699,15 @@ class GeneralController extends Controller
             }
 
             if (!in_array($relatedBase, $tablesList)) {
-                // Related table doesn't exist — skip
                 continue;
             }
 
-            $aliasTitle = $relatedKey; // Use same name as alias for display in results
+            $aliasTitle = $relatedKey;
 
-            // Join the base related table
+            // 6.2 Join base related table
             $dataQuery->leftJoin($relatedBase, "$relatedBase.id", '=', "$table.$relatedKey");
 
-            // See if this related table has its own translation table
-            $relatedTrans = Str::singular($relatedBase) . '_translations';
-            $hasRelTrans = in_array($relatedTrans, $tablesList);
-
-            // Get the columns of the base related table
+            // 6.3 Get columns of base table
             $relCols = DB::connection('dynamic')->select("
                 SELECT COLUMN_NAME
                 FROM INFORMATION_SCHEMA.COLUMNS
@@ -720,14 +716,26 @@ class GeneralController extends Controller
             $relCols = collect($relCols)->pluck('COLUMN_NAME')->toArray();
 
             $displayCandidates = ['title', 'name', 'full_name', 'label'];
-            $baseDisplayCol = $displayFieldOverride
-                ? $displayFieldOverride
-                : collect($displayCandidates)->first(fn($d) => in_array($d, $relCols));
-
+            $baseDisplayCol = $displayFieldOverride ?: collect($displayCandidates)->first(fn($d) => in_array($d, $relCols));
             $transDisplayCol = null;
 
+            // 6.4 Attempt to load from `mapping_translations` table first
+            $customTransMapping = DB::connection('dynamic')
+                ->table('mapping_translations')
+                ->where('attribute_id', $relatedKey)
+                ->first();
+
+            if ($customTransMapping) {
+                $relatedTrans = $customTransMapping->translation_table;
+                $foreignKeyInRelTrans = $customTransMapping->foreign_key ?? Str::snake($relatedKey);
+                $hasRelTrans = in_array($relatedTrans, $tablesList);
+            } else {
+                $relatedTrans = Str::singular($relatedBase) . '_translations';
+                $hasRelTrans = in_array($relatedTrans, $tablesList);
+            }
+
+            // 6.5 Join related translation table if exists
             if ($hasRelTrans) {
-                // Get translation table columns
                 $transCols = DB::connection('dynamic')->select("
                     SELECT COLUMN_NAME
                     FROM INFORMATION_SCHEMA.COLUMNS
@@ -737,33 +745,12 @@ class GeneralController extends Controller
 
                 $transDisplayCol = collect($displayCandidates)->first(fn($d) => in_array($d, $transCols));
 
-                // Find the correct foreign key column dynamically
-                $possibleForeignKeys = collect($transCols)
-                    ->filter(fn($col) => Str::endsWith($col, '_id'));
-
-                $singularRelated = Str::singular($relatedBase);
-                $snakeSingular = Str::snake($singularRelated);
-                $camelSingular = lcfirst(Str::studly($singularRelated));
-
-                // Use the actual FK column (e.g., paymentMethod_id) to guess correct snake_case foreign key in translation table
-                $expectedForeignKeyInRelTrans = Str::snake($relatedKey);
-
-                if (in_array($expectedForeignKeyInRelTrans, $transCols)) {
-                    $foreignKeyInRelTrans = $expectedForeignKeyInRelTrans;
-                } else {
-                    // Fallback: find based on prefix or take first *_id
-                    $foreignKeyInRelTrans = $possibleForeignKeys->first(function ($col) use ($snakeSingular, $camelSingular) {
-                        return Str::startsWith($col, $snakeSingular) || Str::startsWith($col, $camelSingular);
-                    }) ?? $possibleForeignKeys->first();
-                }
-
-
-                // fallback to first *_id column if none found
-                if (!$foreignKeyInRelTrans) {
+                if (!isset($foreignKeyInRelTrans)) {
+                    $possibleForeignKeys = collect($transCols)->filter(fn($col) => Str::endsWith($col, '_id'));
                     $foreignKeyInRelTrans = $possibleForeignKeys->first();
                 }
 
-                // Join translation table on related entity with correct FK
+                // Join translations
                 $dataQuery->leftJoin($relatedTrans, function ($join) use ($relatedTrans, $relatedBase, $locale, $foreignKeyInRelTrans) {
                     $join->on("$relatedTrans.$foreignKeyInRelTrans", '=', "$relatedBase.id")
                         ->where("$relatedTrans.locale", $locale);
@@ -777,10 +764,10 @@ class GeneralController extends Controller
                     $dataQuery->addSelect("$relatedTrans.$transDisplayCol as $aliasTitle");
                 }
             } elseif ($baseDisplayCol) {
-                // No translation table, just use base display column
                 $dataQuery->addSelect("$relatedBase.$baseDisplayCol as $aliasTitle");
             }
         }
+
 
         // 7. Apply filters from request query parameters
         foreach (request()->query() as $key => $value) {
