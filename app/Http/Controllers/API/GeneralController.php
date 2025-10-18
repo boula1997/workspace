@@ -720,9 +720,10 @@ class GeneralController extends Controller
             $transDisplayCol = null;
 
             // 6.4 Attempt to load from `mapping_translations` table first
+            $normalizedAttrId = Str::snake($relatedKey);
             $customTransMapping = DB::connection('dynamic')
                 ->table('mapping_translations')
-                ->where('attribute_id', $relatedKey)
+                ->where('attribute_id', $normalizedAttrId)
                 ->first();
 
             if ($customTransMapping) {
