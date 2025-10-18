@@ -558,258 +558,273 @@ class GeneralController extends Controller
     }
 
 
-public function index($dbname, $table)
-{
-    // Step 0: DB credentials + dynamic connection
-    $credential = DBCredential::where('db_name', $dbname)->first();
-    $dbHost = $credential->db_host ?? '192.185.41.219';
-    $dbName = $credential->db_name ?? 'automation';
-    $dbUser = $credential->db_username ?? 'root';
-    $dbPass = $credential->db_password ?? '';
+    public function index($dbname, $table)
+    {
+        // Step 0: DB credentials + dynamic connection
+        $credential = DBCredential::where('db_name', $dbname)->first();
+        $dbHost = $credential->db_host ?? '192.185.41.219';
+        $dbName = $credential->db_name ?? 'automation';
+        $dbUser = $credential->db_username ?? 'root';
+        $dbPass = $credential->db_password ?? '';
 
-    config([
-        'database.connections.dynamic' => [
-            'driver' => 'mysql',
-            'host' => $dbHost,
-            'database' => $dbName,
-            'username' => $dbUser,
-            'password' => $dbPass,
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-        ],
-    ]);
-    DB::purge('dynamic');
-    DB::reconnect('dynamic');
-    DB::connection('dynamic')->statement('USE ' . $dbName);
+        config([
+            'database.connections.dynamic' => [
+                'driver' => 'mysql',
+                'host' => $dbHost,
+                'database' => $dbName,
+                'username' => $dbUser,
+                'password' => $dbPass,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+            ],
+        ]);
+        DB::purge('dynamic');
+        DB::reconnect('dynamic');
+        DB::connection('dynamic')->statement('USE ' . $dbName);
 
-    // 1. Get base columns of the main table
-    $columns = DB::connection('dynamic')->select("
-        SELECT COLUMN_NAME, DATA_TYPE
-        FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
-    ", [$dbName, $table]);
-    $columns = collect($columns)->map(fn($c) => (array)$c)->toArray();
-
-    // 2. Setup translation for main table if exists
-    $translationTable = Str::singular($table) . '_translations';
-    $locale = request('locale', 'en');
-    $hasMainTranslation = Schema::connection('dynamic')->hasTable($translationTable);
-
-    $translatedSelects = [];
-    // Build the base query (we’ll add joins later)
-    $dataQuery = DB::connection('dynamic')->table($table)->select("$table.*");
-
-    if ($hasMainTranslation) {
-        // Get translation table columns
-        $translationCols = DB::connection('dynamic')->select("
-            SELECT COLUMN_NAME
+        // 1. Get base columns of the main table
+        $columns = DB::connection('dynamic')->select("
+            SELECT COLUMN_NAME, DATA_TYPE
             FROM INFORMATION_SCHEMA.COLUMNS
             WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
-        ", [$dbName, $translationTable]);
-        $translationCols = collect($translationCols)->pluck('COLUMN_NAME')->toArray();
+        ", [$dbName, $table]);
+        $columns = collect($columns)->map(fn($c) => (array)$c)->toArray();
 
-        // Detect foreign key column in translation table
-        $possibleForeignKeys = collect($translationCols)
-            ->filter(fn($col) => Str::endsWith($col, '_id') && $col !== 'id');
+        // 2. Setup translation for main table if exists
+        $translationTable = Str::singular($table) . '_translations';
+        $locale = request('locale', 'en');
+        $hasMainTranslation = Schema::connection('dynamic')->hasTable($translationTable);
 
-        // Normalize the main table name into snake_case singular
-        $singularSnake = Str::snake(Str::singular($table));
+        $translatedSelects = [];
+        // Build the base query (we’ll add joins later)
+        $dataQuery = DB::connection('dynamic')->table($table)->select("$table.*");
 
-        $foreignKey = $possibleForeignKeys
-            ->first(fn($col) => Str::startsWith($col, $singularSnake))
-            ?? $possibleForeignKeys->first();
-
-        if (!$foreignKey) {
-            $foreignKey = $singularSnake . '_id';
-        }
-
-        // Join translation table on the detected foreign key
-        $dataQuery->leftJoin(
-            $translationTable,
-            "$translationTable.$foreignKey",
-            '=',
-            "$table.id"
-        )
-        ->where("$translationTable.locale", $locale);
-
-        // Add each translatable column to SELECT
-        foreach ($translationCols as $col) {
-            if (in_array($col, ['id', $foreignKey, 'locale', 'created_at', 'updated_at', 'deleted_at'])) {
-                continue;
-            }
-            $translatedSelects[] = "$translationTable.$col as $col";
-            // Add metadata for front end
-            $columns[] = [
-                'COLUMN_NAME' => $col,
-                'DATA_TYPE' => 'text',
-            ];
-        }
-
-        if (!empty($translatedSelects)) {
-            $dataQuery->addSelect($translatedSelects);
-        }
-    }
-
-    // 3. Add “image” virtual column metadata
-    $columns[] = [
-        'COLUMN_NAME' => 'image',
-        'DATA_TYPE' => 'image',
-    ];
-
-    // 4. Load mapping definitions for foreign keys override if exists
-    $mappingRows = DB::connection('dynamic')->table('mapping')
-        ->select('attribute_id', 'table_name', 'title_name')
-        ->whereNotNull('attribute_id')
-        ->whereNotNull('table_name')
-        ->whereNotNull('title_name')
-        ->get()
-        ->keyBy('attribute_id');
-
-    // 5. Get list of all tables in DB schema
-    $tablesList = DB::connection('dynamic')->select("SHOW TABLES");
-    $tablesList = collect($tablesList)
-        ->map(fn($t) => array_values((array)$t)[0])
-        ->toArray();
-
-    // 6. Handle *_id foreign keys in the main table (join related tables + translations)
-    foreach ($columns as $cmeta) {
-        $colName = $cmeta['COLUMN_NAME'];
-        if (!Str::endsWith($colName, '_id')) {
-            continue;
-        }
-
-        $relatedKey = $colName;
-
-        if ($mappingRows->has($colName)) {
-            $map = $mappingRows->get($colName);
-            $relatedBase = $map->table_name;
-            $displayFieldOverride = $map->title_name;
-        } else {
-            $relatedBase = Str::plural(str_replace('_id', '', $relatedKey));
-            $displayFieldOverride = null;
-        }
-
-        if (!in_array($relatedBase, $tablesList)) {
-            // Related table doesn't exist — skip
-            continue;
-        }
-
-        $aliasTitle = $relatedKey; // Use same name as alias for display in results
-
-        // Join the base related table
-        $dataQuery->leftJoin($relatedBase, "$relatedBase.id", '=', "$table.$relatedKey");
-
-        // See if this related table has its own translation table
-        $relatedTrans = Str::singular($relatedBase) . '_translations';
-        $hasRelTrans = in_array($relatedTrans, $tablesList);
-
-        // Get the columns of the base related table
-        $relCols = DB::connection('dynamic')->select("
-            SELECT COLUMN_NAME
-            FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
-        ", [$dbName, $relatedBase]);
-        $relCols = collect($relCols)->pluck('COLUMN_NAME')->toArray();
-
-        $displayCandidates = ['title', 'name', 'full_name', 'label'];
-        $baseDisplayCol = $displayFieldOverride
-            ? $displayFieldOverride
-            : collect($displayCandidates)->first(fn($d) => in_array($d, $relCols));
-
-        $transDisplayCol = null;
-
-        if ($hasRelTrans) {
+        if ($hasMainTranslation) {
             // Get translation table columns
-            $transCols = DB::connection('dynamic')->select("
+            $translationCols = DB::connection('dynamic')->select("
                 SELECT COLUMN_NAME
                 FROM INFORMATION_SCHEMA.COLUMNS
                 WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
-            ", [$dbName, $relatedTrans]);
-            $transCols = collect($transCols)->pluck('COLUMN_NAME')->toArray();
+            ", [$dbName, $translationTable]);
+            $translationCols = collect($translationCols)->pluck('COLUMN_NAME')->toArray();
 
-            $transDisplayCol = collect($displayCandidates)->first(fn($d) => in_array($d, $transCols));
+            // Detect foreign key column in translation table
+            $possibleForeignKeys = collect($translationCols)
+                ->filter(fn($col) => Str::endsWith($col, '_id') && $col !== 'id');
 
-            // Find the correct foreign key column dynamically
-            $possibleForeignKeys = collect($transCols)
-                ->filter(fn($col) => Str::endsWith($col, '_id'));
+            // Normalize translation table to expected FK name (e.g., PaymentMethod -> payment_method_id)
+            $expectedForeignKey = Str::snake(Str::singular($table)) . '_id';
 
-            $singularRelated = Str::singular($relatedBase);
-            $snakeSingular = Str::snake($singularRelated);
-            $camelSingular = lcfirst(Str::studly($singularRelated));
-
-            $foreignKeyInRelTrans = $possibleForeignKeys->first(function ($col) use ($snakeSingular, $camelSingular) {
-                return Str::startsWith($col, $snakeSingular) || Str::startsWith($col, $camelSingular);
-            });
-
-            // fallback to first *_id column if none found
-            if (!$foreignKeyInRelTrans) {
-                $foreignKeyInRelTrans = $possibleForeignKeys->first();
-            }
-
-            // Join translation table on related entity with correct FK
-            $dataQuery->leftJoin($relatedTrans, function ($join) use ($relatedTrans, $relatedBase, $locale, $foreignKeyInRelTrans) {
-                $join->on("$relatedTrans.$foreignKeyInRelTrans", '=', "$relatedBase.id")
-                    ->where("$relatedTrans.locale", $locale);
-            });
-
-            if ($baseDisplayCol) {
-                $dataQuery->addSelect(
-                    DB::raw("COALESCE($relatedBase.$baseDisplayCol, $relatedTrans.$transDisplayCol) as $aliasTitle")
-                );
+            // Use expectedForeignKey if it exists in translationCols
+            if (in_array($expectedForeignKey, $translationCols)) {
+                $foreignKey = $expectedForeignKey;
             } else {
-                $dataQuery->addSelect("$relatedTrans.$transDisplayCol as $aliasTitle");
+                // fallback: first match based on prefix
+                $foreignKey = $possibleForeignKeys
+                    ->first(fn($col) => Str::startsWith($col, Str::snake(Str::singular($table))))
+                    ?? $possibleForeignKeys->first();
+
+                // Final fallback
+                if (!$foreignKey) {
+                    $foreignKey = $expectedForeignKey;
+                }
             }
-        } elseif ($baseDisplayCol) {
-            // No translation table, just use base display column
-            $dataQuery->addSelect("$relatedBase.$baseDisplayCol as $aliasTitle");
-        }
-    }
 
-    // 7. Apply filters from request query parameters
-    foreach (request()->query() as $key => $value) {
-        if ($key === 'page') {
-            continue;
-        }
-        if (is_array($value) && in_array($key, ['en', 'ar']) && $hasMainTranslation) {
-            foreach ($value as $fld => $val) {
-                $dataQuery->where("$translationTable.$fld", 'like', "%$val%");
+
+            // Join translation table on the detected foreign key
+            $dataQuery->leftJoin(
+                $translationTable,
+                "$translationTable.$foreignKey",
+                '=',
+                "$table.id"
+            )
+            ->where("$translationTable.locale", $locale);
+
+            // Add each translatable column to SELECT
+            foreach ($translationCols as $col) {
+                if (in_array($col, ['id', $foreignKey, 'locale', 'created_at', 'updated_at', 'deleted_at'])) {
+                    continue;
+                }
+                $translatedSelects[] = "$translationTable.$col as $col";
+                // Add metadata for front end
+                $columns[] = [
+                    'COLUMN_NAME' => $col,
+                    'DATA_TYPE' => 'text',
+                ];
             }
-        } else {
-            $dataQuery->where("$table.$key", 'like', "%$value%");
+
+            if (!empty($translatedSelects)) {
+                $dataQuery->addSelect($translatedSelects);
+            }
         }
+
+        // 3. Add “image” virtual column metadata
+        $columns[] = [
+            'COLUMN_NAME' => 'image',
+            'DATA_TYPE' => 'image',
+        ];
+
+        // 4. Load mapping definitions for foreign keys override if exists
+        $mappingRows = DB::connection('dynamic')->table('mapping')
+            ->select('attribute_id', 'table_name', 'title_name')
+            ->whereNotNull('attribute_id')
+            ->whereNotNull('table_name')
+            ->whereNotNull('title_name')
+            ->get()
+            ->keyBy('attribute_id');
+
+        // 5. Get list of all tables in DB schema
+        $tablesList = DB::connection('dynamic')->select("SHOW TABLES");
+        $tablesList = collect($tablesList)
+            ->map(fn($t) => array_values((array)$t)[0])
+            ->toArray();
+
+        // 6. Handle *_id foreign keys in the main table (join related tables + translations)
+        foreach ($columns as $cmeta) {
+            $colName = $cmeta['COLUMN_NAME'];
+            if (!Str::endsWith($colName, '_id')) {
+                continue;
+            }
+
+            $relatedKey = $colName;
+
+            if ($mappingRows->has($colName)) {
+                $map = $mappingRows->get($colName);
+                $relatedBase = $map->table_name;
+                $displayFieldOverride = $map->title_name;
+            } else {
+                $relatedBase = Str::plural(str_replace('_id', '', $relatedKey));
+                $displayFieldOverride = null;
+            }
+
+            if (!in_array($relatedBase, $tablesList)) {
+                // Related table doesn't exist — skip
+                continue;
+            }
+
+            $aliasTitle = $relatedKey; // Use same name as alias for display in results
+
+            // Join the base related table
+            $dataQuery->leftJoin($relatedBase, "$relatedBase.id", '=', "$table.$relatedKey");
+
+            // See if this related table has its own translation table
+            $relatedTrans = Str::singular($relatedBase) . '_translations';
+            $hasRelTrans = in_array($relatedTrans, $tablesList);
+
+            // Get the columns of the base related table
+            $relCols = DB::connection('dynamic')->select("
+                SELECT COLUMN_NAME
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
+            ", [$dbName, $relatedBase]);
+            $relCols = collect($relCols)->pluck('COLUMN_NAME')->toArray();
+
+            $displayCandidates = ['title', 'name', 'full_name', 'label'];
+            $baseDisplayCol = $displayFieldOverride
+                ? $displayFieldOverride
+                : collect($displayCandidates)->first(fn($d) => in_array($d, $relCols));
+
+            $transDisplayCol = null;
+
+            if ($hasRelTrans) {
+                // Get translation table columns
+                $transCols = DB::connection('dynamic')->select("
+                    SELECT COLUMN_NAME
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
+                ", [$dbName, $relatedTrans]);
+                $transCols = collect($transCols)->pluck('COLUMN_NAME')->toArray();
+
+                $transDisplayCol = collect($displayCandidates)->first(fn($d) => in_array($d, $transCols));
+
+                // Find the correct foreign key column dynamically
+                $possibleForeignKeys = collect($transCols)
+                    ->filter(fn($col) => Str::endsWith($col, '_id'));
+
+                $singularRelated = Str::singular($relatedBase);
+                $snakeSingular = Str::snake($singularRelated);
+                $camelSingular = lcfirst(Str::studly($singularRelated));
+
+                $expectedForeignKeyInRelTrans = Str::snake(Str::singular($relatedBase)) . '_id';
+
+                if (in_array($expectedForeignKeyInRelTrans, $transCols)) {
+                    $foreignKeyInRelTrans = $expectedForeignKeyInRelTrans;
+                } else {
+                    $foreignKeyInRelTrans = $possibleForeignKeys->first(function ($col) use ($snakeSingular, $camelSingular) {
+                        return Str::startsWith($col, $snakeSingular) || Str::startsWith($col, $camelSingular);
+                    }) ?? $possibleForeignKeys->first();
+                }
+
+
+                // fallback to first *_id column if none found
+                if (!$foreignKeyInRelTrans) {
+                    $foreignKeyInRelTrans = $possibleForeignKeys->first();
+                }
+
+                // Join translation table on related entity with correct FK
+                $dataQuery->leftJoin($relatedTrans, function ($join) use ($relatedTrans, $relatedBase, $locale, $foreignKeyInRelTrans) {
+                    $join->on("$relatedTrans.$foreignKeyInRelTrans", '=', "$relatedBase.id")
+                        ->where("$relatedTrans.locale", $locale);
+                });
+
+                if ($baseDisplayCol) {
+                    $dataQuery->addSelect(
+                        DB::raw("COALESCE($relatedBase.$baseDisplayCol, $relatedTrans.$transDisplayCol) as $aliasTitle")
+                    );
+                } else {
+                    $dataQuery->addSelect("$relatedTrans.$transDisplayCol as $aliasTitle");
+                }
+            } elseif ($baseDisplayCol) {
+                // No translation table, just use base display column
+                $dataQuery->addSelect("$relatedBase.$baseDisplayCol as $aliasTitle");
+            }
+        }
+
+        // 7. Apply filters from request query parameters
+        foreach (request()->query() as $key => $value) {
+            if ($key === 'page') {
+                continue;
+            }
+            if (is_array($value) && in_array($key, ['en', 'ar']) && $hasMainTranslation) {
+                foreach ($value as $fld => $val) {
+                    $dataQuery->where("$translationTable.$fld", 'like', "%$val%");
+                }
+            } else {
+                $dataQuery->where("$table.$key", 'like', "%$value%");
+            }
+        }
+
+        // 8. Paginate results
+        $paginated = $dataQuery->paginate(10);
+
+        // 9. Add image URL to each record
+        $paginated->getCollection()->transform(function ($item) use ($table) {
+            $row = (array)$item;
+            $fileableType = 'App\\Models\\' . Str::studly(Str::singular($table));
+
+            $img = DB::connection('dynamic')->table('files')
+                ->where('fileable_type', $fileableType)
+                ->where('fileable_id', $row['id'])
+                ->where('isMultiply', 0)
+                ->value('url');
+
+            $row['image'] = $img ? asset($img) : settings()->logo;
+            return (object)$row;
+        });
+
+        // 10. Return JSON response
+        return response()->json([
+            'success' => trans('general.sent_successfully'),
+            'columns' => $columns,
+            'data' => $paginated->items(),
+            'pagination' => [
+                'current_page' => $paginated->currentPage(),
+                'last_page' => $paginated->lastPage(),
+                'per_page' => $paginated->perPage(),
+                'total' => $paginated->total(),
+            ],
+        ]);
     }
-
-    // 8. Paginate results
-    $paginated = $dataQuery->paginate(10);
-
-    // 9. Add image URL to each record
-    $paginated->getCollection()->transform(function ($item) use ($table) {
-        $row = (array)$item;
-        $fileableType = 'App\\Models\\' . Str::studly(Str::singular($table));
-
-        $img = DB::connection('dynamic')->table('files')
-            ->where('fileable_type', $fileableType)
-            ->where('fileable_id', $row['id'])
-            ->where('isMultiply', 0)
-            ->value('url');
-
-        $row['image'] = $img ? asset($img) : settings()->logo;
-        return (object)$row;
-    });
-
-    // 10. Return JSON response
-    return response()->json([
-        'success' => trans('general.sent_successfully'),
-        'columns' => $columns,
-        'data' => $paginated->items(),
-        'pagination' => [
-            'current_page' => $paginated->currentPage(),
-            'last_page' => $paginated->lastPage(),
-            'per_page' => $paginated->perPage(),
-            'total' => $paginated->total(),
-        ],
-    ]);
-}
 
 
 
