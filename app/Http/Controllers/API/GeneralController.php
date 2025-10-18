@@ -763,10 +763,13 @@ if ($hasRelTrans) {
     $transDisplayCol = collect($displayCandidates)->first(fn($d) => in_array($d, $transCols));
 
     // Step 5: Join translation table
-    $dataQuery->leftJoin($relatedTrans, function ($join) use ($relatedTrans, $relatedBase, $locale, $foreignKeyInRelTrans) {
-        $join->on("$relatedTrans.$foreignKeyInRelTrans", '=', "$relatedBase.id")
-            ->where("$relatedTrans.locale", $locale);
-    });
+$translationAlias = $relatedTrans . '_' . $relatedKey; // e.g. 'paymentMethod_translations_paymentMethod_id'
+
+$dataQuery->leftJoin("$relatedTrans as $translationAlias", function ($join) use ($translationAlias, $relatedBase, $foreignKeyInRelTrans, $locale) {
+    $join->on("$translationAlias.$foreignKeyInRelTrans", '=', "$relatedBase.id")
+         ->where("$translationAlias.locale", $locale);
+});
+
 
     if ($baseDisplayCol && $transDisplayCol) {
         $dataQuery->addSelect(
@@ -797,10 +800,13 @@ if ($hasRelTrans) {
                 }
 
                 // Join translations
-                $dataQuery->leftJoin($relatedTrans, function ($join) use ($relatedTrans, $relatedBase, $locale, $foreignKeyInRelTrans) {
-                    $join->on("$relatedTrans.$foreignKeyInRelTrans", '=', "$relatedBase.id")
-                        ->where("$relatedTrans.locale", $locale);
-                });
+$translationAlias = $relatedTrans . '_' . $relatedKey; // e.g. 'paymentMethod_translations_paymentMethod_id'
+
+$dataQuery->leftJoin("$relatedTrans as $translationAlias", function ($join) use ($translationAlias, $relatedBase, $foreignKeyInRelTrans, $locale) {
+    $join->on("$translationAlias.$foreignKeyInRelTrans", '=', "$relatedBase.id")
+         ->where("$translationAlias.locale", $locale);
+});
+
 
                 if ($baseDisplayCol) {
                     $dataQuery->addSelect(
