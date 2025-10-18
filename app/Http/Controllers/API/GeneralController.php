@@ -726,14 +726,59 @@ class GeneralController extends Controller
                 ->where('attribute_id', $normalizedAttrId)
                 ->first();
 
-            if ($customTransMapping) {
-                $relatedTrans = $customTransMapping->translation_table;
-                $foreignKeyInRelTrans = $customTransMapping->foreign_key ?? Str::snake($relatedKey);
-                $hasRelTrans = in_array($relatedTrans, $tablesList);
-            } else {
-                $relatedTrans = Str::singular($relatedBase) . '_translations';
-                $hasRelTrans = in_array($relatedTrans, $tablesList);
-            }
+$relatedTrans = null;
+$foreignKeyInRelTrans = null;
+
+// Step 1: Try to find mapping_translations using the target attribute
+$mappingTransRecord = DB::connection('dynamic')
+    ->table('mapping_translations')
+    ->where('attribute_id', Str::snake($relatedKey))
+    ->first();
+
+if ($mappingTransRecord) {
+    $relatedTrans = $mappingTransRecord->translation_table;
+    $foreignKeyInRelTrans = $mappingTransRecord->foreign_key ?: Str::snake($relatedKey);
+} else {
+    $relatedTrans = Str::singular($relatedBase) . '_translations';
+}
+
+// Step 2: Only continue if the translation table exists
+$hasRelTrans = in_array($relatedTrans, $tablesList);
+
+if ($hasRelTrans) {
+    $transCols = DB::connection('dynamic')->select("
+        SELECT COLUMN_NAME
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
+    ", [$dbName, $relatedTrans]);
+    $transCols = collect($transCols)->pluck('COLUMN_NAME')->toArray();
+
+    // Step 3: Confirm foreign key column in translation table
+    if (!$foreignKeyInRelTrans || !in_array($foreignKeyInRelTrans, $transCols)) {
+        $possibleForeignKeys = collect($transCols)->filter(fn($col) => Str::endsWith($col, '_id'));
+        $foreignKeyInRelTrans = $possibleForeignKeys->first();
+    }
+
+    // Step 4: Determine which translated column to show
+    $transDisplayCol = collect($displayCandidates)->first(fn($d) => in_array($d, $transCols));
+
+    // Step 5: Join translation table
+    $dataQuery->leftJoin($relatedTrans, function ($join) use ($relatedTrans, $relatedBase, $locale, $foreignKeyInRelTrans) {
+        $join->on("$relatedTrans.$foreignKeyInRelTrans", '=', "$relatedBase.id")
+            ->where("$relatedTrans.locale", $locale);
+    });
+
+    if ($baseDisplayCol && $transDisplayCol) {
+        $dataQuery->addSelect(
+            DB::raw("COALESCE($relatedBase.$baseDisplayCol, $relatedTrans.$transDisplayCol) as $aliasTitle")
+        );
+    } elseif ($transDisplayCol) {
+        $dataQuery->addSelect("$relatedTrans.$transDisplayCol as $aliasTitle");
+    }
+} elseif ($baseDisplayCol) {
+    $dataQuery->addSelect("$relatedBase.$baseDisplayCol as $aliasTitle");
+}
+
 
             // 6.5 Join related translation table if exists
             if ($hasRelTrans) {
