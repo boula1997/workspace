@@ -871,7 +871,7 @@ class GeneralController extends Controller
         $filteredTables = $allTables
             ->diff($blockedTables)
             ->reject(function ($table) {
-                return str_contains($table, '_translation');
+                return str_ends_with($table, '_translations') && $table !== 'mapping_translations';
             })
             ->values();
 
