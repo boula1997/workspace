@@ -746,7 +746,7 @@ class GeneralController extends Controller
                 $camelSingular = lcfirst(Str::studly($singularRelated));
 
                 // Use the actual FK column (e.g., paymentMethod_id) to guess correct snake_case foreign key in translation table
-                $expectedForeignKeyInRelTrans = Str::snake(str_replace('_id', '', $relatedKey)) . '_id';
+                $expectedForeignKeyInRelTrans = Str::snake($relatedKey);
 
                 if (in_array($expectedForeignKeyInRelTrans, $transCols)) {
                     $foreignKeyInRelTrans = $expectedForeignKeyInRelTrans;
