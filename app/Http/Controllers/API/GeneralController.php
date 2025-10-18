@@ -377,12 +377,21 @@ class GeneralController extends Controller
             WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
         ", [$dbName, $translationTable]);
 
-            $foreignKey = Str::singular($table) . '_id';
+            $allTranslationCols = collect($transColumns)->pluck('COLUMN_NAME')->toArray();
 
-            $transColumns = collect($transColumns)->pluck('COLUMN_NAME')
+            // Dynamically find the foreign key in the translation table
+            $possibleForeignKeys = collect($allTranslationCols)->filter(fn($col) => Str::endsWith($col, '_id') && $col !== 'id');
+            $foreignKey = $possibleForeignKeys->first(fn($col) => Str::startsWith($col, Str::singular($table))) ?? $possibleForeignKeys->first();
+            if (!$foreignKey) {
+                $foreignKey = Str::singular($table) . '_id'; // fallback
+            }
+
+            // Get only actual translatable columns
+            $transColumns = collect($allTranslationCols)
                 ->reject(fn($col) => in_array($col, ['id', 'locale', $foreignKey, 'created_at', 'updated_at', 'deleted_at']))
                 ->values()
                 ->toArray();
+
 
             // Define supported locales
             $locales = ['en', 'ar'];
@@ -450,11 +459,18 @@ class GeneralController extends Controller
 
         // Step 8: Fetch translations data for this record
         if (Schema::connection('dynamic')->hasTable($translationTable)) {
-            $foreignKey = Str::singular($table) . '_id';
+        $transCols = Schema::connection('dynamic')->getColumnListing($translationTable);
 
-            $translations = DB::connection('dynamic')->table($translationTable)
-                ->where($foreignKey, $itemId)
-                ->get();
+        $possibleForeignKeys = collect($transCols)->filter(fn($col) => Str::endsWith($col, '_id') && $col !== 'id');
+        $foreignKey = $possibleForeignKeys->first(fn($col) => Str::startsWith($col, Str::singular($table))) ?? $possibleForeignKeys->first();
+        if (!$foreignKey) {
+            $foreignKey = Str::singular($table) . '_id';
+        }
+
+        $translations = DB::connection('dynamic')->table($translationTable)
+            ->where($foreignKey, $itemId)
+            ->get();
+
 
             foreach ($translations as $translation) {
                 foreach ($transColumns as $col) {
@@ -640,7 +656,7 @@ class GeneralController extends Controller
                 '=',
                 "$table.id"
             )
-            ->where("$translationTable.locale", $locale);
+                ->where("$translationTable.locale", $locale);
 
             // Add translated columns
             foreach ($translationCols as $col) {
