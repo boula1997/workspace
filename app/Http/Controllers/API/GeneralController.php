@@ -260,13 +260,13 @@ class GeneralController extends Controller
         ", [$dbName, $table]);
 
         $columns = collect($columns)
-            ->filter(fn($col) => strtolower(trim($col->COLUMN_COMMENT)) !== 'hide')
             ->map(fn($col) => [
                 'COLUMN_NAME' => $col->COLUMN_NAME,
                 'DATA_TYPE' => $col->DATA_TYPE,
                 'IS_NULLABLE' => $col->IS_NULLABLE === 'YES',
+                'HIDDEN' => strtolower(trim($col->COLUMN_COMMENT)) === 'hide', // 👈 Add this line
             ])
-            ->values() // ✅ Ensures numeric keys (array, not object)
+            ->values()
             ->toArray();
 
         // Step 3: Add virtual image fields
