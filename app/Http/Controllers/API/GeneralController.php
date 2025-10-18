@@ -610,16 +610,51 @@ class GeneralController extends Controller
         $dataQuery = DB::connection('dynamic')->table($table)->select("$table.*");
 
         if ($hasMainTranslation) {
+            // Get columns of the translation table
+            $translationCols = DB::connection('dynamic')->select("
+                SELECT COLUMN_NAME
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
+            ", [$dbName, $translationTable]);
+
+            $translationCols = collect($translationCols)->pluck('COLUMN_NAME')->toArray();
+
+            // Try to find the correct *_id column (foreign key)
+            $possibleForeignKeys = collect($translationCols)->filter(function ($col) use ($table) {
+                return Str::endsWith($col, '_id') && $col !== 'id';
+            });
+
+            // Try matching the foreign key to main table (more accurate)
+            $foreignKey = $possibleForeignKeys->first(function ($col) use ($table) {
+                return Str::startsWith($col, Str::singular($table));
+            }) ?? $possibleForeignKeys->first(); // fallback
+
+            if (!$foreignKey) {
+                $foreignKey = Str::singular($table) . '_id'; // final fallback
+            }
+
+            // Do the join
             $dataQuery->leftJoin(
                 $translationTable,
-                "$translationTable." . Str::singular($table) . "_id",
+                "$translationTable.$foreignKey",
                 '=',
                 "$table.id"
             )
-                ->where("$translationTable.locale", $locale);
+            ->where("$translationTable.locale", $locale);
 
-            $dataQuery->addSelect($translatedSelects);
+            // Add translated columns
+            foreach ($translationCols as $col) {
+                if (in_array($col, ['id', $foreignKey, 'locale', 'created_at', 'updated_at', 'deleted_at'])) continue;
+                $translatedSelects[] = "$translationTable.$col as $col";
+
+                // Add to columns for frontend
+                $columns[] = [
+                    'COLUMN_NAME' => $col,
+                    'DATA_TYPE' => 'text',
+                ];
+            }
         }
+
 
 
         // ✅ Fetch mapping table rows (same logic as in showEditCreate)
