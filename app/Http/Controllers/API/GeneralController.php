@@ -259,15 +259,15 @@ class GeneralController extends Controller
             WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
         ", [$dbName, $table]);
 
-        $columns = collect($columns)->filter(function ($col) {
-            return strtolower(trim($col->COLUMN_COMMENT)) !== 'hide'; // Exclude hidden
-        })->map(function ($col) {
-            return [
+        $columns = collect($columns)
+            ->filter(fn($col) => strtolower(trim($col->COLUMN_COMMENT)) !== 'hide')
+            ->map(fn($col) => [
                 'COLUMN_NAME' => $col->COLUMN_NAME,
                 'DATA_TYPE' => $col->DATA_TYPE,
                 'IS_NULLABLE' => $col->IS_NULLABLE === 'YES',
-            ];
-        })->toArray();
+            ])
+            ->values() // ✅ Ensures numeric keys (array, not object)
+            ->toArray();
 
         // Step 3: Add virtual image fields
         $columns[] = [
