@@ -745,11 +745,13 @@ class GeneralController extends Controller
                 $snakeSingular = Str::snake($singularRelated);
                 $camelSingular = lcfirst(Str::studly($singularRelated));
 
-                $expectedForeignKeyInRelTrans = Str::snake(Str::singular($relatedBase)) . '_id';
+                // Use the actual FK column (e.g., paymentMethod_id) to guess correct snake_case foreign key in translation table
+                $expectedForeignKeyInRelTrans = Str::snake(str_replace('_id', '', $relatedKey)) . '_id';
 
                 if (in_array($expectedForeignKeyInRelTrans, $transCols)) {
                     $foreignKeyInRelTrans = $expectedForeignKeyInRelTrans;
                 } else {
+                    // Fallback: find based on prefix or take first *_id
                     $foreignKeyInRelTrans = $possibleForeignKeys->first(function ($col) use ($snakeSingular, $camelSingular) {
                         return Str::startsWith($col, $snakeSingular) || Str::startsWith($col, $camelSingular);
                     }) ?? $possibleForeignKeys->first();
