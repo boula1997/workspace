@@ -769,6 +769,7 @@ class GeneralController extends Controller
         }
 
 
+
         // 7. Apply filters from request query parameters
         foreach (request()->query() as $key => $value) {
             if ($key === 'page') {
