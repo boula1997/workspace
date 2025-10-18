@@ -254,10 +254,10 @@ class GeneralController extends Controller
 
         // Step 2: Base table columns
         $columns = DB::connection('dynamic')->select("
-        SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE
-        FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-    ", [$dbName, $table]);
+            SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_COMMENT
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+        ", [$dbName, $table]);
 
         $columns = collect($columns)->map(function ($col) {
             return [
