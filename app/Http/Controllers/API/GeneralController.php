@@ -602,42 +602,19 @@ class GeneralController extends Controller
                 FROM INFORMATION_SCHEMA.COLUMNS
                 WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
             ", [$dbName, $translationTable]);
-
             $translationCols = collect($translationCols)->pluck('COLUMN_NAME')->toArray();
 
-            $possibleForeignKeys = collect($translationCols)->filter(function ($col) {
-                return Str::endsWith($col, '_id') && $col !== 'id';
-            });
-
-            // Normalize table name before using it
-            $singularSnake = Str::snake(Str::singular($table));
-
-            $foreignKey = $possibleForeignKeys->first(function ($col) use ($singularSnake) {
-                return Str::startsWith($col, $singularSnake);
-            }) ?? $possibleForeignKeys->first();
-
-            if (!$foreignKey) {
-                $foreignKey = $singularSnake . '_id'; // fallback
-            }
-
-            $dataQuery->leftJoin(
-                $translationTable,
-                "$translationTable.$foreignKey",
-                '=',
-                "$table.id"
-            )->where("$translationTable.locale", $locale);
-
+            $excluded = ['id', Str::singular($table) . '_id', 'locale', 'created_at', 'updated_at', 'deleted_at'];
             foreach ($translationCols as $col) {
-                if (in_array($col, ['id', $foreignKey, 'locale', 'created_at', 'updated_at', 'deleted_at'])) continue;
-
+                if (in_array($col, $excluded)) continue;
                 $translatedSelects[] = "$translationTable.$col as $col";
+                // also include this in $columns so React knows about it
                 $columns[] = [
                     'COLUMN_NAME' => $col,
                     'DATA_TYPE' => 'text',
                 ];
             }
         }
-
 
         // 3. Add “image” virtual column
         $columns[] = [
