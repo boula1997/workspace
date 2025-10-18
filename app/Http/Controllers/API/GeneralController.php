@@ -626,7 +626,6 @@ class GeneralController extends Controller
         $dataQuery = DB::connection('dynamic')->table($table)->select("$table.*");
 
         if ($hasMainTranslation) {
-            // Get columns of the translation table
             $translationCols = DB::connection('dynamic')->select("
                 SELECT COLUMN_NAME
                 FROM INFORMATION_SCHEMA.COLUMNS
@@ -635,41 +634,39 @@ class GeneralController extends Controller
 
             $translationCols = collect($translationCols)->pluck('COLUMN_NAME')->toArray();
 
-            // Try to find the correct *_id column (foreign key)
-            $possibleForeignKeys = collect($translationCols)->filter(function ($col) use ($table) {
+            $possibleForeignKeys = collect($translationCols)->filter(function ($col) {
                 return Str::endsWith($col, '_id') && $col !== 'id';
             });
 
-            // Try matching the foreign key to main table (more accurate)
-            $foreignKey = $possibleForeignKeys->first(function ($col) use ($table) {
-                return Str::startsWith($col, Str::singular($table));
-            }) ?? $possibleForeignKeys->first(); // fallback
+            // Normalize table name before using it
+            $singularSnake = Str::snake(Str::singular($table));
+
+            $foreignKey = $possibleForeignKeys->first(function ($col) use ($singularSnake) {
+                return Str::startsWith($col, $singularSnake);
+            }) ?? $possibleForeignKeys->first();
 
             if (!$foreignKey) {
-                $foreignKey = Str::singular($table) . '_id'; // final fallback
+                $foreignKey = $singularSnake . '_id'; // fallback
             }
 
-            // Do the join
             $dataQuery->leftJoin(
                 $translationTable,
                 "$translationTable.$foreignKey",
                 '=',
                 "$table.id"
-            )
-                ->where("$translationTable.locale", $locale);
+            )->where("$translationTable.locale", $locale);
 
-            // Add translated columns
             foreach ($translationCols as $col) {
                 if (in_array($col, ['id', $foreignKey, 'locale', 'created_at', 'updated_at', 'deleted_at'])) continue;
-                $translatedSelects[] = "$translationTable.$col as $col";
 
-                // Add to columns for frontend
+                $translatedSelects[] = "$translationTable.$col as $col";
                 $columns[] = [
                     'COLUMN_NAME' => $col,
                     'DATA_TYPE' => 'text',
                 ];
             }
         }
+
 
 
 
