@@ -1169,7 +1169,7 @@ $(this).click(); // Trigger the click event
 ✅ تسليم سريع وسعر يناسب ميزانيتك
 
 📂 شوف أعمالنا بنفسك:
-👉 https://yousab-portofolioo.vercel.app/
+👉 https://portfolio.yousab-tech.com/
 
 📞 تواصل معنا مباشرة على واتساب:
 👉 https://wa.me/+201126785910
@@ -1185,7 +1185,7 @@ $(this).click(); // Trigger the click event
 
 📞 كلمني على واتساب: https://wa.me/+201126785910
 
-📂 شوف شغلي من هنا: https://yousab-portofolioo.vercel.app/
+📂 شوف شغلي من هنا: https://portfolio.yousab-tech.com/
 
 جاهز أبدأ معاك في أي وقت 💻🚀
 
