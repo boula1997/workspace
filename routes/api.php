@@ -12,6 +12,7 @@ use App\Http\Controllers\API\PortfolioController;
 use App\Http\Controllers\API\FeeController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\AccountantController;
+use App\Http\Controllers\API\ClienttrackController;
 use App\Http\Controllers\API\HistoryController;
 use App\Http\Controllers\API\TaskController;
 use App\Http\Controllers\API\ProjectController;
@@ -77,6 +78,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/index/{dbname}/{table}', [GeneralController::class, 'index']);
     Route::get('/tables/{dbname}', [GeneralController::class, 'tableNames']);
     Route::get('/databases', [GeneralController::class, 'databases']);
+    Route::get('/clienttracks', [ClienttrackController::class, 'index']);
     
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
