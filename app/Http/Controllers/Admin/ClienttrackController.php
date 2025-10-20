@@ -34,9 +34,8 @@ class ClienttrackController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = Clienttrack::orderBy('id', 'DESC')->paginate(5);
-            return view('admin.crud.clienttracks.index', compact('data'))
-                ->with('i', ($request->input('page', 1) - 1) * 5);
+            $data = Clienttrack::orderBy('id', 'DESC')->get();
+            return view('admin.crud.clienttracks.index', compact('data'));
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
