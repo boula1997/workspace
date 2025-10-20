@@ -18,14 +18,7 @@
                                             <th>@lang('general.clienttracks')</th>
                                             </h3>
                                     </div>
-                                    <div class="col-md-6 d-flex d-flex justify-content-end">
-                                        <a href="{{ route('clienttracks.create') }}">
 
-                                            <button class="btn btn-outline-primary px-5
-"><i class="fa fa-plus fa-sm px-2"
-                                                    aria-hidden="true"></i> @lang('general.add')</button>
-                                        </a>
-                                    </div>
                                 </div>
                             </div>
                             <!-- /.card-header -->
@@ -36,7 +29,7 @@
                                         <tr class="p-0 m-0">
                                             <th>#</th>
                                             <th>{{ __('general.action') }}</th>
-                                            <th class="th-controls">@lang('general.controls')</th>
+                                            <th>{{__('general.project')}}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -44,13 +37,8 @@
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $clienttrack->action }}</td>
-                                                <td>
-                                                    @include('admin.components.controls', [
-                                                        'route' => 'clienttracks',
-                                                        'role' => 'clienttrack',
-                                                        'module' => $clienttrack,
-                                                    ])
-                                                </td>
+                                                <td>{{ $clienttrack->project->title }}</td>
+
                                             </tr>
                                         @endforeach
 

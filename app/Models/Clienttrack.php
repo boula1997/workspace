@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\Clienttrack as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-class Clienttrack extends Authenticatable
+class Clienttrack extends Model
 {
     use HasApiTokens, HasFactory, Notifiable,MorphFile;
 
@@ -19,31 +19,14 @@ class Clienttrack extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'action',
+        'project_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    public function project(){ return $this->belongsTo(Project::class,'project_id'); }
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
 
-    public function getImageAttribute(){
-        return  $this->file?asset($this->file->url): settings()->logo;
-   }
+
+
+
 }
