@@ -574,8 +574,8 @@ class TaskController extends Controller
                 foreach ($projects as $project) {
                     $elements[] = [
                     'title' => $project->title,  
-                    'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/projects/".$project->id."/edit",
-                        'type'  => "project",
+                    'link'  => "https://reactdashboard.yousab-tech.com/module/projects/edit/".$project->id,
+                    'type'  => "project",
                     ];
                 }
              }else if($category->title=="notes" && boula()){
@@ -583,7 +583,8 @@ class TaskController extends Controller
                 foreach ($notes as $note) {
                     $elements[] = [
                     'title' => $note->title,  
-                    'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/notes/".$note->id."/edit",
+                        'link'  => "https://reactdashboard.yousab-tech.com/module/notes/edit/".$note->id,
+
                         'type'  => "note",
                     ];
                 }
@@ -592,7 +593,7 @@ class TaskController extends Controller
                 foreach ($admins as $admin) {
                     $elements[] = [
                         'title' => $admin->name,  
-                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/admins/".$admin->id."/edit",
+                        'link'  => "https://reactdashboard.yousab-tech.com/module/admins/edit/".$admin->id,
                         'type'  => "admin",
                     ];
                 }
@@ -601,7 +602,7 @@ class TaskController extends Controller
                 foreach ($navigations as $navigation) {
                     $elements[] = [
                         'title' => $navigation->title,  
-                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/navigations/".$navigation->id."/edit",
+                        'link'  => "https://reactdashboard.yousab-tech.com/module/navigations/edit/".$navigation->id,
                         'type'  => "navigation",
                     ];
                 }
@@ -610,7 +611,7 @@ class TaskController extends Controller
                 foreach ($categories as $category) {
                     $elements[] = [
                         'title' => $category->title,  
-                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/categories/".$category->id."/edit",
+                        'link'  => "https://reactdashboard.yousab-tech.com/module/categories/edit/".$category->id,
                         'type'  => "category",
                     ];
                 }
@@ -619,7 +620,7 @@ class TaskController extends Controller
                 foreach ($roles as $role) {
                     $elements[] = [
                         'title' => $role->name,  
-                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/roles/".$role->id."/edit",
+                        'link'  => "https://reactdashboard.yousab-tech.com/module/roles/edit/".$role->id,
                         'type'  => "role",
                     ];
                 }
@@ -628,7 +629,7 @@ class TaskController extends Controller
                 foreach ($dbcredentials as $dbcredential) {
                     $elements[] = [
                         'title' => $dbcredential->db_name,  
-                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/dbcredentials/".$dbcredential->id."/edit",
+                        'link'  => "https://reactdashboard.yousab-tech.com/module/d_b_credentials/edit/".$dbcredential->id,
                         'type'  => "dbcredential",
                     ];
                 }
@@ -637,7 +638,7 @@ class TaskController extends Controller
                 foreach ($issues as $issue) {
                     $elements[] = [
                         'title' => $issue->title,  
-                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/issues/".$issue->id."/edit",
+                        'link'  => "https://reactdashboard.yousab-tech.com/module/issues/edit/".$issue->id,
                         'type'  => "issue",
                     ];
                 }
@@ -646,7 +647,7 @@ class TaskController extends Controller
                 foreach ($portfolios as $portfolio) {
                     $elements[] = [
                         'title' => $portfolio->title,  
-                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/portfolios/".$portfolio->id."/edit",
+                        'link'  => "https://reactdashboard.yousab-tech.com/module/galleries/edit/".$portfolio->id,
                         'type'  => "portfolio",
                     ];
                 }
@@ -655,7 +656,7 @@ class TaskController extends Controller
                 foreach ($videos as $video) {
                     $elements[] = [
                         'title' => $video->title,  
-                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/videos/".$video->id."/edit",
+                        'link'  => "https://reactdashboard.yousab-tech.com/module/videos/edit/".$video->id,
                         'type'  => "video",
                     ];
                 }
@@ -664,7 +665,7 @@ class TaskController extends Controller
                 foreach ($fees as $fee) {
                     $elements[] = [
                         'title' => "".$fee->amount." EGP",  
-                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/fees/".$fee->id."/edit",
+                        'link'  => "https://reactdashboard.yousab-tech.com/module/fees/edit/".$fee->id,
                         'type'  => "fee",
                     ];
                 }
@@ -673,7 +674,8 @@ class TaskController extends Controller
                 foreach ($tasks as $task) {
                     $elements[] = [
                         'title' => $task->title,  
-                        'link'  => "https://yousab-tech.com/workspace/public/en/dashboard/tasks/".$task->id."/edit",
+                        'link'  => "https://reactdashboard.yousab-tech.com/module/tasks/edit/".$task->id,
+
                         'type'  => "task",
                     ];
                 }
