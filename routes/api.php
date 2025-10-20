@@ -68,7 +68,8 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
 
 
-
+    Route::get('/clienttracks', [ClienttrackController::class, 'index']);
+    Route::post('/clienttracks/store', [ClienttrackController::class, 'store']);
 
     Route::middleware('auth:admin-api')->group(function () {
 
@@ -78,7 +79,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/index/{dbname}/{table}', [GeneralController::class, 'index']);
     Route::get('/tables/{dbname}', [GeneralController::class, 'tableNames']);
     Route::get('/databases', [GeneralController::class, 'databases']);
-    Route::get('/clienttracks', [ClienttrackController::class, 'index']);
+
     
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);

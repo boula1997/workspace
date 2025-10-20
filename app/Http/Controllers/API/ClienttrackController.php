@@ -37,4 +37,14 @@ class ClienttrackController extends Controller
             return failedResponse($e->getMessage());
         }
     }
+    public function store(Request $request)
+    {
+        try {
+            $data=$this->clienttrack->create($request->all());
+            return successResponse($data);
+        } catch (Exception $e) {
+
+            return failedResponse($e->getMessage());
+        }
+    }
 }
