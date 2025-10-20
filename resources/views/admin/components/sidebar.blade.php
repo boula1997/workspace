@@ -197,6 +197,26 @@
                         </ul>
                     </li>
                 @endcan
+                @can('clienttrack-list')
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class=" px-1 fas fa-user-tag"></i>
+                            <p>
+                                @lang('general.clienttracks')
+                                <i class=" px-1 fas fa-angle-left right"></i>
+                                <span class="badge badge-info right">{{ itemsCount('clienttracks') }}</span>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('clienttracks.index') }}" class="nav-link">
+                                    <i class=" px-1 far fa-circle nav-icon"></i>
+                                    <p>@lang('general.show')</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
 
                 @can('user-list')
                     <li class="nav-item">
