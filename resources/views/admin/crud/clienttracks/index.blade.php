@@ -30,6 +30,7 @@
                                             <th>#</th>
                                             <th>{{ __('general.action') }}</th>
                                             <th>{{__('general.project')}}</th>
+                                            <th>{{__('general.created_at')}}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -38,6 +39,7 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $clienttrack->action }}</td>
                                                 <td>{{ $clienttrack->project->title }}</td>
+                                                <td>{{ $clienttrack->created_at }}</td>
 
                                             </tr>
                                         @endforeach
