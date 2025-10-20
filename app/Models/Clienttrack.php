@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\Clienttrack as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 class Clienttrack extends Model
 {
