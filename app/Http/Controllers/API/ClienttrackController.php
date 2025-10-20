@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class ClienttrackController extends Controller
 {
     private $clienttrack;
-    public function __construct(Faq $clienttrack)
+    public function __construct(Clienttrack $clienttrack)
     {
         $this->clienttrack = $clienttrack;
     }
