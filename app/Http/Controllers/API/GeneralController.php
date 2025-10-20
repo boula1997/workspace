@@ -729,6 +729,8 @@ class GeneralController extends Controller
             }
         }
 
+         $dataQuery->orderBy("$table.id", 'desc');
+
         // Step 8: Pagination
         $paginated = $dataQuery->paginate(10);
 
