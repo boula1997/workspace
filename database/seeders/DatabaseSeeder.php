@@ -52,6 +52,7 @@ class DatabaseSeeder extends Seeder
             VideosSeeder::class,
             
             IssuesSeeder::class,
+            ClienttracksSeeder::class,
             DbcredentialsSeeder::class,
             NotesSeeder::class,
 

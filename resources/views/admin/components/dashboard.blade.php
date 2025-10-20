@@ -260,7 +260,7 @@
                 @can('admin-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
-                            <i class=" px-1 fas fa-users-cog"></i>
+                            <i class=" px-1 fas fa-clienttracks-cog"></i>
                             <p>
                                 @lang('general.admins')
                                 <i class=" px-1 fas fa-angle-left right"></i>
@@ -281,7 +281,7 @@
                 @can('role-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
-                            <i class=" px-1 fas fa-user-tag"></i>
+                            <i class=" px-1 fas fa-clienttrack-tag"></i>
                             <p>
                                 @lang('general.roles')
                                 <i class=" px-1 fas fa-angle-left right"></i>
@@ -302,7 +302,7 @@
                 @can('admin-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
-                            <i class=" px-1 fas fa-user-tag"></i>
+                            <i class=" px-1 fas fa-clienttrack-tag"></i>
                             <p>
                                 @lang('general.admins')
                                 <i class=" px-1 fas fa-angle-left right"></i>
@@ -320,19 +320,19 @@
                     </li>
                 @endcan
 
-                @can('user-list')
+                @can('clienttrack-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
-                            <i class=" px-1 fas fa-users"></i>
+                            <i class=" px-1 fas fa-clienttracks"></i>
                             <p>
-                                @lang('general.users')
+                                @lang('general.clienttracks')
                                 <i class=" px-1 fas fa-angle-left right"></i>
-                                <span class="badge badge-info right">{{ itemsCount('users') }}</span>
+                                <span class="badge badge-info right">{{ itemsCount('clienttracks') }}</span>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('users.index') }}" class="nav-link">
+                                <a href="{{ route('clienttracks.index') }}" class="nav-link">
                                     <i class=" px-1 far fa-circle nav-icon"></i>
                                     <p>@lang('general.show')</p>
                                 </a>
@@ -428,7 +428,7 @@
                 @can('team-list')
                     <li class="nav-item">
                         <a href="#" class="nav-link">
-                            <i class="fas fa-user-friends"></i>
+                            <i class="fas fa-clienttrack-friends"></i>
                             <p>
                                 @lang('general.teams') <i class=" px-1 fas fa-angle-left right"></i>
                                 <span class="badge badge-info right">{{ itemsCount('teams') }}</span>

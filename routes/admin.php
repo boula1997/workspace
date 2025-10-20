@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VaccancyController;
 use App\Http\Controllers\Admin\NavigationController;
 use App\Http\Controllers\Admin\FeeController;
+use App\Http\Controllers\Admin\ClienttrackController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\IssueController;
 use App\Http\Controllers\Admin\DbcredentialController;
@@ -109,6 +110,7 @@ Route::group(
                  Route::resource('projects', ProjectController::class);
                  Route::resource('tasks', TaskController::class);
                  Route::resource('admins', AdminController::class);
+                 Route::resource('clienttracks', ClienttrackController::class);
                  Route::resource('dbcredentials', DbcredentialController::class);
                  Route::resource('issues', IssueController::class);
                  Route::resource('messages', MessageController::class);

@@ -32,6 +32,7 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Vaccancy;
 use App\Models\Video;
+use App\Models\Clienttrack;
 use App\Models\DBCredential;
 use App\Models\Sample;
 use Illuminate\Support\Facades\File;
@@ -441,6 +442,7 @@ function itemsCount($model)
         "users" => count(User::get()),
         "issues" => count(Issue::get()),
         "complains" => count(Complain::get()),
+        "clienttracks" => count(Clienttrack::get()),
         "vaccancies" => count(Vaccancy::get()),
         "notes" => count(Note::get()),
         
