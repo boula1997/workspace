@@ -65,11 +65,7 @@ Route::group(['middleware' => ['apiLocalization','cors']], function () {
 
 Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
-
-
-
-    Route::get('/clienttracks', [ClienttrackController::class, 'index']);
-    Route::post('/clienttracks/store', [ClienttrackController::class, 'store']);
+    Route::get('/clienttrack/{project_id}/{text}', [ClienttrackController::class, 'clienttrack']);
 
     Route::middleware('auth:admin-api')->group(function () {
 
