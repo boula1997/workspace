@@ -725,7 +725,7 @@ class GeneralController extends Controller
                     $dataQuery->where("$translationTable.$fld", 'like', "%$val%");
                 }
             } else {
-                if (Str::endsWith($key, '_id') && is_numeric($value)) {
+                if (is_numeric($value)) {
                     $dataQuery->where("$table.$key", $value); // exact match
                 } else {
                     $dataQuery->where("$table.$key", 'like', "%$value%");
