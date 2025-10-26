@@ -652,6 +652,7 @@ class GeneralController extends Controller
         $tablesList = collect($tablesList)->map(fn($t) => array_values((array)$t)[0])->toArray();
 
         // Step 6: Handle *_id foreign keys
+        // Step 6: Handle *_id foreign keys
         foreach ($columns as $cmeta) {
             $colName = $cmeta['COLUMN_NAME'];
             if (!Str::endsWith($colName, '_id')) continue;
@@ -667,6 +668,7 @@ class GeneralController extends Controller
             $aliasTitle = $relatedKey;
             $dataQuery->leftJoin($relatedBase, "$relatedBase.id", '=', "$table.$relatedKey");
 
+            // Get related base columns
             $relCols = DB::connection('dynamic')->select("
                 SELECT COLUMN_NAME
                 FROM INFORMATION_SCHEMA.COLUMNS
@@ -674,19 +676,16 @@ class GeneralController extends Controller
             ", [$dbName, $relatedBase]);
             $relCols = collect($relCols)->pluck('COLUMN_NAME')->toArray();
 
+            // Try to find a display column
             $displayCandidates = ['title', 'name', 'full_name', 'label'];
             $baseDisplayCol = $displayFieldOverride ?: collect($displayCandidates)->first(fn($d) => in_array($d, $relCols));
 
-            $mappingTransRecord = DB::connection('dynamic')
-                ->table('mapping_translations')
-                ->where('attribute_id', Str::snake($relatedKey))
-                ->first();
-
-            $relatedTrans = $mappingTransRecord->translation_table ?? Str::singular($relatedBase) . '_translations';
-            $foreignKeyInRelTrans = $mappingTransRecord->foreign_key ?? Str::snake($relatedKey);
+            // Try to find an auto-detected translation table
+            $relatedTrans = Str::singular($relatedBase) . '_translations';
             $hasRelTrans = in_array($relatedTrans, $tablesList);
 
             if ($hasRelTrans) {
+                // Try to identify foreign key in that translation table
                 $transCols = DB::connection('dynamic')->select("
                     SELECT COLUMN_NAME
                     FROM INFORMATION_SCHEMA.COLUMNS
@@ -694,27 +693,31 @@ class GeneralController extends Controller
                 ", [$dbName, $relatedTrans]);
                 $transCols = collect($transCols)->pluck('COLUMN_NAME')->toArray();
 
-                if (!in_array($foreignKeyInRelTrans, $transCols)) {
-                    $foreignKeyInRelTrans = collect($transCols)->first(fn($col) => Str::endsWith($col, '_id'));
-                }
+                $foreignKeyInRelTrans = collect($transCols)->first(fn($col) => Str::endsWith($col, '_id')) 
+                    ?? Str::snake(Str::singular($relatedBase)) . '_id';
 
+                // Detect translatable display column
                 $transDisplayCol = collect($displayCandidates)->first(fn($d) => in_array($d, $transCols));
                 $translationAlias = $relatedTrans . '_' . $relatedKey;
 
+                // Join the translation table
                 $dataQuery->leftJoin("$relatedTrans as $translationAlias", function ($join) use ($translationAlias, $relatedBase, $foreignKeyInRelTrans, $locale) {
                     $join->on("$translationAlias.$foreignKeyInRelTrans", '=', "$relatedBase.id")
                         ->where("$translationAlias.locale", $locale);
                 });
 
+                // Prefer translated name if available
                 if ($baseDisplayCol && $transDisplayCol) {
                     $dataQuery->addSelect(DB::raw("COALESCE($relatedBase.$baseDisplayCol, $translationAlias.$transDisplayCol) as $aliasTitle"));
                 } elseif ($transDisplayCol) {
                     $dataQuery->addSelect("$translationAlias.$transDisplayCol as $aliasTitle");
                 }
             } elseif ($baseDisplayCol) {
+                // Fallback: non-translated related table
                 $dataQuery->addSelect("$relatedBase.$baseDisplayCol as $aliasTitle");
             }
         }
+
 
         // Step 7: Apply filters
         foreach (request()->query() as $key => $value) {
