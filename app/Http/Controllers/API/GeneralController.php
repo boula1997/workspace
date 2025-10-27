@@ -560,7 +560,7 @@ class GeneralController extends Controller
     }
 
 
-    public function index($dbname, $table)
+    public function index($dbname, $table,$column=null,$equal=null)
     {
         // Step 0: Dynamic DB connection
         $credential = DBCredential::where('db_name', $dbname)->first();
@@ -719,22 +719,30 @@ class GeneralController extends Controller
         }
 
 
-        // Step 7: Apply filters
-        foreach (request()->query() as $key => $value) {
-            if ($key === 'page') continue;
+            // Step 7: Apply filters
 
-            if (is_array($value) && in_array($key, ['en', 'ar']) && $hasMainTranslation) {
-                foreach ($value as $fld => $val) {
-                    $dataQuery->where("$translationTable.$fld", 'like', "%$val%");
-                }
-            } else {
-                if (is_numeric($value)) {
-                    $dataQuery->where("$table.$key", $value); // exact match
+            // ✅ Custom column/equal filter
+            if (!is_null($column) && !is_null($equal)) {
+                $dataQuery->where("$table.$column", $equal);
+            }
+
+            // ✅ Request-based filters (fallback)
+            foreach (request()->query() as $key => $value) {
+                if ($key === 'page') continue;
+
+                if (is_array($value) && in_array($key, ['en', 'ar']) && $hasMainTranslation) {
+                    foreach ($value as $fld => $val) {
+                        $dataQuery->where("$translationTable.$fld", 'like', "%$val%");
+                    }
                 } else {
-                    $dataQuery->where("$table.$key", 'like', "%$value%");
+                    if (is_numeric($value)) {
+                        $dataQuery->where("$table.$key", $value); // exact match
+                    } else {
+                        $dataQuery->where("$table.$key", 'like', "%$value%");
+                    }
                 }
             }
-        }
+
 
          $dataQuery->orderBy("$table.id", 'desc');
 
