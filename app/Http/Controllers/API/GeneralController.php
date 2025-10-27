@@ -722,9 +722,9 @@ class GeneralController extends Controller
             // Step 7: Apply filters
 
             // ✅ Custom column/equal filter
-            if (!is_null($column) && !is_null($equal) && $column !== 'null' && $equal !== 'null') {
-                $dataQuery->where("$table.$column", $equal);
-            }
+            // if (!is_null($column) && !is_null($equal) && $column !== 'null' && $equal !== 'null') {
+            //     $dataQuery->where("$table.$column", $equal);
+            // }
 
             // ✅ Request-based filters (fallback)
             foreach (request()->query() as $key => $value) {
