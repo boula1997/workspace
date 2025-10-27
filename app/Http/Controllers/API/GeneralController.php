@@ -735,13 +735,30 @@ class GeneralController extends Controller
                         $dataQuery->where("$translationTable.$fld", 'like', "%$val%");
                     }
                 } else {
-                    if (is_numeric($value)) {
-                        $dataQuery->where("$table.$key", $value); // exact match
+                    // 🔍 Detect the column’s data type
+                    $colMeta = collect($columns)->firstWhere('COLUMN_NAME', $key);
+                    $dataType = $colMeta['DATA_TYPE'] ?? null;
+
+                    // 🧠 Check if it’s numeric foreign key
+                    if (is_numeric($value) && Str::endsWith($key, '_id')) {
+                        $dataQuery->where("$table.$key", $value);
+
+                    // 📅 Handle date/datetime values
+                    } elseif (in_array($dataType, ['date', 'datetime', 'timestamp']) && strtotime($value)) {
+                        // Example: return all records from or after this date
+                        $dataQuery->whereDate("$table.$key", '>=', date('Y-m-d', strtotime($value)));
+
+                    // 🔢 Numeric (non-ID)
+                    } elseif (is_numeric($value)) {
+                        $dataQuery->where("$table.$key", '>=', $value);
+
+                    // 🔤 Text / fallback
                     } else {
                         $dataQuery->where("$table.$key", 'like', "%$value%");
                     }
                 }
             }
+
 
 
          $dataQuery->orderBy("$table.id", 'desc');
