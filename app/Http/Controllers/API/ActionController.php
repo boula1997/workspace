@@ -53,71 +53,27 @@ public function getFunction(Request $request)
                 ->orderBy('renewalDate', 'asc')->whereDate('renewalDate', '<=', Carbon::now()->addWeek())
                 ->get();
 
-            $commitProjects = Project::whereNotNull('deadline')
-                ->whereDate('deadline', '<=', Carbon::now()->addDay())
-                ->whereHas('tasks', function ($q) {
-                    $q->where('status', 0);
-                })
-                ->with('feeses') // 👈 needed for rest calculation
-                ->orderBy('deadline', 'asc')
-                ->get()
-                ->filter(function ($project) {
-                    return rest($project) > 0; // 👈 only keep projects with positive rest
-                });
-
-            $deadlines = Deadline::where("status",0)->whereNotNull('date')->whereDate('date', '<=', Carbon::now()->addWeek())
-                ->orderBy('date', 'asc')
-                ->get();
-
-            $issues = Issue::where('isNotification', 1)
-                ->orderBy('title', 'desc')
-                ->get();
-
             if ($moneyProjects->isNotEmpty()) {
-                $mergedMoneyText = $moneyProjects->map(function ($project) {
-                    return "- " . $project->title . " with " . rest($project);
-                })->implode("\n");
-
-                $notifications[] = "💰 Projects billing:\n" . $mergedMoneyText . "\n\n";
+                foreach ($moneyProjects as $project) {
+                    $notifications[] = $project->title . " with " . rest($project);
+                }
             }
 
             if ($renewProjects->isNotEmpty() && boula()) {
-                $mergedRenewText = $renewProjects->map(function ($project) {
-                    return "- " . $project->title . " renewal in " . $project->renewalDate;
-                })->implode("\n");
-
-                $notifications[] = "🔄 Projects renew:\n" . $mergedRenewText . "\n\n";
+                foreach ($renewProjects as $project) {
+                    $notifications[] =  $project->title . " renewal in " . $project->renewalDate;
+                }
             }
 
-            // if ($commitProjects->isNotEmpty()) {
-            //     $mergedCommitText = $commitProjects->map(function ($project) {
-            //         return "- " . $project->title . " in " . $project->deadline;
-            //     })->implode("\n");
-
-            //     $notifications[] = "⏳ Projects due:\n" . $mergedCommitText . "\n\n";
-            // }
-
-            if ($deadlines->isNotEmpty() && boula()) {
-                $mergedDateText = $deadlines->map(function ($deadline) {
-                    return "- " . $deadline->title . " in " . $deadline->date;
-                })->implode("\n");
-
-                $notifications[] = "⏰ Deadline actions:\n" . $mergedDateText . "\n\n";
-            }
-
-            // if ($issues->isNotEmpty() && boula()) {
-            //     $mergedIssueText = $issues->map(function ($issue) {
-            //         return "- " . $issue->title;
-            //     })->implode("\n");
-
-            //     $notifications[] = "⚠️ Important Issues:\n" . $mergedIssueText . "\n\n";
-            // }
-              //  $notifications[] = isExpired()[1] . "\n\n";
 
             // Final output: ONE notification string
             if(boula()){
             $notifications[] = "Yousab Tech + LapMob Ecommerce + Fixed Salary Programming Job";
             $notifications[]="Your role is Marketting + Project Mangement";}
+
+            // Shuffle notifications to randomize order
+            shuffle($notifications);
+            
             $data["notifications"] = $notifications;
             $data["period"] = settings()->period;
         }
