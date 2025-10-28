@@ -841,7 +841,6 @@ class GeneralController extends Controller
         // Step 3: Get blocked tables filtered by dbname
         try {
             $blockedTables = DB::connection('dynamic')->table('blocked_modules')
-                ->where('dbname', $dbname)
                 ->pluck('table_name');
         } catch (\Exception $e) {
             $blockedTables = collect();
