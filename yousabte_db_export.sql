@@ -553,33 +553,6 @@ LOCK TABLES `mapping` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `mapping_translations`
---
-
-DROP TABLE IF EXISTS `mapping_translations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `mapping_translations` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `attribute_id` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `translation_table` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `foreign_key` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `mapping_translations`
---
-
-LOCK TABLES `mapping_translations` WRITE;
-/*!40000 ALTER TABLE `mapping_translations` DISABLE KEYS */;
-/*!40000 ALTER TABLE `mapping_translations` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `messages`
 --
 
@@ -1626,4 +1599,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-26 15:34:11
+-- Dump completed on 2025-10-27 13:30:16
