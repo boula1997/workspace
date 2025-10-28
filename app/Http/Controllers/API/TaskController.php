@@ -714,7 +714,7 @@ class TaskController extends Controller
                 if($request->action=="delete")
                     $deadline->update(["status"=>!$deadline->status]);
                 else if(isset($request->date))
-                    $deadline->update(["date"=>$request->date]);
+                    $deadline->update(["date"=>$request->date,"title"=>$request->title]);
 
                 $deadlines=Deadline::orderBy("date","asc")->get();
 
