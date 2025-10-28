@@ -398,7 +398,6 @@ class TaskController extends Controller
             "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
             "clients"=>$clients,
-            "prospectives"=>$prospectives,
             "tasks"=>TaskResource::collection($tasks),
                 "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
                 "allowedIn"=>date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
