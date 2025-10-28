@@ -24,82 +24,126 @@ class GeneralController extends Controller
 {
 
 
-    public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
-    {
-        // Step 0: Get DB credentials
-        $credential = DBCredential::where('db_name', $dbname)->first();
+public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
+{
+    // Step 0: Get DB credentials
+    $credential = DBCredential::where('db_name', $dbname)->first();
 
-        $dbHost = $credential->db_host ?? '192.185.41.219';
-        $dbName = $credential->db_name ?? 'automation';
-        $dbUser = $credential->db_username ?? 'root';
-        $dbPass = $credential->db_password ?? '';
+    $dbHost = $credential->db_host ?? '192.185.41.219';
+    $dbName = $credential->db_name ?? 'automation';
+    $dbUser = $credential->db_username ?? 'root';
+    $dbPass = $credential->db_password ?? '';
 
-        // Step 1: Configure dynamic connection
-        config([
-            'database.connections.dynamic' => [
-                'driver' => 'mysql',
-                'host' => $dbHost,
-                'database' => $dbName,
-                'username' => $dbUser,
-                'password' => $dbPass,
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-            ],
-        ]);
+    // Step 1: Configure dynamic connection
+    config([
+        'database.connections.dynamic' => [
+            'driver' => 'mysql',
+            'host' => $dbHost,
+            'database' => $dbName,
+            'username' => $dbUser,
+            'password' => $dbPass,
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+    ]);
 
-        DB::purge('dynamic');
-        DB::reconnect('dynamic');
-        DB::connection('dynamic')->statement('USE ' . $dbName);
+    DB::purge('dynamic');
+    DB::reconnect('dynamic');
+    DB::connection('dynamic')->statement('USE ' . $dbName);
 
-        // Step 2: Get main table columns
-        $columns = DB::connection('dynamic')->select("
+    // Step 2: Get main table columns
+    $columns = DB::connection('dynamic')->select("
         SELECT COLUMN_NAME
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = DATABASE()
         AND TABLE_NAME = ?;
     ", [$table]);
 
-        $columnNames = collect($columns)->pluck('COLUMN_NAME')->toArray();
-        $exclude = ['id'];
-        $data = [];
+    $columnNames = collect($columns)->pluck('COLUMN_NAME')->toArray();
+    $exclude = ['id'];
+    $data = [];
 
-        // Step 3: Collect column values (excluding image/images)
-        foreach ($columnNames as $column) {
-            if (in_array($column, $exclude)) continue;
+    // Step 3: Collect column values (excluding image/images)
+    foreach ($columnNames as $column) {
+        if (in_array($column, $exclude)) continue;
+        if (in_array($column, ['image', 'images'])) continue;
 
-            if (in_array($column, ['image', 'images'])) continue; // Skip files for now
+        if ($request->has($column)) {
+            $value = $request->input($column);
 
-            if ($request->has($column)) {
-                $value = $request->input($column);
-
-                // If the column is 'password', hash it before storing
-                if ($column === 'password' && !empty($value)) {
-                    $data[$column] = \Illuminate\Support\Facades\Hash::make($value);
-                } else {
-                    $data[$column] = $value;
-                }
+            if ($column === 'password' && !empty($value)) {
+                $data[$column] = \Illuminate\Support\Facades\Hash::make($value);
+            } else {
+                $data[$column] = $value;
             }
         }
+    }
 
-        // Step 4: Insert or update main record
-        if ($itemId && $itemId !== "undefined") {
-            DB::connection('dynamic')->table($table)->where('id', $itemId)->update($data);
-        } else {
-            $itemId = DB::connection('dynamic')->table($table)->insertGetId($data);
+    // 🕒 Step 3.1: Add timestamps manually
+    $now = now(); // Carbon instance
+
+    if ($itemId && $itemId !== "undefined") {
+        // 🟢 UPDATE — set updated_at only
+        if (in_array('updated_at', $columnNames)) {
+            $data['updated_at'] = $now;
         }
 
-        // Step 4.1: Handle image & images via files table
-        $fileableType = 'App\\Models\\' . Str::studly(Str::singular($table));
+        DB::connection('dynamic')->table($table)
+            ->where('id', $itemId)
+            ->update($data);
+    } else {
+        // 🟡 CREATE — set both created_at and updated_at
+        if (in_array('created_at', $columnNames)) {
+            $data['created_at'] = $now;
+        }
+        if (in_array('updated_at', $columnNames)) {
+            $data['updated_at'] = $now;
+        }
 
-        // Handle single image
-        if ($request->hasFile('image')) {
-            // Delete previous single image if exists
-            $currentImage = DB::connection('dynamic')->table('files')
-                ->where('fileable_type', $fileableType)
-                ->where('fileable_id', $itemId)
-                ->where('isMultiply', 0)
-                ->first();
+        $itemId = DB::connection('dynamic')->table($table)->insertGetId($data);
+    }
 
+    // Step 4: Handle image & images via files table (unchanged)
+    $fileableType = 'App\\Models\\' . Str::studly(Str::singular($table));
+
+    if ($request->hasFile('image')) {
+        $currentImage = DB::connection('dynamic')->table('files')
+            ->where('fileable_type', $fileableType)
+            ->where('fileable_id', $itemId)
+            ->where('isMultiply', 0)
+            ->first();
+
+        if ($currentImage && file_exists($currentImage->url)) {
+            File::delete($currentImage->url);
+        }
+        if ($currentImage) {
+            DB::connection('dynamic')->table('files')
+                ->where('id', $currentImage->id)
+                ->delete();
+        }
+
+        $file = $request->file('image');
+        $image = $file->store('images');
+        $file->move('images', $image);
+
+        DB::connection('dynamic')->table('files')->insert([
+            'url' => $image,
+            'fileable_type' => $fileableType,
+            'fileable_id' => $itemId,
+            'isMultiply' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+
+    if ($request->hasFile('images')) {
+        $currentImages = DB::connection('dynamic')->table('files')
+            ->where('fileable_type', $fileableType)
+            ->where('fileable_id', $itemId)
+            ->where('isMultiply', 1)
+            ->get();
+
+        foreach ($currentImages as $currentImage) {
             if ($currentImage && file_exists($currentImage->url)) {
                 File::delete($currentImage->url);
             }
@@ -108,114 +152,85 @@ class GeneralController extends Controller
                     ->where('id', $currentImage->id)
                     ->delete();
             }
+        }
 
-
-            $file = request()->file('image');
-            $image = request()->image->store('images');
-            $file->move('images',  $image);
+        foreach ($request->file('images') as $file) {
+            $data['image'] = $file->store('images');
+            $file->move('images', $data['image']);
 
             DB::connection('dynamic')->table('files')->insert([
-                'url' => $image,
+                'url' => $data['image'],
                 'fileable_type' => $fileableType,
                 'fileable_id' => $itemId,
-                'isMultiply' => 0,
+                'isMultiply' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
+    }
 
-        // Handle multiple images
-        if ($request->hasFile('images')) {
-            // Delete previous multi-images
-            $currentImages = DB::connection('dynamic')->table('files')
-                ->where('fileable_type', $fileableType)
-                ->where('fileable_id', $itemId)
-                ->where('isMultiply', 1)
-                ->get();
+    // Step 5: Translations (unchanged)
+    $translationTable = Str::singular($table) . '_translations';
+    $foreignKey = Str::singular($table) . '_id';
 
-            foreach ($currentImages as $currentImage) {
-                if ($currentImage && file_exists($currentImage->url)) {
-                    File::delete($currentImage->url);
-                }
-                if ($currentImage) {
-                    DB::connection('dynamic')->table('files')
-                        ->where('id', $currentImage->id)
-                        ->delete();
-                }
-            }
+    if (Schema::connection('dynamic')->hasTable($translationTable)) {
+        $translationData = [];
 
-            foreach ($request->file('images') as $file) {
-                $data['image'] = $file->store('images');
-                $file->move('images', $data['image']);
-
-                DB::connection('dynamic')->table('files')->insert([
-                    'url' => $data['image'],
-                    'fileable_type' => $fileableType,
-                    'fileable_id' => $itemId,
-                    'isMultiply' => 1,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+        foreach (['en', 'ar'] as $locale) {
+            if ($request->has($locale) && is_array($request->input($locale))) {
+                $translationData[$locale] = $request->input($locale);
             }
         }
 
-        // Step 5: Handle translations (if translation table exists)
-        $translationTable = Str::singular($table) . '_translations';
-        $foreignKey = Str::singular($table) . '_id';
-
-        if (Schema::connection('dynamic')->hasTable($translationTable)) {
-            $translationData = [];
-
-            foreach (['en', 'ar'] as $locale) {
-                if ($request->has($locale) && is_array($request->input($locale))) {
-                    $translationData[$locale] = $request->input($locale);
-                }
+        foreach ($translationData as $locale => $fields) {
+            $fields[$foreignKey] = $itemId;
+            $fields['locale'] = $locale;
+            $fields['updated_at'] = $now; // 🕒 timestamp for translations
+            if (in_array('created_at', Schema::connection('dynamic')->getColumnListing($translationTable))) {
+                $fields['created_at'] = $now;
             }
 
-            foreach ($translationData as $locale => $fields) {
-                $fields[$foreignKey] = $itemId;
-                $fields['locale'] = $locale;
+            $existing = DB::connection('dynamic')->table($translationTable)
+                ->where($foreignKey, $itemId)
+                ->where('locale', $locale)
+                ->first();
 
-                $existing = DB::connection('dynamic')->table($translationTable)
+            if ($existing) {
+                DB::connection('dynamic')->table($translationTable)
                     ->where($foreignKey, $itemId)
                     ->where('locale', $locale)
-                    ->first();
-
-                if ($existing) {
-                    DB::connection('dynamic')->table($translationTable)
-                        ->where($foreignKey, $itemId)
-                        ->where('locale', $locale)
-                        ->update($fields);
-                } else {
-                    DB::connection('dynamic')->table($translationTable)->insert($fields);
-                }
+                    ->update($fields);
+            } else {
+                DB::connection('dynamic')->table($translationTable)->insert($fields);
             }
         }
-
-        // Step 6: Return response with asset URLs
-        $files = DB::connection('dynamic')->table('files')
-            ->where('fileable_type', $fileableType)
-            ->where('fileable_id', $itemId)
-            ->where('isMultiply', 1)
-            ->get();
-        $file = DB::connection('dynamic')->table('files')
-            ->where('fileable_type', $fileableType)
-            ->where('fileable_id', $itemId)
-            ->where('isMultiply', 0)
-            ->first();
-
-        $image = $file->url ?? null;
-        $images = $files->pluck('url')->map(fn($url) => asset('storage/' . $url))->toArray();
-
-        return response()->json([
-            'success' => true,
-            'message' => $itemId ? 'Record updated successfully.' : 'Record inserted successfully.',
-            'data' => $data,
-            'id' => $itemId,
-            'image' => $image ? asset('storage/' . $image) : null,
-            'images' => $images,
-        ]);
     }
+
+    // Step 6: Return response
+    $files = DB::connection('dynamic')->table('files')
+        ->where('fileable_type', $fileableType)
+        ->where('fileable_id', $itemId)
+        ->where('isMultiply', 1)
+        ->get();
+    $file = DB::connection('dynamic')->table('files')
+        ->where('fileable_type', $fileableType)
+        ->where('fileable_id', $itemId)
+        ->where('isMultiply', 0)
+        ->first();
+
+    $image = $file->url ?? null;
+    $images = $files->pluck('url')->map(fn($url) => asset('storage/' . $url))->toArray();
+
+    return response()->json([
+        'success' => true,
+        'message' => $itemId ? 'Record updated successfully.' : 'Record inserted successfully.',
+        'data' => $data,
+        'id' => $itemId,
+        'image' => $image ? asset('storage/' . $image) : null,
+        'images' => $images,
+    ]);
+}
+
 
 
 
