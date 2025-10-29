@@ -844,8 +844,8 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
 
         // Step 2: Get allowed tables directly from admin permissions
         $allowedTables = collect();
-        if (auth('admin')->check()) {
-            $admin = auth('admin')->user();
+        if (auth('admin-api')->check()) {
+            $admin = auth('admin-api')->user();
             if (!empty($admin->permissions)) {
                 $decoded = json_decode($admin->permissions, true);
                 if (is_array($decoded)) {
