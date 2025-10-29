@@ -77,6 +77,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/tables/{dbname}', [GeneralController::class, 'tableNames']);
     Route::get('/all/tables/{dbname}', [GeneralController::class, 'allTableNames']);
     Route::get('/databases', [GeneralController::class, 'databases']);
+    Route::get('/admins', [GeneralController::class, 'admins']);
 
     
     Route::get('/categories', [CategoryController::class, 'index']);

@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Schema;
 use App\Models\DBCredential;
 use Illuminate\Support\Facades\File;
 
+use App\Models\Admin;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -987,6 +988,16 @@ public function blockTables(Request $request, $dbname)
         return response()->json([
             'success' => trans('general.sent_successfully'),
             'databases' => databases(),
+        ]);
+    }
+
+
+ public function admins()
+    {
+        $admins=Admin::get();
+        return response()->json([
+            'success' => trans('general.sent_successfully'),
+            'admins' => $admins,
         ]);
     }
 }
