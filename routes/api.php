@@ -71,6 +71,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
     Route::get('/showEditCreate/{dbname}/{table}/{itemId}', [GeneralController::class, 'showEditCreate']);
     Route::post('/storeUpdate/{dbname}/{table}/{itemId}', [GeneralController::class, 'storeUpdate']);
+    Route::post('/blocktables/{dbname}', [GeneralController::class, 'blockTables']);
     Route::get('/deleteItem/{dbname}/{table}/{itemId}', [GeneralController::class, 'deleteItem']);
     Route::get('/index/{dbname}/{table}/{column?}/{equal?}', [GeneralController::class, 'index']);
     Route::get('/tables/{dbname}', [GeneralController::class, 'tableNames']);
