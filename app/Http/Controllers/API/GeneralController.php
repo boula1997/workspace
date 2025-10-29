@@ -852,9 +852,9 @@ public function tableNames($dbname)
         }
     }
 
-    // Step 3: Format as array of objects with "table_name" key
+    // Step 3: Format as array of objects with "TABLE_NAME" key
     $formattedTables = $allowedTables->map(function ($table) {
-        return ['table_name' => $table];
+        return ['TABLE_NAME' => $table];
     })->values();
 
     return response()->json([
