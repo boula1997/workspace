@@ -964,9 +964,9 @@ public function blockTables(Request $request, $dbname)
 
     $tables = $request->tables ?? [];
 
-    DB::connection('dynamic')->table('blocked_tables')->truncate(); // clear old
+    DB::connection('dynamic')->table('blocked_modules')->truncate(); // clear old
     foreach ($tables as $table) {
-        DB::connection('dynamic')->table('blocked_tables')->insert([
+        DB::connection('dynamic')->table('blocked_modules')->insert([
             'table_name' => $table,
         ]);
     }
