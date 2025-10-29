@@ -251,7 +251,7 @@ CREATE TABLE `blocked_modules` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -260,6 +260,7 @@ CREATE TABLE `blocked_modules` (
 
 LOCK TABLES `blocked_modules` WRITE;
 /*!40000 ALTER TABLE `blocked_modules` DISABLE KEYS */;
+INSERT INTO `blocked_modules` (`id`, `table_name`, `created_at`, `updated_at`) VALUES (1,'b_settings',NULL,NULL),(2,'brands',NULL,NULL);
 /*!40000 ALTER TABLE `blocked_modules` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -380,6 +381,63 @@ INSERT INTO `category_translations` (`id`, `title`, `category_id`, `locale`, `cr
 UNLOCK TABLES;
 
 --
+-- Table structure for table `chooseUs_translations`
+--
+
+DROP TABLE IF EXISTS `chooseUs_translations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `chooseUs_translations` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `choose_us_id` bigint(20) unsigned NOT NULL,
+  `locale` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `chooseus_translations_choose_us_id_locale_unique` (`choose_us_id`,`locale`),
+  KEY `chooseus_translations_locale_index` (`locale`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `chooseUs_translations`
+--
+
+LOCK TABLES `chooseUs_translations` WRITE;
+/*!40000 ALTER TABLE `chooseUs_translations` DISABLE KEYS */;
+INSERT INTO `chooseUs_translations` (`id`, `title`, `description`, `choose_us_id`, `locale`, `created_at`, `updated_at`) VALUES (1,'تصاميم أنيقة ومبتكرة','ديكورات مذهلة وترتيبات زهور مصممة على ذوقك.',1,'ar','2025-04-09 19:51:50','2025-04-09 19:51:50'),(2,'Elegant & Creative Designs','Stunning décor & floral arrangements tailored to your style.',1,'en','2025-04-09 19:51:50','2025-04-09 19:51:50'),(3,'Des designs élégants et créatifs','Une décoration et des arrangements floraux époustouflants adaptés à votre style.',1,'fr','2025-04-09 19:51:50','2025-04-09 19:51:50'),(4,'تخطيط سلس','كل التفاصيل يتم التعامل معها بدقة للحصول على تجربة مثالية.',2,'ar','2025-04-09 19:51:50','2025-04-09 19:51:50'),(5,'Seamless Planning','Every detail handled with precision for a flawless experience.',2,'en','2025-04-09 19:51:50','2025-04-09 19:51:50'),(6,'Planification sans faille','Chaque détail est géré avec précision pour une expérience parfaite.',2,'fr','2025-04-09 19:51:50','2025-04-09 19:51:50'),(7,'لمسة شخصية','رؤيتك وخبرتنا - مصممة خصيصًا لك.',3,'ar','2025-04-09 19:51:50','2025-04-09 19:51:50'),(8,'Personalized Touch','Your vision, our expertise—crafted just for you.',3,'en','2025-04-09 19:51:50','2025-04-09 19:51:50'),(9,'Une touche personnalisée','Votre vision, notre expertise – conçue juste pour vous.',3,'fr','2025-04-09 19:51:50','2025-04-09 19:51:50'),(10,'تنفيذ بدون توتر','استرخِ واستمتع بينما نحول رؤيتك إلى واقع.',4,'ar','2025-04-09 19:51:50','2025-04-09 19:51:50'),(11,'Stress-Free Execution','Relax & enjoy while we bring your event to life.',4,'en','2025-04-09 19:51:50','2025-04-09 19:51:50'),(12,'Exécution sans stress','Détendez-vous pendant que nous donnons vie à votre événement.',4,'fr','2025-04-09 19:51:50','2025-04-09 19:51:50'),(13,'ذكريات خالدة','مع فيوري فلاور، كل لحظة تصبح ذكرى لا تُنسى!',5,'ar','2025-04-09 19:51:50','2025-04-09 19:51:50'),(14,'Cherished Memories','With Fiori Flower, every moment becomes a cherished memory!',5,'en','2025-04-09 19:51:50','2025-04-09 19:51:50'),(15,'Souvenirs inoubliables','Avec Fiori Flower, chaque moment devient un souvenir précieux !',5,'fr','2025-04-09 19:51:50','2025-04-09 19:51:50');
+/*!40000 ALTER TABLE `chooseUs_translations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `chooseUss`
+--
+
+DROP TABLE IF EXISTS `chooseUss`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `chooseUss` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `emoji` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `chooseUss`
+--
+
+LOCK TABLES `chooseUss` WRITE;
+/*!40000 ALTER TABLE `chooseUss` DISABLE KEYS */;
+INSERT INTO `chooseUss` (`id`, `emoji`, `created_at`, `updated_at`) VALUES (1,'?','2025-04-09 19:51:50','2025-04-09 19:51:50'),(2,'?️','2025-04-09 19:51:50','2025-04-09 19:51:50'),(3,'?','2025-04-09 19:51:50','2025-04-09 19:51:50'),(4,'?‍♀️','2025-04-09 19:51:50','2025-04-09 19:51:50'),(5,'?','2025-04-09 19:51:50','2025-04-09 19:51:50');
+/*!40000 ALTER TABLE `chooseUss` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `color_translations`
 --
 
@@ -399,7 +457,7 @@ CREATE TABLE `color_translations` (
   UNIQUE KEY `color_translations_color_id_locale_unique` (`color_id`,`locale`),
   KEY `color_translations_locale_index` (`locale`),
   CONSTRAINT `color_translations_color_id_foreign` FOREIGN KEY (`color_id`) REFERENCES `colors` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -408,7 +466,7 @@ CREATE TABLE `color_translations` (
 
 LOCK TABLES `color_translations` WRITE;
 /*!40000 ALTER TABLE `color_translations` DISABLE KEYS */;
-INSERT INTO `color_translations` (`id`, `title`, `subtitle`, `description`, `color_id`, `locale`, `created_at`, `updated_at`) VALUES (1,'white','White','white',20,'en',NULL,NULL),(2,'ابيض','ابيض','ابيض',20,'ar',NULL,NULL),(3,'Red','Red','Red',21,'en',NULL,NULL),(4,'احمر','احمر','احمر',21,'ar',NULL,NULL);
+INSERT INTO `color_translations` (`id`, `title`, `subtitle`, `description`, `color_id`, `locale`, `created_at`, `updated_at`) VALUES (1,'Color 1',NULL,NULL,1,'en',NULL,NULL),(2,'لون 1',NULL,NULL,1,'ar',NULL,NULL);
 /*!40000 ALTER TABLE `color_translations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -424,11 +482,8 @@ CREATE TABLE `colors` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `hexCode` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '#000',
-  `size_id` bigint(20) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_colors_size` (`size_id`),
-  CONSTRAINT `fk_colors_size` FOREIGN KEY (`size_id`) REFERENCES `sizes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -437,7 +492,7 @@ CREATE TABLE `colors` (
 
 LOCK TABLES `colors` WRITE;
 /*!40000 ALTER TABLE `colors` DISABLE KEYS */;
-INSERT INTO `colors` (`id`, `created_at`, `updated_at`, `hexCode`, `size_id`) VALUES (1,'2025-02-12 09:07:53','2025-02-12 09:07:53','#000',NULL),(2,'2025-02-12 09:07:53','2025-02-12 09:07:53','#000',NULL),(3,'2025-02-12 09:07:53','2025-02-12 09:07:53','#000',NULL),(4,'2025-02-12 09:07:53','2025-02-12 09:07:53','#000',NULL),(5,'2025-02-12 09:07:53','2025-02-12 09:07:53','#000',NULL),(6,'2025-02-12 09:07:53','2025-02-12 09:07:53','#000',NULL),(7,'2025-02-12 09:07:53','2025-02-12 09:07:53','#000',NULL),(8,'2025-02-12 09:07:53','2025-02-12 09:07:53','#000',NULL),(9,'2025-02-12 09:07:53','2025-02-12 09:07:53','#000',NULL),(10,'2025-02-12 09:07:53','2025-02-12 09:07:53','#000',NULL),(11,'2025-02-18 22:21:52','2025-03-12 11:17:30','#000000',NULL),(12,'2025-02-18 22:22:14','2025-03-12 11:17:39','#000000',NULL),(13,'2025-02-18 22:23:00','2025-02-18 22:23:00','#000',NULL),(14,'2025-02-22 18:12:14','2025-02-22 18:12:14','#000',NULL),(15,'2025-02-22 18:12:52','2025-03-12 11:17:47','#000000',NULL),(16,'2025-02-22 18:14:44','2025-02-22 18:14:44','#000',NULL),(17,'2025-02-22 18:15:02','2025-02-22 18:15:02','#000',NULL),(18,'2025-02-22 18:15:58','2025-03-12 11:17:58','#000000',NULL),(19,'2025-02-23 13:36:35','2025-02-23 13:36:35','#000',NULL),(20,NULL,NULL,'#fffffffff',1),(21,NULL,NULL,'#fghkhhjvvb',1);
+INSERT INTO `colors` (`id`, `created_at`, `updated_at`, `hexCode`) VALUES (1,NULL,NULL,'#ffffff');
 /*!40000 ALTER TABLE `colors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1526,7 +1581,6 @@ CREATE TABLE `products` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `backgroundColor` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '#C6C6C6',
   `price` double NOT NULL DEFAULT '0',
-  `quantity` bigint(20) NOT NULL DEFAULT '0',
   `is_addition` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `products_category_id_foreign` (`category_id`),
@@ -1548,37 +1602,8 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` (`id`, `weight`, `rate`, `SKU`, `category_id`, `subcategory_id`, `brand_id`, `store_id`, `productOffer_id`, `created_at`, `updated_at`, `backgroundColor`, `price`, `quantity`, `is_addition`) VALUES (116,0,4,'ABC-12345-S-BL',1,7,NULL,NULL,NULL,'2025-09-18 14:47:06','2025-09-21 20:05:45','#C6C6C6',12130,8,0),(117,0,4,'ABC-12695-L-re',1,7,NULL,NULL,NULL,'2025-09-18 14:52:21','2025-09-21 20:05:00','#C6C6C6',15000,8,0),(118,0,4,'ABC-14865-L-BL',1,7,NULL,NULL,NULL,'2025-09-18 15:00:11','2025-09-21 20:04:24','#C6C6C6',19200,7,1),(119,0,5,'ABC-12585-M-BL',1,7,NULL,NULL,NULL,'2025-09-18 15:07:57','2025-09-21 19:16:18','#C6C6C6',22000,9,1),(120,0,3,'ADC-145545-M-BL',2,3,NULL,NULL,NULL,'2025-09-18 15:16:09','2025-09-21 20:06:22','#C6C6C6',9754,7,0),(124,0,3,'ABC-12695-L-rs',1,7,NULL,NULL,NULL,'2025-10-11 17:40:41','2025-10-11 18:18:18','#C6C6C6',18000,9,0),(125,0,4,'ABC-14865-L-B4',1,7,NULL,NULL,NULL,'2025-10-11 17:46:31','2025-10-11 18:17:18','#C6C6C6',12130,7,0),(126,0,5,'ABC-12695-L-rer',1,7,NULL,NULL,NULL,'2025-10-11 17:52:39','2025-10-11 18:12:55','#C6C6C6',15000,9,0),(127,0,5,'ABC-14865-L-Bh',1,7,NULL,NULL,NULL,'2025-10-11 17:54:42','2025-10-11 17:54:42','#C6C6C6',91200,7,0),(128,0,5,'ABC-14865-L-B4d',1,7,NULL,NULL,NULL,'2025-10-11 18:02:41','2025-10-11 18:02:41','#C6C6C6',19200,8,0),(129,0,3,'ABC-14865-L-BL4',1,7,NULL,NULL,NULL,'2025-10-11 18:11:42','2025-10-11 18:11:42','#C6C6C6',19200,9,0),(130,0,4,'ABC-14865-L-Br',1,7,NULL,NULL,NULL,'2025-10-11 18:23:14','2025-10-11 18:23:14','#C6C6C6',19200,9,0),(132,0,5,'ABC-12695-L-r7',2,3,NULL,NULL,NULL,'2025-10-11 19:00:57','2025-10-11 19:00:57','#C6C6C6',19200,9,0),(133,0,2,'ABC-14865-L-Bn',2,3,NULL,NULL,NULL,'2025-10-11 19:11:49','2025-10-11 19:11:49','#C6C6C6',15000,7,0),(134,0,5,'ABC-14865-L-Bg',2,3,NULL,NULL,NULL,'2025-10-11 19:32:58','2025-10-11 19:32:58','#C6C6C6',15666,7,0),(135,0,2,'fv-45d-pk',2,3,NULL,NULL,NULL,'2025-10-11 21:12:46','2025-10-11 21:12:46','#C6C6C6',15200,2,0),(136,0,5,'fv-45d-pk8',2,9,NULL,NULL,NULL,'2025-10-11 21:30:38','2025-10-11 21:30:38','#C6C6C6',15200,2,0),(137,0,2,'fv-45d-pk9',2,9,NULL,NULL,NULL,'2025-10-11 21:42:32','2025-10-11 21:42:32','#C6C6C6',8000,3,0),(138,0,3,'ABC-14865-L-Bu',2,8,NULL,NULL,NULL,'2025-10-12 00:47:16','2025-10-12 00:47:16','#C6C6C6',13000,9,0),(139,0,2,'ABC-12695-L-rsr',2,8,NULL,NULL,NULL,'2025-10-12 00:54:26','2025-10-12 00:54:26','#C6C6C6',16000,9,0),(140,0,3,'ABC-14865-L-B3',2,3,NULL,NULL,NULL,'2025-10-12 01:00:13','2025-10-12 01:00:13','#C6C6C6',15400,9,1),(141,0,3,'ABC-12695-L-rsb',2,8,NULL,NULL,NULL,'2025-10-12 01:32:41','2025-10-12 01:32:41','#C6C6C6',15000,8,0),(142,0,2,'ABC-14865-L-B4n',2,8,NULL,NULL,NULL,'2025-10-12 14:40:13','2025-10-12 14:40:13','#C6C6C6',30000,9,0),(143,0,3,'ABC-14865-L-B4c',2,8,NULL,NULL,NULL,'2025-10-12 15:02:21','2025-10-12 15:02:21','#C6C6C6',15000,8,0),(144,0,3,'ABC-14865-L-BLv',2,8,NULL,NULL,NULL,'2025-10-12 15:13:02','2025-10-12 15:13:02','#C6C6C6',18000,8,0),(145,0,3,'ABC-12695-L-ret',2,8,NULL,NULL,NULL,'2025-10-12 15:25:39','2025-10-12 15:25:39','#C6C6C6',12130,9,0),(146,0,3,'ABC-12695-L-rsbv',2,8,NULL,NULL,NULL,'2025-10-12 15:58:48','2025-10-12 15:58:48','#C6C6C6',18000,9,0),(147,0,2,'ABC-14865-L-Bnv',2,8,NULL,NULL,NULL,'2025-10-12 16:03:21','2025-10-12 16:03:21','#C6C6C6',15000,8,0),(148,0,2,'ABC-12695-L-rst',2,3,NULL,NULL,NULL,'2025-10-12 16:10:52','2025-10-12 16:10:52','#C6C6C6',15864,9,1),(149,0,5,'ABC-14865-L-Bb',2,8,NULL,NULL,NULL,'2025-10-12 16:14:02','2025-10-12 16:14:02','#C6C6C6',12130,8,0),(152,0,2,'ABC-12695-L-ref',2,9,NULL,NULL,NULL,'2025-10-12 16:35:54','2025-10-12 16:35:54','#C6C6C6',24522,7,0),(153,0,3,'ABC-12695-L-rev',2,9,NULL,NULL,NULL,'2025-10-12 16:40:11','2025-10-12 16:40:11','#C6C6C6',36464,9,0),(154,0,3,'ABC-14865-L-Bf',2,9,NULL,NULL,NULL,'2025-10-12 16:44:14','2025-10-12 16:44:14','#C6C6C6',15000,7,1),(156,0,5,'ABC-12345-S-BLb',2,9,NULL,NULL,NULL,'2025-10-12 16:56:31','2025-10-12 16:56:31','#C6C6C6',15666,9,1),(157,0,3,'ABC-14865-L-B4v',2,9,NULL,NULL,NULL,'2025-10-12 17:05:07','2025-10-12 17:05:07','#C6C6C6',19200,8,0),(158,0,3,'ABC-14865-L-Bbv',2,9,NULL,NULL,NULL,'2025-10-12 17:12:03','2025-10-12 17:12:03','#C6C6C6',19200,9,0),(159,0,3,'ABC-12695-L-reb',2,9,NULL,NULL,NULL,'2025-10-12 17:28:07','2025-10-12 17:28:07','#C6C6C6',19000,9,0),(160,0,5,'ABC-14865-L-Bmt',2,9,NULL,NULL,NULL,'2025-10-12 17:41:27','2025-10-12 17:41:27','#C6C6C6',19200,7,0),(161,0,2,'ABC-12695-L-rsvb',2,9,NULL,NULL,NULL,'2025-10-12 17:47:31','2025-10-12 17:47:31','#C6C6C6',19200,9,0),(162,0,2,'ABC-14865-L-BLvb',2,9,NULL,NULL,NULL,'2025-10-12 17:55:54','2025-10-12 17:55:54','#C6C6C6',18000,9,1),(163,0,2,'ABC-14865-L-BLs',2,9,NULL,NULL,NULL,'2025-10-12 18:22:22','2025-10-12 18:22:22','#C6C6C6',18000,9,0),(164,0,2,'ABC-14865-L-BLnd',2,9,NULL,NULL,NULL,'2025-10-12 18:28:37','2025-10-12 18:28:37','#C6C6C6',19200,7,0),(165,0,5,'ABC-12695-L-rsfg',2,3,NULL,NULL,NULL,'2025-10-12 18:33:11','2025-10-12 18:33:11','#C6C6C6',5000,9,0),(166,0,3,'ABC-12695-L-refs',2,9,NULL,NULL,NULL,'2025-10-12 18:40:37','2025-10-12 18:40:37','#C6C6C6',19200,9,0),(167,0,5,'ABC-14f65-L-B',2,9,NULL,NULL,NULL,'2025-10-12 18:46:59','2025-10-12 18:46:59','#C6C6C6',12130,9,0),(168,0,3,'ABC-1fd65-L-BL',2,9,NULL,NULL,NULL,'2025-10-12 18:53:40','2025-10-12 18:53:40','#C6C6C6',13000,5,1),(169,0,2,'ABC-12f4-L-re',2,9,NULL,NULL,NULL,'2025-10-12 18:59:36','2025-10-12 18:59:36','#C6C6C6',12344,8,1),(170,0,2,'ABC-1fr4865-L-BL',2,9,NULL,NULL,NULL,'2025-10-12 19:15:07','2025-10-12 19:15:07','#C6C6C6',18000,9,0),(171,0,4,'ABC-14865-b-B',2,3,NULL,NULL,NULL,'2025-10-12 19:35:47','2025-10-12 19:35:47','#C6C6C6',12130,8,0),(172,0,5,'ABC-12375-L-re',2,3,NULL,NULL,NULL,'2025-10-12 19:42:20','2025-10-12 19:42:20','#C6C6C6',4314,9,0);
+INSERT INTO `products` (`id`, `weight`, `rate`, `SKU`, `category_id`, `subcategory_id`, `brand_id`, `store_id`, `productOffer_id`, `created_at`, `updated_at`, `backgroundColor`, `price`, `is_addition`) VALUES (116,0,4,'ABC-12345-S-BL',1,7,NULL,NULL,NULL,'2025-09-18 14:47:06','2025-09-21 20:05:45','#C6C6C6',12130,0),(117,0,4,'ABC-12695-L-re',1,7,NULL,NULL,NULL,'2025-09-18 14:52:21','2025-09-21 20:05:00','#C6C6C6',15000,0),(118,0,4,'ABC-14865-L-BL',1,7,NULL,NULL,NULL,'2025-09-18 15:00:11','2025-09-21 20:04:24','#C6C6C6',19200,1),(119,0,5,'ABC-12585-M-BL',1,7,NULL,NULL,NULL,'2025-09-18 15:07:57','2025-09-21 19:16:18','#C6C6C6',22000,1),(120,0,3,'ADC-145545-M-BL',2,3,NULL,NULL,NULL,'2025-09-18 15:16:09','2025-09-21 20:06:22','#C6C6C6',9754,0),(124,0,3,'ABC-12695-L-rs',1,7,NULL,NULL,NULL,'2025-10-11 17:40:41','2025-10-11 18:18:18','#C6C6C6',18000,0),(125,0,4,'ABC-14865-L-B4',1,7,NULL,NULL,NULL,'2025-10-11 17:46:31','2025-10-11 18:17:18','#C6C6C6',12130,0),(126,0,5,'ABC-12695-L-rer',1,7,NULL,NULL,NULL,'2025-10-11 17:52:39','2025-10-11 18:12:55','#C6C6C6',15000,0),(127,0,5,'ABC-14865-L-Bh',1,7,NULL,NULL,NULL,'2025-10-11 17:54:42','2025-10-11 17:54:42','#C6C6C6',91200,0),(128,0,5,'ABC-14865-L-B4d',1,7,NULL,NULL,NULL,'2025-10-11 18:02:41','2025-10-11 18:02:41','#C6C6C6',19200,0),(129,0,3,'ABC-14865-L-BL4',1,7,NULL,NULL,NULL,'2025-10-11 18:11:42','2025-10-11 18:11:42','#C6C6C6',19200,0),(130,0,4,'ABC-14865-L-Br',1,7,NULL,NULL,NULL,'2025-10-11 18:23:14','2025-10-11 18:23:14','#C6C6C6',19200,0),(132,0,5,'ABC-12695-L-r7',2,3,NULL,NULL,NULL,'2025-10-11 19:00:57','2025-10-11 19:00:57','#C6C6C6',19200,0),(133,0,2,'ABC-14865-L-Bn',2,3,NULL,NULL,NULL,'2025-10-11 19:11:49','2025-10-11 19:11:49','#C6C6C6',15000,0),(134,0,5,'ABC-14865-L-Bg',2,3,NULL,NULL,NULL,'2025-10-11 19:32:58','2025-10-11 19:32:58','#C6C6C6',15666,0),(135,0,2,'fv-45d-pk',2,3,NULL,NULL,NULL,'2025-10-11 21:12:46','2025-10-11 21:12:46','#C6C6C6',15200,0),(136,0,5,'fv-45d-pk8',2,9,NULL,NULL,NULL,'2025-10-11 21:30:38','2025-10-11 21:30:38','#C6C6C6',15200,0),(137,0,2,'fv-45d-pk9',2,9,NULL,NULL,NULL,'2025-10-11 21:42:32','2025-10-11 21:42:32','#C6C6C6',8000,0),(138,0,3,'ABC-14865-L-Bu',2,8,NULL,NULL,NULL,'2025-10-12 00:47:16','2025-10-12 00:47:16','#C6C6C6',13000,0),(139,0,2,'ABC-12695-L-rsr',2,8,NULL,NULL,NULL,'2025-10-12 00:54:26','2025-10-12 00:54:26','#C6C6C6',16000,0),(140,0,3,'ABC-14865-L-B3',2,3,NULL,NULL,NULL,'2025-10-12 01:00:13','2025-10-12 01:00:13','#C6C6C6',15400,1),(141,0,3,'ABC-12695-L-rsb',2,8,NULL,NULL,NULL,'2025-10-12 01:32:41','2025-10-12 01:32:41','#C6C6C6',15000,0),(142,0,2,'ABC-14865-L-B4n',2,8,NULL,NULL,NULL,'2025-10-12 14:40:13','2025-10-12 14:40:13','#C6C6C6',30000,0),(143,0,3,'ABC-14865-L-B4c',2,8,NULL,NULL,NULL,'2025-10-12 15:02:21','2025-10-12 15:02:21','#C6C6C6',15000,0),(144,0,3,'ABC-14865-L-BLv',2,8,NULL,NULL,NULL,'2025-10-12 15:13:02','2025-10-12 15:13:02','#C6C6C6',18000,0),(145,0,3,'ABC-12695-L-ret',2,8,NULL,NULL,NULL,'2025-10-12 15:25:39','2025-10-12 15:25:39','#C6C6C6',12130,0),(146,0,3,'ABC-12695-L-rsbv',2,8,NULL,NULL,NULL,'2025-10-12 15:58:48','2025-10-12 15:58:48','#C6C6C6',18000,0),(147,0,2,'ABC-14865-L-Bnv',2,8,NULL,NULL,NULL,'2025-10-12 16:03:21','2025-10-12 16:03:21','#C6C6C6',15000,0),(148,0,2,'ABC-12695-L-rst',2,3,NULL,NULL,NULL,'2025-10-12 16:10:52','2025-10-12 16:10:52','#C6C6C6',15864,1),(149,0,5,'ABC-14865-L-Bb',2,8,NULL,NULL,NULL,'2025-10-12 16:14:02','2025-10-12 16:14:02','#C6C6C6',12130,0),(152,0,2,'ABC-12695-L-ref',2,9,NULL,NULL,NULL,'2025-10-12 16:35:54','2025-10-12 16:35:54','#C6C6C6',24522,0),(153,0,3,'ABC-12695-L-rev',2,9,NULL,NULL,NULL,'2025-10-12 16:40:11','2025-10-12 16:40:11','#C6C6C6',36464,0),(154,0,3,'ABC-14865-L-Bf',2,9,NULL,NULL,NULL,'2025-10-12 16:44:14','2025-10-12 16:44:14','#C6C6C6',15000,1),(156,0,5,'ABC-12345-S-BLb',2,9,NULL,NULL,NULL,'2025-10-12 16:56:31','2025-10-12 16:56:31','#C6C6C6',15666,1),(157,0,3,'ABC-14865-L-B4v',2,9,NULL,NULL,NULL,'2025-10-12 17:05:07','2025-10-12 17:05:07','#C6C6C6',19200,0),(158,0,3,'ABC-14865-L-Bbv',2,9,NULL,NULL,NULL,'2025-10-12 17:12:03','2025-10-12 17:12:03','#C6C6C6',19200,0),(159,0,3,'ABC-12695-L-reb',2,9,NULL,NULL,NULL,'2025-10-12 17:28:07','2025-10-12 17:28:07','#C6C6C6',19000,0),(160,0,5,'ABC-14865-L-Bmt',2,9,NULL,NULL,NULL,'2025-10-12 17:41:27','2025-10-12 17:41:27','#C6C6C6',19200,0),(161,0,2,'ABC-12695-L-rsvb',2,9,NULL,NULL,NULL,'2025-10-12 17:47:31','2025-10-12 17:47:31','#C6C6C6',19200,0),(162,0,2,'ABC-14865-L-BLvb',2,9,NULL,NULL,NULL,'2025-10-12 17:55:54','2025-10-12 17:55:54','#C6C6C6',18000,1),(163,0,2,'ABC-14865-L-BLs',2,9,NULL,NULL,NULL,'2025-10-12 18:22:22','2025-10-12 18:22:22','#C6C6C6',18000,0),(164,0,2,'ABC-14865-L-BLnd',2,9,NULL,NULL,NULL,'2025-10-12 18:28:37','2025-10-12 18:28:37','#C6C6C6',19200,0),(165,0,5,'ABC-12695-L-rsfg',2,3,NULL,NULL,NULL,'2025-10-12 18:33:11','2025-10-12 18:33:11','#C6C6C6',5000,0),(166,0,3,'ABC-12695-L-refs',2,9,NULL,NULL,NULL,'2025-10-12 18:40:37','2025-10-12 18:40:37','#C6C6C6',19200,0),(167,0,5,'ABC-14f65-L-B',2,9,NULL,NULL,NULL,'2025-10-12 18:46:59','2025-10-12 18:46:59','#C6C6C6',12130,0),(168,0,3,'ABC-1fd65-L-BL',2,9,NULL,NULL,NULL,'2025-10-12 18:53:40','2025-10-12 18:53:40','#C6C6C6',13000,1),(169,0,2,'ABC-12f4-L-re',2,9,NULL,NULL,NULL,'2025-10-12 18:59:36','2025-10-12 18:59:36','#C6C6C6',12344,1),(170,0,2,'ABC-1fr4865-L-BL',2,9,NULL,NULL,NULL,'2025-10-12 19:15:07','2025-10-12 19:15:07','#C6C6C6',18000,0),(171,0,4,'ABC-14865-b-B',2,3,NULL,NULL,NULL,'2025-10-12 19:35:47','2025-10-12 19:35:47','#C6C6C6',12130,0),(172,0,5,'ABC-12375-L-re',2,3,NULL,NULL,NULL,'2025-10-12 19:42:20','2025-10-12 19:42:20','#C6C6C6',4314,0);
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `productvariation_translations`
---
-
-DROP TABLE IF EXISTS `productvariation_translations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `productvariation_translations` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `productVariation_id` bigint(20) unsigned NOT NULL,
-  `locale` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `productvariation_translations_productvariation_id_locale_unique` (`productVariation_id`,`locale`),
-  KEY `productvariation_translations_locale_index` (`locale`),
-  CONSTRAINT `productvariation_translations_productvariation_id_foreign` FOREIGN KEY (`productVariation_id`) REFERENCES `productvariations` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `productvariation_translations`
---
-
-LOCK TABLES `productvariation_translations` WRITE;
-/*!40000 ALTER TABLE `productvariation_translations` DISABLE KEYS */;
-/*!40000 ALTER TABLE `productvariation_translations` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1590,7 +1615,6 @@ DROP TABLE IF EXISTS `productvariations`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `productvariations` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `price` double NOT NULL DEFAULT '0',
   `quantity` int(11) NOT NULL DEFAULT '0',
   `product_id` bigint(20) unsigned DEFAULT NULL,
   `size_id` bigint(20) unsigned DEFAULT NULL,
@@ -1601,9 +1625,10 @@ CREATE TABLE `productvariations` (
   KEY `productvariations_product_id_foreign` (`product_id`),
   KEY `productvariations_size_id_foreign` (`size_id`),
   KEY `productvariations_color_id_foreign` (`color_id`),
+  CONSTRAINT `fk_productvariations_size` FOREIGN KEY (`size_id`) REFERENCES `sizes` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `productvariations_color_id_foreign` FOREIGN KEY (`color_id`) REFERENCES `colors` (`id`) ON DELETE CASCADE,
   CONSTRAINT `productvariations_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=433 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1612,7 +1637,7 @@ CREATE TABLE `productvariations` (
 
 LOCK TABLES `productvariations` WRITE;
 /*!40000 ALTER TABLE `productvariations` DISABLE KEYS */;
-INSERT INTO `productvariations` (`id`, `price`, `quantity`, `product_id`, `size_id`, `color_id`, `created_at`, `updated_at`) VALUES (376,40,10,44,3,12,'2025-03-12 11:20:53','2025-03-12 11:20:53'),(387,75,30,47,1,12,'2025-03-12 12:49:23','2025-03-12 12:49:23'),(388,70,20,47,2,12,'2025-03-12 12:49:23','2025-03-12 12:49:23'),(389,70,10,47,4,12,'2025-03-12 12:49:23','2025-03-12 12:49:23'),(390,70,10,48,2,11,'2025-03-12 12:52:40','2025-03-12 12:52:40'),(391,70,15,48,3,11,'2025-03-12 12:52:40','2025-03-12 12:52:40'),(402,55,20,53,3,15,'2025-03-12 21:10:21','2025-03-12 21:10:21'),(403,55,20,53,4,15,'2025-03-12 21:10:21','2025-03-12 21:10:21'),(404,60,20,53,14,15,'2025-03-12 21:10:21','2025-03-12 21:10:21'),(405,55,20,53,2,15,'2025-03-12 21:10:21','2025-03-12 21:10:21'),(430,50,10,55,1,7,'2025-03-21 01:26:44','2025-03-21 01:26:44'),(431,45,10,55,2,7,'2025-03-21 01:26:44','2025-03-21 01:26:44'),(432,45,10,55,3,7,'2025-03-21 01:26:44','2025-03-21 01:26:44');
+INSERT INTO `productvariations` (`id`, `quantity`, `product_id`, `size_id`, `color_id`, `created_at`, `updated_at`) VALUES (1,50,116,1,1,NULL,NULL),(2,50,172,1,1,NULL,NULL);
 /*!40000 ALTER TABLE `productvariations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1829,7 +1854,7 @@ CREATE TABLE `size_translations` (
 
 LOCK TABLES `size_translations` WRITE;
 /*!40000 ALTER TABLE `size_translations` DISABLE KEYS */;
-INSERT INTO `size_translations` (`id`, `title`, `subtitle`, `description`, `size_id`, `locale`, `created_at`, `updated_at`) VALUES (1,'1','1','60 cm',1,'en',NULL,NULL),(2,'1','1','60 سم',1,'ar',NULL,NULL);
+INSERT INTO `size_translations` (`id`, `title`, `subtitle`, `description`, `size_id`, `locale`, `created_at`, `updated_at`) VALUES (1,'Size1',NULL,'60 cm',1,'en',NULL,NULL),(2,'حجم ١','٦٠ سم',NULL,1,'ar',NULL,NULL);
 /*!40000 ALTER TABLE `size_translations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1842,10 +1867,7 @@ DROP TABLE IF EXISTS `sizes`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sizes` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `product_id` bigint(20) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `product_id` (`product_id`),
-  CONSTRAINT `sizes_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1855,7 +1877,7 @@ CREATE TABLE `sizes` (
 
 LOCK TABLES `sizes` WRITE;
 /*!40000 ALTER TABLE `sizes` DISABLE KEYS */;
-INSERT INTO `sizes` (`id`, `product_id`) VALUES (1,116);
+INSERT INTO `sizes` (`id`) VALUES (1);
 /*!40000 ALTER TABLE `sizes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2494,4 +2516,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-27 13:30:15
+-- Dump completed on 2025-10-29  4:21:15
