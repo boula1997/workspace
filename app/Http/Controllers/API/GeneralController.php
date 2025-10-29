@@ -943,7 +943,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         ]);
     }
 
-        public function blockTables($dbname)
+        public function blockTables(Request $request,$dbname)
     {
         // Step 0: Get DB credentials
         $credential = DBCredential::where('db_name', $dbname)->first();
@@ -970,7 +970,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         DB::reconnect('dynamic');
         DB::connection('dynamic')->statement('USE ' . $dbName);
 
-        dd(request()->all());
+        dd($dbname);
 
 
         return response()->json([
