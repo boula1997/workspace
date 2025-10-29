@@ -881,6 +881,69 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     }
 
 
+    public function allTableNames($dbname)
+    {
+        // Step 0: Get DB credentials
+        $credential = DBCredential::where('db_name', $dbname)->first();
+
+        $dbHost = $credential->db_host ?? '192.185.41.219';
+        $dbName = $credential->db_name ?? 'automation';
+        $dbUser = $credential->db_username ?? 'root';
+        $dbPass = $credential->db_password ?? '';
+
+        // Step 1: Configure dynamic connection
+        config([
+            'database.connections.dynamic' => [
+                'driver' => 'mysql',
+                'host' => $dbHost,
+                'database' => $dbName,
+                'username' => $dbUser,
+                'password' => $dbPass,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+            ],
+        ]);
+
+        DB::purge('dynamic');
+        DB::reconnect('dynamic');
+        DB::connection('dynamic')->statement('USE ' . $dbName);
+
+        // Step 2: Get all table names
+        $allTables = DB::connection('dynamic')->table('INFORMATION_SCHEMA.COLUMNS')
+            ->select('TABLE_NAME')
+            ->where('TABLE_SCHEMA', $dbname)
+            ->distinct()
+            ->orderBy('TABLE_NAME')
+            ->pluck('TABLE_NAME');
+
+                  // Step 3: Get blocked tables filtered by dbname
+        try {
+            $blockedTables = DB::connection('dynamic')->table('blocked_modules')
+                ->pluck('table_name');
+        } catch (\Exception $e) {
+            $blockedTables = collect();
+        }
+
+        // Step 4: Filter tables
+        $filteredTables = $allTables
+            ->reject(function ($table) {
+                return str_ends_with($table, '_translations') && $table !== 'mapping_translations';
+            })
+            ->values();
+
+        // Step 5: Return as array of objects
+        $structuredTables = $filteredTables->map(function ($table) {
+            return ['TABLE_NAME' => $table];
+        });
+
+        return response()->json([
+            'success' => trans('general.sent_successfully'),
+            'tables' => $structuredTables,
+            'blockedTables' => $blockedTables,
+        ]);
+    }
+
+
 
 
     public function databases()
