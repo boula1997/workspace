@@ -943,41 +943,41 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         ]);
     }
 
-        public function blockTables(Request $request,$dbname)
-    {
-        // Step 0: Get DB credentials
-        $credential = DBCredential::where('db_name', $dbname)->first();
+public function blockTables(Request $request, $dbname)
+{
+    $credential = DBCredential::where('db_name', $dbname)->firstOrFail();
 
-        $dbHost = $credential->db_host ?? '192.185.41.219';
-        $dbName = $credential->db_name ?? 'automation';
-        $dbUser = $credential->db_username ?? 'root';
-        $dbPass = $credential->db_password ?? '';
+    config([
+        'database.connections.dynamic' => [
+            'driver' => 'mysql',
+            'host' => $credential->db_host,
+            'database' => $credential->db_name,
+            'username' => $credential->db_username,
+            'password' => $credential->db_password,
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+    ]);
 
-        // Step 1: Configure dynamic connection
-        config([
-            'database.connections.dynamic' => [
-                'driver' => 'mysql',
-                'host' => $dbHost,
-                'database' => $dbName,
-                'username' => $dbUser,
-                'password' => $dbPass,
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-            ],
-        ]);
+    DB::purge('dynamic');
+    DB::reconnect('dynamic');
 
-        DB::purge('dynamic');
-        DB::reconnect('dynamic');
-        DB::connection('dynamic')->statement('USE ' . $dbName);
+    $tables = $request->tables ?? [];
 
-       dd($dbname);
-
-        return response()->json([
-            'success' => trans('general.sent_successfully'),
-            'tables' => $structuredTables,
-            'blockedTables' => $blockedTables,
+    DB::connection('dynamic')->table('blocked_tables')->truncate(); // clear old
+    foreach ($tables as $table) {
+        DB::connection('dynamic')->table('blocked_tables')->insert([
+            'table_name' => $table,
         ]);
     }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Tables blocked successfully ✅',
+        'blocked' => $tables,
+    ]);
+}
+
 
 
 
