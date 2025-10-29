@@ -902,6 +902,10 @@ public function tableNames($dbname)
             ->orderBy('TABLE_NAME')
             ->pluck('TABLE_NAME');
 
+                $blockedModules = DB::connection('dynamic')
+                    ->table('blocked_modules')
+                    ->pluck('table_name');
+
                   // Step 3: Get blocked tables filtered by dbname
         try {
             if (isset($admin_id)) {
@@ -930,6 +934,10 @@ public function tableNames($dbname)
                 return str_ends_with($table, '_translations') && $table !== 'mapping_translations';
             })
             ->values();
+
+            if ($admin_id) {
+                $filteredTables = $filteredTables->reject(fn($table) => $blockedModules->contains($table));
+              }
 
         // Step 5: Return as array of objects
         $structuredTables = $filteredTables->map(function ($table) {
