@@ -840,13 +840,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         DB::reconnect('dynamic');
         DB::connection('dynamic')->statement('USE ' . $dbname);
 
-        // Step 1: Get globally blocked tables (optional safeguard)
-        try {
-            $blockedTables = DB::connection('dynamic')->table('blocked_modules')
-                ->pluck('table_name');
-        } catch (\Exception $e) {
-            $blockedTables = collect();
-        }
+ 
 
         // Step 2: Get allowed tables directly from admin permissions
         $allowedTables = collect();
@@ -860,18 +854,11 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
             }
         }
 
-        // Step 3: Filter out translation and globally blocked tables
-        $filteredTables = $allowedTables
-            ->reject(fn($table) => str_ends_with($table, '_translations') && $table !== 'mapping_translations')
-            ->diff($blockedTables)
-            ->values();
 
-        // Step 4: Return structured array
-        $structuredTables = $filteredTables->map(fn($table) => ['TABLE_NAME' => $table]);
 
         return response()->json([
             'success' => trans('general.sent_successfully'),
-            'tables' => $structuredTables,
+            'tables' => $allowedTables,
         ]);
     }
 
