@@ -970,7 +970,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         DB::reconnect('dynamic');
         DB::connection('dynamic')->statement('USE ' . $dbName);
 
-       dd($request->all());
+       dd($dbname);
 
         return response()->json([
             'success' => trans('general.sent_successfully'),
