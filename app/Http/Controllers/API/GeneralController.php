@@ -902,9 +902,7 @@ public function tableNames($dbname)
             ->orderBy('TABLE_NAME')
             ->pluck('TABLE_NAME');
 
-                $blockedModules = DB::connection('dynamic')
-                    ->table('blocked_modules')
-                    ->pluck('table_name');
+
 
                   // Step 3: Get blocked tables filtered by dbname
         try {
@@ -917,12 +915,17 @@ public function tableNames($dbname)
 
                 // Decode JSON safely
                 $blockedTables = collect(json_decode($permissions, true) ?? []);
-                $arrayblockedModules = collect($blockedModules?? []);
+
+                $blockedModules = DB::connection('dynamic')
+                    ->table('blocked_modules')
+                    ->pluck('table_name');
             } else {
                 // Default: get from blocked_modules table
                 $blockedTables = DB::connection('dynamic')
                     ->table('blocked_modules')
                     ->pluck('table_name');
+
+                    $blockedModules = [];
             }
         } catch (\Exception $e) {
             $blockedTables = collect();
@@ -936,9 +939,7 @@ public function tableNames($dbname)
             })
             ->values();
 
-            if ($admin_id) {
-                $filteredTables = $filteredTables->reject(fn($table) => $arrayblockedModules->contains($table));
-              }
+
 
         // Step 5: Return as array of objects
         $structuredTables = $filteredTables->map(function ($table) {
