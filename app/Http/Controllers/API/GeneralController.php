@@ -852,9 +852,24 @@ public function tableNames($dbname)
         }
     }
 
-    // Step 3: Format as array of objects with "TABLE_NAME" key
-    $formattedTables = $allowedTables->map(function ($table) {
-        return ['TABLE_NAME' => $table];
+    // Step 3: Define icons for specific table names
+    $iconMap = [
+        'users' => 'fas fa-users',
+        'admins' => 'fas fa-user-shield',
+        'settings' => 'fas fa-cog',
+        'orders' => 'fas fa-shopping-cart',
+        'products' => 'fas fa-box',
+        'clients' => 'fas fa-user',
+        'home' => 'fas fa-home',
+        // Add more table-to-icon mappings as needed
+    ];
+
+    // Step 4: Format response
+    $formattedTables = $allowedTables->map(function ($table) use ($iconMap) {
+        return [
+            'TABLE_NAME' => $table,
+            'ICON' => $iconMap[$table] ?? 'fas fa-table', // default icon if not found
+        ];
     })->values();
 
     return response()->json([
@@ -862,6 +877,7 @@ public function tableNames($dbname)
         'tables' => $formattedTables,
     ]);
 }
+
 
 
 
