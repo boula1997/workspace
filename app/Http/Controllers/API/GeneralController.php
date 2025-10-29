@@ -867,7 +867,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                     }
                 }
             }
-
+            dd($adminBlocked);
             // Step 4: Merge blocked sources
             $allBlocked = $blockedTables->merge($adminBlocked)->unique();
 
