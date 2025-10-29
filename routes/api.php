@@ -75,9 +75,8 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/deleteItem/{dbname}/{table}/{itemId}', [GeneralController::class, 'deleteItem']);
     Route::get('/index/{dbname}/{table}/{column?}/{equal?}', [GeneralController::class, 'index']);
     Route::get('/tables/{dbname}', [GeneralController::class, 'tableNames']);
-    Route::get('/all/tables/{dbname}', [GeneralController::class, 'allTableNames']);
+    Route::get('/all/tables/{dbname}/{admin_id?}', [GeneralController::class, 'allTableNames']);
     Route::get('/databases', [GeneralController::class, 'databases']);
-    Route::get('/admins', [GeneralController::class, 'admins']);
 
     
     Route::get('/categories', [CategoryController::class, 'index']);

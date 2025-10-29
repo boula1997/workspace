@@ -882,7 +882,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     }
 
 
-    public function allTableNames($dbname)
+    public function allTableNames($dbname,$admin_id=null)
     {
         // Step 0: Get DB credentials
         $credential = DBCredential::where('db_name', $dbname)->first();
@@ -919,11 +919,25 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
 
                   // Step 3: Get blocked tables filtered by dbname
         try {
-            $blockedTables = DB::connection('dynamic')->table('blocked_modules')
-                ->pluck('table_name');
+            if (isset($admin_id)) {
+                // Fetch the permissions JSON from the admin
+                $permissions = DB::connection('dynamic')
+                    ->table('admins')
+                    ->where('id', $admin_id)
+                    ->value('permissions');
+
+                // Decode JSON safely
+                $blockedTables = collect(json_decode($permissions, true) ?? []);
+            } else {
+                // Default: get from blocked_modules table
+                $blockedTables = DB::connection('dynamic')
+                    ->table('blocked_modules')
+                    ->pluck('table_name');
+            }
         } catch (\Exception $e) {
             $blockedTables = collect();
         }
+
 
         // Step 4: Filter tables
         $filteredTables = $allTables
@@ -937,47 +951,70 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
             return ['TABLE_NAME' => $table];
         });
 
+        $admins=Admin::latest()->get();
+
         return response()->json([
             'success' => trans('general.sent_successfully'),
             'tables' => $structuredTables,
             'blockedTables' => $blockedTables,
+            'admins' => $admins,
         ]);
     }
 
-public function blockTables(Request $request, $dbname)
-{
-    $credential = DBCredential::where('db_name', $dbname)->firstOrFail();
+    public function blockTables(Request $request, $dbname)
+    {
+        $credential = DBCredential::where('db_name', $dbname)->firstOrFail();
 
-    config([
-        'database.connections.dynamic' => [
-            'driver' => 'mysql',
-            'host' => $credential->db_host,
-            'database' => $credential->db_name,
-            'username' => $credential->db_username,
-            'password' => $credential->db_password,
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-        ],
-    ]);
-
-    DB::purge('dynamic');
-    DB::reconnect('dynamic');
-
-    $tables = $request->tables ?? [];
-
-    DB::connection('dynamic')->table('blocked_modules')->truncate(); // clear old
-    foreach ($tables as $table) {
-        DB::connection('dynamic')->table('blocked_modules')->insert([
-            'table_name' => $table,
+        config([
+            'database.connections.dynamic' => [
+                'driver' => 'mysql',
+                'host' => $credential->db_host,
+                'database' => $credential->db_name,
+                'username' => $credential->db_username,
+                'password' => $credential->db_password,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+            ],
         ]);
+
+        DB::purge('dynamic');
+        DB::reconnect('dynamic');
+
+        $tables = $request->tables ?? [];
+        $permissions = json_encode($tables);
+
+        if ($request->has('admin_id')) {
+            // Update admin permissions
+            DB::connection('dynamic')->table('admins')
+                ->where('id', $request->admin_id)
+                ->update([
+                    'permissions' => $permissions,
+                    'updated_at' => now(),
+                ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Admin permissions updated successfully ✅',
+                'permissions' => $tables,
+            ]);
+        } else {
+            // Replace blocked modules list
+            DB::connection('dynamic')->table('blocked_modules')->truncate();
+
+            foreach ($tables as $table) {
+                DB::connection('dynamic')->table('blocked_modules')->insert([
+                    'table_name' => $table,
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tables blocked successfully ✅',
+                'blocked' => $tables,
+            ]);
+        }
     }
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Tables blocked successfully ✅',
-        'blocked' => $tables,
-    ]);
-}
 
 
 
@@ -992,12 +1029,5 @@ public function blockTables(Request $request, $dbname)
     }
 
 
- public function admins()
-    {
-        $admins=Admin::get();
-        return response()->json([
-            'success' => trans('general.sent_successfully'),
-            'admins' => $admins,
-        ]);
-    }
+
 }
