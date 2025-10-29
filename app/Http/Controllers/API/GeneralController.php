@@ -917,6 +917,7 @@ public function tableNames($dbname)
 
                 // Decode JSON safely
                 $blockedTables = collect(json_decode($permissions, true) ?? []);
+                $arrayblockedModules = collect($blockedModules?? []);
             } else {
                 // Default: get from blocked_modules table
                 $blockedTables = DB::connection('dynamic')
@@ -935,9 +936,9 @@ public function tableNames($dbname)
             })
             ->values();
 
-            // if ($admin_id) {
-            //     $filteredTables = $filteredTables->reject(fn($table) => $blockedModules->contains($table));
-            //   }
+            if ($admin_id) {
+                $filteredTables = $filteredTables->reject(fn($table) => $arrayblockedModules->contains($table));
+              }
 
         // Step 5: Return as array of objects
         $structuredTables = $filteredTables->map(function ($table) {
