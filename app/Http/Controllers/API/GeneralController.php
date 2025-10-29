@@ -1016,6 +1016,44 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     }
 
 
+public function getAdmins($dbname)
+{
+    try {
+        $credential = DBCredential::where('db_name', $dbname)->firstOrFail();
+
+        // Configure connection dynamically
+        config([
+            'database.connections.dynamic' => [
+                'driver' => 'mysql',
+                'host' => $credential->db_host,
+                'database' => $credential->db_name,
+                'username' => $credential->db_username,
+                'password' => $credential->db_password,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+            ],
+        ]);
+
+        DB::purge('dynamic');
+        DB::reconnect('dynamic');
+
+        // Fetch all admins
+        $admins = DB::connection('dynamic')->table('admins')
+            ->select('id', 'name')
+            ->orderBy('id')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'admins' => $admins,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to load admins: ' . $e->getMessage(),
+        ], 500);
+    }
+}
 
 
 

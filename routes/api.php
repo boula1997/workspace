@@ -77,7 +77,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/tables/{dbname}', [GeneralController::class, 'tableNames']);
     Route::get('/all/tables/{dbname}/{admin_id?}', [GeneralController::class, 'allTableNames']);
     Route::get('/databases', [GeneralController::class, 'databases']);
-
+    Route::get('/admins/{dbname}', [GeneralController::class, 'getAdmins']);
     
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
