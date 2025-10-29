@@ -943,6 +943,43 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         ]);
     }
 
+        public function blockTables(Request $request,$dbname)
+    {
+        // Step 0: Get DB credentials
+        $credential = DBCredential::where('db_name', $dbname)->first();
+
+        $dbHost = $credential->db_host ?? '192.185.41.219';
+        $dbName = $credential->db_name ?? 'automation';
+        $dbUser = $credential->db_username ?? 'root';
+        $dbPass = $credential->db_password ?? '';
+
+        // Step 1: Configure dynamic connection
+        config([
+            'database.connections.dynamic' => [
+                'driver' => 'mysql',
+                'host' => $dbHost,
+                'database' => $dbName,
+                'username' => $dbUser,
+                'password' => $dbPass,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+            ],
+        ]);
+
+        DB::purge('dynamic');
+        DB::reconnect('dynamic');
+        DB::connection('dynamic')->statement('USE ' . $dbName);
+
+        dd($request->all());
+
+
+        return response()->json([
+            'success' => trans('general.sent_successfully'),
+            'tables' => $structuredTables,
+            'blockedTables' => $blockedTables,
+        ]);
+    }
+
 
 
 
