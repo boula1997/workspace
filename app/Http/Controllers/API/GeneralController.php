@@ -819,48 +819,50 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
 
 
 
-    public function tableNames($dbname)
-    {
-        // Step 0: Get DB credentials
-        $credential = DBCredential::where('db_name', $dbname)->firstOrFail();
+public function tableNames($dbname)
+{
+    // Step 0: Get DB credentials
+    $credential = DBCredential::where('db_name', $dbname)->firstOrFail();
 
-        config([
-            'database.connections.dynamic' => [
-                'driver' => 'mysql',
-                'host' => $credential->db_host ?? '192.185.41.219',
-                'database' => $credential->db_name ?? 'automation',
-                'username' => $credential->db_username ?? 'root',
-                'password' => $credential->db_password ?? '',
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-            ],
-        ]);
+    config([
+        'database.connections.dynamic' => [
+            'driver' => 'mysql',
+            'host' => $credential->db_host ?? '192.185.41.219',
+            'database' => $credential->db_name ?? 'automation',
+            'username' => $credential->db_username ?? 'root',
+            'password' => $credential->db_password ?? '',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+    ]);
 
-        DB::purge('dynamic');
-        DB::reconnect('dynamic');
-        DB::connection('dynamic')->statement('USE ' . $dbname);
+    DB::purge('dynamic');
+    DB::reconnect('dynamic');
+    DB::connection('dynamic')->statement('USE ' . $dbname);
 
- 
-
-        // Step 2: Get allowed tables directly from admin permissions
-        $allowedTables = collect();
-        if (auth('admin-api')->check()) {
-            $admin = auth('admin-api')->user();
-            if (!empty($admin->permissions)) {
-                $decoded = json_decode($admin->permissions, true);
-                if (is_array($decoded)) {
-                    $allowedTables = collect($decoded);
-                }
+    // Step 2: Get allowed tables directly from admin permissions
+    $allowedTables = collect();
+    if (auth('admin-api')->check()) {
+        $admin = auth('admin-api')->user();
+        if (!empty($admin->permissions)) {
+            $decoded = json_decode($admin->permissions, true);
+            if (is_array($decoded)) {
+                $allowedTables = collect($decoded);
             }
         }
-
-
-
-        return response()->json([
-            'success' => trans('general.sent_successfully'),
-            'tables' => $allowedTables,
-        ]);
     }
+
+    // Step 3: Format as array of objects with "table_name" key
+    $formattedTables = $allowedTables->map(function ($table) {
+        return ['table_name' => $table];
+    })->values();
+
+    return response()->json([
+        'success' => trans('general.sent_successfully'),
+        'tables' => $formattedTables,
+    ]);
+}
+
 
 
 
