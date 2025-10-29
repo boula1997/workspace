@@ -894,6 +894,9 @@ public function tableNames($dbname)
         DB::reconnect('dynamic');
         DB::connection('dynamic')->statement('USE ' . $dbName);
 
+                    $blockedModules = [];
+
+
         // Step 2: Get all table names
         $allTables = DB::connection('dynamic')->table('INFORMATION_SCHEMA.COLUMNS')
             ->select('TABLE_NAME')
