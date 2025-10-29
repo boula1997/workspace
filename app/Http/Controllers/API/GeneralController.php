@@ -867,92 +867,81 @@ public function tableNames($dbname)
 
 
 
-    public function allTableNames($dbname,$admin_id=null)
-    {
-        // Step 0: Get DB credentials
-        $credential = DBCredential::where('db_name', $dbname)->first();
+public function allTableNames($dbname, $admin_id = null)
+{
+    $credential = DBCredential::where('db_name', $dbname)->first();
 
-        $dbHost = $credential->db_host ?? '192.185.41.219';
-        $dbName = $credential->db_name ?? 'automation';
-        $dbUser = $credential->db_username ?? 'root';
-        $dbPass = $credential->db_password ?? '';
+    $dbHost = $credential->db_host ?? '192.185.41.219';
+    $dbName = $credential->db_name ?? 'automation';
+    $dbUser = $credential->db_username ?? 'root';
+    $dbPass = $credential->db_password ?? '';
 
-        // Step 1: Configure dynamic connection
-        config([
-            'database.connections.dynamic' => [
-                'driver' => 'mysql',
-                'host' => $dbHost,
-                'database' => $dbName,
-                'username' => $dbUser,
-                'password' => $dbPass,
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-            ],
-        ]);
+    config([
+        'database.connections.dynamic' => [
+            'driver' => 'mysql',
+            'host' => $dbHost,
+            'database' => $dbName,
+            'username' => $dbUser,
+            'password' => $dbPass,
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+    ]);
 
-        DB::purge('dynamic');
-        DB::reconnect('dynamic');
-        DB::connection('dynamic')->statement('USE ' . $dbName);
+    DB::purge('dynamic');
+    DB::reconnect('dynamic');
+    DB::connection('dynamic')->statement('USE ' . $dbName);
 
-        // Step 2: Get all table names
-        $allTables = DB::connection('dynamic')->table('INFORMATION_SCHEMA.COLUMNS')
-            ->select('TABLE_NAME')
-            ->where('TABLE_SCHEMA', $dbname)
-            ->distinct()
-            ->orderBy('TABLE_NAME')
-            ->pluck('TABLE_NAME');
+    $allTables = DB::connection('dynamic')->table('INFORMATION_SCHEMA.COLUMNS')
+        ->select('TABLE_NAME')
+        ->where('TABLE_SCHEMA', $dbname)
+        ->distinct()
+        ->orderBy('TABLE_NAME')
+        ->pluck('TABLE_NAME');
 
-                $blockedModules = DB::connection('dynamic')
-                    ->table('blocked_modules')
-                    ->pluck('table_name');
+    $blockedModules = DB::connection('dynamic')
+        ->table('blocked_modules')
+        ->pluck('table_name');
 
-                  // Step 3: Get blocked tables filtered by dbname
-        try {
-            if (isset($admin_id)) {
-                // Fetch the permissions JSON from the admin
-                $permissions = DB::connection('dynamic')
-                    ->table('admins')
-                    ->where('id', $admin_id)
-                    ->value('permissions');
+    try {
+        if (isset($admin_id)) {
+            $permissions = DB::connection('dynamic')
+                ->table('admins')
+                ->where('id', $admin_id)
+                ->value('permissions');
 
-                // Decode JSON safely
-                $blockedTables = collect(json_decode($permissions, true) ?? []);
-            } else {
-                // Default: get from blocked_modules table
-                $blockedTables = DB::connection('dynamic')
-                    ->table('blocked_modules')
-                    ->pluck('table_name');
-            }
-        } catch (\Exception $e) {
-            $blockedTables = collect();
+            $decoded = json_decode($permissions, true) ?? [];
+            // ✅ Convert JSON object to simple array of table names
+            $blockedTables = collect(array_keys($decoded));
+        } else {
+            $blockedTables = DB::connection('dynamic')
+                ->table('blocked_modules')
+                ->pluck('table_name');
         }
-
-
-        // Step 4: Filter tables
-        $filteredTables = $allTables
-            ->reject(function ($table) {
-                return str_ends_with($table, '_translations') && $table !== 'mapping_translations';
-            })
-            ->values();
-
-            if ($admin_id) {
-                $filteredTables = $filteredTables->reject(fn($table) => $blockedModules->contains($table));
-              }
-
-        // Step 5: Return as array of objects
-        $structuredTables = $filteredTables->map(function ($table) {
-            return ['TABLE_NAME' => $table];
-        });
-
-        $admins=Admin::latest()->get();
-
-        return response()->json([
-            'success' => trans('general.sent_successfully'),
-            'tables' => $structuredTables,
-            'blockedTables' => $blockedTables,
-            'admins' => $admins,
-        ]);
+    } catch (\Exception $e) {
+        $blockedTables = collect();
     }
+
+    $filteredTables = $allTables
+        ->reject(fn($table) => str_ends_with($table, '_translations') && $table !== 'mapping_translations')
+        ->values();
+
+    if ($admin_id) {
+        $filteredTables = $filteredTables->reject(fn($table) => $blockedModules->contains($table));
+    }
+
+    $structuredTables = $filteredTables->map(fn($table) => ['TABLE_NAME' => $table]);
+
+    $admins = Admin::latest()->get();
+
+    return response()->json([
+        'success' => trans('general.sent_successfully'),
+        'tables' => $structuredTables,
+        'blockedTables' => $blockedTables,
+        'admins' => $admins,
+    ]);
+}
+
 
     public function blockTables(Request $request, $dbname)
     {
