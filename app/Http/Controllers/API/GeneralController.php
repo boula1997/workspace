@@ -950,6 +950,7 @@ public function tableNames($dbname)
             'success' => trans('general.sent_successfully'),
             'tables' => $structuredTables,
             'blockedTables' => $blockedTables,
+            'blockedModules' => $blockedModules,
             'admins' => $admins,
         ]);
     }
