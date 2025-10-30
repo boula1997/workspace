@@ -975,6 +975,63 @@ import React, { useEffect, useRef, useState } from "react";
     }, []);
                             </pre>
 
+
+
+                              <h5 class="text-white mt-4">React Tracking Code</h5>
+                                <pre class="bg-dark text-white p-3 rounded border">
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+        const loadData = async () => {
+
+        try {
+            fetch(`https://yousab-tech.com/workspace/public/api/clienttrack/52/browse portfolio Homepage`, {
+            method: 'GET',
+            headers: {
+
+                'locale': "en"
+
+            }
+            })
+            .then(async (response) => {
+                const data = await response.json();
+                console.log("boula", data.data);
+                setData(data.data);
+            })
+            .catch((err) => {
+                if (err.response) {
+                    // Server responded with a status code outside 2xx
+                    console.log("❌ Server Error Details:", err.response.data);
+                    console.log("Status:", err.response.status);
+                    console.log("Headers:", err.response.headers);
+
+                    alert(
+                    `Error ${err.response.status}: ${
+                        JSON.stringify(err.response.data)
+                    }`
+                    );
+                } else if (err.request) {
+                    // Request was made but no response
+                    console.log("⚠️ No response from server:", err.request);
+                    alert("No response from server. Check API link or network.");
+                } else {
+                    // Something else happened
+                    console.log("⚙️ Error setting up request:", err.message);
+                    alert(`Error: ${err.message}`);
+                }
+            });
+        } catch (err) {
+            console.error('Error loadData', err);
+        }
+        };
+
+
+        loadData();
+
+    }, []);
+                            </pre>
+
+
                             </div>
 
                         </div>
