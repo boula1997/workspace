@@ -21,7 +21,7 @@ class TaskResource extends JsonResource
             'piority'=>$this->piority,
             'employee'=>taskEmployees($this,"mobile"),
             'project'=>$this->project->title,
-            "editlink"=>"https://yousab-tech.com/workspace/public/en/dashboard/tasks/".$this->id."/edit"
+            "editlink"=>"https://reactdashboard.yousab-tech.com/tasks/".$this->id."/edit"
         ];
     }
 }
