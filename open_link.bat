@@ -1,2 +1,2 @@
 @echo off
-start "" "https://yousab-tech.com/workspace/public/en/dashboard/tasks"
+start "" "https://reactdashboard.yousab-tech.com/tasks"
