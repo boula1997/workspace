@@ -1924,7 +1924,7 @@
             });
             $('#navigations').on('click', function(e) {
                 e.preventDefault();
-                window.open('https://yousab-tech.com/workspace/public/en/dashboard/navigations');
+                window.open('https://reactdashboard.yousab-tech.com/module/navigations');
 
 
             });
