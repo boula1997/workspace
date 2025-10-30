@@ -13,5 +13,9 @@ class Navigation extends Model
 
 
 public function category(){ return $this->belongsTo(Category::class,'category_id'); }
+public function getPasswordAttribute(){
+    return $this->confidential;
 }
+}
+
 
