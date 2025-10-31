@@ -241,7 +241,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
 
 
 
-    public function showEditCreate($dbname, $table, $itemId = null)
+   public function showEditCreate($dbname, $table, $itemId = null)
     {
         // Step 0: Get DB credentials
         $credential = DBCredential::where('db_name', $dbname)->first();
@@ -444,6 +444,14 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         }
 
         $data = (array) $data;
+
+        $sensitive = ['password', 'remember_token', 'api_token', 'access_token'];
+
+        foreach ($sensitive as $field) {
+            if (array_key_exists($field, $data)) {
+                $data[$field] = '';
+            }
+        }
 
         $files = DB::connection('dynamic')->table('files')
             ->where('fileable_type', 'App\\Models\\' . Str::studly(Str::singular($table)))
