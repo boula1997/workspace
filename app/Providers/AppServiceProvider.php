@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-            Model::creating(function ($model) {
+    Model::creating(function ($model) {
         if (!isset($model->isActive)) {
             $model->isActive = 1;
         }
