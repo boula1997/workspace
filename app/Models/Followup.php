@@ -17,7 +17,10 @@ class Followup extends Model
     public $translatedAttributes = ['title'];
     public $timestamps = true;
 
-
+    protected static function booted()
+    {
+        static::addGlobalScope(new DateFilterScope);
+    }
 
     // public function project(){
     //     return $this->belongsTo(Project::class,'project_id');
