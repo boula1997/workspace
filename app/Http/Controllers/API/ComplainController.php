@@ -54,7 +54,7 @@ class ComplainController extends Controller
             return failedResponse($e->getMessage());
         }
     }
-    public function delete($id){
+    public function destroy($id){
         try{
             $complain = Complain::find($id);
             $complain->delete();
