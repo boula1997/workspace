@@ -69,6 +69,9 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
     Route::middleware('auth:admin-api')->group(function () {
 
+    Route::resource('complains', ComplainController::class);
+
+
     Route::get('/showEditCreate/{dbname}/{table}/{itemId}', [GeneralController::class, 'showEditCreate']);
     Route::post('/storeUpdate/{dbname}/{table}/{itemId}', [GeneralController::class, 'storeUpdate']);
     Route::post('/blocktables/{dbname}', [GeneralController::class, 'blockTables']);
