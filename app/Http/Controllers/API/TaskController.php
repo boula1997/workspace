@@ -391,10 +391,9 @@ class TaskController extends Controller
             $tasks = Task::where("status", 1)
             ->latest('updated_at') // Then by latest updated time
                       // Limit to 300 tasks
-            ->toSql()
+            ->get()
             ;  
 
-            dd($tasks);
 
         $data=[
             "projects"=>ProjectResource::collection($projects),
