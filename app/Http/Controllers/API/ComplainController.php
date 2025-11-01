@@ -37,6 +37,8 @@ class ComplainController extends Controller
     }
     public function store(ComplainRequest $request) {
         try{
+
+            dd($request->all());
             $data['complain'] = Complain::create($request->all());
             return successResponse($data);
         } catch(Exception $e){
