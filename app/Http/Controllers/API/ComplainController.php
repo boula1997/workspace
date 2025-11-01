@@ -35,7 +35,7 @@ class ComplainController extends Controller
             return failedResponse(($e->getmessage()));
         }
     }
-    public function store(ComplainRequest $request) {
+    public function store(Request $request) {
         try{
 
             dd($request->all());
