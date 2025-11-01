@@ -1,3 +1,5 @@
+<?php
+
 // app/Models/BaseModel.php
 namespace App\Models;
 
