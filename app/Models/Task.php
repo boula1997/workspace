@@ -50,8 +50,4 @@ class Task extends \App\Models\BaseModel
     // }
     
 
-    protected static function booted()
-    {
-        static::addGlobalScope(new DateFilterScope);
-    }
 }
