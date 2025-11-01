@@ -6,7 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Scopes\ActiveScope;
 
-class BaseModel extends \App\Models\BaseModel
+class BaseModel extends Model
 {
     protected static function booted()
     {
