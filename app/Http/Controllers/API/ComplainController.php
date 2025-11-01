@@ -21,7 +21,7 @@ class ComplainController extends Controller
 public function index() {
     try {
         // Adjust the number per page as needed, e.g., 10
-        $complains = $this->complain->paginate(10);
+        $complains = $this->complain->paginate(2);
 
         // Wrap each complain in a resource
         $data['complains'] = ComplainResource::collection($complains);
