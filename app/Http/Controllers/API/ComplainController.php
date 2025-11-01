@@ -18,15 +18,26 @@ class ComplainController extends Controller
         $this->complain = $complain ;
     }
 
-public function index() {
+public function index(Request $request) {
     try {
-        // Adjust the number per page as needed, e.g., 10
-        $complains = $this->complain->paginate(10);
+        $query = $this->complain->query();
 
-        // Wrap each complain in a resource
+        // Filter by title (partial match)
+        if ($request->has('title') && !empty($request->title)) {
+            $query->whereHas('translations', function($q) use ($request) {
+                $q->where('title', 'like', '%' . $request->title . '%');
+            });
+        }
+
+        // Filter by isActive
+        if ($request->has('isActive') && $request->isActive !== '') {
+            $query->where('isActive', $request->isActive);
+        }
+
+        // Paginate results
+        $complains = $query->paginate(10);
+
         $data['complains'] = ComplainResource::collection($complains);
-
-        // Include pagination metadata
         $data['pagination'] = [
             'current_page' => $complains->currentPage(),
             'last_page' => $complains->lastPage(),
@@ -39,6 +50,7 @@ public function index() {
         return failedResponse($e->getMessage());
     }
 }
+
 
 
     public function show($id) {
