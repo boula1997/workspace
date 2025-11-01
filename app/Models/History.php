@@ -18,10 +18,7 @@ class History extends Model
     public $timestamps = true;
 
 
-    protected static function booted()
-    {
-        static::addGlobalScope(new DateFilterScope);
-    }
+
 
     public function task(){ return $this->belongsTo(Task::class,'task_id'); }
     public function employee(){ return $this->belongsTo(Admin::class,'admin_id'); }

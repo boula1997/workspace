@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Events\TaskChanged;
 use App\Scopes\DateFilterScope;
 
-class Task extends \App\Models\BaseModel
+class Task extends Model
 {
     use HasFactory;
 
@@ -49,5 +49,4 @@ class Task extends \App\Models\BaseModel
     //     return $this->project->status == 2 ? 1 : 0;
     // }
     
-
 }
