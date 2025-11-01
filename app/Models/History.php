@@ -9,7 +9,7 @@ use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use App\Scopes\DateFilterScope;
 
-class History extends Model
+class History extends \App\Models\BaseModel
 {
     use HasFactory;
     protected $table = 'historys';
@@ -18,10 +18,7 @@ class History extends Model
     public $timestamps = true;
 
 
-    protected static function booted()
-    {
-        static::addGlobalScope(new DateFilterScope);
-    }
+
 
     public function task(){ return $this->belongsTo(Task::class,'task_id'); }
     public function employee(){ return $this->belongsTo(Admin::class,'admin_id'); }

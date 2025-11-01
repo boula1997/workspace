@@ -10,7 +10,7 @@ use Astrotomic\Translatable\Translatable;
 
 
 
-class Service extends Model implements TranslatableContract
+class Service extends \App\Models\BaseModel implements TranslatableContract
 {
     use HasFactory, Translatable, MorphFile;
     protected $table = 'services';

@@ -10,7 +10,7 @@ use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
-class Page extends Model implements TranslatableContract
+class Page extends \App\Models\BaseModel implements TranslatableContract
 {
     use HasFactory, Translatable,MorphFiles,MorphFile;
     protected $table = 'pages';

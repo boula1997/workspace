@@ -10,7 +10,7 @@ use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Carbon\Carbon;
 
-class Project extends Model
+class Project extends \App\Models\BaseModel
 {
     use HasFactory,MorphFiles,MorphFile;
     protected $table = 'projects';

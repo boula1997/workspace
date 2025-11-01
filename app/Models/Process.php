@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 
 
-class Process extends Model implements TranslatableContract
+class Process extends \App\Models\BaseModel implements TranslatableContract
 {
     use HasFactory, Translatable, MorphFile;
     protected $table = 'processes';

@@ -11,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-class Clienttrack extends Model
+class Clienttrack extends \App\Models\BaseModel
 {
     use HasApiTokens, HasFactory, Notifiable,MorphFile;
 

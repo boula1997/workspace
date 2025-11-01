@@ -8,7 +8,7 @@ use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
-class Accountant extends Model
+class Accountant extends \App\Models\BaseModel
 {
     use HasFactory;
     protected $table = 'accountants';

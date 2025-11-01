@@ -10,7 +10,7 @@ use Astrotomic\Translatable\Translatable;
 
 
 
-class Category extends Model implements TranslatableContract
+class Category extends \App\Models\BaseModel implements TranslatableContract
 {
     use HasFactory, Translatable, MorphFile;
     protected $table = 'categories';

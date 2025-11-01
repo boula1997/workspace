@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class File extends Model
+class File extends \App\Models\BaseModel
 {
     use HasFactory;
     protected $guarded = [];

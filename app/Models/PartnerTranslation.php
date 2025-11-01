@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PartnerTranslation extends Model
+class PartnerTranslation extends \App\Models\BaseModel
 {
     use HasFactory;
     protected $guarded = [];

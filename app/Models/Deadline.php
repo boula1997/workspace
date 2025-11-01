@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Deadline extends Model
+class Deadline extends \App\Models\BaseModel
 {
     use HasFactory;
 

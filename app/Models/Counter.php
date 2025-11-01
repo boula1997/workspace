@@ -8,7 +8,7 @@ use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
-class Counter extends Model implements TranslatableContract
+class Counter extends \App\Models\BaseModel implements TranslatableContract
 {
     use HasFactory, Translatable;
     protected $table = 'counters';

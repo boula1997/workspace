@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 
-class Vaccancy extends Model implements TranslatableContract
+class Vaccancy extends \App\Models\BaseModel implements TranslatableContract
 {
     use HasFactory, Translatable,MorphFile ;
     protected $table ='vaccancies';

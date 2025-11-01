@@ -11,7 +11,7 @@ use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 
-class Gallery extends Model implements TranslatableContract
+class Gallery extends \App\Models\BaseModel implements TranslatableContract
 {
     use HasFactory, Translatable,MorphFiles,MorphFile;
     protected $table = 'galleries';
