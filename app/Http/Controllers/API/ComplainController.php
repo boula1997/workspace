@@ -29,7 +29,7 @@ class ComplainController extends Controller
 
     public function show($id) {
         try{
-            $data['complain'] = new ComplainResource($this->complain->findorfail($id));
+            $data['complain'] = $this->complain->findorfail($id);
             return successResponse($data);
         } catch(Exception $e) {
             return failedResponse(($e->getmessage()));
