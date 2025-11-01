@@ -24,15 +24,24 @@ class ComplainRequest extends FormRequest
     public function rules()
     {
         return [
-            "title" => 'string|required',
-            "description" => 'string|required',
-            "repeat" => 'integer'
+            'en' => 'required|array',
+            'en.title' => 'required|string',
+            'en.description' => 'required|string',
+            
+            'ar' => 'required|array',
+            'ar.title' => 'required|string',
+            'ar.description' => 'required|string',
+            
+            'repeat' => 'sometimes|integer|min:1',
         ];
     }
- 
+
+    /**
+     * Handle a failed validation attempt.
+     */
     protected function failedValidation(Validator $validator)
     {
         $response = failedResponse($validator->errors());
-        throw new ValidationException($validator,$response);
+        throw new ValidationException($validator, $response);
     }
 }
