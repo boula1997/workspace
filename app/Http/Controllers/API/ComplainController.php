@@ -18,14 +18,28 @@ class ComplainController extends Controller
         $this->complain = $complain ;
     }
 
-    public function index() {
-        try {
-           $data['complains'] = ComplainResource::collection($this->complain->get());
-           return successResponse($data);
-        } catch(Exception $e) {
-            return failedResponse($e->getMessage());
-        }
+public function index() {
+    try {
+        // Adjust the number per page as needed, e.g., 10
+        $complains = $this->complain->paginate(10);
+
+        // Wrap each complain in a resource
+        $data['complains'] = ComplainResource::collection($complains);
+
+        // Include pagination metadata
+        $data['pagination'] = [
+            'current_page' => $complains->currentPage(),
+            'last_page' => $complains->lastPage(),
+            'per_page' => $complains->perPage(),
+            'total' => $complains->total(),
+        ];
+
+        return successResponse($data);
+    } catch(Exception $e) {
+        return failedResponse($e->getMessage());
     }
+}
+
 
     public function show($id) {
         try{
