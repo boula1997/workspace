@@ -376,7 +376,7 @@ class TaskController extends Controller
 
 
                 $projects = Project::orderBy("title","asc")
-                    ->get(); 
+                    ->toSql(); 
 
 
 
@@ -391,10 +391,10 @@ class TaskController extends Controller
             $tasks = Task::where("status", 1)
             ->latest('updated_at') // Then by latest updated time
                       // Limit to 300 tasks
-            ->toSql()
+            ->get()
             ;  
 
-            dd($tasks);
+            dd($projects);
 
         $data=[
             "projects"=>ProjectResource::collection($projects),
