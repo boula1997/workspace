@@ -394,6 +394,8 @@ class TaskController extends Controller
             ->toSql()
             ;  
 
+            dd($tasks);
+
         $data=[
             "projects"=>ProjectResource::collection($projects),
             "employees"=>$employees,
