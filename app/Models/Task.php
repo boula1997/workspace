@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Events\TaskChanged;
 use App\Scopes\DateFilterScope;
 
-class Task extends Model
+class Task  extends BaseModel
 {
     use HasFactory;
 
