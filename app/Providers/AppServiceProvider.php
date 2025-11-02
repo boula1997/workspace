@@ -10,14 +10,6 @@ class AppServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        \Log::info('AppServiceProvider booted ✅'); // add this temporarily
 
-        Model::creating(function ($model) {
-            if (!isset($model->isActive)) {
-                $model->isActive = 1;
-            }
-        });
-
-        Model::addGlobalScope(new ActiveScope);
     }
 }
