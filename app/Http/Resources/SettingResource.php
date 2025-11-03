@@ -29,6 +29,8 @@ class SettingResource extends JsonResource
             "description" => $this->description,
             "meta_data" => $this->meta_data,
             "title" => $this->title,
+            "adminName" => auth("admin-api")->user()->name,
+            "adminType" => auth("admin-api")->user()->type,
         ];
     }
 }
