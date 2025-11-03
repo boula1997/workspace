@@ -48,7 +48,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::group(['middleware' => ['apiLocalization','cors']], function () {
+Route::group(['middleware' => ['apiLocalization','cors'],'prefix' => 'auth'], function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
