@@ -977,7 +977,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 
 
-                              <h5 class="text-white mt-4">React Tracking Code</h5>
+                              <h5 class="text-white mt-4">React Tracking Code HomePage</h5>
                                 <pre class="bg-dark text-white p-3 rounded border">
   const [data, setData] = useState([]);
 
@@ -1029,6 +1029,34 @@ import React, { useEffect, useRef, useState } from "react";
         loadData();
 
     }, []);
+                            </pre>
+                              <h5 class="text-white mt-4">React Tracking Code Single Page</h5>
+                                <pre class="bg-dark text-white p-3 rounded border">
+useEffect(() => {
+  if (!trip) return; // wait until trip is loaded
+
+  const loadData = async () => {
+    try {
+      const response = await fetch(
+        `https://yousab-tech.com/workspace/public/api/clienttrack/294/browse ${trip.title}`,
+        {
+          method: "GET",
+          headers: {
+            locale: "en",
+          },
+        }
+      );
+
+      const data = await response.json();
+      console.log("boula", data.data);
+      setData(data.data);
+    } catch (err) {
+      console.error("Error loadData", err);
+    }
+  };
+
+  loadData();
+}, [trip]);
                             </pre>
 
 
