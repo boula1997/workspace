@@ -1283,16 +1283,9 @@ $(this).click(); // Trigger the click event
                             <br>
                             <hr class="text-white">
                              <textarea name="" readonly id="" cols="100" rows="10">
-اتفضل مع حضرتك المهندس بولا نسيم، خبرة أكتر من 5 سنين في برمجة مواقع الويب وتطبيقات الموبايل.
-بستخدم Laravel + React للويب وReact Native للموبايل علشان أضمن لك السرعة، الأداء العالي، وجودة في محركات البحث (SEO).
-هنفذ لك المطلوب بسرعة وجودة ممتازة بإذن الله.
-
-📞 كلمني على واتساب: https://wa.me/+201126785910
-
-📂 شوف شغلي من هنا: https://portfolio.yousab-tech.com/
-
-جاهز أبدأ معاك في أي وقت 💻🚀
-
+أنا Boula من شركة Yousab Tech، عملنا أكتر من 30 موقع في مصر والسعودية، وده لينك البورتفوليو بتاعنا: 
+https://portfolio.yousab-tech.com
+ممكن تبعتلي التفاصيل أشوفلك عرض مناسب في نفس اليوم
                              </textarea>
                             <br>
                             <hr class="text-white">
