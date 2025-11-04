@@ -67,7 +67,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
     Route::get('/clienttrack/{project_id}/{action}', [ClienttrackController::class, 'clienttrack']);
 
-    Route::middleware('auth:admin-api')->group(function () {
+    Route::middleware('auth:admin-api','apiLocalization','cors')->group(function () {
 
     Route::resource('complains', ComplainController::class);
 
