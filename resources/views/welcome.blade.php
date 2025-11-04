@@ -1102,6 +1102,10 @@ EOT;
 
 
 
+
+
+<pre class="bg-dark text-white p-3 rounded border"><code>{{ $trackingCode1 }}</code></pre>
+
 <h5 class="text-white mt-4">Laravel Project Tracking Code Single Page</h5>
 
 @php
@@ -1141,8 +1145,6 @@ $(function() {
 </script>
 EOT;
 @endphp
-
-<pre class="bg-dark text-white p-3 rounded border"><code>{{ $trackingCode1 }}</code></pre>
 <pre class="bg-dark text-white p-3 rounded border"><code>{{ $trackingCode2 }}</code></pre>
 
 
