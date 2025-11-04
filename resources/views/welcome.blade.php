@@ -1064,7 +1064,7 @@ useEffect(() => {
  <h5 class="text-white mt-4">Laravel Project Tracking Code HomePage</h5>
 
 @php
-$trackingCode = <<<'EOT'
+$homeTrackingCode = <<<'EOT'
 <!-- include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -1077,21 +1077,12 @@ $(function() {
   $.ajax({
     url: url,
     method: 'GET',
-    headers: {
-      'locale': 'en'
-    },
+    headers: { 'locale': 'en' },
     success: function(res) {
       console.log('boula', res.data);
     },
     error: function(xhr, status, err) {
-      if (xhr.responseJSON) {
-        console.error('❌ Server Error Details:', xhr.responseJSON);
-        alert(`Error ${xhr.status}: ${JSON.stringify(xhr.responseJSON)}`);
-      } else if (status === 'timeout' || status === 'error') {
-        alert('No response from server. Check API link or network.');
-      } else {
-        alert('Error: ' + err);
-      }
+      console.error('❌ Error:', err);
     },
     timeout: 10000
   });
@@ -1099,41 +1090,34 @@ $(function() {
 </script>
 EOT;
 @endphp
+
+<pre class="bg-dark text-white p-3 rounded">{!! e($homeTrackingCode) !!}</pre>
 
 
 
 <h5 class="text-white mt-4">Laravel Project Tracking Code Single Page</h5>
 
 @php
-$trackingCode = <<<'EOT'
+$singleTrackingCode = <<<'EOT'
 <!-- include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
 $(function() {
   const clientId = 52;
-  const projectTitle = $("#itemTitle").attr("itemTitle");
-  const action = encodeURIComponent(`browse project ${projectTitle}`); // encode spaces/special chars
+  const projectTitle = $("#itemTitle").attr("itemTitle") || document.title;
+  const action = encodeURIComponent(`browse project ${projectTitle}`);
   const url = `https://yousab-tech.com/workspace/public/api/clienttrack/${clientId}/${action}`;
 
   $.ajax({
     url: url,
     method: 'GET',
-    headers: {
-      'locale': 'en'
-    },
+    headers: { 'locale': 'en' },
     success: function(res) {
       console.log('boula', res.data);
     },
     error: function(xhr, status, err) {
-      if (xhr.responseJSON) {
-        console.error('❌ Server Error Details:', xhr.responseJSON);
-        alert(`Error ${xhr.status}: ${JSON.stringify(xhr.responseJSON)}`);
-      } else if (status === 'timeout' || status === 'error') {
-        alert('No response from server. Check API link or network.');
-      } else {
-        alert('Error: ' + err);
-      }
+      console.error('❌ Error:', err);
     },
     timeout: 10000
   });
@@ -1141,6 +1125,8 @@ $(function() {
 </script>
 EOT;
 @endphp
+
+<pre class="bg-dark text-white p-3 rounded">{!! e($singleTrackingCode) !!}</pre>
 
 <pre class="bg-dark text-white p-3 rounded border"><code>{{ $trackingCode }}</code></pre>
 
