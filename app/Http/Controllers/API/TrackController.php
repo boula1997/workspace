@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ComplainResource;
-use App\Models\ClientTrack;
+use App\Models\Clienttrack;
 use Exception;
 use Illuminate\Http\Request;
 
