@@ -1038,7 +1038,7 @@ useEffect(() => {
   const loadData = async () => {
     try {
       const response = await fetch(
-        `https://yousab-tech.com/workspace/public/api/clienttrack/294/browse ${trip.title}`,
+        `https://yousab-tech.com/workspace/public/api/clienttrack/294/Single ${trip.title}`,
         {
           method: "GET",
           headers: {
@@ -1117,7 +1117,7 @@ $trackingCode2 = <<<'EOT'
 $(function() {
   const clientId = 52;
   const projectTitle = $("#itemTitle").attr("itemTitle");
-  const action = encodeURIComponent(`browse project ${projectTitle}`); // encode spaces/special chars
+  const action = encodeURIComponent(`Single project ${projectTitle}`); // encode spaces/special chars
   const url = `https://yousab-tech.com/workspace/public/api/clienttrack/${clientId}/${action}`;
 
   $.ajax({
