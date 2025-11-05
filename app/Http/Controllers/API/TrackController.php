@@ -17,9 +17,23 @@ class TrackController extends Controller
         $this->track = $track ;
     }
 
-public function index($id) {
+public function index($id, Request $request) {
     try {
-        $tracks = $this->track->where("project_id",$id)->latest()->paginate(10);
+        $query = $this->track->where("project_id", $id);
+
+        if ($request->filled("action")) {
+            $query->where("action", "like", "%" . $request->action . "%");
+        }
+
+        if ($request->filled("from")) {
+            $query->whereDate("created_at", ">=", $request->from);
+        }
+
+        if ($request->filled("to")) {
+            $query->whereDate("created_at", "<=", $request->to);
+        }
+
+        $tracks = $query->latest()->paginate(10);
 
         $data['tracks'] = $tracks;
         $data['pagination'] = [
@@ -34,5 +48,6 @@ public function index($id) {
         return failedResponse($e->getMessage());
     }
 }
+
 
 }
