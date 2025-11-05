@@ -1356,9 +1356,10 @@ $(this).click(); // Trigger the click event
                             <br>
                             <hr class="text-white">
                              <textarea name="" readonly id="" cols="100" rows="10">
-معاك المهندس بولا نسيم من شركة Yousab Tech، عملنا أكتر من 70 موقع في مصر والسعودية، وده لينك البورتفوليو بتاعنا: 
+معاك المهندس بولا نسيم من شركة Yousab Tech، عملنا أكتر من 70 موقع وتطبيق في مصر والسعودية، وده لينك البورتفوليو بتاعنا: 
 https://portfolio.yousab-tech.com
 ممكن تبعتلي التفاصيل أشوفلك عرض مناسب في نفس اليوم
+https://wa.me/+201208050298
                              </textarea>
                             <br>
                             <hr class="text-white">
