@@ -17,9 +17,9 @@ class TrackController extends Controller
         $this->track = $track ;
     }
 
-public function index() {
+public function index($id) {
     try {
-        $tracks = $this->track->latest()->paginate(10);
+        $tracks = $this->track->where("project_id",$id)->latest()->paginate(10);
 
         $data['tracks'] = $tracks;
         $data['pagination'] = [
