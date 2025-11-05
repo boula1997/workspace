@@ -1329,9 +1329,6 @@ $(this).click(); // Trigger the click event
                             <p title="auto fill password">cls</p>
                             <br>
                             <hr class="text-white">
-                            <p title="auto fill password">https://reactdashboard.yousab-tech.com/module/clienttracks</p>
-                            <br>
-                            <hr class="text-white">
                              <textarea name="" readonly id="" cols="100" rows="15">
 🚀 عايز موقع أو تطبيق موبايل احترافي ومبرمج خصيصًا لمشروعك؟
 احنا في Yousab Tech بنصمم ونبرمج مواقع وتطبيقات موبايل برمجة خاصة بالكامل باستخدام Laravel + React و React Native
@@ -1493,7 +1490,7 @@ echo &quot;&lt;/table&gt;&quot;;
                             <br>
                             <hr class="text-white">
 
-                            <p title="auto fill password">https://reactdashboard.yousab-tech.com/module/clienttracks</p>
+                            <p title="auto fill password">https://reactdashboard.yousab-tech.com/tracks/297</p>
                             <br>
                             <hr class="text-white">
                             <p>mysqldump -u yousabte_workspace -p'kD[asKgc%ydC' --complete-insert yousabte_workspace >
