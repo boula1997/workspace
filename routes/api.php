@@ -23,6 +23,7 @@ use App\Http\Controllers\API\TestimonialController;
 use App\Http\Controllers\API\ProcessController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ComplainController;
+use App\Http\Controllers\API\TrackController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\SettingController;
 use App\Http\Controllers\API\PartnerController;
@@ -66,10 +67,12 @@ Route::group(['middleware' => ['apiLocalization','cors'],'prefix' => 'auth'], fu
 Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
     Route::get('/clienttrack/{project_id}/{action}', [ClienttrackController::class, 'clienttrack']);
+    Route::resource('tracks', TrackController::class);
 
     Route::middleware('auth:admin-api','apiLocalization','cors')->group(function () {
 
     Route::resource('complains', ComplainController::class);
+
 
 
     Route::get('/showEditCreate/{dbname}/{table}/{itemId}', [GeneralController::class, 'showEditCreate']);
