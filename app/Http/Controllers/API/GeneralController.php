@@ -586,7 +586,6 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
 
     public function index($dbname, $table,$column=null,$equal=null)
     {
-        dd(request()->all());
         // Step 0: Dynamic DB connection
         $credential = DBCredential::where('db_name', $dbname)->first();
         $dbHost = $credential->db_host ?? '192.185.41.219';
