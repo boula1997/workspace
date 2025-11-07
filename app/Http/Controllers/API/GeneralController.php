@@ -762,7 +762,10 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                     // 🔍 Detect the column’s data type
                     $colMeta = collect($columns)->firstWhere('COLUMN_NAME', $key);
                     $dataType = $colMeta['DATA_TYPE'] ?? null;
-if (is_numeric($value) && Str::endsWith($key, '_id')) {
+
+
+                    // 🧠 Check if it’s numeric foreign key
+                    if (is_numeric($value) && Str::endsWith($key, '_id')) {
                         $dataQuery->where("$table.$key", $value);
 
                     // 📅 Handle date/datetime values
@@ -771,6 +774,8 @@ if (is_numeric($value) && Str::endsWith($key, '_id')) {
                         $dataQuery->whereDate("$table.$key", '>=', date('Y-m-d', strtotime($value)));
 
                     // 🔢 Numeric (non-ID)
+                    } elseif (Str::contains($dataType, 'tinyint')) {
+                        $dataQuery->where("$table.$key", $value);
                     } elseif (is_numeric($value)) {
                         $dataQuery->where("$table.$key", '>=', $value);
 
