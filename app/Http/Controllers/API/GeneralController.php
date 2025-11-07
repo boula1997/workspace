@@ -765,11 +765,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
 
                     // 🧠 Check if it’s numeric foreign key
                     if ($dataType == "boolean" || $dataType == "tinyint") {
-                        // Convert request value to boolean integer
-                        $boolValue = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                        if (!is_null($boolValue)) {
-                            $dataQuery->where("$table.$key", $boolValue ? 1 : 0);
-                        }
+                        $dataQuery->where("$table.$key", $value);
                     }
                     // 🧠 Check if it’s numeric foreign key
                     elseif (is_numeric($value) && Str::endsWith($key, '_id')) {
