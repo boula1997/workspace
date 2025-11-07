@@ -48,6 +48,7 @@ public function getFunction(Request $request)
             $moneyProjects = $boardProjects->filter(function ($project) {
                 return $project->status == 2 && $project->cost > 0;
             });
+            $deadlineProjects = $boardProjects->filter(fn($project) => $project->status != 1);
 
             $renewProjects = Project::whereNotNull('renewalDate')
                 ->orderBy('renewalDate', 'asc')->whereDate('renewalDate', '<=', Carbon::now()->addWeek())
@@ -62,6 +63,12 @@ public function getFunction(Request $request)
             if ($renewProjects->isNotEmpty() && boula()) {
                 foreach ($renewProjects as $project) {
                     $notifications[] =  $project->title . " renewal in " . $project->renewalDate;
+                }
+            }
+
+            if ($deadlineProjects->isNotEmpty() && boula()) {
+                foreach ($deadlineProjects as $project) {
+                    $notifications[] =  $project->title . " due in " . $project->deadline;
                 }
             }
 
