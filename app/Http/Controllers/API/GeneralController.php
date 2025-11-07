@@ -763,7 +763,6 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                     $colMeta = collect($columns)->firstWhere('COLUMN_NAME', $key);
                     $dataType = $colMeta['DATA_TYPE'] ?? null;
 
-
                     // 🧠 Check if it’s numeric foreign key
                     if (is_numeric($value) && Str::endsWith($key, '_id')) {
                         $dataQuery->where("$table.$key", $value);
@@ -774,28 +773,11 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                         $dataQuery->whereDate("$table.$key", '>=', date('Y-m-d', strtotime($value)));
 
                     // 🔢 Numeric (non-ID)
-                    }  elseif (is_numeric($value)) {
+                    } elseif (is_numeric($value)) {
+                        $dataQuery->where("$table.$key", '=', $value);
 
-                        if (Str::contains($dataType, 'tinyint')) {
-                            // Convert string to boolean first
-                            if (is_string($value)) {
-                                $boolValue = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                                if (!is_null($boolValue)) {
-                                    $dataQuery->where("$table.$key", $boolValue ? 1 : 0);
-                                } else {
-                                    // If not boolean string, try numeric
-                                    $dataQuery->where("$table.$key", (int)$value);
-                                }
-                            } else {
-                                $dataQuery->where("$table.$key", (int)$value);
-                            }
-                        }
-                        else{
-
-                            $dataQuery->where("$table.$key", '>=', $value);
-                        } 
-                        
-                    }else {
+                    // 🔤 Text / fallback
+                    } else {
                         $dataQuery->where("$table.$key", 'like', "%$value%");
                     }
                 }
