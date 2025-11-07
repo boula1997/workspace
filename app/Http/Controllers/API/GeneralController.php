@@ -764,7 +764,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                     $dataType = $colMeta['DATA_TYPE'] ?? null;
 
                     // 🧠 Check if it’s numeric foreign key
-                    if ($dataType == "boolean" || $dataType == "tinyint") {
+                    if (Str::contains($dataType, 'tinyint')) {
                         $dataQuery->where("$table.$key", $value);
                     }
                     // 🧠 Check if it’s numeric foreign key
