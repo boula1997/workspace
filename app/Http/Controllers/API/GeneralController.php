@@ -764,7 +764,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                     $dataType = $colMeta['DATA_TYPE'] ?? null;
 
                     // 🧠 Check if it’s numeric foreign key
-                    if (is_numeric($value) && Str::endsWith($key, '_id')) {
+                    if (is_numeric($value) ) {
                         $dataQuery->where("$table.$key", $value);
 
                     // 📅 Handle date/datetime values
