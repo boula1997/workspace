@@ -782,7 +782,8 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
 
                     // 🔤 Text / fallback
                     } else {
-                        $dataQuery->where("$table.$key", 'like', "%$value%");
+                        $dataQuery->where("$table.$key", '>=', $value);
+
                     }
                 }
             }
