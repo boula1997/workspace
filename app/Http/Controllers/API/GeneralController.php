@@ -774,7 +774,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
 
                     // 🔢 Numeric (non-ID)
                     } elseif (is_numeric($value)) {
-                        $dataQuery->where("$table.$key", '>=', $value);
+                        $dataQuery->where("$table.$key", '<=', $value);
 
                     // 🔤 Text / fallback
                     } else {
