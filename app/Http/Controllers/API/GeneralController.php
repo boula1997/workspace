@@ -777,13 +777,17 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                     }  elseif (is_numeric($value)) {
 
                         if (Str::contains($dataType, 'tinyint')) {
-                            $dataQuery->where("$table.$key", "$value");
-                        }else{
+                            // Convert possible boolean strings to 0 or 1
+                            if (is_string($value)) {
+                                $boolValue = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                                if (!is_null($boolValue)) {
+                                    $dataQuery->where("$table.$key", $boolValue ? 1 : 0);
+                                }
+                            } else {
+                                $dataQuery->where("$table.$key", $value);
+                            }
+                        }
 
-                            $dataQuery->where("$table.$key", '>=', $value);
-                        } 
-
-                    // 🔤 Text / fallback
                     }else {
                         $dataQuery->where("$table.$key", 'like', "%$value%");
                     }
