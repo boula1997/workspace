@@ -48,7 +48,9 @@ public function getFunction(Request $request)
             $moneyProjects = $boardProjects->filter(function ($project) {
                 return $project->status == 2 && $project->cost > 0;
             });
-            $deadlineProjects = $boardProjects->filter(fn($project) => $project->status != 1);
+            $deadlineProjects =Project::orderBy("deadline","asc")
+                    ->get()
+                    ->filter(fn($project) => $project->status == 1) ;
 
             $renewProjects = Project::whereNotNull('renewalDate')
                 ->orderBy('renewalDate', 'asc')->whereDate('renewalDate', '<=', Carbon::now()->addWeek())
