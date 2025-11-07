@@ -763,12 +763,8 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                     $colMeta = collect($columns)->firstWhere('COLUMN_NAME', $key);
                     $dataType = $colMeta['DATA_TYPE'] ?? null;
 
-
-                    if($dataType=="boolean"){
-                       $dataQuery->where("$table.$key", '>=', $value);
-                    }
                     // 🧠 Check if it’s numeric foreign key
-                    elseif (is_numeric($value) && Str::endsWith($key, '_id')) {
+                    if (is_numeric($value) && Str::endsWith($key, '_id')) {
                         $dataQuery->where("$table.$key", $value);
 
                     // 📅 Handle date/datetime values
@@ -778,12 +774,11 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
 
                     // 🔢 Numeric (non-ID)
                     } elseif (is_numeric($value)) {
-                        $dataQuery->where("$table.$key", '>=', $value);
+                        $dataQuery->where("$table.$key", $value);
 
                     // 🔤 Text / fallback
                     } else {
-                        $dataQuery->where("$table.$key", '>=', $value);
-
+                        $dataQuery->where("$table.$key", 'like', "%$value%");
                     }
                 }
             }
