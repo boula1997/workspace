@@ -774,12 +774,12 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                         $dataQuery->whereDate("$table.$key", '>=', date('Y-m-d', strtotime($value)));
 
                     // 🔢 Numeric (non-ID)
-                    } elseif (Str::contains($dataType, 'tinyint')) {
-                        $dataQuery->where("$table.$key", $value);
-                    } elseif (is_numeric($value)) {
+                    }  elseif (is_numeric($value)) {
                         $dataQuery->where("$table.$key", '>=', $value);
 
                     // 🔤 Text / fallback
+                    }elseif (Str::contains($dataType, 'tinyint')) {
+                        $dataQuery->where("$table.$key", $value);
                     } else {
                         $dataQuery->where("$table.$key", 'like', "%$value%");
                     }
