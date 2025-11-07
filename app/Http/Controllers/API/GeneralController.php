@@ -765,7 +765,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
 
 
                     if($dataType=="boolean"){
-                        $dataQuery->where("$table.$key", "$value");
+                       $dataQuery->where("$table.$key", '>=', $value);
                     }
                     // 🧠 Check if it’s numeric foreign key
                     elseif (is_numeric($value) && Str::endsWith($key, '_id')) {
