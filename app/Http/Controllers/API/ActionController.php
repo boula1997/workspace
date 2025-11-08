@@ -64,15 +64,16 @@ public function getFunction(Request $request)
 
             if ($renewProjects->isNotEmpty() && boula()) {
                 foreach ($renewProjects as $project) {
-                    $notifications[] =  $project->title . " renewal in " . $project->renewalDate;
+                    $notifications[] = $project->title . " renewal on " . $project->renewalDate->format('Y-m-d');
                 }
             }
 
             if ($deadlineProjects->isNotEmpty() && boula()) {
                 foreach ($deadlineProjects as $project) {
-                    $notifications[] =  $project->title . " due in " . $project->deadline;
+                    $notifications[] = $project->title . " due on " . $project->deadline->format('Y-m-d');
                 }
             }
+
 
 
             // Final output: ONE notification string
