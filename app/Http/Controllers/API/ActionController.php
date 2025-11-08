@@ -64,16 +64,17 @@ public function getFunction(Request $request)
 
             if ($renewProjects->isNotEmpty() && boula()) {
                 foreach ($renewProjects as $project) {
-                    $notifications[] = $project->title . " renewal on " . $project->renewalDate->format('Y-m-d');
+                    $renewalDate = Carbon::parse($project->renewalDate)->format('Y-m-d');
+                    $notifications[] = $project->title . " renewal on " . $renewalDate;
                 }
             }
 
             if ($deadlineProjects->isNotEmpty() && boula()) {
                 foreach ($deadlineProjects as $project) {
-                    $notifications[] = $project->title . " due on " . $project->deadline->format('Y-m-d');
+                    $deadline = Carbon::parse($project->deadline)->format('Y-m-d');
+                    $notifications[] = $project->title . " due on " . $deadline;
                 }
             }
-
 
 
             // Final output: ONE notification string
