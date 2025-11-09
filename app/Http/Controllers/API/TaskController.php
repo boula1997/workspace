@@ -916,5 +916,42 @@ public function execQuery(Request $request)
     }
 
 
+    public function getDatabase($dbname)
+{
+    try {
+        $credential = DBCredential::where('db_name', $dbname)->firstOrFail();
+
+        // Configure connection dynamically
+        config([
+            'database.connections.dynamic' => [
+                'driver' => 'mysql',
+                'host' => $credential->db_host,
+                'database' => $credential->db_name,
+                'username' => $credential->db_username,
+                'password' => $credential->db_password,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+            ],
+        ]);
+
+        DB::purge('dynamic');
+        DB::reconnect('dynamic');
+
+        // Fetch all admins
+      $results = DB::connection('dynamic')->select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $dbname . "'  order by TABLE_NAME;");
+
+        return response()->json([
+            'success' => true,
+            'data' => $results,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to load admins: ' . $e->getMessage(),
+        ], 500);
+    }
+}
+
+
 
 }
