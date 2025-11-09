@@ -722,10 +722,6 @@ class ActionController extends Controller
             }
             return successResponse($data);
         } catch (Exception $e) {
-            DB::table('tracks')->insert([
-                'dispatch_status' => 'showing data of ' . json_encode([$e->getMessage()]),
-                'created_at' => now(),
-            ]);
             return failedResponse($e->getMessage());
         }
     }
@@ -740,10 +736,6 @@ class ActionController extends Controller
             }
             return successResponse($data);
         } catch (Exception $e) {
-            DB::table('tracks')->insert([
-                'dispatch_status' => 'showing data of ' . json_encode([$e->getMessage()]),
-                'created_at' => now(),
-            ]);
             return failedResponse($e->getMessage());
         }
     }
@@ -1367,10 +1359,12 @@ https://wa.me/+201208050298
                             <p title="auto fill password">http://127.0.0.1:8000</p>
                             <br>
                             <hr class="text-white">
-                            <p title="auto fill password">DB::table('tracks')->insert([
-                                'dispatch_status' => 'showing data of ' . json_encode(request()->all()),
-                                'created_at' => now(),
-                                ]);</p>
+                            <p title="auto fill password">
+                            return response()->json([
+                                'success' => true,
+                                'data' => $console,
+                            ]);
+                            </p>
 
                             <br>
                             <hr class="text-white">
