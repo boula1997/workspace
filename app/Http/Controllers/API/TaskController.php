@@ -923,10 +923,7 @@ public function execQuery(Request $request)
 
         $credential = DBCredential::find($dbname);
 
-        return response()->json([
-            'success' => true,
-            'data' =>  $credential,
-        ]);
+
 
 
         // Configure connection dynamically
@@ -946,7 +943,7 @@ public function execQuery(Request $request)
         DB::reconnect('dynamic');
 
         // Fetch all admins
-      $results = DB::connection('dynamic')->select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $dbname . "'  order by TABLE_NAME;");
+      $results = DB::connection('dynamic')->select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $credential->db_name . "'  order by TABLE_NAME;");
 
         return response()->json([
             'success' => true,
