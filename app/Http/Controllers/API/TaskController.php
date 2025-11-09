@@ -919,6 +919,11 @@ public function execQuery(Request $request)
     public function getDatabase($dbname)
 {
     try {
+
+        return response()->json([
+            'success' => true,
+            'data' => $dbname,
+        ]);
         $credential = DBCredential::where('db_name', $dbname)->firstOrFail();
 
         // Configure connection dynamically
