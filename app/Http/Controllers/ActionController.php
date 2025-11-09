@@ -433,6 +433,8 @@ class ActionController extends Controller
       $action = 'desc database';
       $queries=Query::latest()->get()->unique('title');
       $results = DB::connection('dynamic')->select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
+
+      dd($results);
       $tables = DB::connection('dynamic')->select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
       $array = [];
       $array2 = [];
