@@ -943,7 +943,13 @@ public function execQuery(Request $request)
         DB::reconnect('dynamic');
 
         // Fetch all admins
-      $results = DB::connection('dynamic')->select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $credential->db_name . "'  order by TABLE_NAME;");
+$results = DB::connection('dynamic')->select("
+    SELECT DISTINCT TABLE_NAME, COLUMN_NAME, DATA_TYPE, IS_NULLABLE
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE table_schema = ?
+    ORDER BY TABLE_NAME;
+", [$credential->db_name]);
+
 
         return response()->json([
             'success' => true,
