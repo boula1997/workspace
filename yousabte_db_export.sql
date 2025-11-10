@@ -418,6 +418,7 @@ CREATE TABLE `galleries` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `type_id` int(10) unsigned DEFAULT NULL,
+  `orderNumber` bigint(20) DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `fk_type_id` (`type_id`),
   CONSTRAINT `fk_type_id` FOREIGN KEY (`type_id`) REFERENCES `types` (`id`) ON DELETE SET NULL
@@ -430,7 +431,7 @@ CREATE TABLE `galleries` (
 
 LOCK TABLES `galleries` WRITE;
 /*!40000 ALTER TABLE `galleries` DISABLE KEYS */;
-INSERT INTO `galleries` (`id`, `created_at`, `updated_at`, `link`, `type_id`) VALUES (1,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://elalamiagamingstore.com/en/',2),(2,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://soulpharma.org/en/',2),(3,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://reservya.com/',2),(4,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://twt.com.sa/',2),(5,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://worldpts.com/',2),(6,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://aslaltawfeer.com/ar',2),(7,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://yousab-tech.com/celine/index.html',2),(8,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://altofanalazrk.com/en',2),(9,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://zahrat-albostan.com/public/ar',2),(10,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://yousab-tech.com/aljazira/index.html',2),(11,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://egypttourism.yousab-tech.com',2),(12,NULL,NULL,'https://trinityluxurytravel.com/en',2),(13,NULL,NULL,'https://math-4-all-front.vercel.app/',2),(14,NULL,NULL,'https://fioriflower.site/',2),(15,NULL,NULL,'https://yousab-tech.com/website_2dd1b86c/',2),(16,NULL,NULL,'https://verdeeg.com/en',2),(17,NULL,NULL,'https://arabellamedicalcenter.com/ar',2),(18,NULL,NULL,'https://eltadawyhospital.com/',2),(19,NULL,NULL,'https://unihomeacademy.com/',2),(20,NULL,NULL,'https://gma.yousab-tech.com/',2),(21,NULL,NULL,'https://yousab-tech.com/webapp/public/en',2),(22,NULL,NULL,'https://yousab-tech.com/webapp/public/en/dashboard',2),(23,NULL,NULL,'https://reactdashboard.yousab-tech.com',2),(24,NULL,NULL,NULL,2),(25,NULL,NULL,NULL,2),(26,NULL,NULL,NULL,2),(28,NULL,NULL,NULL,2),(29,NULL,NULL,'http://lapmob.yousab-tech.com/en',2),(30,'2025-10-16 21:31:13','2025-10-16 21:31:13','https://ghosn-alzaiton-33kx.vercel.app/',2),(31,'2025-10-19 22:24:40','2025-10-19 22:24:40','https://adc1.com.sa',2);
+INSERT INTO `galleries` (`id`, `created_at`, `updated_at`, `link`, `type_id`, `orderNumber`) VALUES (1,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://elalamiagamingstore.com/en/',2,100),(2,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://soulpharma.org/en/',2,100),(3,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://reservya.com/',2,100),(4,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://twt.com.sa/',2,100),(5,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://worldpts.com/',2,100),(6,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://aslaltawfeer.com/ar',2,100),(7,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://yousab-tech.com/celine/index.html',2,100),(8,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://altofanalazrk.com/en',2,100),(9,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://zahrat-albostan.com/public/ar',2,100),(10,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://yousab-tech.com/aljazira/index.html',2,100),(11,'2024-08-31 08:15:16','2024-08-31 08:15:16','https://egypttourism.yousab-tech.com',2,100),(12,NULL,NULL,'https://trinityluxurytravel.com/en',2,100),(13,NULL,NULL,'https://math-4-all-front.vercel.app/',2,100),(14,NULL,NULL,'https://fioriflower.site/',2,100),(15,NULL,NULL,'https://yousab-tech.com/website_2dd1b86c/',2,100),(16,NULL,NULL,'https://verdeeg.com/en',2,100),(17,NULL,NULL,'https://arabellamedicalcenter.com/ar',2,100),(18,NULL,NULL,'https://eltadawyhospital.com/',2,100),(19,NULL,NULL,'https://unihomeacademy.com/',2,100),(20,NULL,NULL,'https://gma.yousab-tech.com/',2,100),(21,NULL,NULL,'https://yousab-tech.com/webapp/public/en',2,100),(22,NULL,NULL,'https://yousab-tech.com/webapp/public/en/dashboard',2,100),(23,NULL,NULL,'https://reactdashboard.yousab-tech.com',2,100),(24,NULL,NULL,NULL,2,100),(25,NULL,NULL,NULL,2,100),(26,NULL,NULL,NULL,2,100),(28,NULL,NULL,NULL,2,100),(29,NULL,NULL,'http://lapmob.yousab-tech.com/en',2,100),(30,'2025-10-16 21:31:13','2025-10-16 21:31:13','https://ghosn-alzaiton-33kx.vercel.app/',2,100),(31,'2025-10-19 22:24:40','2025-10-19 22:24:40','https://adc1.com.sa',2,100);
 /*!40000 ALTER TABLE `galleries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1011,7 +1012,10 @@ CREATE TABLE `products` (
   `icon` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `admin_id` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_products_admins` (`admin_id`),
+  CONSTRAINT `fk_products_admins` FOREIGN KEY (`admin_id`) REFERENCES `admins` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1021,7 +1025,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` (`id`, `icon`, `created_at`, `updated_at`) VALUES (1,'far fa-window-restore','2024-08-31 08:15:17','2024-08-31 08:15:17'),(2,'fas fa-shopping-cart','2024-08-31 08:15:17','2024-08-31 08:15:17'),(3,'fas fa-cog','2024-08-31 08:15:17','2024-08-31 08:15:17'),(4,'fab fa-ioxhost','2024-08-31 08:15:17','2024-08-31 08:15:17');
+INSERT INTO `products` (`id`, `icon`, `created_at`, `updated_at`, `admin_id`) VALUES (1,'far fa-window-restore','2024-08-31 08:15:17','2024-08-31 08:15:17',NULL),(2,'fas fa-shopping-cart','2024-08-31 08:15:17','2024-08-31 08:15:17',NULL),(3,'fas fa-cog','2024-08-31 08:15:17','2024-08-31 08:15:17',NULL),(4,'fab fa-ioxhost','2024-08-31 08:15:17','2024-08-31 08:15:17',NULL);
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1599,4 +1603,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-08  3:53:59
+-- Dump completed on 2025-11-09 20:01:36
