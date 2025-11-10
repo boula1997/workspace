@@ -488,13 +488,13 @@ function isExpired()
     $projectsRenewalDate = Project::where('renewalDate', '<=', $nowUtc)->get();
     $deadlines = Deadline::where("status",0)->where('date', '<=', $nowUtc)->get();
 
-    if (
-        ($projectsRenewalDate->count() > 0 || $projectsDeadline ||
-         $deadlines->count() > 0) 
-        && boula()
-    ) {
-        return [true,' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count().'nowUTC'.$nowUtc.'nowCairo'.$now];
-    }
+    // if (
+    //     ($projectsRenewalDate->count() > 0 || $projectsDeadline ||
+    //      $deadlines->count() > 0) 
+    //     && boula()
+    // ) {
+    //     return [true,' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count().'nowUTC'.$nowUtc.'nowCairo'.$now];
+    // }
 
     return [false,' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count().'nowUTC'.$nowUtc];
 }
