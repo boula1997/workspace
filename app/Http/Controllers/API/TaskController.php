@@ -694,7 +694,7 @@ class TaskController extends Controller
     {
         try {
            
-            $deadlines=Deadline::where('date', '<=', now()->addDays(7))->orderBy("date","asc")->get();
+            $deadlines=Deadline::orderBy("date","asc")->get();
             $data["deadlines"]=$deadlines;
             $data["isExpired"]=isExpired()[0];
             if(boula())
