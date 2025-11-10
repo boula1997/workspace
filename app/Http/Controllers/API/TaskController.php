@@ -690,22 +690,31 @@ class TaskController extends Controller
         }
     }
 
-        public function deadlines()
-    {
-        try {
-           
-            $deadlines=Deadline::orderBy("date","asc")->get();
-            $data["deadlines"]=$deadlines;
-            $data["isExpired"]=isExpired()[0];
-            if(boula())
-             return successResponse($data);
-             else
-             return successResponse([]);
+public function deadlines()
+{
+    try {
+        $deadlines = Deadline::orderBy("date", "asc")->get();
 
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
+        // Convert all deadlines dates to Africa/Cairo timezone
+        foreach ($deadlines as $deadline) {
+            $deadline->date = Carbon::parse($deadline->date)
+                ->setTimezone('Africa/Cairo')
+                ->toDateTimeString();
         }
+
+        $data["deadlines"] = $deadlines;
+        $data["isExpired"] = isExpired()[0];
+
+        if (boula()) {
+            return successResponse($data);
+        } else {
+            return successResponse([]);
+        }
+
+    } catch (Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
     }
+}
 
 
     
