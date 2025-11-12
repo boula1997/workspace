@@ -282,6 +282,7 @@ class TaskController extends Controller
             ];
 
             $projectTrackCounts = Clienttrack::join('projects', 'clienttracks.project_id', '=', 'projects.id')
+                ->where('clienttracks.created_at', '>=', $date) // 👈 filter by date
                 ->select('projects.id as project_id', 'projects.title', DB::raw('COUNT(clienttracks.id) as total_tracks'))
                 ->groupBy('projects.id', 'projects.title')
                 ->having('total_tracks', '>', 0)
