@@ -13,6 +13,7 @@ use App\Http\Controllers\API\FeeController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\AccountantController;
 use App\Http\Controllers\API\ClienttrackController;
+use App\Http\Controllers\API\DatabaseController;
 use App\Http\Controllers\API\HistoryController;
 use App\Http\Controllers\API\TaskController;
 use App\Http\Controllers\API\ProjectController;
@@ -84,8 +85,8 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/all/tables/{dbname}/{admin_id?}', [GeneralController::class, 'allTableNames']);
     Route::get('/databases', [GeneralController::class, 'databases']);
     Route::get('/admins/{dbname}', [GeneralController::class, 'getAdmins']);
-    
-    Route::get('/databases/info/{dbname}', [TaskController::class, 'getDatabase']);
+    Route::post('/execute/query', [DatabaseController::class, 'execQuery'])->name('query.exec');
+    Route::get('/databases/info/{dbname}', [DatabaseController::class, 'getDatabase']);
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
     Route::post('/updateSetting',[SettingController::class,'update']);
@@ -106,7 +107,6 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::post('/apptask/refproGet', [TaskController::class, 'refproGet']);
     Route::post('/apptask/store', [TaskController::class, 'store']);
     Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
-    Route::post('/execute/query', [TaskController::class, 'execQuery'])->name('query.exec');
     Route::middleware('businessHours')->group(function () {
     Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
     });
