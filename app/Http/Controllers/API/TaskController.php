@@ -18,6 +18,7 @@ use App\Models\Deadline;
 use App\Models\Category;
 use App\Models\Video;
 use App\Models\Navigation;
+use App\Models\Clienttrack;
 use App\Models\Task;
 use App\Models\DBCredential;
 use Spatie\Permission\Models\Role;
@@ -276,6 +277,13 @@ class TaskController extends Controller
                 return $project->status == 0;
             });
 
+            $projectTrackCounts = Clienttrack::join('projects', 'clienttracks.project_id', '=', 'projects.id')
+                ->select('projects.id as project_id', 'projects.title', DB::raw('COUNT(clienttracks.id) as total_tracks'))
+                ->groupBy('projects.id', 'projects.title')
+                ->having('total_tracks', '>', 0)
+                ->get();
+
+
             // Prepare response data
             $data = [
                 "projects" => ProjectResource::collection($selectedProjects),
@@ -344,6 +352,7 @@ class TaskController extends Controller
                 "isExpired" => isExpired()[0],
                 "clientsCount"=>count(Admin::where("type","client")->get()),
                 "prospectivesCount"=>count(Admin::where("type","prospective")->get()),
+                "projectTrackCounts"=>$projectTrackCounts,
             ];
 
 
