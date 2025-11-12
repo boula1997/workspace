@@ -276,12 +276,20 @@ class TaskController extends Controller
             $finishedProjects = $boardProjects->filter(function ($project) {
                 return $project->status == 0;
             });
+            $colors = [
+                "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF",
+                "#FF9F40", "#C9CBCF", "#8A2BE2", "#00FF7F", "#FF4500"
+            ];
 
             $projectTrackCounts = Clienttrack::join('projects', 'clienttracks.project_id', '=', 'projects.id')
                 ->select('projects.id as project_id', 'projects.title', DB::raw('COUNT(clienttracks.id) as total_tracks'))
                 ->groupBy('projects.id', 'projects.title')
                 ->having('total_tracks', '>', 0)
-                ->get();
+                ->get()
+                ->map(function($project, $index) use ($colors) {
+                    $project->color = $colors[$index % count($colors)]; // loop colors if more projects
+                    return $project;
+                });
 
 
             // Prepare response data
