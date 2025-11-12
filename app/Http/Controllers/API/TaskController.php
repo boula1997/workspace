@@ -17,6 +17,7 @@ use App\Models\Admin;
 use App\Models\Deadline;
 use App\Models\Category;
 use App\Models\Video;
+use App\Models\Base;
 use App\Models\Navigation;
 use App\Models\Clienttrack;
 use App\Models\Task;
@@ -714,6 +715,18 @@ class TaskController extends Controller
                 return successResponse($data);
             else
                 return successResponse([]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+    public function bases()
+    {
+        try {
+
+            $bases = Base::get();
+            $data["bases"] = $bases;
+            $data["isExpired"] = isExpired()[0];
+            return successResponse($data);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
