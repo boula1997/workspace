@@ -137,6 +137,8 @@ class DatabaseController extends Controller
 public function getDatabase($dbname)
 {
     try {
+
+        return response()->json([ 'success' => true, 'data' => $dbname, ]);
         $credential = DBCredential::find($dbname);
 
         // Configure connection dynamically
