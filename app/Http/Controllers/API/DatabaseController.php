@@ -155,23 +155,24 @@ public function getDatabase($dbname)
         DB::purge('dynamic');
         DB::reconnect('dynamic');
 
-        // Fetch table columns including default values
-        $results = DB::connection('dynamic')->select("
-            SELECT 
-                TABLE_NAME, 
-                COLUMN_NAME, 
-                DATA_TYPE, 
-                IS_NULLABLE, 
-                COLUMN_DEFAULT
-            FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE table_schema = ?
-            ORDER BY TABLE_NAME, ORDINAL_POSITION;
-        ", [$credential->db_name]);
+
+        $tables = DB::connection('dynamic')->select("SHOW TABLES");
+        $results = [];
+
+        foreach ($tables as $t) {
+            $tableName = array_values((array)$t)[0];
+            $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
+            foreach ($columns as $col) {
+                $col->TABLE_NAME = $tableName;
+            }
+            $results = array_merge($results, $columns);
+        }
 
         return response()->json([
             'success' => true,
             'data' => $results,
         ]);
+
 
     } catch (\Exception $e) {
         return response()->json([
