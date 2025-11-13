@@ -134,50 +134,51 @@ class DatabaseController extends Controller
 
 
 
-    public function getDatabase($dbname)
-    {
-        try {
+public function getDatabase($dbname)
+{
+    try {
+        $credential = DBCredential::find($dbname);
 
+        // Configure connection dynamically
+        config([
+            'database.connections.dynamic' => [
+                'driver' => 'mysql',
+                'host' => $credential->db_host,
+                'database' => $credential->db_name,
+                'username' => $credential->db_username,
+                'password' => $credential->db_password,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+            ],
+        ]);
 
-            $credential = DBCredential::find($dbname);
+        DB::purge('dynamic');
+        DB::reconnect('dynamic');
 
+        // Fetch table columns including default values
+        $results = DB::connection('dynamic')->select("
+            SELECT 
+                TABLE_NAME, 
+                COLUMN_NAME, 
+                DATA_TYPE, 
+                IS_NULLABLE, 
+                COLUMN_DEFAULT
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE table_schema = ?
+            ORDER BY TABLE_NAME, ORDINAL_POSITION;
+        ", [$credential->db_name]);
 
+        return response()->json([
+            'success' => true,
+            'data' => $results,
+        ]);
 
-
-            // Configure connection dynamically
-            config([
-                'database.connections.dynamic' => [
-                    'driver' => 'mysql',
-                    'host' => $credential->db_host,
-                    'database' => $credential->db_name,
-                    'username' => $credential->db_username,
-                    'password' => $credential->db_password,
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                ],
-            ]);
-
-            DB::purge('dynamic');
-            DB::reconnect('dynamic');
-
-            // Fetch all admins
-            $results = DB::connection('dynamic')->select("
-    SELECT DISTINCT TABLE_NAME, COLUMN_NAME, DATA_TYPE, IS_NULLABLE
-    FROM INFORMATION_SCHEMA.COLUMNS
-    WHERE table_schema = ?
-    ORDER BY TABLE_NAME;
-", [$credential->db_name]);
-
-
-            return response()->json([
-                'success' => true,
-                'data' => $results,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to load admins: ' . $e->getMessage(),
-            ], 500);
-        }
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to load database info: ' . $e->getMessage(),
+        ], 500);
     }
+}
+
 }
