@@ -140,7 +140,6 @@ public function getDatabase($dbname)
 
         $credential = DBCredential::find($dbname);
         
-        return response()->json([ 'success' => true, 'data' => $credential, ]);
         // Configure connection dynamically
         config([
             'database.connections.dynamic' => [
