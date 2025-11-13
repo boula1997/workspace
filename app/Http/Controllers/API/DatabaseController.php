@@ -167,7 +167,17 @@ public function getDatabase($dbname)
             }
             $results = array_merge($results, $columns);
         }
-        
+
+        foreach ($columns as $col) {
+    $results[] = (object)[
+        'TABLE_NAME' => $tableName,
+        'COLUMN_NAME' => $col->Field,
+        'DATA_TYPE' => $col->Type,
+        'IS_NULLABLE' => $col->Null,
+        'COLUMN_DEFAULT' => $col->Default,
+    ];
+}
+
 
         return response()->json([
             'success' => true,
