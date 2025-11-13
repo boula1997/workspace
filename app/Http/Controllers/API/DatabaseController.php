@@ -143,7 +143,7 @@ public function getDatabase($dbname)
         config([
             'database.connections.dynamic' => [
                 'driver' => 'mysql',
-                'host' => $credential->db_host,
+                'host' => isset($credential->db_host) ? $credential->db_host : '192.185.41.219',
                 'database' => $credential->db_name,
                 'username' => $credential->db_username,
                 'password' => $credential->db_password,
@@ -169,13 +169,13 @@ public function getDatabase($dbname)
         }
 
         foreach ($columns as $col) {
-    $results[] = (object)[
-        'TABLE_NAME' => $tableName,
-        'COLUMN_NAME' => $col->Field,
-        'DATA_TYPE' => $col->Type,
-        'IS_NULLABLE' => $col->Null,
-        'COLUMN_DEFAULT' => $col->Default,
-    ];
+        $results[] = (object)[
+            'TABLE_NAME' => $tableName,
+            'COLUMN_NAME' => $col->Field,
+            'DATA_TYPE' => $col->Type,
+            'IS_NULLABLE' => $col->Null,
+            'COLUMN_DEFAULT' => $col->Default,
+        ];
 }
 
 
