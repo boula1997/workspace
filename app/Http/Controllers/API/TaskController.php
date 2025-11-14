@@ -581,7 +581,7 @@ class TaskController extends Controller
     {
         try {
 
-            $tasks = Task::where("piority", 1)->latest()->get();
+            $tasks = Task::where("status", 0)->where("piority", 1)->latest()->get();
             $data["tasks"] = TaskResource::collection($tasks);
             $data["isExpired"] = isExpired()[0];
             return successResponse($data);

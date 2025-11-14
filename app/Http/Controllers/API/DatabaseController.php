@@ -177,7 +177,7 @@ public function getDatabase($dbname)
             'IS_NULLABLE' => $col->Null,
             'COLUMN_DEFAULT' => $col->Default,
         ];
-}
+        }
 
 
         return response()->json([
