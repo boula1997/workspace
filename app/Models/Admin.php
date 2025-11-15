@@ -34,6 +34,7 @@ class Admin extends Authenticatable implements JWTSubject // <-- IMPLEMENT INTER
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+          'permissions' => 'array',
     ];
 
     public function getImageAttribute()
