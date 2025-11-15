@@ -31,10 +31,9 @@ class Admin extends Authenticatable implements JWTSubject // <-- IMPLEMENT INTER
         'password',
         'remember_token',
     ];
-
+ protected $guard_name = 'admin'; // 🔥 Add this
     protected $casts = [
         'email_verified_at' => 'datetime',
-          'permissions' => 'array',
     ];
 
     public function getImageAttribute()
