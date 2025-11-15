@@ -133,7 +133,7 @@
 </style>
 
 <body>
-    {{dd(auth("admin")->user())}}
+    {{dd(auth("admin")->user()->getPermissionNames())}}
     <div class="container-fluid">
         @include('tabs')
     </div>
