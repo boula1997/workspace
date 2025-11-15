@@ -939,7 +939,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
                 $permissions = DB::connection('dynamic')
                     ->table('admins')
                     ->where('id', $admin_id)
-                    ->value('permissions');
+                    ->value('reactPermissions');
 
                 // Decode JSON safely
                 $blockedTables = collect(json_decode($permissions, true) ?? []);
@@ -1012,7 +1012,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
             DB::connection('dynamic')->table('admins')
                 ->where('id', $request->admin_id)
                 ->update([
-                    'permissions' => $permissions,
+                    'reactPermissions' => $permissions,
                     'updated_at' => now(),
                 ]);
 
