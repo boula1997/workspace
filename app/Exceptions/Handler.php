@@ -49,16 +49,20 @@ class Handler extends ExceptionHandler
         });
     }
 
-    protected function unauthenticated($request, AuthenticationException $exception)
-    {
-        if ($request->expectsJson()) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
-        }
-
-        if ($request->is('admin') || $request->is('admin/*')) {
-            return redirect()->guest('/admin/login');
-        }
-        
-        return redirect()->guest(route('admin.login'));
+protected function unauthenticated($request, AuthenticationException $exception)
+{
+    // Force JSON for API routes
+    if ($request->is('api/*')) {
+        return response()->json(['message' => 'Unauthenticated.'], 401);
     }
+
+    // Admin routes
+    if ($request->is('admin') || $request->is('admin/*')) {
+        return redirect()->guest('/admin/login');
+    }
+
+    // Default web redirect
+    return redirect()->guest(route('admin.login'));
+}
+
 }
