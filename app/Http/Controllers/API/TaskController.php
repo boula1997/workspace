@@ -600,6 +600,7 @@ class TaskController extends Controller
                 $projects = Project::get();
                 foreach ($projects as $project) {
                     $elements[] = [
+                        'id' => $project->id,
                         'title' => $project->title,
                         'link'  => "https://reactdashboard.yousab-tech.com/module/projects/edit/" . $project->id,
                         'type'  => "project",
@@ -609,6 +610,7 @@ class TaskController extends Controller
                 $notes = Note::where("isOverthinking", 0)->latest()->get();
                 foreach ($notes as $note) {
                     $elements[] = [
+                        'id' => $note->id,
                         'title' => $note->title,
                         'link'  => "https://reactdashboard.yousab-tech.com/module/notes/edit/" . $note->id,
 
@@ -619,6 +621,7 @@ class TaskController extends Controller
                 $admins = Admin::orderBy('name', 'ASC')->get();
                 foreach ($admins as $admin) {
                     $elements[] = [
+                        'id' => $admin->id,
                         'title' => $admin->name,
                         'link'  => "https://reactdashboard.yousab-tech.com/module/admins/edit/" . $admin->id,
                         'type'  => "admin",
@@ -628,6 +631,7 @@ class TaskController extends Controller
                 $navigations = Navigation::orderBy('title', 'ASC')->get();
                 foreach ($navigations as $navigation) {
                     $elements[] = [
+                        'id' => $navigation->id,
                         'title' => $navigation->title,
                         'link'  => "https://reactdashboard.yousab-tech.com/module/navigations/edit/" . $navigation->id,
                         'type'  => "navigation",
@@ -637,6 +641,7 @@ class TaskController extends Controller
                 $categories = Category::get();
                 foreach ($categories as $category) {
                     $elements[] = [
+                        'id' => $category->id,
                         'title' => $category->title,
                         'link'  => "https://reactdashboard.yousab-tech.com/module/categories/edit/" . $category->id,
                         'type'  => "category",
@@ -646,6 +651,7 @@ class TaskController extends Controller
                 $roles = Role::get();
                 foreach ($roles as $role) {
                     $elements[] = [
+                        'id' => $role->id,
                         'title' => $role->name,
                         'link'  => "https://reactdashboard.yousab-tech.com/module/roles/edit/" . $role->id,
                         'type'  => "role",
@@ -655,6 +661,7 @@ class TaskController extends Controller
                 $dbcredentials = DBCredential::get();
                 foreach ($dbcredentials as $dbcredential) {
                     $elements[] = [
+                        'id' => $dbcredential->id,
                         'title' => $dbcredential->db_name,
                         'link'  => "https://reactdashboard.yousab-tech.com/module/d_b_credentials/edit/" . $dbcredential->id,
                         'type'  => "dbcredential",
@@ -664,6 +671,7 @@ class TaskController extends Controller
                 $issues = Issue::get();
                 foreach ($issues as $issue) {
                     $elements[] = [
+                        'id' => $issue->id,
                         'title' => $issue->title,
                         'link'  => "https://reactdashboard.yousab-tech.com/module/issues/edit/" . $issue->id,
                         'type'  => "issue",
@@ -673,6 +681,7 @@ class TaskController extends Controller
                 $portfolios = Gallery::get();
                 foreach ($portfolios as $portfolio) {
                     $elements[] = [
+                        'id' => $portfolio->id,
                         'title' => $portfolio->title,
                         'link'  => "https://reactdashboard.yousab-tech.com/module/galleries/edit/" . $portfolio->id,
                         'type'  => "portfolio",
@@ -682,6 +691,7 @@ class TaskController extends Controller
                 $videos = Video::get();
                 foreach ($videos as $video) {
                     $elements[] = [
+                        'id' => $video->id,
                         'title' => $video->title,
                         'link'  => "https://reactdashboard.yousab-tech.com/module/videos/edit/" . $video->id,
                         'type'  => "video",
@@ -691,6 +701,7 @@ class TaskController extends Controller
                 $fees = Fee::latest()->get();
                 foreach ($fees as $fee) {
                     $elements[] = [
+                        'id' => $fee->id,
                         'title' => "" . $fee->amount . " EGP",
                         'link'  => "https://reactdashboard.yousab-tech.com/module/fees/edit/" . $fee->id,
                         'type'  => "fee",
@@ -700,6 +711,7 @@ class TaskController extends Controller
                 $tasks = Task::get();
                 foreach ($tasks as $task) {
                     $elements[] = [
+                        'id' => $task->id,
                         'title' => $task->title,
                         'link'  => "https://reactdashboard.yousab-tech.com/module/tasks/edit/" . $task->id,
 
