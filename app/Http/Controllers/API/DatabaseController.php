@@ -115,10 +115,12 @@ class DatabaseController extends Controller
             }
 
             DB::commit(); // Commit transaction if everything is fine
+        $queries = Query::latest("updated_at")->get();
 
             return response()->json([
                 'success' => "Done Successfully",
                 'data' => $finalResult,
+                'queries' => $queries,
             ]);
         } catch (\Exception $e) {
             DB::rollBack(); // Rollback if something goes wrong
