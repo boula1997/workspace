@@ -66,7 +66,7 @@ class DatabaseController extends Controller
             $queryCommands = explode('++', $request->title);
             $finalResult = [];
 
-            $query = Query::firstOrCreate(
+            $query = Query::updateOrCreate(
                 ['title' => $request->title],
                 ['updated_at' => now()]
             );
