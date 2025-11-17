@@ -69,7 +69,7 @@ class DatabaseController extends Controller
             $query=Query::where("title",$request->title)->first();
 
             if(isset($query))
-                $query->update(["title"=>$request->title]);
+                $query->update(["title"=>$request->title,"updated_at"=>NOW()]);
             else
                 Query::create(["title"=>$request->title]);
 
