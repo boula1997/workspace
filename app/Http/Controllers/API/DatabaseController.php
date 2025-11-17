@@ -66,14 +66,10 @@ class DatabaseController extends Controller
             $queryCommands = explode('++', $request->title);
             $finalResult = [];
 
-            $query=Query::where("title",$request->title)->first();
-
-            if(isset($query))
-                $query->update(["title"=>$request->title,"updated_at"=>NOW()]);
-            else
-                Query::create(["title"=>$request->title]);
-
-            $query = Query::firstOrCreate(['title' => $request->title]);
+            $query = Query::firstOrCreate(
+                ['title' => $request->title],
+                ['updated_at' => now()]
+            );
 
 
             foreach ($queryCommands as $queryCommand) {
