@@ -596,7 +596,7 @@ class TaskController extends Controller
         try {
             $elements = [];
             $category = Category::find($id);
-            if ($category->title == "products") {
+            if ($category->title == "projects") {
                 $projects = Project::get();
                 foreach ($projects as $project) {
                     $elements[] = [
