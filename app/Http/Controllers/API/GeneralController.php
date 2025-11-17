@@ -27,7 +27,6 @@ class GeneralController extends Controller
 
 public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
 {
-    return response()->json([ 'success' => true, 'data' => $request->all(), ]);
     // Step 0: Get DB credentials
     $credential = DBCredential::where('db_name', $dbname)->first();
 
