@@ -100,7 +100,7 @@ class TaskController extends Controller
 
 
 
-        $queries = Query::latest()->get();
+        $queries = Query::latest("updated_at")->get();
 
         if (!isWithinWorkingHours()) {
             $tasks = Task::where("status", 0)
