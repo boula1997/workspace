@@ -41,6 +41,7 @@ class ClienttrackController extends Controller
     {
         try {
             $src = request()->query('src'); 
+            dd($src);
             $data=$this->clienttrack->create([
                 "project_id"=>$project_id,
                 "action"=>$action,
