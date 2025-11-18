@@ -23,6 +23,7 @@ class Clienttrack extends \App\Models\BaseModel
     protected $fillable = [
         'action',
         'project_id',
+        'src',
     ];
 
     public function project(){ return $this->belongsTo(Project::class,'project_id'); }
