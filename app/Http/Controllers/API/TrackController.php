@@ -25,7 +25,7 @@ public function index($id, Request $request) {
             $query->where("action", "like", "%" . $request->action . "%");
         }
         if ($request->filled("src")) {
-            $query->where("src", "like", "%" . $request->action . "%");
+            $query->where("src", "like", "%" . $request->src . "%");
         }
 
         if ($request->filled("from")) {
