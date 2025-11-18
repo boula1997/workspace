@@ -24,6 +24,9 @@ public function index($id, Request $request) {
         if ($request->filled("action")) {
             $query->where("action", "like", "%" . $request->action . "%");
         }
+        if ($request->filled("src")) {
+            $query->where("src", "like", "%" . $request->action . "%");
+        }
 
         if ($request->filled("from")) {
             $query->whereDate("created_at", ">=", $request->from);
