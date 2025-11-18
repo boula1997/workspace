@@ -40,9 +40,11 @@ class ClienttrackController extends Controller
     public function clienttrack($project_id,$action)
     {
         try {
+            $src = request()->query('src'); 
             $data=$this->clienttrack->create([
                 "project_id"=>$project_id,
                 "action"=>$action,
+                "src"=>$src,
             ]);
             return successResponse($data);
         } catch (Exception $e) {
