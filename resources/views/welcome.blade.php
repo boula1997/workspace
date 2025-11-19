@@ -1025,12 +1025,17 @@ import React, { useEffect, useRef, useState } from "react";
                               <h5 class="text-white mt-4">React Tracking Code Single Page</h5>
                                 <pre class="bg-dark text-white p-3 rounded border">
 useEffect(() => {
-  if (!trip) return; // wait until trip is loaded
+  if (!portfolio) return; // wait until portfolio is loaded
 
   const loadData = async () => {
     try {
+      // ✅ Read src from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const src = urlParams.get("src") || "";
+
+      console.log("SRC FOUND:", src);
       const response = await fetch(
-        `https://yousab-tech.com/workspace/public/api/clienttrack/294/Single ${trip.title}`,
+        `https://yousab-tech.com/workspace/public/api/clienttrack/297/single ${portfolio.title}?src=${src}`,
         {
           method: "GET",
           headers: {
@@ -1048,7 +1053,7 @@ useEffect(() => {
   };
 
   loadData();
-}, [trip]);
+}, [portfolio]);
                             </pre>
 
 
