@@ -87,6 +87,8 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/bases', [TaskController::class, 'bases']);
     Route::get('/admins/{dbname}', [GeneralController::class, 'getAdmins']);
     Route::post('/execute/query', [DatabaseController::class, 'execQuery'])->name('query.exec');
+    Route::post('/save/query', [DatabaseController::class, 'saveQuery'])->name('query.save');
+    Route::get('/get/queries', [DatabaseController::class, 'getQueries'])->name('queries.get');
     Route::get('/databases/info/{dbname}', [DatabaseController::class, 'getDatabase']);
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);

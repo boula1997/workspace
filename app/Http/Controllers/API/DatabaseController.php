@@ -66,11 +66,6 @@ class DatabaseController extends Controller
             $queryCommands = explode('++', $request->title);
             $finalResult = [];
 
-            $query = Query::updateOrCreate(
-                ['title' => $request->title],
-                ['updated_at' => now()]
-            );
-
 
             foreach ($queryCommands as $queryCommand) {
                 // Normalize query: remove extra whitespace and lowercase for case-insensitive matching
@@ -115,15 +110,68 @@ class DatabaseController extends Controller
             }
 
             DB::commit(); // Commit transaction if everything is fine
-        $queries = Query::latest("updated_at")->get();
 
             return response()->json([
                 'success' => "Done Successfully",
                 'data' => $finalResult,
-                'queries' => $queries,
             ]);
         } catch (\Exception $e) {
             DB::rollBack(); // Rollback if something goes wrong
+
+
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'data' => $e->getMessage(),
+            ]);
+        }
+    }
+    public function saveQuery(Request $request)
+    {
+
+        DB::beginTransaction(); // Start transaction
+
+        try {
+
+
+
+            $query = Query::updateOrCreate(
+                ['title' => $request->title],
+                ['updated_at' => now()]
+            );
+            $queries = Query::latest("updated_at")->get();
+
+
+
+            DB::commit(); // Commit transaction if everything is fine
+
+            return response()->json([
+                'success' => "Done Successfully",
+                'queries' => $queries,
+
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback if something goes wrong
+
+
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'data' => $e->getMessage(),
+            ]);
+        }
+    }
+    public function getQueries()
+    {
+        try {
+
+            $queries = Query::latest("updated_at")->get();
+            return response()->json([
+                'success' => "Done Successfully",
+                'queries' => $queries,
+
+            ]);
+        } catch (\Exception $e) {
 
 
             return response()->json([
