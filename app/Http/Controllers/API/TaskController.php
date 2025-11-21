@@ -848,7 +848,6 @@ class TaskController extends Controller
 
                 return successResponse([
                     "elements"   => $items,     // full pagination object
-                    "mapped"     => $elements,  // your old structure
                     "isExpired"  => isExpired()[0],
                 ]);
 
