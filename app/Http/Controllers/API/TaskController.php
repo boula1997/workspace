@@ -741,12 +741,23 @@ class TaskController extends Controller
 
                         break;
 
-                    case "fees":
-                        $query = Fee::withoutGlobalScopes()->latest();
-                        $applySearch($query, 'amount');
-                        $items = $query->paginate($perPage);
+                        case "fees":
+                            $query = Fee::withoutGlobalScopes()->latest();
+                            $applySearch($query, 'amount');
+                            $items = $query->paginate($perPage);
 
-                        break;
+                            // إضافة title لكل عنصر
+                            $items->getCollection()->transform(function ($item) {
+                                return [
+                                    'id'    => $item->id,
+                                    'title' => $item->amount . " EGP", // ⬅ عنوان الـ fee
+                                    'link'  => url("module/fees/edit/{$item->id}"),
+                                    'type'  => 'fee',
+                                ];
+                            });
+
+                            break;
+
 
                         case "tasks":
 
