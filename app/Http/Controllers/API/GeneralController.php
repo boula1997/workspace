@@ -183,28 +183,35 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
             }
         }
 
-        foreach ($translationData as $locale => $fields) {
-            $fields[$foreignKey] = $itemId;
-            $fields['locale'] = $locale;
-            $fields['updated_at'] = $now; // 🕒 timestamp for translations
-            if (in_array('created_at', Schema::connection('dynamic')->getColumnListing($translationTable))) {
-                $fields['created_at'] = $now;
-            }
+foreach ($translationData as $locale => $fields) {
+    $fields[$foreignKey] = $itemId;
+    $fields['locale'] = $locale;
+    $fields['updated_at'] = $now;
 
-            $existing = DB::connection('dynamic')->table($translationTable)
-                ->where($foreignKey, $itemId)
-                ->where('locale', $locale)
-                ->first();
+    // ✅ Ensure isActive is not null
+    if (!isset($fields['isActive'])) {
+        $fields['isActive'] = 1; // default active
+    }
 
-            if ($existing) {
-                DB::connection('dynamic')->table($translationTable)
-                    ->where($foreignKey, $itemId)
-                    ->where('locale', $locale)
-                    ->update($fields);
-            } else {
-                DB::connection('dynamic')->table($translationTable)->insert($fields);
-            }
-        }
+    if (in_array('created_at', Schema::connection('dynamic')->getColumnListing($translationTable))) {
+        $fields['created_at'] = $now;
+    }
+
+    $existing = DB::connection('dynamic')->table($translationTable)
+        ->where($foreignKey, $itemId)
+        ->where('locale', $locale)
+        ->first();
+
+    if ($existing) {
+        DB::connection('dynamic')->table($translationTable)
+            ->where($foreignKey, $itemId)
+            ->where('locale', $locale)
+            ->update($fields);
+    } else {
+        DB::connection('dynamic')->table($translationTable)->insert($fields);
+    }
+}
+
     }
 
     // Step 6: Return response
