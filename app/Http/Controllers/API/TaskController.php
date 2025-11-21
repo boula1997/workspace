@@ -847,7 +847,7 @@ class TaskController extends Controller
                 }
 
                 return successResponse([
-                    "elements"   => $items,     // full pagination object
+                    "elements"   => $elements,     // full pagination object
                     "isExpired"  => isExpired()[0],
                 ]);
 
