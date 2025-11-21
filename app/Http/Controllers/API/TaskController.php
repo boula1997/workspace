@@ -718,7 +718,7 @@ public function elements($id, Request $request)
                 }
                 break;
 
-            case "dbcredentials":
+            case "d_b_credentials":
                 $query = DBCredential::latest()->withoutGlobalScopes();
                 $applySearch($query, 'db_name');
                 $items = $query->paginate($perPage);
