@@ -862,7 +862,7 @@ public function elements($id, Request $request)
     {
         try {
 
-            $deadlines = Deadline::orderBy("date", "asc")->get();
+            $deadlines = Deadline::latest()->orderBy("date", "asc")->get();
             $data["deadlines"] = $deadlines;
             $data["isExpired"] = isExpired()[0];
             if (boula())
