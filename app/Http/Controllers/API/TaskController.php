@@ -660,14 +660,25 @@ class TaskController extends Controller
                             break;
 
 
-                    case "roles":
-                        if (!boula()) break;
+                            case "roles":
+                                if (!boula()) break;
 
-                        $query = Role::latest()->withoutGlobalScopes();
-                        $applySearch($query, 'name');
-                        $items = $query->paginate($perPage);
+                                $query = Role::latest()->withoutGlobalScopes();
+                                $applySearch($query, 'name');
+                                $items = $query->paginate($perPage);
 
-                        break;
+                                // تحويل الـ paginator عشان يضيف title
+                                $items->getCollection()->transform(function ($item) {
+                                    return [
+                                        'id'    => $item->id,
+                                        'title' => $item->name, // ⬅ هنا عنوان الـ role
+                                        'link'  => url("module/roles/edit/{$item->id}"),
+                                        'type'  => 'role',
+                                    ];
+                                });
+
+                                break;
+
 
                         case "d_b_credentials":
                             $query = DBCredential::latest()->withoutGlobalScopes();
