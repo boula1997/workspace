@@ -595,183 +595,225 @@ class TaskController extends Controller
 
 
 
-public function elements($id)
+public function elements($id, Request $request)
 {
     try {
         $elements = [];
 
-        // ignore ActiveScope for Category
+        $search   = $request->query('search');
+        $perPage  = $request->query('per_page', 10);
+
+        // Remove global scopes for Category
         $category = Category::withoutGlobalScopes()->find($id);
 
-        // Determine which model to use
+        if (!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+
+        // Helper to apply search on title
+        $applySearch = function ($query, $column = 'title') use ($search) {
+            if ($search) {
+                $query->where($column, 'like', "%{$search}%");
+            }
+        };
+
         switch ($category->title) {
+
             case "projects":
-                $items = Project::withoutGlobalScopes()->get();
+                $query = Project::withoutGlobalScopes();
+                $applySearch($query, 'title');
+                $items = $query->paginate($perPage);
+
                 foreach ($items as $item) {
                     $elements[] = [
-                        'id' => $item->id,
+                        'id'    => $item->id,
                         'title' => $item->title,
-                        'link' => url("module/projects/edit/{$item->id}"),
-                        'type' => 'project',
+                        'link'  => url("module/projects/edit/{$item->id}"),
+                        'type'  => 'project',
                     ];
                 }
                 break;
 
             case "notes":
-                if (boula()) {
-                    $items = Note::withoutGlobalScopes()->where("isOverthinking", 0)->latest()->get();
-                    foreach ($items as $item) {
-                        $elements[] = [
-                            'id' => $item->id,
-                            'title' => $item->title,
-                            'link' => url("module/notes/edit/{$item->id}"),
-                            'type' => 'note',
-                        ];
-                    }
+                if (!boula()) break;
+
+                $query = Note::withoutGlobalScopes()->where("isOverthinking", 0);
+                $applySearch($query, 'title');
+                $items = $query->paginate($perPage);
+
+                foreach ($items as $item) {
+                    $elements[] = [
+                        'id'    => $item->id,
+                        'title' => $item->title,
+                        'link'  => url("module/notes/edit/{$item->id}"),
+                        'type'  => 'note',
+                    ];
                 }
                 break;
 
             case "admins":
-                $items = Admin::withoutGlobalScopes()->orderBy('name', 'ASC')->get();
+                $query = Admin::withoutGlobalScopes()->orderBy('name', 'ASC');
+                $applySearch($query, 'name');
+                $items = $query->paginate($perPage);
+
                 foreach ($items as $item) {
                     $elements[] = [
-                        'id' => $item->id,
+                        'id'    => $item->id,
                         'title' => $item->name,
-                        'link' => url("module/admins/edit/{$item->id}"),
-                        'type' => 'admin',
+                        'link'  => url("module/admins/edit/{$item->id}"),
+                        'type'  => 'admin',
                     ];
                 }
                 break;
 
             case "navigations":
-                $items = Navigation::withoutGlobalScopes()->orderBy('title', 'ASC')->get();
+                $query = Navigation::withoutGlobalScopes()->orderBy('title', 'ASC');
+                $applySearch($query, 'title');
+                $items = $query->paginate($perPage);
+
                 foreach ($items as $item) {
                     $elements[] = [
-                        'id' => $item->id,
+                        'id'    => $item->id,
                         'title' => $item->title,
-                        'link' => url("module/navigations/edit/{$item->id}"),
-                        'type' => 'navigation',
+                        'link'  => url("module/navigations/edit/{$item->id}"),
+                        'type'  => 'navigation',
                     ];
                 }
                 break;
 
             case "categories":
-                $items = Category::withoutGlobalScopes()->get();
+                $query = Category::withoutGlobalScopes();
+                $applySearch($query, 'title');
+                $items = $query->paginate($perPage);
+
                 foreach ($items as $item) {
                     $elements[] = [
-                        'id' => $item->id,
+                        'id'    => $item->id,
                         'title' => $item->title,
-                        'link' => url("module/categories/edit/{$item->id}"),
-                        'type' => 'category',
+                        'link'  => url("module/categories/edit/{$item->id}"),
+                        'type'  => 'category',
                     ];
                 }
                 break;
 
             case "roles":
-                if (boula()) {
-                    $items = Role::withoutGlobalScopes()->get();
-                    foreach ($items as $item) {
-                        $elements[] = [
-                            'id' => $item->id,
-                            'title' => $item->name,
-                            'link' => url("module/roles/edit/{$item->id}"),
-                            'type' => 'role',
-                        ];
-                    }
+                if (!boula()) break;
+
+                $query = Role::withoutGlobalScopes();
+                $applySearch($query, 'name');
+                $items = $query->paginate($perPage);
+
+                foreach ($items as $item) {
+                    $elements[] = [
+                        'id'    => $item->id,
+                        'title' => $item->name,
+                        'link'  => url("module/roles/edit/{$item->id}"),
+                        'type'  => 'role',
+                    ];
                 }
                 break;
 
             case "dbcredentials":
-                $items = DBCredential::withoutGlobalScopes()->get();
+                $query = DBCredential::withoutGlobalScopes();
+                $applySearch($query, 'db_name');
+                $items = $query->paginate($perPage);
+
                 foreach ($items as $item) {
                     $elements[] = [
-                        'id' => $item->id,
+                        'id'    => $item->id,
                         'title' => $item->db_name,
-                        'link' => url("module/d_b_credentials/edit/{$item->id}"),
-                        'type' => 'dbcredential',
+                        'link'  => url("module/d_b_credentials/edit/{$item->id}"),
+                        'type'  => 'dbcredential',
                     ];
                 }
                 break;
 
             case "issues":
-                if (boula()) {
-                    $items = Issue::withoutGlobalScopes()->get();
-                    foreach ($items as $item) {
-                        $elements[] = [
-                            'id' => $item->id,
-                            'title' => $item->title,
-                            'link' => url("module/issues/edit/{$item->id}"),
-                            'type' => 'issue',
-                        ];
-                    }
+                if (!boula()) break;
+
+                $query = Issue::withoutGlobalScopes();
+                $applySearch($query, 'title');
+                $items = $query->paginate($perPage);
+
+                foreach ($items as $item) {
+                    $elements[] = [
+                        'id'    => $item->id,
+                        'title' => $item->title,
+                        'link'  => url("module/issues/edit/{$item->id}"),
+                        'type'  => 'issue',
+                    ];
                 }
                 break;
 
             case "portfolios":
-                $items = Gallery::withoutGlobalScopes()->get();
+                $query = Gallery::withoutGlobalScopes();
+                $applySearch($query, 'title');
+                $items = $query->paginate($perPage);
+
                 foreach ($items as $item) {
                     $elements[] = [
-                        'id' => $item->id,
+                        'id'    => $item->id,
                         'title' => $item->title,
-                        'link' => url("module/galleries/edit/{$item->id}"),
-                        'type' => 'portfolio',
+                        'link'  => url("module/galleries/edit/{$item->id}"),
+                        'type'  => 'portfolio',
                     ];
                 }
                 break;
 
             case "videos":
-                $items = Video::withoutGlobalScopes()->get();
+                $query = Video::withoutGlobalScopes();
+                $applySearch($query, 'title');
+                $items = $query->paginate($perPage);
+
                 foreach ($items as $item) {
                     $elements[] = [
-                        'id' => $item->id,
+                        'id'    => $item->id,
                         'title' => $item->title,
-                        'link' => url("module/videos/edit/{$item->id}"),
-                        'type' => 'video',
+                        'link'  => url("module/videos/edit/{$item->id}"),
+                        'type'  => 'video',
                     ];
                 }
                 break;
 
             case "fees":
-                $items = Fee::withoutGlobalScopes()->latest()->get();
+                $query = Fee::withoutGlobalScopes()->latest();
+                $applySearch($query, 'amount');
+                $items = $query->paginate($perPage);
+
                 foreach ($items as $item) {
                     $elements[] = [
-                        'id' => $item->id,
+                        'id'    => $item->id,
                         'title' => $item->amount . " EGP",
-                        'link' => url("module/fees/edit/{$item->id}"),
-                        'type' => 'fee',
+                        'link'  => url("module/fees/edit/{$item->id}"),
+                        'type'  => 'fee',
                     ];
                 }
                 break;
 
             case "tasks":
-                $items = Task::withoutGlobalScopes()->get();
+                $query = Task::withoutGlobalScopes();
+                $applySearch($query, 'title');
+                $items = $query->paginate($perPage);
+
                 foreach ($items as $item) {
                     $elements[] = [
-                        'id' => $item->id,
+                        'id'    => $item->id,
                         'title' => $item->title,
-                        'link' => url("module/tasks/edit/{$item->id}"),
-                        'type' => 'task',
+                        'link'  => url("module/tasks/edit/{$item->id}"),
+                        'type'  => 'task',
                     ];
                 }
                 break;
+
+            default:
+                return response()->json(['error' => 'Unsupported category'], 400);
         }
 
-        // Pagination
-        $page = request()->get('page', 1);
-        $perPage = request()->get('per_page', 10); // default 10 items per page
-        $collection = collect($elements);
-        $paginated = new LengthAwarePaginator(
-            $collection->slice(($page - 1) * $perPage, $perPage)->values(),
-            $collection->count(),
-            $perPage,
-            $page,
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
-
-        $data["elements"] = $paginated;
-        $data["isExpired"] = isExpired()[0];
-
-        return successResponse($data);
+        return successResponse([
+            "elements"   => $items,     // full pagination object
+            "mapped"     => $elements,  // your old structure
+            "isExpired"  => isExpired()[0],
+        ]);
 
     } catch (Exception $e) {
         return response()->json(['error' => $e->getMessage()]);
