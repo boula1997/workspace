@@ -779,6 +779,20 @@ public function elements($id, Request $request)
                     ];
                 }
                 break;
+            case "finished-deadlines":
+                $query = Deadline::where("status",1)->latest()->withoutGlobalScopes();
+                $applySearch($query, 'title');
+                $items = $query->paginate($perPage);
+
+                foreach ($items as $item) {
+                    $elements[] = [
+                        'id'    => $item->id,
+                        'title' => $item->title,
+                        'link'  => url("module/videos/edit/{$item->id}"),
+                        'type'  => 'video',
+                    ];
+                }
+                break;
 
             case "fees":
                 $query = Fee::withoutGlobalScopes()->latest();
