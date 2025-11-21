@@ -598,7 +598,6 @@ class TaskController extends Controller
         public function elements($id, Request $request)
         {
             try {
-                $elements = [];
 
                 $search   = $request->query('search');
                 $perPage  = $request->query('per_page', 10);
@@ -670,12 +669,26 @@ class TaskController extends Controller
 
                         break;
 
-                    case "d_b_credentials":
-                        $query = DBCredential::latest()->withoutGlobalScopes();
-                        $applySearch($query, 'db_name');
-                        $items = $query->paginate($perPage);
+                        case "d_b_credentials":
+                            $query = DBCredential::latest()->withoutGlobalScopes();
+                            $applySearch($query, 'db_name');
+                            $items = $query->paginate($perPage);
 
-                        break;
+                            // ✨ هنا التحويل
+                            $items->getCollection()->transform(function ($item) {
+                                return [
+                                    'id'        => $item->id,
+                                    'title'     => $item->db_name, // ⬅ عنوان الـ item
+                                    'username'  => $item->db_username,
+                                    'host'      => $item->db_host,
+                                    'isActive'  => $item->isActive,
+                                    'link'      => url("module/d_b_credentials/edit/{$item->id}"),
+                                    'type'      => 'd_b_credentials',
+                                ];
+                            });
+
+                            break;
+
 
                     case "issues":
                         if (!boula()) break;
