@@ -795,20 +795,38 @@ public function elements($id, Request $request)
                 }
                 break;
 
-            case "tasks":
-                $query = Task::withoutGlobalScopes();
-                $applySearch($query, 'title');
-                $items = $query->paginate($perPage);
+                case "tasks":
 
-                foreach ($items as $item) {
-                    $elements[] = [
-                        'id'    => $item->id,
-                        'title' => $item->title,
-                        'link'  => url("module/tasks/edit/{$item->id}"),
-                        'type'  => 'task',
-                    ];
-                }
-                break;
+                    $search = $request->query('search');
+                    $perPage = $request->query('per_page', 20);
+
+                    $query = Task::with('project') // load project title
+                                ->withoutGlobalScopes();
+
+                    // 🔍 Apply search on both task title + project title
+                    if ($search) {
+                        $query->where(function($q) use ($search) {
+                            $q->where('title', 'LIKE', "%{$search}%") // task title
+                            ->orWhereHas('project', function($p) use ($search) {
+                                $p->where('title', 'LIKE', "%{$search}%"); // project title
+                            });
+                        });
+                    }
+
+                    $items = $query->paginate($perPage);
+
+                    foreach ($items as $item) {
+                        $elements[] = [
+                            'id'      => $item->id,
+                            'title'   => $item->title." ".$item->project->title,
+                            'project' => $item->project ? $item->project->title : null,
+                            'link'    => url("module/tasks/edit/{$item->id}"),
+                            'type'    => 'task',
+                        ];
+                    }
+
+                    break;
+
 
             default:
                 return response()->json(['error' => 'Unsupported category'], 400);
@@ -830,7 +848,7 @@ public function elements($id, Request $request)
     {
         try {
 
-            $deadlines = Deadline::orderBy("date", "asc")->get();
+            $deadlines = Deadline::where("status",0)->orderBy("date", "asc")->get();
             $data["deadlines"] = $deadlines;
             $data["isExpired"] = isExpired()[0];
             if (boula())
