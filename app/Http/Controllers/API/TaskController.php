@@ -620,7 +620,7 @@ public function elements($id, Request $request)
         switch ($category->title) {
 
             case "projects":
-                $query = Project::withoutGlobalScopes();
+                $query = Project::latest()->withoutGlobalScopes();
                 $applySearch($query, 'title');
                 $items = $query->paginate($perPage);
 
@@ -637,7 +637,7 @@ public function elements($id, Request $request)
             case "notes":
                 if (!boula()) break;
 
-                $query = Note::withoutGlobalScopes()->where("isOverthinking", 0);
+                $query = Note::latest()->withoutGlobalScopes()->where("isOverthinking", 0);
                 $applySearch($query, 'title');
                 $items = $query->paginate($perPage);
 
@@ -652,7 +652,7 @@ public function elements($id, Request $request)
                 break;
 
             case "admins":
-                $query = Admin::withoutGlobalScopes()->orderBy('name', 'ASC');
+                $query = Admin::latest()->withoutGlobalScopes()->orderBy('name', 'ASC');
                 $applySearch($query, 'name');
                 $items = $query->paginate($perPage);
 
@@ -667,7 +667,7 @@ public function elements($id, Request $request)
                 break;
 
             case "navigations":
-                $query = Navigation::withoutGlobalScopes()->orderBy('title', 'ASC');
+                $query = Navigation::latest()->withoutGlobalScopes()->orderBy('title', 'ASC');
                 $applySearch($query, 'title');
                 $items = $query->paginate($perPage);
 
@@ -682,7 +682,7 @@ public function elements($id, Request $request)
                 break;
 
                 case "categories":
-                    $query = Category::withoutGlobalScopes();
+                    $query = Category::latest()->withoutGlobalScopes();
 
                     if ($search) {
                         $query->whereTranslationLike('title', "%{$search}%");
@@ -704,7 +704,7 @@ public function elements($id, Request $request)
             case "roles":
                 if (!boula()) break;
 
-                $query = Role::withoutGlobalScopes();
+                $query = Role::latest()->withoutGlobalScopes();
                 $applySearch($query, 'name');
                 $items = $query->paginate($perPage);
 
@@ -719,7 +719,7 @@ public function elements($id, Request $request)
                 break;
 
             case "dbcredentials":
-                $query = DBCredential::withoutGlobalScopes();
+                $query = DBCredential::latest()->withoutGlobalScopes();
                 $applySearch($query, 'db_name');
                 $items = $query->paginate($perPage);
 
@@ -736,7 +736,7 @@ public function elements($id, Request $request)
             case "issues":
                 if (!boula()) break;
 
-                $query = Issue::withoutGlobalScopes();
+                $query = Issue::latest()->withoutGlobalScopes();
                 $applySearch($query, 'title');
                 $items = $query->paginate($perPage);
 
@@ -751,7 +751,7 @@ public function elements($id, Request $request)
                 break;
 
             case "portfolios":
-                $query = Gallery::withoutGlobalScopes();
+                $query = Gallery::latest()->withoutGlobalScopes();
                 $applySearch($query, 'title');
                 $items = $query->paginate($perPage);
 
@@ -766,7 +766,7 @@ public function elements($id, Request $request)
                 break;
 
             case "videos":
-                $query = Video::withoutGlobalScopes();
+                $query = Video::latest()->withoutGlobalScopes();
                 $applySearch($query, 'title');
                 $items = $query->paginate($perPage);
 
@@ -800,7 +800,7 @@ public function elements($id, Request $request)
                     $search = $request->query('search');
                     $perPage = $request->query('per_page', 20);
 
-                    $query = Task::where("status",1)->with('project') // load project title
+                    $query = Task::latest()->where("status",1)->with('project') // load project title
                                 ->withoutGlobalScopes();
 
                     // 🔍 Apply search on both task title + project title
