@@ -624,14 +624,6 @@ class TaskController extends Controller
                         $applySearch($query, 'title');
                         $items = $query->paginate($perPage);
 
-                        foreach ($items as $item) {
-                            $elements[] = [
-                                'id'    => $item->id,
-                                'title' => $item->title,
-                                'link'  => url("module/projects/edit/{$item->id}"),
-                                'type'  => 'project',
-                            ];
-                        }
                         break;
 
                     case "notes":
@@ -641,14 +633,6 @@ class TaskController extends Controller
                         $applySearch($query, 'title');
                         $items = $query->paginate($perPage);
 
-                        foreach ($items as $item) {
-                            $elements[] = [
-                                'id'    => $item->id,
-                                'title' => $item->title,
-                                'link'  => url("module/notes/edit/{$item->id}"),
-                                'type'  => 'note',
-                            ];
-                        }
                         break;
 
                     case "admins":
@@ -656,14 +640,6 @@ class TaskController extends Controller
                         $applySearch($query, 'name');
                         $items = $query->paginate($perPage);
 
-                        foreach ($items as $item) {
-                            $elements[] = [
-                                'id'    => $item->id,
-                                'title' => $item->name,
-                                'link'  => url("module/admins/edit/{$item->id}"),
-                                'type'  => 'admin',
-                            ];
-                        }
                         break;
 
                     case "navigations":
@@ -671,14 +647,6 @@ class TaskController extends Controller
                         $applySearch($query, 'title');
                         $items = $query->paginate($perPage);
 
-                        foreach ($items as $item) {
-                            $elements[] = [
-                                'id'    => $item->id,
-                                'title' => $item->title,
-                                'link'  => url("module/navigations/edit/{$item->id}"),
-                                'type'  => 'navigation',
-                            ];
-                        }
                         break;
 
                         case "categories":
@@ -690,14 +658,6 @@ class TaskController extends Controller
 
                             $items = $query->paginate($perPage);
 
-                            foreach ($items as $item) {
-                                $elements[] = [
-                                    'id'    => $item->id,
-                                    'title' => $item->title, // works because it loads translated title
-                                    'link'  => url("module/categories/edit/{$item->id}"),
-                                    'type'  => 'category',
-                                ];
-                            }
                             break;
 
 
@@ -708,14 +668,6 @@ class TaskController extends Controller
                         $applySearch($query, 'name');
                         $items = $query->paginate($perPage);
 
-                        foreach ($items as $item) {
-                            $elements[] = [
-                                'id'    => $item->id,
-                                'title' => $item->name,
-                                'link'  => url("module/roles/edit/{$item->id}"),
-                                'type'  => 'role',
-                            ];
-                        }
                         break;
 
                     case "d_b_credentials":
@@ -723,14 +675,6 @@ class TaskController extends Controller
                         $applySearch($query, 'db_name');
                         $items = $query->paginate($perPage);
 
-                        foreach ($items as $item) {
-                            $elements[] = [
-                                'id'    => $item->id,
-                                'title' => "{$item->db_name} ({$item->db_username})", // 👈 العنوان الجديد
-                                'link'  => url("module/d_b_credentials/edit/{$item->id}"),
-                                'type'  => 'd_b_credentials',
-                            ];
-                        }
                         break;
 
                     case "issues":
@@ -740,14 +684,6 @@ class TaskController extends Controller
                         $applySearch($query, 'title');
                         $items = $query->paginate($perPage);
 
-                        foreach ($items as $item) {
-                            $elements[] = [
-                                'id'    => $item->id,
-                                'title' => $item->title,
-                                'link'  => url("module/issues/edit/{$item->id}"),
-                                'type'  => 'issue',
-                            ];
-                        }
                         break;
 
                     case "portfolios":
@@ -755,14 +691,6 @@ class TaskController extends Controller
                         $applySearch($query, 'title');
                         $items = $query->paginate($perPage);
 
-                        foreach ($items as $item) {
-                            $elements[] = [
-                                'id'    => $item->id,
-                                'title' => $item->title,
-                                'link'  => url("module/galleries/edit/{$item->id}"),
-                                'type'  => 'portfolio',
-                            ];
-                        }
                         break;
 
                     case "videos":
@@ -770,28 +698,12 @@ class TaskController extends Controller
                         $applySearch($query, 'title');
                         $items = $query->paginate($perPage);
 
-                        foreach ($items as $item) {
-                            $elements[] = [
-                                'id'    => $item->id,
-                                'title' => $item->title,
-                                'link'  => url("module/videos/edit/{$item->id}"),
-                                'type'  => 'video',
-                            ];
-                        }
                         break;
                     case "deadlines":
                         $query = Deadline::where("status",1)->latest()->withoutGlobalScopes();
                         $applySearch($query, 'title');
                         $items = $query->paginate($perPage);
 
-                        foreach ($items as $item) {
-                            $elements[] = [
-                                'id'    => $item->id,
-                                'title' => $item->title,
-                                'link'  => url("module/videos/edit/{$item->id}"),
-                                'type'  => 'video',
-                            ];
-                        }
                         break;
 
                     case "fees":
@@ -799,14 +711,6 @@ class TaskController extends Controller
                         $applySearch($query, 'amount');
                         $items = $query->paginate($perPage);
 
-                        foreach ($items as $item) {
-                            $elements[] = [
-                                'id'    => $item->id,
-                                'title' => $item->amount . " EGP",
-                                'link'  => url("module/fees/edit/{$item->id}"),
-                                'type'  => 'fee',
-                            ];
-                        }
                         break;
 
                         case "tasks":
@@ -829,15 +733,6 @@ class TaskController extends Controller
 
                             $items = $query->paginate($perPage);
 
-                            foreach ($items as $item) {
-                                $elements[] = [
-                                    'id'      => $item->id,
-                                    'title'   => $item->title." ".$item->project->title,
-                                    'project' => $item->project ? $item->project->title : null,
-                                    'link'    => url("module/tasks/edit/{$item->id}"),
-                                    'type'    => 'task',
-                                ];
-                            }
 
                             break;
 
@@ -847,7 +742,7 @@ class TaskController extends Controller
                 }
 
                 return successResponse([
-                    "elements"   => $elements,     // full pagination object
+                    "elements"   => $items,     // full pagination object
                     "isExpired"  => isExpired()[0],
                 ]);
 
