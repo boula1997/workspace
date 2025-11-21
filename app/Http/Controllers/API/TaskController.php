@@ -779,7 +779,7 @@ public function elements($id, Request $request)
                     ];
                 }
                 break;
-            case "finished-deadlines":
+            case "deadlines":
                 $query = Deadline::where("status",1)->latest()->withoutGlobalScopes();
                 $applySearch($query, 'title');
                 $items = $query->paginate($perPage);
@@ -809,7 +809,7 @@ public function elements($id, Request $request)
                 }
                 break;
 
-                case "finished-tasks":
+                case "tasks":
 
                     $search = $request->query('search');
                     $perPage = $request->query('per_page', 20);
