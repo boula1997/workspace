@@ -795,12 +795,12 @@ public function elements($id, Request $request)
                 }
                 break;
 
-                case "tasks":
+                case "finished-tasks":
 
                     $search = $request->query('search');
                     $perPage = $request->query('per_page', 20);
 
-                    $query = Task::with('project') // load project title
+                    $query = Task::where("status",1)->with('project') // load project title
                                 ->withoutGlobalScopes();
 
                     // 🔍 Apply search on both task title + project title
