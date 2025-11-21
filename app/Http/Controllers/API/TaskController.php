@@ -634,12 +634,23 @@ class TaskController extends Controller
 
                         break;
 
-                    case "admins":
-                        $query = Admin::latest()->withoutGlobalScopes()->orderBy('name', 'ASC');
-                        $applySearch($query, 'name');
-                        $items = $query->paginate($perPage);
+                        case "admins":
+                            $query = Admin::latest()->withoutGlobalScopes()->orderBy('name', 'ASC');
+                            $applySearch($query, 'name');
+                            $items = $query->paginate($perPage);
 
-                        break;
+                            // تحويل الـ paginator عشان يضيف title
+                            $items->getCollection()->transform(function ($item) {
+                                return [
+                                    'id'    => $item->id,
+                                    'title' => $item->name, // ⬅ عنوان الـ admin
+                                    'link'  => url("module/admins/edit/{$item->id}"),
+                                    'type'  => 'admin',
+                                ];
+                            });
+
+                            break;
+
 
                     case "navigations":
                         $query = Navigation::latest()->withoutGlobalScopes()->orderBy('title', 'ASC');
