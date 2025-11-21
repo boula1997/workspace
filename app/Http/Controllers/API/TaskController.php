@@ -726,7 +726,7 @@ public function elements($id, Request $request)
                 foreach ($items as $item) {
                     $elements[] = [
                         'id'    => $item->id,
-                        'title' => $item->db_name,
+                        'title' => $item->id,
                         'link'  => url("module/d_b_credentials/edit/{$item->id}"),
                         'type'  => 'dbcredential',
                     ];
