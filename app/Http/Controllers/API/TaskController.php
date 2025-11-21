@@ -681,20 +681,25 @@ public function elements($id, Request $request)
                 }
                 break;
 
-            case "categories":
-                $query = Category::withoutGlobalScopes();
-                $applySearch($query, 'title');
-                $items = $query->paginate($perPage);
+                case "categories":
+                    $query = Category::withoutGlobalScopes();
 
-                foreach ($items as $item) {
-                    $elements[] = [
-                        'id'    => $item->id,
-                        'title' => $item->title,
-                        'link'  => url("module/categories/edit/{$item->id}"),
-                        'type'  => 'category',
-                    ];
-                }
-                break;
+                    if ($search) {
+                        $query->whereTranslationLike('title', "%{$search}%");
+                    }
+
+                    $items = $query->paginate($perPage);
+
+                    foreach ($items as $item) {
+                        $elements[] = [
+                            'id'    => $item->id,
+                            'title' => $item->title, // works because it loads translated title
+                            'link'  => url("module/categories/edit/{$item->id}"),
+                            'type'  => 'category',
+                        ];
+                    }
+                    break;
+
 
             case "roles":
                 if (!boula()) break;
