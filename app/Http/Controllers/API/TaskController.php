@@ -424,15 +424,13 @@ class TaskController extends Controller
             "projects" => ProjectResource::collection($projects),
             "employees" => $employees,
             "clients" => $clients,
-            "tasks" => TaskResource::collection($tasks)
-            ->additional([
-                'meta' => [
-                    'current_page' => $tasks->currentPage(),
-                    'last_page' => $tasks->lastPage(),
-                    'per_page' => $tasks->perPage(),
-                    'total' => $tasks->total(),
-                ]
-                ]),
+            "tasks" => TaskResource::collection($tasks),
+            "tasks_meta" => [
+                "current_page" => $tasks->currentPage(),
+                "last_page" => $tasks->lastPage(),
+                "per_page" => $tasks->perPage(),
+                "total" => $tasks->total(),
+            ],
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
             "allowedIn" => date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
             "deadlineAction" => activeDeadline()["action"],
