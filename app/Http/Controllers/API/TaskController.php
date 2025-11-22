@@ -419,7 +419,6 @@ if ($request->has('search') && $request->search != '') {
     $search = $request->search;
 
     $tasksQuery->where(function($q) use ($search) {
-
         // Search by title
         $q->where('title', 'like', "%$search%");
 
@@ -428,9 +427,14 @@ if ($request->has('search') && $request->search != '') {
             $qp->where('title', 'like', "%$search%");
         });
 
-        // Search by employees (JSON)
-        $q->orWhereHas('employeeRelation', function($qe) use ($search) {
-            $qe->where('name', 'like', "%$search%");
+        // Search by employees JSON column
+        $q->orWhere(function($qe) use ($search) {
+            $qe->whereRaw("EXISTS (
+                SELECT 1
+                FROM admins
+                WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
+                AND admins.name LIKE ?
+            )", ["%$search%"]);
         });
     });
 }
