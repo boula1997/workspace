@@ -999,13 +999,12 @@ public function finishedTasks(Request $request)
                             $search = $request->query('search');
                             $perPage = $request->query('per_page', 20);
 
-                            $query = Task::latest()->where("status",1)->with('project') // load project title
+                            $query = Task::latest()->with('project') // load project title
                                         ->withoutGlobalScopes();
 
                             // 🔍 Apply search on both task title + project title
                             if ($search) {
-                                $keyword=$search=="finished"?1:($search=="live"?0:$search);
-                                dd($keyword);
+                                $keyword=$search=="Finished"?1:($search=="Live"?0:$search);
                                 $query->where(function($q) use ($search,$keyword) {
                                     $q->where('title', 'LIKE', "%{$search}%") // task title
                                     ->orWhereHas('project', function($p) use ($search) {
