@@ -974,10 +974,10 @@ public function finishedTasks(Request $request)
                             $query = Fee::withoutGlobalScopes()->latest();
                             if ($search) {
                                 $query->where(function($q) use ($search) {
-                                    $q->where('amount', 'LIKE', "%{$search}%") // task title
+                                    $q->where('amount', $search) // task title
                                     ->orWhereHas('project', function($p) use ($search) {
                                         $p->where('title', 'LIKE', "%{$search}%"); // project title
-                                    })->orWhere("note",$search);
+                                    })->orWhere("note", 'LIKE', "%{$search}%");
                                 });
                             }
                             $items = $query->paginate($perPage);
