@@ -227,13 +227,23 @@ class TaskController extends Controller
                     $q->orWhereHas('project', function($qp) use ($search) {
                         $qp->where('title', 'like', "%$search%");
                     });
+
+                    // Search by employees JSON column
+                    $q->orWhere(function($qe) use ($search) {
+                        $qe->whereRaw("EXISTS (
+                            SELECT 1
+                            FROM admins
+                            WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
+                            AND admins.name LIKE ?
+                        )", ["%$search%"]);
+                    });
                 });
             }
 
       // Paginate tasks 
         $tasks = $tasksQuery->paginate(10);
 
-            $tablePprojects = Project::where("status", "!=", 0)->orWhere("deal", 0)->orderBy("title", "asc")->get();
+
 
 
                 $data = [
