@@ -152,7 +152,7 @@ if ($request->has('search') && $request->search != '') {
 }
 
     // Paginate tasks 
-    $tasks = $tasksQuery->paginate(20);
+    $tasks = $tasksQuery->paginate(10);
 
         $credentials = DBCredential::get();
         $tablePprojects = Project::where("status", "!=", 0)->orWhere("deal", 0)->orderBy("title", "asc")->get();
