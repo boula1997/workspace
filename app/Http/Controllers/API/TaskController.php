@@ -764,25 +764,22 @@ public function finishedTasks(Request $request)
                     return response()->json(['error' => 'Category not found'], 404);
                 }
 
-                // Helper to apply search on title
-                $applySearch = function ($query, $column = 'title') use ($search) {
-                    if ($search) {
-                        $query->where($column, 'like', "%{$search}%");
-                    }
-                };
+
 
                 switch ($category->title) {
 
                     case "projects":
                         $query = Project::latest()->withoutGlobalScopes();
-                        $applySearch($query, 'title');
+                        if ($search) {
+                            $query->where("title", 'like', "%{$search}%")->orWhere("type",$search);
+                        }
                         $items = $query->paginate($perPage);
 
                         $items->getCollection()->transform(function ($item) {
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => 'admin',
+                                    'extra'  => $item->type,
                                 ];
                             });
 
@@ -792,14 +789,16 @@ public function finishedTasks(Request $request)
                         if (!boula()) break;
 
                         $query = Note::latest()->withoutGlobalScopes()->where("isOverthinking", 0);
-                        $applySearch($query, 'title');
+                        if ($search) {
+                            $query->where("title", 'like', "%{$search}%");
+                        }
                         $items = $query->paginate($perPage);
 
                         $items->getCollection()->transform(function ($item) {
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => 'admin',
+                                    'extra'  => 'notes',
                                 ];
                             });
 
@@ -807,7 +806,9 @@ public function finishedTasks(Request $request)
 
                         case "admins":
                             $query = Admin::latest()->withoutGlobalScopes()->orderBy('name', 'ASC');
-                            $applySearch($query, 'name');
+                            if ($search) {
+                                $query->where("name", 'like', "%{$search}%")->orWhere("type",$search);
+                            }
                             $items = $query->paginate($perPage);
 
                             // تحويل الـ paginator عشان يضيف title
@@ -815,7 +816,7 @@ public function finishedTasks(Request $request)
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->name, // ⬅ عنوان الـ admin
-                                    'extra'  => 'admin',
+                                    'extra'  => $item->type,
                                 ];
                             });
 
@@ -824,14 +825,16 @@ public function finishedTasks(Request $request)
 
                     case "navigations":
                         $query = Navigation::latest()->withoutGlobalScopes()->orderBy('title', 'ASC');
-                        $applySearch($query, 'title');
+                        if ($search) {
+                            $query->where("title", 'like', "%{$search}%");
+                        }
                         $items = $query->paginate($perPage);
 
                         $items->getCollection()->transform(function ($item) {
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => 'admin',
+                                    'extra'  => 'navigations',
                                 ];
                             });
 
@@ -840,9 +843,9 @@ public function finishedTasks(Request $request)
                         case "categories":
                             $query = Category::latest()->withoutGlobalScopes();
 
-                            if ($search) {
-                                $query->whereTranslationLike('title', "%{$search}%");
-                            }
+                        if ($search) {
+                            $query->where("title", 'like', "%{$search}%")->orWhere("type",$search);
+                        }
 
                             $items = $query->paginate($perPage);
 
@@ -850,7 +853,7 @@ public function finishedTasks(Request $request)
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => 'admin',
+                                    'extra'  => $item->type,
                                 ];
                             });
 
@@ -861,7 +864,9 @@ public function finishedTasks(Request $request)
                                 if (!boula()) break;
 
                                 $query = Role::latest()->withoutGlobalScopes();
-                                $applySearch($query, 'name');
+                                if ($search) {
+                                    $query->where("name", 'like', "%{$search}%");
+                                }
                                 $items = $query->paginate($perPage);
 
                                 // تحويل الـ paginator عشان يضيف title
@@ -869,7 +874,7 @@ public function finishedTasks(Request $request)
                                     return [
                                         'id'    => $item->id,
                                         'title' => $item->name, // ⬅ هنا عنوان الـ role
-                                        'type'  => 'role',
+                                        'type'  => 'roles',
                                     ];
                                 });
 
@@ -878,7 +883,9 @@ public function finishedTasks(Request $request)
 
                         case "d_b_credentials":
                             $query = DBCredential::latest()->withoutGlobalScopes();
-                            $applySearch($query, 'db_name');
+                            if ($search) {
+                            $query->where("db_name", 'like', "%{$search}%")->orWhere("type",$search);
+                             }
                             $items = $query->paginate($perPage);
 
                             // ✨ هنا التحويل
@@ -886,7 +893,7 @@ public function finishedTasks(Request $request)
                                 return [
                                     'id'        => $item->id,
                                     'title'     => $item->db_name, // ⬅ عنوان الـ item
-                                    'extra'      => 'd_b_credentials',
+                                    'extra'      => $item->db_username.", ".$item->db_password,
                                 ];
                             });
 
@@ -897,14 +904,16 @@ public function finishedTasks(Request $request)
                         if (!boula()) break;
 
                         $query = Issue::latest()->withoutGlobalScopes();
-                        $applySearch($query, 'title');
+                            if ($search) {
+                            $query->where("title", 'like', "%{$search}%")->orWhere("type",$search);
+                        }
                         $items = $query->paginate($perPage);
 
                             $items->getCollection()->transform(function ($item) {
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => 'admin',
+                                    'extra'  => 'issues',
                                 ];
                             });
 
@@ -912,14 +921,16 @@ public function finishedTasks(Request $request)
 
                     case "portfolios":
                         $query = Gallery::latest()->withoutGlobalScopes();
-                        $applySearch($query, 'title');
+                            if ($search) {
+                            $query->where("title", 'like', "%{$search}%")->orWhere("type",$search);
+                             }
                         $items = $query->paginate($perPage);
 
                         $items->getCollection()->transform(function ($item) {
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => 'admin',
+                                    'extra'  => 'portfolios',
                                 ];
                             });
 
@@ -927,7 +938,9 @@ public function finishedTasks(Request $request)
 
                     case "videos":
                         $query = Video::latest()->withoutGlobalScopes();
-                        $applySearch($query, 'title');
+                            if ($search) {
+                            $query->where("title", 'like', "%{$search}%")->orWhere("type",$search);
+                             }
                         $items = $query->paginate($perPage);
 
                         $items->getCollection()->transform(function ($item) {
@@ -941,14 +954,17 @@ public function finishedTasks(Request $request)
                         break;
                     case "deadlines":
                         $query = Deadline::where("status",1)->latest()->withoutGlobalScopes();
-                        $applySearch($query, 'title');
+                            if ($search) {
+                                $keyword=$search=="finished"?1:($search=="live"?0:$search);
+                                $query->where("title", 'like', "%{$search}%")->orWhere("status",$keyword);
+                             }
                         $items = $query->paginate($perPage);
 
                         $items->getCollection()->transform(function ($item) {
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => 'admin',
+                                    'extra'  => $item->status==0?"finished":"live",
                                 ];
                             });
 
@@ -956,7 +972,14 @@ public function finishedTasks(Request $request)
 
                         case "fees":
                             $query = Fee::withoutGlobalScopes()->latest();
-                            $applySearch($query, 'amount');
+                            if ($search) {
+                                $query->where(function($q) use ($search) {
+                                    $q->where('title', 'LIKE', "%{$search}%") // task title
+                                    ->orWhereHas('project', function($p) use ($search) {
+                                        $p->where('title', 'LIKE', "%{$search}%"); // project title
+                                    })->orWhere("note",$search);
+                                });
+                            }
                             $items = $query->paginate($perPage);
 
                             // إضافة title لكل عنصر
@@ -964,7 +987,7 @@ public function finishedTasks(Request $request)
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->amount . " EGP", // ⬅ عنوان الـ fee
-                                    'extra'  => 'fee',
+                                    'extra'  => $item->note, $item->project->title,
                                 ];
                             });
 
@@ -981,12 +1004,14 @@ public function finishedTasks(Request $request)
 
                             // 🔍 Apply search on both task title + project title
                             if ($search) {
+                                $keyword=$search=="finished"?1:($search=="live"?0:$search);
+
                                 $query->where(function($q) use ($search) {
                                     $q->where('title', 'LIKE', "%{$search}%") // task title
                                     ->orWhereHas('project', function($p) use ($search) {
                                         $p->where('title', 'LIKE', "%{$search}%"); // project title
                                     });
-                                });
+                                })->orWhere("status",$keyword);
                             }
 
                             $items = $query->paginate($perPage);
@@ -995,7 +1020,7 @@ public function finishedTasks(Request $request)
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => 'admin',
+                                    'extra'  => $item->project->title,$item->status==0?"live":"finished",
                                 ];
                             });
 
