@@ -206,6 +206,50 @@ class TaskController extends Controller
 
             return successResponse($data);
     }
+    public function tasks(Request $request)
+    {
+
+            $tasksQuery = Task::where("status", 0)
+                ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
+                ->latest('updated_at')            // Then by latest update
+                // Limit to 300 tasks
+                ;
+
+            // Apply search filter if present
+            if ($request->has('search') && $request->search != '') {
+                $search = $request->search;
+
+                $tasksQuery->where(function($q) use ($search) {
+                    // Search by title
+                    $q->where('title', 'like', "%$search%");
+
+                    // Search by project title
+                    $q->orWhereHas('project', function($qp) use ($search) {
+                        $qp->where('title', 'like', "%$search%");
+                    });
+                });
+            }
+
+    // Paginate tasks 
+        $tasks = $tasksQuery->paginate(10);
+
+            $tablePprojects = Project::where("status", "!=", 0)->orWhere("deal", 0)->orderBy("title", "asc")->get();
+
+
+                $data = [
+
+                "tasks" => TaskResource::collection($tasks),
+                "tasks_meta" => [
+                    "current_page" => $tasks->currentPage(),
+                    "last_page" => $tasks->lastPage(),
+                    "per_page" => $tasks->perPage(),
+                    "total" => $tasks->total(),
+                ],
+
+                ];
+
+            return successResponse($data);
+    }
     public function stats($date = null)
     {
 
