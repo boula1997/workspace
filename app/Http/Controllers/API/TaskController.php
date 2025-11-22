@@ -1005,7 +1005,7 @@ public function finishedTasks(Request $request)
                             // 🔍 Apply search on both task title + project title
                             if ($search) {
                                 $keyword=$search=="finished"?1:($search=="live"?0:$search);
-
+                                dd($keyword);
                                 $query->where(function($q) use ($search,$keyword) {
                                     $q->where('title', 'LIKE', "%{$search}%") // task title
                                     ->orWhereHas('project', function($p) use ($search) {
