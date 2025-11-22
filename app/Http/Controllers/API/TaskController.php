@@ -953,9 +953,9 @@ public function finishedTasks(Request $request)
 
                         break;
                     case "deadlines":
-                        $query = Deadline::where("status",1)->latest()->withoutGlobalScopes();
+                        $query = Deadline::latest()->withoutGlobalScopes();
                             if ($search) {
-                                $keyword=$search=="finished"?1:($search=="live"?0:$search);
+                                $keyword=$search=="Finished"?1:($search=="Live"?0:$search);
                                 $query->where("title", 'like', "%{$search}%")->orWhere("status",$keyword);
                              }
                         $items = $query->paginate($perPage);
