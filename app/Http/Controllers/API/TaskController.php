@@ -987,7 +987,7 @@ public function finishedTasks(Request $request)
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->amount . " EGP", // ⬅ عنوان الـ fee
-                                    'extra'  => $item->note.", ".optional($item->project)->title,
+                                    'extra'  => isset($item->note)?$item->note:"Non note".", ".optional($item->project)->title,
                                 ];
                             });
 
