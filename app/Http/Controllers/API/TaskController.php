@@ -415,14 +415,26 @@ public function createFinished(Request $request)
     }
 
     // Apply search filter if present
-    if ($request->has('search') && $request->search != '') {
-        $search = $request->search;
-        $tasksQuery->where(function($q) use ($search) {
-            $q->where('title', 'like', "%$search%")
-              ->orWhere('employee', 'like', "%$search%")
-              ->orWhere('project', 'like', "%$search%");
+if ($request->has('search') && $request->search != '') {
+    $search = $request->search;
+
+    $tasksQuery->where(function($q) use ($search) {
+
+        // Search by title
+        $q->where('title', 'like', "%$search%");
+
+        // Search by project title
+        $q->orWhereHas('project', function($qp) use ($search) {
+            $qp->where('title', 'like', "%$search%");
         });
-    }
+
+        // Search by employees (JSON)
+        $q->orWhereHas('employeeRelation', function($qe) use ($search) {
+            $qe->where('name', 'like', "%$search%");
+        });
+    });
+}
+
 
     // Paginate tasks
     $tasks = $tasksQuery->paginate(20);
