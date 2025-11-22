@@ -50,4 +50,10 @@ class Task extends \App\Models\BaseModel
     // }
     
 
+        // Relation to employees (JSON IDs)
+    public function employeeRelation() {
+        return $this->belongsToMany(Admin::class, null, 'id', 'id') // dummy pivot
+            ->whereIn('admins.id', $this->employees ?? []);
+    }
+
 }
