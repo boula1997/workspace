@@ -964,7 +964,7 @@ public function finishedTasks(Request $request)
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => $item->status==0?"Finished":"Live",
+                                    'extra'  => $item->status==1?"Finished":"Live",
                                 ];
                             });
 
