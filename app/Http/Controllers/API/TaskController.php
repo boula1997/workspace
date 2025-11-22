@@ -127,94 +127,84 @@ class TaskController extends Controller
         }
 
             // Apply search filter if present
-if ($request->has('search') && $request->search != '') {
-    $search = $request->search;
+            if ($request->has('search') && $request->search != '') {
+                $search = $request->search;
 
-    $tasksQuery->where(function($q) use ($search) {
-        // Search by title
-        $q->where('title', 'like', "%$search%");
+                $tasksQuery->where(function($q) use ($search) {
+                    // Search by title
+                    $q->where('title', 'like', "%$search%");
 
-        // Search by project title
-        $q->orWhereHas('project', function($qp) use ($search) {
-            $qp->where('title', 'like', "%$search%");
-        });
-
-        // Search by employees JSON column
-        $q->orWhere(function($qe) use ($search) {
-            $qe->whereRaw("EXISTS (
-                SELECT 1
-                FROM admins
-                WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
-                AND admins.name LIKE ?
-            )", ["%$search%"]);
-        });
-    });
-}
+                    // Search by project title
+                    $q->orWhereHas('project', function($qp) use ($search) {
+                        $qp->where('title', 'like', "%$search%");
+                    });
+                });
+            }
 
     // Paginate tasks 
-    $tasks = $tasksQuery->paginate(10);
+        $tasks = $tasksQuery->paginate(10);
 
-        $credentials = DBCredential::get();
-        $tablePprojects = Project::where("status", "!=", 0)->orWhere("deal", 0)->orderBy("title", "asc")->get();
-        if (boula())
-            $data = [
-                "queries" => $queries,
-                "projects" => ProjectResource::collection($projects),
-                "infoProjects" => ProjectResource::collection($infoProjects),
-                "boardProjects" => ProjectResource::collection(
-                    Project::orderBy("deadline", "asc")
-                        ->get()
-                        ->filter(fn($project) => $project->status == 1)
-                ),
-                "tablePprojects" => ProjectResource::collection($tablePprojects),
-                "refrences" => IssueResource::collection($issues),
-                "employees" => $employees,
-                "clients" => $clients,
-                "prospectives" => $prospectives,
-                "credentials" => $credentials,
-                        "tasks" => TaskResource::collection($tasks),
-                        "tasks_meta" => [
-                            "current_page" => $tasks->currentPage(),
-                            "last_page" => $tasks->lastPage(),
-                            "per_page" => $tasks->perPage(),
-                            "total" => $tasks->total(),
-                        ],
-                "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
-                "isExpired" => isExpired()[0],
-                "headings" => [
-                    "allowedIn" => date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
-                    "deadlineAction" => activeDeadline()["action"],
-                    "deadlineDate" => activeDeadline()["deadline"],
-                ]
+            $credentials = DBCredential::get();
+            $tablePprojects = Project::where("status", "!=", 0)->orWhere("deal", 0)->orderBy("title", "asc")->get();
+            if (boula())
+                $data = [
+                    "queries" => $queries,
+                    "projects" => ProjectResource::collection($projects),
+                    "infoProjects" => ProjectResource::collection($infoProjects),
+                    "boardProjects" => ProjectResource::collection(
+                        Project::orderBy("deadline", "asc")
+                            ->get()
+                            ->filter(fn($project) => $project->status == 1)
+                    ),
+                    "tablePprojects" => ProjectResource::collection($tablePprojects),
+                    "refrences" => IssueResource::collection($issues),
+                    "employees" => $employees,
+                    "clients" => $clients,
+                    "prospectives" => $prospectives,
+                    "credentials" => $credentials,
+                            "tasks" => TaskResource::collection($tasks),
+                            "tasks_meta" => [
+                                "current_page" => $tasks->currentPage(),
+                                "last_page" => $tasks->lastPage(),
+                                "per_page" => $tasks->perPage(),
+                                "total" => $tasks->total(),
+                            ],
+                    "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
+                    "isExpired" => isExpired()[0],
+                    "headings" => [
+                        "allowedIn" => date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
+                        "deadlineAction" => activeDeadline()["action"],
+                        "deadlineDate" => activeDeadline()["deadline"],
+                    ]
 
-            ];
+                ];
 
-        else
-            $data = [
-                "projects" => ProjectResource::collection($projects),
-                "infoProjects" => ProjectResource::collection($infoProjects),
-                "boardProjects" => ProjectResource::collection(
-                    Project::orderBy("deadline", "asc")
-                        ->get()
-                        ->filter(fn($project) => $project->status == 1)
-                ),
-                "credentials" => $credentials,
-                "employees" => $employees,
-                "clients" => $clients,
-                "prospectives" => $prospectives,
-                                        "tasks" => TaskResource::collection($tasks),
-                        "tasks_meta" => [
-                            "current_page" => $tasks->currentPage(),
-                            "last_page" => $tasks->lastPage(),
-                            "per_page" => $tasks->perPage(),
-                            "total" => $tasks->total(),
-                        ],
-                "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
-                "tablePprojects" => ProjectResource::collection($tablePprojects),
+            else
+                $data = [
+                    "projects" => ProjectResource::collection($projects),
+                    "infoProjects" => ProjectResource::collection($infoProjects),
+                    "boardProjects" => ProjectResource::collection(
+                        Project::orderBy("deadline", "asc")
+                            ->get()
+                            ->filter(fn($project) => $project->status == 1)
+                    ),
+                    "credentials" => $credentials,
+                    "employees" => $employees,
+                    "clients" => $clients,
+                    "prospectives" => $prospectives,
+                                            "tasks" => TaskResource::collection($tasks),
+                            "tasks_meta" => [
+                                "current_page" => $tasks->currentPage(),
+                                "last_page" => $tasks->lastPage(),
+                                "per_page" => $tasks->perPage(),
+                                "total" => $tasks->total(),
+                            ],
+                    "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
+                    "tablePprojects" => ProjectResource::collection($tablePprojects),
 
-            ];
+                ];
 
-        return successResponse($data);
+            return successResponse($data);
     }
     public function stats($date = null)
     {
