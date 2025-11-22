@@ -381,67 +381,73 @@ class TaskController extends Controller
 
 
 
-    public function createFinished()
-    {
+public function createFinished(Request $request)
+{
+    $employees = Admin::where("isActive", 1)
+        ->where("type", "!=", "client")
+        ->select('admins.*')
+        ->selectRaw("
+            (
+                SELECT COUNT(*)
+                FROM tasks
+                WHERE tasks.status = 1
+                AND JSON_CONTAINS(tasks.employees, JSON_QUOTE(CAST(admins.id AS CHAR)))
+            ) as pending_tasks_count
+        ")
+        ->orderBy('name', 'ASC')
+        ->get();
 
-        $employees = Admin::where("isActive", 1)
-            ->where("type", "!=", "client")
-            ->select('admins.*')
-            ->selectRaw("
-                (
-                    SELECT COUNT(*)
-                    FROM tasks
-                    WHERE tasks.status = 1
-                    AND JSON_CONTAINS(tasks.employees, JSON_QUOTE(CAST(admins.id AS CHAR)))
-                ) as pending_tasks_count
-            ")
-            ->orderBy('name', 'ASC')
-            ->get();
+    $clients = Admin::where("isActive", 1)
+        ->where("type", "client")
+        ->orderBy('name', 'ASC')
+        ->get();
 
+    $projects = Project::orderBy("title", "asc")->get();
 
-        $clients = Admin::where("isActive", 1)->where("type", "client")->orderBy('name', 'ASC')->get();
-
-
-        $projects = Project::orderBy("title", "asc")
-            ->get();
-
-
-
-        if (!isWithinWorkingHours())
-            $tasks = Task::where("status", 1)
-                ->where("isOverthinking", 0)
-                ->latest('updated_at') // Then by latest updated time
-                // Limit to 300 tasks
-                ->paginate(20);   // Remove duplicate tasks by title
-        else
-            $tasks = Task::where("status", 1)
-                ->latest('updated_at') // Then by latest updated time
-                // Limit to 300 tasks
-                ->paginate(20);
-
-
-        $data = [
-            "projects" => ProjectResource::collection($projects),
-            "employees" => $employees,
-            "clients" => $clients,
-            "tasks" => TaskResource::collection($tasks),
-            "tasks_meta" => [
-                "current_page" => $tasks->currentPage(),
-                "last_page" => $tasks->lastPage(),
-                "per_page" => $tasks->perPage(),
-                "total" => $tasks->total(),
-            ],
-            "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
-            "allowedIn" => date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
-            "deadlineAction" => activeDeadline()["action"],
-            "deadlineDate" => activeDeadline()["deadline"],
-            "isExpired" => isExpired()[0],
-
-
-        ];
-
-        return successResponse($data);
+    // Base query for tasks
+    if (!isWithinWorkingHours()) {
+        $tasksQuery = Task::where("status", 1)
+            ->where("isOverthinking", 0)
+            ->latest('updated_at');
+    } else {
+        $tasksQuery = Task::where("status", 1)
+            ->latest('updated_at');
     }
+
+    // Apply search filter if present
+    if ($request->has('search') && $request->search != '') {
+        $search = $request->search;
+        $tasksQuery->where(function($q) use ($search) {
+            $q->where('title', 'like', "%$search%")
+              ->orWhere('employee', 'like', "%$search%")
+              ->orWhere('project', 'like', "%$search%");
+        });
+    }
+
+    // Paginate tasks
+    $tasks = $tasksQuery->paginate(20);
+
+    $data = [
+        "projects" => ProjectResource::collection($projects),
+        "employees" => $employees,
+        "clients" => $clients,
+        "tasks" => TaskResource::collection($tasks),
+        "tasks_meta" => [
+            "current_page" => $tasks->currentPage(),
+            "last_page" => $tasks->lastPage(),
+            "per_page" => $tasks->perPage(),
+            "total" => $tasks->total(),
+        ],
+        "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
+        "allowedIn" => date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
+        "deadlineAction" => activeDeadline()["action"],
+        "deadlineDate" => activeDeadline()["deadline"],
+        "isExpired" => isExpired()[0],
+    ];
+
+    return successResponse($data);
+}
+
 
 
     public function store(TaskRequest $request)
