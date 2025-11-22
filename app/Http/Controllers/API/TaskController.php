@@ -230,7 +230,7 @@ class TaskController extends Controller
                 });
             }
 
-    // Paginate tasks 
+      // Paginate tasks 
         $tasks = $tasksQuery->paginate(10);
 
             $tablePprojects = Project::where("status", "!=", 0)->orWhere("deal", 0)->orderBy("title", "asc")->get();
@@ -471,10 +471,7 @@ public function createFinished(Request $request)
         ->orderBy('name', 'ASC')
         ->get();
 
-    $clients = Admin::where("isActive", 1)
-        ->where("type", "client")
-        ->orderBy('name', 'ASC')
-        ->get();
+
 
     $projects = Project::orderBy("title", "asc")->get();
 
@@ -520,7 +517,6 @@ if ($request->has('search') && $request->search != '') {
     $data = [
         "projects" => ProjectResource::collection($projects),
         "employees" => $employees,
-        "clients" => $clients,
         "tasks" => TaskResource::collection($tasks),
         "tasks_meta" => [
             "current_page" => $tasks->currentPage(),
@@ -533,6 +529,53 @@ if ($request->has('search') && $request->search != '') {
         "deadlineAction" => activeDeadline()["action"],
         "deadlineDate" => activeDeadline()["deadline"],
         "isExpired" => isExpired()[0],
+    ];
+
+    return successResponse($data);
+}
+public function finishedTasks(Request $request)
+{
+
+    $tasksQuery = Task::where("status", 1)
+        ->latest('updated_at');
+
+    // Apply search filter if present
+    if ($request->has('search') && $request->search != '') {
+        $search = $request->search;
+
+        $tasksQuery->where(function($q) use ($search) {
+            // Search by title
+            $q->where('title', 'like', "%$search%");
+
+            // Search by project title
+            $q->orWhereHas('project', function($qp) use ($search) {
+                $qp->where('title', 'like', "%$search%");
+            });
+
+            // Search by employees JSON column
+            $q->orWhere(function($qe) use ($search) {
+                $qe->whereRaw("EXISTS (
+                    SELECT 1
+                    FROM admins
+                    WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
+                    AND admins.name LIKE ?
+                )", ["%$search%"]);
+            });
+        });
+    }
+
+
+    // Paginate tasks 
+    $tasks = $tasksQuery->paginate(20);
+
+    $data = [
+        "tasks" => TaskResource::collection($tasks),
+        "tasks_meta" => [
+            "current_page" => $tasks->currentPage(),
+            "last_page" => $tasks->lastPage(),
+            "per_page" => $tasks->perPage(),
+            "total" => $tasks->total(),
+        ],
     ];
 
     return successResponse($data);
