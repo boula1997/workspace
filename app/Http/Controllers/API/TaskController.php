@@ -65,7 +65,7 @@ class TaskController extends Controller
     }
 
 
-    public function create()
+    public function create(Request $request)
     {
         $employees = Admin::where("isActive", 1)
             ->where("type", "!=", "client")->where("type", "!=", "prospective")
@@ -105,26 +105,54 @@ class TaskController extends Controller
         $queries = Query::latest("updated_at")->get();
 
         if (!isWithinWorkingHours()) {
-            $tasks = Task::where("status", 0)
+            $tasksQuery = Task::where("status", 0)
                 ->where("isOverthinking", 0)
                 ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
                 ->latest('updated_at')            // Then by latest update
                 // Limit to 300 tasks
-                ->get();
+                ;
             $issues = Issue::where("isOverthinking", 0)->orderBy("title", "asc")->get();
 
             $infoProjects = Project::where("isOverthinking", 0)->orderBy("title", "asc")->get(); // ✅ sort
 
         } else {
-            $tasks = Task::where("status", 0)
+            $tasksQuery = Task::where("status", 0)
                 ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
                 ->latest('updated_at')            // Then by latest update
                 // Limit to 300 tasks
-                ->get();
+                ;
             $infoProjects = Project::orderBy("title", "asc")
                 ->get();
             $issues = Issue::orderBy("title", "asc")->get();
         }
+
+            // Apply search filter if present
+if ($request->has('search') && $request->search != '') {
+    $search = $request->search;
+
+    $tasksQuery->where(function($q) use ($search) {
+        // Search by title
+        $q->where('title', 'like', "%$search%");
+
+        // Search by project title
+        $q->orWhereHas('project', function($qp) use ($search) {
+            $qp->where('title', 'like', "%$search%");
+        });
+
+        // Search by employees JSON column
+        $q->orWhere(function($qe) use ($search) {
+            $qe->whereRaw("EXISTS (
+                SELECT 1
+                FROM admins
+                WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
+                AND admins.name LIKE ?
+            )", ["%$search%"]);
+        });
+    });
+}
+
+    // Paginate tasks 
+    $tasks = $tasksQuery->paginate(20);
 
         $credentials = DBCredential::get();
         $tablePprojects = Project::where("status", "!=", 0)->orWhere("deal", 0)->orderBy("title", "asc")->get();
@@ -144,7 +172,13 @@ class TaskController extends Controller
                 "clients" => $clients,
                 "prospectives" => $prospectives,
                 "credentials" => $credentials,
-                "tasks" => TaskResource::collection($tasks),
+                        "tasks" => TaskResource::collection($tasks),
+                        "tasks_meta" => [
+                            "current_page" => $tasks->currentPage(),
+                            "last_page" => $tasks->lastPage(),
+                            "per_page" => $tasks->perPage(),
+                            "total" => $tasks->total(),
+                        ],
                 "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
                 "isExpired" => isExpired()[0],
                 "headings" => [
@@ -168,7 +202,13 @@ class TaskController extends Controller
                 "employees" => $employees,
                 "clients" => $clients,
                 "prospectives" => $prospectives,
-                "tasks" => TaskResource::collection($tasks),
+                                        "tasks" => TaskResource::collection($tasks),
+                        "tasks_meta" => [
+                            "current_page" => $tasks->currentPage(),
+                            "last_page" => $tasks->lastPage(),
+                            "per_page" => $tasks->perPage(),
+                            "total" => $tasks->total(),
+                        ],
                 "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
                 "tablePprojects" => ProjectResource::collection($tablePprojects),
 
