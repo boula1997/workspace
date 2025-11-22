@@ -1042,28 +1042,21 @@ public function finishedTasks(Request $request)
         }
 
 
-public function deadlines()
-{
-    try {
-        $deadlines = Deadline::orderBy("date", "asc")->paginate(20);
+    public function deadlines()
+    {
+        try {
 
-        $data["deadlines"] = $deadlines->items();
-        $data["pagination"] = [
-            "current_page" => $deadlines->currentPage(),
-            "last_page" => $deadlines->lastPage(),
-            "next_page_url" => $deadlines->nextPageUrl(),
-            "prev_page_url" => $deadlines->previousPageUrl(),
-        ];
-
-        $data["isExpired"] = isExpired()[0];
-
-        return successResponse($data);
-
-    } catch (Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
+            $deadlines = Deadline::where("status",0)->latest()->orderBy("date", "asc")->get();
+            $data["deadlines"] = $deadlines;
+            $data["isExpired"] = isExpired()[0];
+            if (boula())
+                return successResponse($data);
+            else
+                return successResponse([]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
     }
-}
-
     public function bases()
     {
         try {
