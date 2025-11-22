@@ -1010,8 +1010,8 @@ public function finishedTasks(Request $request)
                                     $q->where('title', 'LIKE', "%{$search}%") // task title
                                     ->orWhereHas('project', function($p) use ($search) {
                                         $p->where('title', 'LIKE', "%{$search}%"); // project title
-                                    });
-                                })->orWhere("status",$keyword);
+                                    })->orWhere("status",$keyword);
+                                });
                             }
 
                             $items = $query->paginate($perPage);
