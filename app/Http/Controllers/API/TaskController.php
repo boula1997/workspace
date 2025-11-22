@@ -144,7 +144,13 @@ class TaskController extends Controller
                 "clients" => $clients,
                 "prospectives" => $prospectives,
                 "credentials" => $credentials,
-                "tasks" => TaskResource::collection($tasks),
+                        "tasks" => TaskResource::collection($tasks),
+        "tasks_meta" => [
+            "current_page" => $tasks->currentPage(),
+            "last_page" => $tasks->lastPage(),
+            "per_page" => $tasks->perPage(),
+            "total" => $tasks->total(),
+        ],
                 "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
                 "isExpired" => isExpired()[0],
                 "headings" => [
@@ -440,7 +446,7 @@ if ($request->has('search') && $request->search != '') {
 }
 
 
-    // Paginate tasks
+    // Paginate tasks 
     $tasks = $tasksQuery->paginate(20);
 
     $data = [
