@@ -1020,7 +1020,7 @@ public function finishedTasks(Request $request)
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => $item->project->title,$item->status==0?"live":"finished",
+                                    'extra'  => $item->project->title.", ".$item->status==0?"live":"finished",
                                 ];
                             });
 
