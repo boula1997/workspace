@@ -412,19 +412,27 @@ class TaskController extends Controller
                 ->where("isOverthinking", 0)
                 ->latest('updated_at') // Then by latest updated time
                 // Limit to 300 tasks
-                ->get();     // Remove duplicate tasks by title
+                ->paginate(20);   // Remove duplicate tasks by title
         else
             $tasks = Task::where("status", 1)
                 ->latest('updated_at') // Then by latest updated time
                 // Limit to 300 tasks
-                ->get();
+                ->paginate(20);
 
 
         $data = [
             "projects" => ProjectResource::collection($projects),
             "employees" => $employees,
             "clients" => $clients,
-            "tasks" => TaskResource::collection($tasks),
+            "tasks" => TaskResource::collection($tasks)
+            ->additional([
+                'meta' => [
+                    'current_page' => $tasks->currentPage(),
+                    'last_page' => $tasks->lastPage(),
+                    'per_page' => $tasks->perPage(),
+                    'total' => $tasks->total(),
+                ]
+                ]),
             "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
             "allowedIn" => date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
             "deadlineAction" => activeDeadline()["action"],
