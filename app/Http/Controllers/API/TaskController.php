@@ -874,7 +874,7 @@ public function finishedTasks(Request $request)
                                     return [
                                         'id'    => $item->id,
                                         'title' => $item->name, // ⬅ هنا عنوان الـ role
-                                        'type'  => 'roles',
+                                        'extra'  => 'roles',
                                     ];
                                 });
 
