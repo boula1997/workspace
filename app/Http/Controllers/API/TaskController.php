@@ -956,7 +956,6 @@ public function finishedTasks(Request $request)
                         $query = Deadline::latest()->withoutGlobalScopes();
                             if ($search) {
                                 $keyword=$search=="Finished"?1:($search=="Live"?0:$search);
-                                dd($keyword);
                                 $query->where("title", 'like', "%{$search}%")->orWhere("status",$keyword);
                              }
                         $items = $query->paginate($perPage);
@@ -965,7 +964,7 @@ public function finishedTasks(Request $request)
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => $item->status==0?"finished":"live",
+                                    'extra'  => $item->status==0?"Finished":"Live",
                                 ];
                             });
 
