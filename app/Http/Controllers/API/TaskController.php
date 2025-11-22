@@ -778,6 +778,14 @@ public function finishedTasks(Request $request)
                         $applySearch($query, 'title');
                         $items = $query->paginate($perPage);
 
+                        $items->getCollection()->transform(function ($item) {
+                                return [
+                                    'id'    => $item->id,
+                                    'title' => $item->title, // ⬅ عنوان الـ admin
+                                    'extra'  => 'admin',
+                                ];
+                            });
+
                         break;
 
                     case "notes":
@@ -786,6 +794,14 @@ public function finishedTasks(Request $request)
                         $query = Note::latest()->withoutGlobalScopes()->where("isOverthinking", 0);
                         $applySearch($query, 'title');
                         $items = $query->paginate($perPage);
+
+                        $items->getCollection()->transform(function ($item) {
+                                return [
+                                    'id'    => $item->id,
+                                    'title' => $item->title, // ⬅ عنوان الـ admin
+                                    'extra'  => 'admin',
+                                ];
+                            });
 
                         break;
 
@@ -799,8 +815,7 @@ public function finishedTasks(Request $request)
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->name, // ⬅ عنوان الـ admin
-                                    'link'  => url("module/admins/edit/{$item->id}"),
-                                    'type'  => 'admin',
+                                    'extra'  => 'admin',
                                 ];
                             });
 
@@ -812,6 +827,14 @@ public function finishedTasks(Request $request)
                         $applySearch($query, 'title');
                         $items = $query->paginate($perPage);
 
+                        $items->getCollection()->transform(function ($item) {
+                                return [
+                                    'id'    => $item->id,
+                                    'title' => $item->title, // ⬅ عنوان الـ admin
+                                    'extra'  => 'admin',
+                                ];
+                            });
+
                         break;
 
                         case "categories":
@@ -822,6 +845,14 @@ public function finishedTasks(Request $request)
                             }
 
                             $items = $query->paginate($perPage);
+
+                            $items->getCollection()->transform(function ($item) {
+                                return [
+                                    'id'    => $item->id,
+                                    'title' => $item->title, // ⬅ عنوان الـ admin
+                                    'extra'  => 'admin',
+                                ];
+                            });
 
                             break;
 
@@ -838,7 +869,6 @@ public function finishedTasks(Request $request)
                                     return [
                                         'id'    => $item->id,
                                         'title' => $item->name, // ⬅ هنا عنوان الـ role
-                                        'link'  => url("module/roles/edit/{$item->id}"),
                                         'type'  => 'role',
                                     ];
                                 });
@@ -856,11 +886,7 @@ public function finishedTasks(Request $request)
                                 return [
                                     'id'        => $item->id,
                                     'title'     => $item->db_name, // ⬅ عنوان الـ item
-                                    'username'  => $item->db_username,
-                                    'host'      => $item->db_host,
-                                    'isActive'  => $item->isActive,
-                                    'link'      => url("module/d_b_credentials/edit/{$item->id}"),
-                                    'type'      => 'd_b_credentials',
+                                    'extra'      => 'd_b_credentials',
                                 ];
                             });
 
@@ -874,12 +900,28 @@ public function finishedTasks(Request $request)
                         $applySearch($query, 'title');
                         $items = $query->paginate($perPage);
 
+                            $items->getCollection()->transform(function ($item) {
+                                return [
+                                    'id'    => $item->id,
+                                    'title' => $item->title, // ⬅ عنوان الـ admin
+                                    'extra'  => 'admin',
+                                ];
+                            });
+
                         break;
 
                     case "portfolios":
                         $query = Gallery::latest()->withoutGlobalScopes();
                         $applySearch($query, 'title');
                         $items = $query->paginate($perPage);
+
+                        $items->getCollection()->transform(function ($item) {
+                                return [
+                                    'id'    => $item->id,
+                                    'title' => $item->title, // ⬅ عنوان الـ admin
+                                    'extra'  => 'admin',
+                                ];
+                            });
 
                         break;
 
@@ -888,11 +930,27 @@ public function finishedTasks(Request $request)
                         $applySearch($query, 'title');
                         $items = $query->paginate($perPage);
 
+                        $items->getCollection()->transform(function ($item) {
+                                return [
+                                    'id'    => $item->id,
+                                    'title' => $item->title, // ⬅ عنوان الـ admin
+                                    'extra'  => 'admin',
+                                ];
+                            });
+
                         break;
                     case "deadlines":
                         $query = Deadline::where("status",1)->latest()->withoutGlobalScopes();
                         $applySearch($query, 'title');
                         $items = $query->paginate($perPage);
+
+                        $items->getCollection()->transform(function ($item) {
+                                return [
+                                    'id'    => $item->id,
+                                    'title' => $item->title, // ⬅ عنوان الـ admin
+                                    'extra'  => 'admin',
+                                ];
+                            });
 
                         break;
 
@@ -906,8 +964,7 @@ public function finishedTasks(Request $request)
                                 return [
                                     'id'    => $item->id,
                                     'title' => $item->amount . " EGP", // ⬅ عنوان الـ fee
-                                    'link'  => url("module/fees/edit/{$item->id}"),
-                                    'type'  => 'fee',
+                                    'extra'  => 'fee',
                                 ];
                             });
 
@@ -934,6 +991,14 @@ public function finishedTasks(Request $request)
 
                             $items = $query->paginate($perPage);
 
+                            $items->getCollection()->transform(function ($item) {
+                                return [
+                                    'id'    => $item->id,
+                                    'title' => $item->title, // ⬅ عنوان الـ admin
+                                    'extra'  => 'admin',
+                                ];
+                            });
+
 
                             break;
 
@@ -953,21 +1018,28 @@ public function finishedTasks(Request $request)
         }
 
 
-    public function deadlines()
-    {
-        try {
+public function deadlines()
+{
+    try {
+        $deadlines = Deadline::orderBy("date", "asc")->paginate(20);
 
-            $deadlines = Deadline::latest()->orderBy("date", "asc")->get();
-            $data["deadlines"] = $deadlines;
-            $data["isExpired"] = isExpired()[0];
-            if (boula())
-                return successResponse($data);
-            else
-                return successResponse([]);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
-        }
+        $data["deadlines"] = $deadlines->items();
+        $data["pagination"] = [
+            "current_page" => $deadlines->currentPage(),
+            "last_page" => $deadlines->lastPage(),
+            "next_page_url" => $deadlines->nextPageUrl(),
+            "prev_page_url" => $deadlines->previousPageUrl(),
+        ];
+
+        $data["isExpired"] = isExpired()[0];
+
+        return successResponse($data);
+
+    } catch (Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
     }
+}
+
     public function bases()
     {
         try {
