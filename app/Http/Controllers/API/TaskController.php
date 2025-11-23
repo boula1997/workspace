@@ -768,39 +768,39 @@ class TaskController extends Controller
 
             switch ($category->title) {
 
-case "projects":
-    $query = Project::latest()->withoutGlobalScopes();
+                case "projects":
+                    $query = Project::latest()->withoutGlobalScopes();
 
-    if ($search) {
-        // Split search by commas and trim whitespace
-        $keywords = array_filter(array_map('trim', explode(',', $search)));
+                    if ($search) {
+                        // Split search by commas and trim whitespace
+                        $keywords = array_filter(array_map('trim', explode(',', $search)));
 
-        $query->where(function ($outer) use ($keywords) {
-            foreach ($keywords as $word) {
-                $outer->orWhere(function ($q) use ($word) {
-                    // Title search (always)
-                    $q->where('title', 'LIKE', "%{$word}%");
+                        $query->where(function ($outer) use ($keywords) {
+                            foreach ($keywords as $word) {
+                                $outer->orWhere(function ($q) use ($word) {
+                                    // Title search (always)
+                                    $q->where('title', 'LIKE', "%{$word}%");
 
-                    // Cost search (only if numeric)
-                    if (is_numeric($word)) {
-                        $q->orWhere('cost', $word);
+                                    // Cost search (only if numeric)
+                                    if (is_numeric($word)) {
+                                        $q->orWhere('cost', $word);
+                                    }
+                                });
+                            }
+                        });
                     }
-                });
-            }
-        });
-    }
 
-    $items = $query->paginate($perPage);
+                    $items = $query->paginate($perPage);
 
-    $items->getCollection()->transform(function ($item) {
-        return [
-            'id'    => $item->id,
-            'title' => $item->title, 
-            'extra' => $item->cost . ", " . rest($item),
-        ];
-    });
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => $item->cost . ", " . rest($item),
+                        ];
+                    });
 
-    break;
+                    break;
 
 
 
@@ -1171,56 +1171,56 @@ case "projects":
 
 
 
-case "fees":
+                case "fees":
 
-    $query = Fee::withoutGlobalScopes()->latest();
+                    $query = Fee::withoutGlobalScopes()->latest();
 
-    if ($search) {
+                    if ($search) {
 
-        $search = trim($search);
+                        $search = trim($search);
 
-        // Special case: "-" → all negative amounts, "+" → all positive amounts
-        if ($search === '-') {
-            $query->where('amount', '<', 0);
-        } elseif ($search === '+') {
-            $query->where('amount', '>', 0);
-        } else {
-            // Split keywords: "200,logo,marketing"
-            $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-            $query->where(function ($outer) use ($keywords) {
-
-                foreach ($keywords as $word) {
-
-                    $outer->orWhere(function ($q) use ($word) {
-
-                        if (is_numeric($word)) {
-                            // Numeric search only on amount
-                            $q->where('amount', $word);
+                        // Special case: "-" → all negative amounts, "+" → all positive amounts
+                        if ($search === '-') {
+                            $query->where('amount', '<', 0);
+                        } elseif ($search === '+') {
+                            $query->where('amount', '>', 0);
                         } else {
-                            // Text search on note or project title
-                            $q->where('note', 'LIKE', "%{$word}%")
-                              ->orWhereHas('project', function ($p) use ($word) {
-                                  $p->where('title', 'LIKE', "%{$word}%");
-                              });
+                            // Split keywords: "200,logo,marketing"
+                            $keywords = array_filter(array_map('trim', explode(',', $search)));
+
+                            $query->where(function ($outer) use ($keywords) {
+
+                                foreach ($keywords as $word) {
+
+                                    $outer->orWhere(function ($q) use ($word) {
+
+                                        if (is_numeric($word)) {
+                                            // Numeric search only on amount
+                                            $q->where('amount', $word);
+                                        } else {
+                                            // Text search on note or project title
+                                            $q->where('note', 'LIKE', "%{$word}%")
+                                                ->orWhereHas('project', function ($p) use ($word) {
+                                                    $p->where('title', 'LIKE', "%{$word}%");
+                                                });
+                                        }
+                                    });
+                                }
+                            });
                         }
+                    }
+
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->amount . " EGP",
+                            'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title . ", " . $item->created_at,
+                        ];
                     });
-                }
-            });
-        }
-    }
 
-    $items = $query->paginate($perPage);
-
-    $items->getCollection()->transform(function ($item) {
-        return [
-            'id'    => $item->id,
-            'title' => $item->amount . " EGP",
-            'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title . ", " . $item->created_at,
-        ];
-    });
-
-    break;
+                    break;
 
 
 
