@@ -1173,9 +1173,11 @@ case "fees":
 
         $search = trim($search);
 
-        // Special case: just "-" → get all negative amounts
+        // Special case: "-" → all negative amounts, "+" → all positive amounts
         if ($search === '-') {
             $query->where('amount', '<', 0);
+        } elseif ($search === '+') {
+            $query->where('amount', '>', 0);
         } else {
             // Split keywords: "200,logo,marketing"
             $keywords = array_filter(array_map('trim', explode(',', $search)));
