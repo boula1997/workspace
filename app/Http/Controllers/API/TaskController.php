@@ -933,13 +933,19 @@ public function elements($id, Request $request)
                                 $p->where('title', 'LIKE', "%{$val}%");
                             });
                         }elseif ($key === 'admin_title') {
+                            // 1️⃣ Get all admin IDs that match the search term
                             $adminIds = Admin::where('name', 'LIKE', "%{$val}%")->pluck('id')->toArray();
 
-                            $sub->where(function($q) use ($adminIds) {
-                                $q->whereJsonContains('employees', $adminIds); // multiple employees
-                            });
+                            if (!empty($adminIds)) {
+                                // 2️⃣ Filter tasks whose JSON employees array contains any of the IDs
+                                $sub->where(function($q) use ($adminIds) {
+                                    foreach ($adminIds as $id) {
+                                        $q->orWhereJsonContains('employees', $id);
+                                    }
+                                });
+                            }
                         }
-                                                else {
+                        else {
                             $sub->where($key, 'LIKE', "%{$val}%");
                         }
                     });
