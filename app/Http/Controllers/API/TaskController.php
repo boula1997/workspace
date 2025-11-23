@@ -1066,7 +1066,7 @@ case "fees":
         return [
             'id'    => $item->id,
             'title' => $item->amount . " EGP",
-            'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title,
+            'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title.", ".$item->created_at,
         ];
     });
 
