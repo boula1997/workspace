@@ -771,7 +771,7 @@ class TaskController extends Controller
                 case "projects":
                     $query = Project::latest()->withoutGlobalScopes();
                     if ($search) {
-                        $query->where("title", 'like', "%{$search}%")->orWhere("type", $search);
+                        $query->where("title", 'like', "%{$search}%");
                     }
                     $items = $query->paginate($perPage);
 
@@ -889,7 +889,7 @@ class TaskController extends Controller
                 case "d_b_credentials":
                     $query = DBCredential::latest()->withoutGlobalScopes();
                     if ($search) {
-                        $query->where("db_name", 'like', "%{$search}%")->orWhere("type", $search);
+                        $query->where("db_name", 'like', "%{$search}%");
                     }
                     $items = $query->paginate($perPage);
 
@@ -947,7 +947,7 @@ class TaskController extends Controller
                 case "videos":
                     $query = Video::latest()->withoutGlobalScopes();
                     if ($search) {
-                        $query->where("title", 'like', "%{$search}%")->orWhere("type", $search);
+                        $query->where("title", 'like', "%{$search}%");
                     }
                     $items = $query->paginate($perPage);
 
