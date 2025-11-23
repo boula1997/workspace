@@ -924,27 +924,45 @@ class TaskController extends Controller
 
                     break;
 
-                case "clienttracks":
-                    $query = Clienttrack::latest()->withoutGlobalScopes();
-                    if ($search) {
-                        $query->where(function ($q) use ($search) {
-                            $q->where('action', $search) // task title
-                                ->orWhereHas('project', function ($p) use ($search) {
-                                    $p->where('action', 'LIKE', "%{$search}%"); // project title
-                                })->orWhere("src",$search);
-                        });
-                    }
-                    $items = $query->paginate($perPage);
+case "clienttracks":
 
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->action, // ⬅ عنوان الـ admin
-                            'extra'  => $item->project->title.", ".(isset($item->src)?$item->src:"none").", ".$item->created_at,
-                        ];
-                    });
+    $query = Clienttrack::latest()->withoutGlobalScopes();
 
-                    break;
+    if ($search) {
+
+        // 1️⃣ Split into array: ["keyword1", "keyword2", ...]
+        $keywords = array_filter(array_map('trim', explode(',', $search)));
+
+        // 2️⃣ Loop through all keywords
+        $query->where(function ($outer) use ($keywords) {
+
+            foreach ($keywords as $word) {
+
+                $outer->where(function ($q) use ($word) {
+
+                    $q->where('action', 'LIKE', "%{$word}%")   // ClientTrack action
+                      ->orWhere('src', 'LIKE', "%{$word}%")    // source
+                      ->orWhereHas('project', function ($p) use ($word) {
+                          $p->where('title', 'LIKE', "%{$word}%"); // project title
+                      });
+                });
+            }
+
+        });
+    }
+
+    $items = $query->paginate($perPage);
+
+    $items->getCollection()->transform(function ($item) {
+        return [
+            'id'    => $item->id,
+            'title' => $item->action,
+            'extra' => $item->project->title.", ".($item->src ?? "none").", ".$item->created_at,
+        ];
+    });
+
+    break;
+
 
                 case "videos":
                     $query = Video::latest()->withoutGlobalScopes();
