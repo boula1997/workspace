@@ -933,11 +933,14 @@ public function elements($id, Request $request)
                                 $p->where('title', 'LIKE', "%{$val}%");
                             });
                         }elseif ($key === 'admin_title') {
-                                $sub->whereHas('employeeRelation', function ($p) use ($val) {
-                                    $p->where('name', 'LIKE', "%{$val}%");
-                                });
-                            }
-                        else {
+                            $adminIds = Admin::where('name', 'LIKE', "%{$val}%")->pluck('id')->toArray();
+
+                            $sub->where(function($q) use ($adminIds) {
+                                $q->whereIn('admin_id', $adminIds) // main admin
+                                ->orWhereJsonContains('employees', $adminIds); // multiple employees
+                            });
+                        }
+                                                else {
                             $sub->where($key, 'LIKE', "%{$val}%");
                         }
                     });
