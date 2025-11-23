@@ -768,7 +768,7 @@ class TaskController extends Controller
 
             switch ($category->title) {
 
-               case "projects":
+case "projects":
     $query = Project::latest()->withoutGlobalScopes();
 
     if ($search) {
@@ -778,9 +778,13 @@ class TaskController extends Controller
         $query->where(function ($outer) use ($keywords) {
             foreach ($keywords as $word) {
                 $outer->orWhere(function ($q) use ($word) {
-                    // Title contains keyword (case-insensitive)
-                    $q->where('title', 'LIKE', "%{$word}%")
-                     ; // exact match for cost
+                    // Title search (always)
+                    $q->where('title', 'LIKE', "%{$word}%");
+
+                    // Cost search (only if numeric)
+                    if (is_numeric($word)) {
+                        $q->orWhere('cost', $word);
+                    }
                 });
             }
         });
@@ -792,11 +796,12 @@ class TaskController extends Controller
         return [
             'id'    => $item->id,
             'title' => $item->title, 
-            'extra' => $item->cost . ", " . rest($item), // pass the model instead of finding again
+            'extra' => $item->cost . ", " . rest($item),
         ];
     });
 
     break;
+
 
 
                 case "notes":
