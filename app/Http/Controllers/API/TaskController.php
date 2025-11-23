@@ -936,8 +936,7 @@ public function elements($id, Request $request)
                             $adminIds = Admin::where('name', 'LIKE', "%{$val}%")->pluck('id')->toArray();
 
                             $sub->where(function($q) use ($adminIds) {
-                                $q->whereIn('admin_id', $adminIds) // main admin
-                                ->orWhereJsonContains('employees', $adminIds); // multiple employees
+                                $q->whereJsonContains('employees', $adminIds); // multiple employees
                             });
                         }
                                                 else {
