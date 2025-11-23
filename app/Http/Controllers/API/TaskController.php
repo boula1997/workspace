@@ -980,40 +980,51 @@ case "clienttracks":
                     });
 
                     break;
-                case "deadlines":
+case "deadlines":
 
-                    $query = Deadline::latest()->withoutGlobalScopes();
+    $query = Deadline::latest()->withoutGlobalScopes();
 
-                    if ($search) {
+    if ($search) {
 
-                        // convert only when valid
-                        $keyword = null;
-                        if ($search === "Finished") $keyword = 1;
-                        if ($search === "Live") $keyword = 0;
+        // 1️⃣ Split "keyword1,keyword2" → ["keyword1","keyword2"]
+        $keywords = array_filter(array_map('trim', explode(',', $search)));
 
-                        $query->where(function ($q) use ($search, $keyword) {
+        // 2️⃣ Apply search
+        $query->where(function($outer) use ($keywords) {
 
-                            // Title search
-                            $q->where("title", "like", "%{$search}%");
+            foreach ($keywords as $word) {
 
-                            // Status search (only when Live/Finished)
-                            if (!is_null($keyword)) {
-                                $q->orWhere("status", $keyword);
-                            }
-                        });
+                // Convert special words (Live/Finished)
+                $statusKeyword = null;
+                if (strcasecmp($word, "Finished") === 0) $statusKeyword = 1;
+                if (strcasecmp($word, "Live") === 0)     $statusKeyword = 0;
+
+                $outer->where(function($q) use ($word, $statusKeyword) {
+
+                    // Search in title
+                    $q->where("title", "LIKE", "%{$word}%");
+
+                    // If word = Live or Finished → search by status
+                    if (!is_null($statusKeyword)) {
+                        $q->orWhere("status", $statusKeyword);
                     }
+                });
+            }
+        });
+    }
 
-                    $items = $query->paginate($perPage);
+    $items = $query->paginate($perPage);
 
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->title,
-                            'extra' => $item->status == 1 ? "Finished" : "Live",
-                        ];
-                    });
+    $items->getCollection()->transform(function ($item) {
+        return [
+            'id'    => $item->id,
+            'title' => $item->title,
+            'extra' => $item->status == 1 ? "Finished" : "Live",
+        ];
+    });
 
-                    break;
+    break;
+
 
 
                 case "fees":
