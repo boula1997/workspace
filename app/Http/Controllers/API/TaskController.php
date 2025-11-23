@@ -793,7 +793,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished"),
+                        'extra' => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished").", ".taskEmployees($this,"mobile"),
                     ];
                 }
             ],
