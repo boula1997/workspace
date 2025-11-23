@@ -927,7 +927,7 @@ class TaskController extends Controller
                 case "portfolios":
                     $query = Gallery::latest()->withoutGlobalScopes();
                     if ($search) {
-                        $query->where("type", $search)->orWhereHas('translations', function($t) use ($search) {
+                        $query->whereHas('translations', function($t) use ($search) {
                             $t->where('title', 'LIKE', "%{$search}%")
                             ->orWhere('description', 'LIKE', "%{$search}%");
                         });
