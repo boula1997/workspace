@@ -1004,14 +1004,26 @@ public function finishedTasks(Request $request)
 
                             // 🔍 Apply search on both task title + project title
                             if ($search) {
-                                $keyword=$search=="Finished"?1:($search=="Live"?0:$search);
-                                $query->where(function($q) use ($search,$keyword) {
-                                    $q->where('title', 'LIKE', "%{$search}%") // task title
+
+                                $query->where(function($q) use ($search) {
+
+                                    $status = null;
+                                    if (strtolower($search) === "live") $status = 0;
+                                    if (strtolower($search) === "finished") $status = 1;
+
+                                    // Search title + project title
+                                    $q->where('title', 'LIKE', "%{$search}%")
                                     ->orWhereHas('project', function($p) use ($search) {
-                                        $p->where('title', 'LIKE', "%{$search}%"); // project title
-                                    })->orWhere("status",$keyword);
+                                        $p->where('title', 'LIKE', "%{$search}%");
+                                    });
+
+                                    // Search status only if valid
+                                    if (!is_null($status)) {
+                                        $q->orWhere('status', $status);
+                                    }
                                 });
                             }
+
 
                             $items = $query->paginate($perPage);
 
