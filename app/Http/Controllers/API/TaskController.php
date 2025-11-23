@@ -791,7 +791,7 @@ class TaskController extends Controller
                         return [
                             'id'    => $item->id,
                             'title' => $item->title, // ⬅ عنوان الـ admin
-                            'extra' => $item->type,
+                            'extra' => $item->cost,
                         ];
                     });
 
