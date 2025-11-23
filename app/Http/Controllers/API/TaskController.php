@@ -928,7 +928,8 @@ class TaskController extends Controller
                     $query = Gallery::latest()->withoutGlobalScopes();
                     if ($search) {
                         $query->where("type", $search)->orWhereHas('translations', function($t) use ($search) {
-                            $t->where('title', 'LIKE', "%{$search}%");
+                            $t->where('title', 'LIKE', "%{$search}%")
+                            ->orWhere('description', 'LIKE', "%{$search}%");
                         });
                     }
                     $items = $query->paginate($perPage);
