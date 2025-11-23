@@ -768,34 +768,35 @@ class TaskController extends Controller
 
             switch ($category->title) {
 
-                case "projects":
-                    $query = Project::latest()->withoutGlobalScopes();
+               case "projects":
+    $query = Project::latest()->withoutGlobalScopes();
 
-                    if ($search) {
-                        // Split search by commas and trim whitespace
-                        $keywords = array_filter(array_map('trim', explode(',', $search)));
+    if ($search) {
+        // Split search by commas and trim whitespace
+        $keywords = array_filter(array_map('trim', explode(',', $search)));
 
-                        $query->where(function ($outer) use ($keywords) {
-                            foreach ($keywords as $word) {
-                                $outer->orWhere(function ($q) use ($word) {
-                                    $q->where("title", 'like', "%{$word}%")
-                                        ->orWhere("cost", $word); // exact match for cost
-                                });
-                            }
-                        });
-                    }
+        $query->where(function ($outer) use ($keywords) {
+            foreach ($keywords as $word) {
+                $outer->orWhere(function ($q) use ($word) {
+                    // Title contains keyword (case-insensitive)
+                    $q->where('title', 'LIKE', "%{$word}%")
+                      ->orWhere('cost', $word); // exact match for cost
+                });
+            }
+        });
+    }
 
-                    $items = $query->paginate($perPage);
+    $items = $query->paginate($perPage);
 
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->title, 
-                            'extra' => $item->cost.", ".rest(Project::find($item->id)),
-                        ];
-                    });
+    $items->getCollection()->transform(function ($item) {
+        return [
+            'id'    => $item->id,
+            'title' => $item->title, 
+            'extra' => $item->cost . ", " . rest($item), // pass the model instead of finding again
+        ];
+    });
 
-                    break;
+    break;
 
 
                 case "notes":
