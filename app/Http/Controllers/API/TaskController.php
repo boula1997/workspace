@@ -1012,7 +1012,6 @@ class TaskController extends Controller
 
 
                 case "issues":
-                case "issues":
 
                     if (!boula()) break;
 
