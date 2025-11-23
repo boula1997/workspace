@@ -931,7 +931,7 @@ class TaskController extends Controller
                             $q->where('action', $search) // task title
                                 ->orWhereHas('project', function ($p) use ($search) {
                                     $p->where('title', 'LIKE', "%{$search}%"); // project title
-                                })->orWhere("note", 'LIKE', "%{$search}%");
+                                });
                         });
                     }
                     $items = $query->paginate($perPage);
