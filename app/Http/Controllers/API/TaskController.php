@@ -924,7 +924,7 @@ class TaskController extends Controller
 
                     break;
 
-                case "clienttrack":
+                case "clienttracks":
                     $query = Clienttrack::latest()->withoutGlobalScopes();
                     if ($search) {
                         $query->where(function ($q) use ($search) {
