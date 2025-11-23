@@ -930,7 +930,7 @@ class TaskController extends Controller
                         $query->where(function ($q) use ($search) {
                             $q->where('action', $search) // task title
                                 ->orWhereHas('project', function ($p) use ($search) {
-                                    $p->where('title', 'LIKE', "%{$search}%"); // project title
+                                    $p->where('action', 'LIKE', "%{$search}%"); // project title
                                 });
                         });
                     }
