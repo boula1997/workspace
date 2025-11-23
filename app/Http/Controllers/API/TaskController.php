@@ -777,13 +777,13 @@ class TaskController extends Controller
 
                         $query->where(function ($outer) use ($keywords) {
                             foreach ($keywords as $word) {
-                                $outer->orWhere(function ($q) use ($word) {
+                                $outer->where(function ($q) use ($word) {
                                     // Title search (always)
                                     $q->where('title', 'LIKE', "%{$word}%");
 
                                     // Cost search (only if numeric)
                                     if (is_numeric($word)) {
-                                        $q->orWhere('cost', $word);
+                                        $q->where('cost', $word);
                                     }
                                 });
                             }
@@ -817,7 +817,7 @@ class TaskController extends Controller
                             foreach ($keywords as $word) {
                                 $outer->where(function ($q) use ($word) {
                                     $q->where("title", 'like', "%{$word}%")
-                                        ->orWhere("type", 'like', "%{$word}%");
+                                        ->where("type", 'like', "%{$word}%");
                                 });
                             }
                         });
@@ -850,7 +850,7 @@ class TaskController extends Controller
                             foreach ($keywords as $word) {
                                 $outer->where(function ($q) use ($word) {
                                     $q->where("name", "LIKE", "%{$word}%")
-                                        ->orWhere("type", $word);
+                                        ->where("type", $word);
                                 });
                             }
                         });
@@ -886,7 +886,7 @@ class TaskController extends Controller
                             foreach ($keywords as $word) {
                                 $outer->where(function ($q) use ($word) {
                                     $q->where("title", "LIKE", "%{$word}%")
-                                        ->orWhere("link", "LIKE", "%{$word}%");
+                                        ->where("link", "LIKE", "%{$word}%");
                                 });
                             }
                         });
@@ -925,7 +925,7 @@ class TaskController extends Controller
                                         // Search in translations table
                                         ->orWhereHas('translations', function ($t) use ($word) {
                                             $t->where('title', 'LIKE', "%{$word}%")
-                                                ->orWhere('description', 'LIKE', "%{$word}%");
+                                                ->where('description', 'LIKE', "%{$word}%");
                                         });
                                 });
                             }
@@ -961,7 +961,7 @@ class TaskController extends Controller
                             foreach ($keywords as $word) {
                                 $outer->where(function ($q) use ($word) {
                                     $q->where("name", "LIKE", "%{$word}%")
-                                        ->orWhere("guard_name", "LIKE", "%{$word}%");
+                                        ->where("guard_name", "LIKE", "%{$word}%");
                                 });
                             }
                         });
@@ -996,8 +996,8 @@ class TaskController extends Controller
                             foreach ($keywords as $word) {
                                 $outer->where(function ($q) use ($word) {
                                     $q->where("db_name", "LIKE", "%{$word}%")
-                                        ->orWhere("db_username", "LIKE", "%{$word}%")
-                                        ->orWhere("db_password", "LIKE", "%{$word}%");
+                                        ->where("db_username", "LIKE", "%{$word}%")
+                                        ->where("db_password", "LIKE", "%{$word}%");
                                 });
                             }
                         });
@@ -1034,7 +1034,7 @@ class TaskController extends Controller
 
                                 $outer->where(function ($q) use ($word) {
                                     $q->where("title", "LIKE", "%{$word}%")
-                                        ->orWhere("script", "LIKE", "%{$word}%");
+                                        ->where("script", "LIKE", "%{$word}%");
                                 });
                             }
                         });
@@ -1070,7 +1070,7 @@ class TaskController extends Controller
                                 $outer->where(function ($q) use ($word) {
 
                                     $q->where('action', 'LIKE', "%{$word}%")   // ClientTrack action
-                                        ->orWhere('src', 'LIKE', "%{$word}%")    // source
+                                        ->where('src', 'LIKE', "%{$word}%")    // source
                                         ->orWhereHas('project', function ($p) use ($word) {
                                             $p->where('title', 'LIKE', "%{$word}%"); // project title
                                         });
@@ -1106,7 +1106,7 @@ class TaskController extends Controller
 
                                 $outer->where(function ($q) use ($word) {
                                     $q->where("title", "like", "%{$word}%")
-                                        ->orWhere("link", "like", "%{$word}%");
+                                        ->where("link", "like", "%{$word}%");
                                 });
                             }
                         });
@@ -1150,7 +1150,7 @@ class TaskController extends Controller
 
                                     // If word = Live or Finished → search by status
                                     if (!is_null($statusKeyword)) {
-                                        $q->orWhere("status", $statusKeyword);
+                                        $q->where("status", $statusKeyword);
                                     }
                                 });
                             }
@@ -1192,7 +1192,7 @@ class TaskController extends Controller
 
                                 foreach ($keywords as $word) {
 
-                                    $outer->orWhere(function ($q) use ($word) {
+                                    $outer->where(function ($q) use ($word) {
 
                                         if (is_numeric($word)) {
                                             // Numeric search only on amount
@@ -1261,7 +1261,7 @@ class TaskController extends Controller
 
                                     // If the keyword is "live" or "finished"
                                     if (!is_null($status)) {
-                                        $q->orWhere('status', $status);
+                                        $q->where('status', $status);
                                     }
                                 });
                             }
