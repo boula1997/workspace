@@ -940,7 +940,7 @@ class TaskController extends Controller
                         return [
                             'id'    => $item->id,
                             'title' => $item->action, // ⬅ عنوان الـ admin
-                            'extra'  => $item->project->title.", ".$item->src.", ".$item->created_at,
+                            'extra'  => $item->project->title.", "(.isset($item->src)?$item->src:"none").", ".$item->created_at,
                         ];
                     });
 
