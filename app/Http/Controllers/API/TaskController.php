@@ -1165,50 +1165,57 @@ class TaskController extends Controller
 
 
 
-                case "fees":
+case "fees":
 
-                    $query = Fee::withoutGlobalScopes()->latest();
+    $query = Fee::withoutGlobalScopes()->latest();
 
-                    if ($search) {
+    if ($search) {
 
-                        // 1️⃣ Split: "200,logo,marketing" → ["200","logo","marketing"]
-                        $keywords = array_filter(array_map('trim', explode(',', $search)));
+        $search = trim($search);
 
-                        // 2️⃣ Apply search
-                        $query->where(function ($outer) use ($keywords) {
+        // Special case: just "-" → get all negative amounts
+        if ($search === '-') {
+            $query->where('amount', '<', 0);
+        } else {
+            // Split keywords: "200,logo,marketing"
+            $keywords = array_filter(array_map('trim', explode(',', $search)));
 
-                            foreach ($keywords as $word) {
+            $query->where(function ($outer) use ($keywords) {
 
-                                $outer->where(function ($q) use ($word) {
+                foreach ($keywords as $word) {
 
-                                    // Amount (exact or partial numeric match)
-                                    if (is_numeric($word)) {
-                                        $q->where('amount', $word);
-                                    }
+                    $outer->orWhere(function ($q) use ($word) {
 
-                                    // Note text search
-                                    $q->orWhere('note', 'LIKE', "%{$word}%");
+                        // Amount (numeric, can be negative)
+                        if (is_numeric($word)) {
+                            $q->where('amount', $word);
+                        }
 
-                                    // Project title search
-                                    $q->orWhereHas('project', function ($p) use ($word) {
-                                        $p->where('title', 'LIKE', "%{$word}%");
-                                    });
-                                });
-                            }
+                        // Note text search
+                        $q->orWhere('note', 'LIKE', "%{$word}%");
+
+                        // Project title search
+                        $q->orWhereHas('project', function ($p) use ($word) {
+                            $p->where('title', 'LIKE', "%{$word}%");
                         });
-                    }
-
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->amount . " EGP",
-                            'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title . ", " . $item->created_at,
-                        ];
                     });
+                }
+            });
+        }
+    }
 
-                    break;
+    $items = $query->paginate($perPage);
+
+    $items->getCollection()->transform(function ($item) {
+        return [
+            'id'    => $item->id,
+            'title' => $item->amount . " EGP",
+            'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title . ", " . $item->created_at,
+        ];
+    });
+
+    break;
+
 
 
                 case "tasks":
