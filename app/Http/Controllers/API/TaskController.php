@@ -910,7 +910,7 @@ class TaskController extends Controller
 
                     $query = Issue::latest()->withoutGlobalScopes();
                     if ($search) {
-                        $query->where("title", 'like', "%{$search}%")->orWhere("type", $search);
+                        $query->where("title", 'like', "%{$search}%");
                     }
                     $items = $query->paginate($perPage);
 
