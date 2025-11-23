@@ -952,246 +952,265 @@ public function finishedTasks(Request $request)
                             });
 
                         break;
-                    case "deadlines":
-                        $query = Deadline::latest()->withoutGlobalScopes();
-                            if ($search) {
-                                $keyword=$search=="Finished"?1:($search=="Live"?0:$search);
-                                $query->where("title", 'like', "%{$search}%")->orWhere("status",$keyword);
-                             }
-                        $items = $query->paginate($perPage);
+                        case "deadlines":
 
-                        $items->getCollection()->transform(function ($item) {
-                                return [
-                                    'id'    => $item->id,
-                                    'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => $item->status==1?"Finished":"Live",
-                                ];
-                            });
+                            $query = Deadline::latest()->withoutGlobalScopes();
 
-                        break;
-
-                        case "fees":
-                            $query = Fee::withoutGlobalScopes()->latest();
-                            if ($search) {
-                                $query->where(function($q) use ($search) {
-                                    $q->where('amount', $search) // task title
-                                    ->orWhereHas('project', function($p) use ($search) {
-                                        $p->where('title', 'LIKE', "%{$search}%"); // project title
-                                    })->orWhere("note", 'LIKE', "%{$search}%");
-                                });
-                            }
-                            $items = $query->paginate($perPage);
-
-                            // إضافة title لكل عنصر
-                            $items->getCollection()->transform(function ($item) {
-                                return [
-                                    'id'    => $item->id,
-                                    'title' => $item->amount . " EGP", // ⬅ عنوان الـ fee
-                                    'extra'  => (isset($item->note)?$item->note:"Non note").", ".optional($item->project)->title,
-                                ];
-                            });
-
-                            break;
-
-
-                        case "tasks":
-
-                            $search = $request->query('search');
-                            $perPage = $request->query('per_page', 20);
-
-                            $query = Task::latest()->with('project') // load project title
-                                        ->withoutGlobalScopes();
-
-                            // 🔍 Apply search on both task title + project title
                             if ($search) {
 
-                                $query->where(function($q) use ($search) {
+                                // convert only when valid
+                                $keyword = null;
+                                if ($search === "Finished") $keyword = 1;
+                                if ($search === "Live") $keyword = 0;
 
-                                    $status = null;
-                                    if (strtolower($search) === "live") $status = 0;
-                                    if (strtolower($search) === "finished") $status = 1;
+                                $query->where(function($q) use ($search, $keyword) {
 
-                                    // Search title + project title
-                                    $q->where('title', 'LIKE', "%{$search}%")
-                                    ->orWhereHas('project', function($p) use ($search) {
-                                        $p->where('title', 'LIKE', "%{$search}%");
-                                    });
+                                    // Title search
+                                    $q->where("title", "like", "%{$search}%");
 
-                                    // Search status only if valid
-                                    if (!is_null($status)) {
-                                        $q->orWhere('status', $status);
+                                    // Status search (only when Live/Finished)
+                                    if (!is_null($keyword)) {
+                                        $q->orWhere("status", $keyword);
                                     }
+
                                 });
                             }
-
 
                             $items = $query->paginate($perPage);
 
                             $items->getCollection()->transform(function ($item) {
                                 return [
                                     'id'    => $item->id,
-                                    'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => $item->project->title.", ".($item->status==0?"live":"finished"),
+                                    'title' => $item->title,
+                                    'extra' => $item->status==1 ? "Finished" : "Live",
                                 ];
                             });
-
 
                             break;
 
 
-                    default:
-                        return response()->json(['error' => 'Unsupported category'], 400);
-                }
+                                                case "fees":
+                                                    $query = Fee::withoutGlobalScopes()->latest();
+                                                    if ($search) {
+                                                        $query->where(function($q) use ($search) {
+                                                            $q->where('amount', $search) // task title
+                                                            ->orWhereHas('project', function($p) use ($search) {
+                                                                $p->where('title', 'LIKE', "%{$search}%"); // project title
+                                                            })->orWhere("note", 'LIKE', "%{$search}%");
+                                                        });
+                                                    }
+                                                    $items = $query->paginate($perPage);
 
-                return successResponse([
-                    "elements"   => $items,     // full pagination object
-                    "isExpired"  => isExpired()[0],
-                ]);
+                                                    // إضافة title لكل عنصر
+                                                    $items->getCollection()->transform(function ($item) {
+                                                        return [
+                                                            'id'    => $item->id,
+                                                            'title' => $item->amount . " EGP", // ⬅ عنوان الـ fee
+                                                            'extra'  => (isset($item->note)?$item->note:"Non note").", ".optional($item->project)->title,
+                                                        ];
+                                                    });
 
-            } catch (Exception $e) {
-                return response()->json(['error' => $e->getMessage()]);
-            }
-        }
-
-
-    public function deadlines()
-    {
-        try {
-
-            $deadlines = Deadline::where("status",0)->latest()->orderBy("date", "asc")->get();
-            $data["deadlines"] = $deadlines;
-            $data["isExpired"] = isExpired()[0];
-            if (boula())
-                return successResponse($data);
-            else
-                return successResponse([]);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
-        }
-    }
-    public function bases()
-    {
-        try {
-
-            $bases = Base::get();
-            $data["bases"] = $bases;
-            $data["isExpired"] = isExpired()[0];
-            return successResponse($data);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
-        }
-    }
+                                                    break;
 
 
+                                                case "tasks":
 
-    public function updateDeadline(Request $request)
-    {
-        try {
-            $deadline = Deadline::find($request->id);
-            if ($request->action == "delete")
-                $deadline->update(["status" => !$deadline->status]);
-            else if (isset($request->date))
-                $deadline->update(["date" => $request->date, "title" => isset($request->title) ? $request->title : $deadline->title]);
+                                                    $search = $request->query('search');
+                                                    $perPage = $request->query('per_page', 20);
 
-            $deadlines = Deadline::orderBy("date", "asc")->get();
+                                                    $query = Task::latest()->with('project') // load project title
+                                                                ->withoutGlobalScopes();
 
+                                                    // 🔍 Apply search on both task title + project title
+                                                    if ($search) {
 
-            $data = ["boardProjects" => $deadlines, "action" => $request->action];
+                                                        $query->where(function($q) use ($search) {
 
-            return successResponse($data);
-        } catch (Exception $e) {
-            DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(),]);
-            return failedResponse($e->getMessage());
-        }
-    }
+                                                            $status = null;
+                                                            if (strtolower($search) === "live") $status = 0;
+                                                            if (strtolower($search) === "finished") $status = 1;
 
-    public function updateProjectDeadline(Request $request)
-    {
-        try {
+                                                            // Search title + project title
+                                                            $q->where('title', 'LIKE', "%{$search}%")
+                                                            ->orWhereHas('project', function($p) use ($search) {
+                                                                $p->where('title', 'LIKE', "%{$search}%");
+                                                            });
 
-            DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode($request->all()), 'created_at' => now(),]);
-            $deadline = Project::find($request->id);
-
-            $deadlineTime = Carbon::parse($request->date, 'UTC')->setTimezone('Africa/Cairo');
-            $deadline->update(["deadline" => $deadlineTime]);
-
-            $deadlines = Project::orderBy("deadline", "asc")->get();
+                                                            // Search status only if valid
+                                                            if (!is_null($status)) {
+                                                                $q->orWhere('status', $status);
+                                                            }
+                                                        });
+                                                    }
 
 
-            $data = ["boardProjects" => ProjectResource::collection(
-                Project::orderBy("deadline", "asc")
-                    ->get()
-                    ->filter(fn($project) => $project->status != 1)
-            )];
+                                                    $items = $query->paginate($perPage);
 
-            return successResponse($data);
-        } catch (Exception $e) {
-            DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(),]);
-            return failedResponse($e->getMessage());
-        }
-    }
+                                                    $items->getCollection()->transform(function ($item) {
+                                                        return [
+                                                            'id'    => $item->id,
+                                                            'title' => $item->title, // ⬅ عنوان الـ admin
+                                                            'extra'  => $item->project->title.", ".($item->status==0?"live":"finished"),
+                                                        ];
+                                                    });
 
 
+                                                    break;
 
 
-    public function storeDeadline(Request $request)
-    {
-        try {
-            if (boula())
-                $deadline = Deadline::create(["title" => $request->title, "date" => $request->date]);
+                                            default:
+                                                return response()->json(['error' => 'Unsupported category'], 400);
+                                        }
 
-            $deadlines = Deadline::orderBy("date", "asc")->get();
+                                        return successResponse([
+                                            "elements"   => $items,     // full pagination object
+                                            "isExpired"  => isExpired()[0],
+                                        ]);
 
-
-            $data = ["deadlines" => $deadlines, "action" => $request->action];
-
-            return successResponse($data);
-        } catch (Exception $e) {
-            return failedResponse($e->getMessage());
-        }
-    }
+                                    } catch (Exception $e) {
+                                        return response()->json(['error' => $e->getMessage()]);
+                                    }
+                                }
 
 
+                            public function deadlines()
+                            {
+                                try {
+
+                                    $deadlines = Deadline::where("status",0)->latest()->orderBy("date", "asc")->get();
+                                    $data["deadlines"] = $deadlines;
+                                    $data["isExpired"] = isExpired()[0];
+                                    if (boula())
+                                        return successResponse($data);
+                                    else
+                                        return successResponse([]);
+                                } catch (Exception $e) {
+                                    return response()->json(['error' => $e->getMessage()]);
+                                }
+                            }
+                            public function bases()
+                            {
+                                try {
+
+                                    $bases = Base::get();
+                                    $data["bases"] = $bases;
+                                    $data["isExpired"] = isExpired()[0];
+                                    return successResponse($data);
+                                } catch (Exception $e) {
+                                    return response()->json(['error' => $e->getMessage()]);
+                                }
+                            }
 
 
 
+                            public function updateDeadline(Request $request)
+                            {
+                                try {
+                                    $deadline = Deadline::find($request->id);
+                                    if ($request->action == "delete")
+                                        $deadline->update(["status" => !$deadline->status]);
+                                    else if (isset($request->date))
+                                        $deadline->update(["date" => $request->date, "title" => isset($request->title) ? $request->title : $deadline->title]);
 
-    public function track(Request $request)
-    {
-
-        try {
-
-            $data = [];
-
-            DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode(request()->all()), 'created_at' => now(), 'updated_at' => now(),]);
-
-            return response()->json([
-                'message' => 'User successfully registered',
-                'user' => $data
-            ], 201);
-        } catch (Ecxception $e) {
-            dd($e->getMessage());
-        }
-    }
-
-    public function lifIssue()
-    {
-
-        try {
-            if (boula()) {
-
-                $lifeIssue = Issue::where("id", 66)->first();
+                                    $deadlines = Deadline::orderBy("date", "asc")->get();
 
 
-                return response()->json([
-                    'message' => 'User is Boula',
-                    'data' => $lifeIssue
-                ], 201);
-            }
-        } catch (Ecxception $e) {
-            dd($e->getMessage());
-        }
-    }
+                                    $data = ["boardProjects" => $deadlines, "action" => $request->action];
+
+                                    return successResponse($data);
+                                } catch (Exception $e) {
+                                    DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(),]);
+                                    return failedResponse($e->getMessage());
+                                }
+                            }
+
+                            public function updateProjectDeadline(Request $request)
+                            {
+                                try {
+
+                                    DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode($request->all()), 'created_at' => now(),]);
+                                    $deadline = Project::find($request->id);
+
+                                    $deadlineTime = Carbon::parse($request->date, 'UTC')->setTimezone('Africa/Cairo');
+                                    $deadline->update(["deadline" => $deadlineTime]);
+
+                                    $deadlines = Project::orderBy("deadline", "asc")->get();
 
 
-}
+                                    $data = ["boardProjects" => ProjectResource::collection(
+                                        Project::orderBy("deadline", "asc")
+                                            ->get()
+                                            ->filter(fn($project) => $project->status != 1)
+                                    )];
+
+                                    return successResponse($data);
+                                } catch (Exception $e) {
+                                    DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(),]);
+                                    return failedResponse($e->getMessage());
+                                }
+                            }
+
+
+
+
+                            public function storeDeadline(Request $request)
+                            {
+                                try {
+                                    if (boula())
+                                        $deadline = Deadline::create(["title" => $request->title, "date" => $request->date]);
+
+                                    $deadlines = Deadline::orderBy("date", "asc")->get();
+
+
+                                    $data = ["deadlines" => $deadlines, "action" => $request->action];
+
+                                    return successResponse($data);
+                                } catch (Exception $e) {
+                                    return failedResponse($e->getMessage());
+                                }
+                            }
+
+
+
+
+
+
+                            public function track(Request $request)
+                            {
+
+                                try {
+
+                                    $data = [];
+
+                                    DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode(request()->all()), 'created_at' => now(), 'updated_at' => now(),]);
+
+                                    return response()->json([
+                                        'message' => 'User successfully registered',
+                                        'user' => $data
+                                    ], 201);
+                                } catch (Ecxception $e) {
+                                    dd($e->getMessage());
+                                }
+                            }
+
+                            public function lifIssue()
+                            {
+
+                                try {
+                                    if (boula()) {
+
+                                        $lifeIssue = Issue::where("id", 66)->first();
+
+
+                                        return response()->json([
+                                            'message' => 'User is Boula',
+                                            'data' => $lifeIssue
+                                        ], 201);
+                                    }
+                                } catch (Ecxception $e) {
+                                    dd($e->getMessage());
+                                }
+                            }
+
+
+                        }
