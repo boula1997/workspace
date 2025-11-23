@@ -924,12 +924,14 @@ class TaskController extends Controller
 
                     break;
 
-                case "portfolios":
-                    $query = Gallery::latest()->withoutGlobalScopes();
+                case "clienttrack":
+                    $query = Clienttrack::latest()->withoutGlobalScopes();
                     if ($search) {
-                        $query->whereHas('translations', function($t) use ($search) {
-                            $t->where('title', 'LIKE', "%{$search}%")
-                            ->orWhere('description', 'LIKE', "%{$search}%");
+                        $query->where(function ($q) use ($search) {
+                            $q->where('action', $search) // task title
+                                ->orWhereHas('project', function ($p) use ($search) {
+                                    $p->where('title', 'LIKE', "%{$search}%"); // project title
+                                })->orWhere("note", 'LIKE', "%{$search}%");
                         });
                     }
                     $items = $query->paginate($perPage);
@@ -937,8 +939,8 @@ class TaskController extends Controller
                     $items->getCollection()->transform(function ($item) {
                         return [
                             'id'    => $item->id,
-                            'title' => $item->title, // ⬅ عنوان الـ admin
-                            'extra'  => 'portfolios',
+                            'title' => $item->action, // ⬅ عنوان الـ admin
+                            'extra'  => $item->project->title.", ".$item->created_at,
                         ];
                     });
 
