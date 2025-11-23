@@ -780,7 +780,7 @@ class TaskController extends Controller
                 $outer->orWhere(function ($q) use ($word) {
                     // Title contains keyword (case-insensitive)
                     $q->where('title', 'LIKE', "%{$word}%")
-                      ->orWhere('cost', $word); // exact match for cost
+                     ; // exact match for cost
                 });
             }
         });
