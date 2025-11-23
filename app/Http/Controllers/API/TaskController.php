@@ -788,7 +788,7 @@ public function elements($id, Request $request)
             ],
             'tasks' => [
                 'model' => Task::class,
-                'keys'  => ['title', 'project_title', 'status'],
+                'keys'  => ['title', 'project_title','admin_title','status'],
                 'transform' => function ($item) {
                     return [
                         'id'    => $item->id,
@@ -932,7 +932,12 @@ public function elements($id, Request $request)
                             $sub->whereHas('project', function ($p) use ($val) {
                                 $p->where('title', 'LIKE', "%{$val}%");
                             });
-                        } else {
+                        }elseif ($key === 'admin_title') {
+                                $sub->whereHas('employeeRelation', function ($p) use ($val) {
+                                    $p->where('name', 'LIKE', "%{$val}%");
+                                });
+                            }
+                        else {
                             $sub->where($key, 'LIKE', "%{$val}%");
                         }
                     });
