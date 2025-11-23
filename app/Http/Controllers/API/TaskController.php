@@ -931,7 +931,7 @@ class TaskController extends Controller
                             $q->where('action', $search) // task title
                                 ->orWhereHas('project', function ($p) use ($search) {
                                     $p->where('action', 'LIKE', "%{$search}%"); // project title
-                                });
+                                })->orWhere("src",$search);
                         });
                     }
                     $items = $query->paginate($perPage);
@@ -940,7 +940,7 @@ class TaskController extends Controller
                         return [
                             'id'    => $item->id,
                             'title' => $item->action, // ⬅ عنوان الـ admin
-                            'extra'  => $item->project->title.", ".$item->created_at,
+                            'extra'  => $item->project->title.", ".$item->src.", ".$item->created_at,
                         ];
                     });
 
