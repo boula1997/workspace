@@ -1027,28 +1027,50 @@ case "deadlines":
 
 
 
-                case "fees":
-                    $query = Fee::withoutGlobalScopes()->latest();
-                    if ($search) {
-                        $query->where(function ($q) use ($search) {
-                            $q->where('amount', $search) // task title
-                                ->orWhereHas('project', function ($p) use ($search) {
-                                    $p->where('title', 'LIKE', "%{$search}%"); // project title
-                                })->orWhere("note", 'LIKE', "%{$search}%");
-                        });
+case "fees":
+
+    $query = Fee::withoutGlobalScopes()->latest();
+
+    if ($search) {
+
+        // 1️⃣ Split: "200,logo,marketing" → ["200","logo","marketing"]
+        $keywords = array_filter(array_map('trim', explode(',', $search)));
+
+        // 2️⃣ Apply search
+        $query->where(function ($outer) use ($keywords) {
+
+            foreach ($keywords as $word) {
+
+                $outer->where(function ($q) use ($word) {
+
+                    // Amount (exact or partial numeric match)
+                    if (is_numeric($word)) {
+                        $q->where('amount', $word);
                     }
-                    $items = $query->paginate($perPage);
 
-                    // إضافة title لكل عنصر
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->amount . " EGP", // ⬅ عنوان الـ fee
-                            'extra'  => (isset($item->note) ? $item->note : "Non note") . ", " . optional($item->project)->title,
-                        ];
+                    // Note text search
+                    $q->orWhere('note', 'LIKE', "%{$word}%");
+
+                    // Project title search
+                    $q->orWhereHas('project', function ($p) use ($word) {
+                        $p->where('title', 'LIKE', "%{$word}%");
                     });
+                });
+            }
+        });
+    }
 
-                    break;
+    $items = $query->paginate($perPage);
+
+    $items->getCollection()->transform(function ($item) {
+        return [
+            'id'    => $item->id,
+            'title' => $item->amount . " EGP",
+            'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title,
+        ];
+    });
+
+    break;
 
 
                 case "tasks":
