@@ -790,8 +790,8 @@ class TaskController extends Controller
                     $items->getCollection()->transform(function ($item) {
                         return [
                             'id'    => $item->id,
-                            'title' => $item->title, // ⬅ عنوان الـ admin
-                            'extra' => $item->cost,
+                            'title' => $item->title, 
+                            'extra' => $item->cost.", ".rest(Project::find($item->id)),
                         ];
                     });
 
