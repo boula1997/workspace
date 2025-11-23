@@ -110,7 +110,7 @@ class TaskController extends Controller
                 ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
                 ->latest('updated_at')            // Then by latest update
                 // Limit to 300 tasks
-                ;
+            ;
             $issues = Issue::where("isOverthinking", 0)->orderBy("title", "asc")->get();
 
             $infoProjects = Project::where("isOverthinking", 0)->orderBy("title", "asc")->get(); // ✅ sort
@@ -120,134 +120,48 @@ class TaskController extends Controller
                 ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
                 ->latest('updated_at')            // Then by latest update
                 // Limit to 300 tasks
-                ;
+            ;
             $infoProjects = Project::orderBy("title", "asc")
                 ->get();
             $issues = Issue::orderBy("title", "asc")->get();
         }
 
-            // Apply search filter if present
-            if ($request->has('search') && $request->search != '') {
-                $search = $request->search;
+        // Apply search filter if present
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
 
-                $tasksQuery->where(function($q) use ($search) {
-                    // Search by title
-                    $q->where('title', 'like', "%$search%");
+            $tasksQuery->where(function ($q) use ($search) {
+                // Search by title
+                $q->where('title', 'like', "%$search%");
 
-                    // Search by project title
-                    $q->orWhereHas('project', function($qp) use ($search) {
-                        $qp->where('title', 'like', "%$search%");
-                    });
+                // Search by project title
+                $q->orWhereHas('project', function ($qp) use ($search) {
+                    $qp->where('title', 'like', "%$search%");
                 });
-            }
+            });
+        }
 
-    // Paginate tasks 
+        // Paginate tasks 
         $tasks = $tasksQuery->paginate(10);
 
-            $credentials = DBCredential::get();
-            $tablePprojects = Project::where("status", "!=", 0)->orWhere("deal", 0)->orderBy("title", "asc")->get();
-            if (boula())
-                $data = [
-                    "queries" => $queries,
-                    "projects" => ProjectResource::collection($projects),
-                    "infoProjects" => ProjectResource::collection($infoProjects),
-                    "boardProjects" => ProjectResource::collection(
-                        Project::orderBy("deadline", "asc")
-                            ->get()
-                            ->filter(fn($project) => $project->status == 1)
-                    ),
-                    "tablePprojects" => ProjectResource::collection($tablePprojects),
-                    "refrences" => IssueResource::collection($issues),
-                    "employees" => $employees,
-                    "clients" => $clients,
-                    "prospectives" => $prospectives,
-                    "credentials" => $credentials,
-                            "tasks" => TaskResource::collection($tasks),
-                            "tasks_meta" => [
-                                "current_page" => $tasks->currentPage(),
-                                "last_page" => $tasks->lastPage(),
-                                "per_page" => $tasks->perPage(),
-                                "total" => $tasks->total(),
-                            ],
-                    "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
-                    "isExpired" => isExpired()[0],
-                    "headings" => [
-                        "allowedIn" => date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
-                        "deadlineAction" => activeDeadline()["action"],
-                        "deadlineDate" => activeDeadline()["deadline"],
-                    ]
-
-                ];
-
-            else
-                $data = [
-                    "projects" => ProjectResource::collection($projects),
-                    "infoProjects" => ProjectResource::collection($infoProjects),
-                    "boardProjects" => ProjectResource::collection(
-                        Project::orderBy("deadline", "asc")
-                            ->get()
-                            ->filter(fn($project) => $project->status == 1)
-                    ),
-                    "credentials" => $credentials,
-                    "employees" => $employees,
-                    "clients" => $clients,
-                    "prospectives" => $prospectives,
-                                            "tasks" => TaskResource::collection($tasks),
-                            "tasks_meta" => [
-                                "current_page" => $tasks->currentPage(),
-                                "last_page" => $tasks->lastPage(),
-                                "per_page" => $tasks->perPage(),
-                                "total" => $tasks->total(),
-                            ],
-                    "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
-                    "tablePprojects" => ProjectResource::collection($tablePprojects),
-
-                ];
-
-            return successResponse($data);
-    }
-    public function tasks(Request $request)
-    {
-
-            $tasksQuery = Task::where("status", 0)
-                ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
-                ->latest('updated_at')            // Then by latest update
-                // Limit to 300 tasks
-                ;
-
-            // Apply search filter if present
-            if ($request->has('search') && $request->search != '') {
-                $search = $request->search;
-
-                $tasksQuery->where(function($q) use ($search) {
-                    // Search by title
-                    $q->where('title', 'like', "%$search%");
-
-                    // Search by project title
-                    $q->orWhereHas('project', function($qp) use ($search) {
-                        $qp->where('title', 'like', "%$search%");
-                    });
-
-                    // Search by employees JSON column
-                    $q->orWhere(function($qe) use ($search) {
-                        $qe->whereRaw("EXISTS (
-                            SELECT 1
-                            FROM admins
-                            WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
-                            AND admins.name LIKE ?
-                        )", ["%$search%"]);
-                    });
-                });
-            }
-
-      // Paginate tasks 
-        $tasks = $tasksQuery->paginate(10);
-
-
-
-
-                $data = [
-
+        $credentials = DBCredential::get();
+        $tablePprojects = Project::where("status", "!=", 0)->orWhere("deal", 0)->orderBy("title", "asc")->get();
+        if (boula())
+            $data = [
+                "queries" => $queries,
+                "projects" => ProjectResource::collection($projects),
+                "infoProjects" => ProjectResource::collection($infoProjects),
+                "boardProjects" => ProjectResource::collection(
+                    Project::orderBy("deadline", "asc")
+                        ->get()
+                        ->filter(fn($project) => $project->status == 1)
+                ),
+                "tablePprojects" => ProjectResource::collection($tablePprojects),
+                "refrences" => IssueResource::collection($issues),
+                "employees" => $employees,
+                "clients" => $clients,
+                "prospectives" => $prospectives,
+                "credentials" => $credentials,
                 "tasks" => TaskResource::collection($tasks),
                 "tasks_meta" => [
                     "current_page" => $tasks->currentPage(),
@@ -255,10 +169,96 @@ class TaskController extends Controller
                     "per_page" => $tasks->perPage(),
                     "total" => $tasks->total(),
                 ],
+                "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
+                "isExpired" => isExpired()[0],
+                "headings" => [
+                    "allowedIn" => date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
+                    "deadlineAction" => activeDeadline()["action"],
+                    "deadlineDate" => activeDeadline()["deadline"],
+                ]
 
-                ];
+            ];
 
-            return successResponse($data);
+        else
+            $data = [
+                "projects" => ProjectResource::collection($projects),
+                "infoProjects" => ProjectResource::collection($infoProjects),
+                "boardProjects" => ProjectResource::collection(
+                    Project::orderBy("deadline", "asc")
+                        ->get()
+                        ->filter(fn($project) => $project->status == 1)
+                ),
+                "credentials" => $credentials,
+                "employees" => $employees,
+                "clients" => $clients,
+                "prospectives" => $prospectives,
+                "tasks" => TaskResource::collection($tasks),
+                "tasks_meta" => [
+                    "current_page" => $tasks->currentPage(),
+                    "last_page" => $tasks->lastPage(),
+                    "per_page" => $tasks->perPage(),
+                    "total" => $tasks->total(),
+                ],
+                "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
+                "tablePprojects" => ProjectResource::collection($tablePprojects),
+
+            ];
+
+        return successResponse($data);
+    }
+    public function tasks(Request $request)
+    {
+
+        $tasksQuery = Task::where("status", 0)
+            ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
+            ->latest('updated_at')            // Then by latest update
+            // Limit to 300 tasks
+        ;
+
+        // Apply search filter if present
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+
+            $tasksQuery->where(function ($q) use ($search) {
+                // Search by title
+                $q->where('title', 'like', "%$search%");
+
+                // Search by project title
+                $q->orWhereHas('project', function ($qp) use ($search) {
+                    $qp->where('title', 'like', "%$search%");
+                });
+
+                // Search by employees JSON column
+                $q->orWhere(function ($qe) use ($search) {
+                    $qe->whereRaw("EXISTS (
+                            SELECT 1
+                            FROM admins
+                            WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
+                            AND admins.name LIKE ?
+                        )", ["%$search%"]);
+                });
+            });
+        }
+
+        // Paginate tasks 
+        $tasks = $tasksQuery->paginate(10);
+
+
+
+
+        $data = [
+
+            "tasks" => TaskResource::collection($tasks),
+            "tasks_meta" => [
+                "current_page" => $tasks->currentPage(),
+                "last_page" => $tasks->lastPage(),
+                "per_page" => $tasks->perPage(),
+                "total" => $tasks->total(),
+            ],
+
+        ];
+
+        return successResponse($data);
     }
     public function stats($date = null)
     {
@@ -465,12 +465,12 @@ class TaskController extends Controller
 
 
 
-public function createFinished(Request $request)
-{
-    $employees = Admin::where("isActive", 1)
-        ->where("type", "!=", "client")
-        ->select('admins.*')
-        ->selectRaw("
+    public function createFinished(Request $request)
+    {
+        $employees = Admin::where("isActive", 1)
+            ->where("type", "!=", "client")
+            ->select('admins.*')
+            ->selectRaw("
             (
                 SELECT COUNT(*)
                 FROM tasks
@@ -478,118 +478,118 @@ public function createFinished(Request $request)
                 AND JSON_CONTAINS(tasks.employees, JSON_QUOTE(CAST(admins.id AS CHAR)))
             ) as pending_tasks_count
         ")
-        ->orderBy('name', 'ASC')
-        ->get();
+            ->orderBy('name', 'ASC')
+            ->get();
 
 
 
-    $projects = Project::orderBy("title", "asc")->get();
+        $projects = Project::orderBy("title", "asc")->get();
 
-    // Base query for tasks
-    if (!isWithinWorkingHours()) {
-        $tasksQuery = Task::where("status", 1)
-            ->where("isOverthinking", 0)
-            ->latest('updated_at');
-    } else {
-        $tasksQuery = Task::where("status", 1)
-            ->latest('updated_at');
-    }
+        // Base query for tasks
+        if (!isWithinWorkingHours()) {
+            $tasksQuery = Task::where("status", 1)
+                ->where("isOverthinking", 0)
+                ->latest('updated_at');
+        } else {
+            $tasksQuery = Task::where("status", 1)
+                ->latest('updated_at');
+        }
 
-    // Apply search filter if present
-if ($request->has('search') && $request->search != '') {
-    $search = $request->search;
+        // Apply search filter if present
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
 
-    $tasksQuery->where(function($q) use ($search) {
-        // Search by title
-        $q->where('title', 'like', "%$search%");
+            $tasksQuery->where(function ($q) use ($search) {
+                // Search by title
+                $q->where('title', 'like', "%$search%");
 
-        // Search by project title
-        $q->orWhereHas('project', function($qp) use ($search) {
-            $qp->where('title', 'like', "%$search%");
-        });
+                // Search by project title
+                $q->orWhereHas('project', function ($qp) use ($search) {
+                    $qp->where('title', 'like', "%$search%");
+                });
 
-        // Search by employees JSON column
-        $q->orWhere(function($qe) use ($search) {
-            $qe->whereRaw("EXISTS (
+                // Search by employees JSON column
+                $q->orWhere(function ($qe) use ($search) {
+                    $qe->whereRaw("EXISTS (
                 SELECT 1
                 FROM admins
                 WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
                 AND admins.name LIKE ?
             )", ["%$search%"]);
-        });
-    });
-}
-
-
-    // Paginate tasks 
-    $tasks = $tasksQuery->paginate(20);
-
-    $data = [
-        "projects" => ProjectResource::collection($projects),
-        "employees" => $employees,
-        "tasks" => TaskResource::collection($tasks),
-        "tasks_meta" => [
-            "current_page" => $tasks->currentPage(),
-            "last_page" => $tasks->lastPage(),
-            "per_page" => $tasks->perPage(),
-            "total" => $tasks->total(),
-        ],
-        "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
-        "allowedIn" => date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
-        "deadlineAction" => activeDeadline()["action"],
-        "deadlineDate" => activeDeadline()["deadline"],
-        "isExpired" => isExpired()[0],
-    ];
-
-    return successResponse($data);
-}
-public function finishedTasks(Request $request)
-{
-
-    $tasksQuery = Task::where("status", 1)
-        ->latest('updated_at');
-
-    // Apply search filter if present
-    if ($request->has('search') && $request->search != '') {
-        $search = $request->search;
-
-        $tasksQuery->where(function($q) use ($search) {
-            // Search by title
-            $q->where('title', 'like', "%$search%");
-
-            // Search by project title
-            $q->orWhereHas('project', function($qp) use ($search) {
-                $qp->where('title', 'like', "%$search%");
+                });
             });
+        }
 
-            // Search by employees JSON column
-            $q->orWhere(function($qe) use ($search) {
-                $qe->whereRaw("EXISTS (
+
+        // Paginate tasks 
+        $tasks = $tasksQuery->paginate(20);
+
+        $data = [
+            "projects" => ProjectResource::collection($projects),
+            "employees" => $employees,
+            "tasks" => TaskResource::collection($tasks),
+            "tasks_meta" => [
+                "current_page" => $tasks->currentPage(),
+                "last_page" => $tasks->lastPage(),
+                "per_page" => $tasks->perPage(),
+                "total" => $tasks->total(),
+            ],
+            "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
+            "allowedIn" => date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
+            "deadlineAction" => activeDeadline()["action"],
+            "deadlineDate" => activeDeadline()["deadline"],
+            "isExpired" => isExpired()[0],
+        ];
+
+        return successResponse($data);
+    }
+    public function finishedTasks(Request $request)
+    {
+
+        $tasksQuery = Task::where("status", 1)
+            ->latest('updated_at');
+
+        // Apply search filter if present
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+
+            $tasksQuery->where(function ($q) use ($search) {
+                // Search by title
+                $q->where('title', 'like', "%$search%");
+
+                // Search by project title
+                $q->orWhereHas('project', function ($qp) use ($search) {
+                    $qp->where('title', 'like', "%$search%");
+                });
+
+                // Search by employees JSON column
+                $q->orWhere(function ($qe) use ($search) {
+                    $qe->whereRaw("EXISTS (
                     SELECT 1
                     FROM admins
                     WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
                     AND admins.name LIKE ?
                 )", ["%$search%"]);
+                });
             });
-        });
+        }
+
+
+        // Paginate tasks 
+        $tasks = $tasksQuery->paginate(20);
+
+        $data = [
+            "tasks" => TaskResource::collection($tasks),
+            "tasks_meta" => [
+                "current_page" => $tasks->currentPage(),
+                "last_page" => $tasks->lastPage(),
+                "per_page" => $tasks->perPage(),
+                "total" => $tasks->total(),
+            ],
+        ];
+
+        return successResponse($data);
     }
-
-
-    // Paginate tasks 
-    $tasks = $tasksQuery->paginate(20);
-
-    $data = [
-        "tasks" => TaskResource::collection($tasks),
-        "tasks_meta" => [
-            "current_page" => $tasks->currentPage(),
-            "last_page" => $tasks->lastPage(),
-            "per_page" => $tasks->perPage(),
-            "total" => $tasks->total(),
-        ],
-    ];
-
-    return successResponse($data);
-}
 
 
 
@@ -750,467 +750,471 @@ public function finishedTasks(Request $request)
 
 
 
-        public function elements($id, Request $request)
-        {
-            try {
+    public function elements($id, Request $request)
+    {
+        try {
 
-                $search   = $request->query('search');
-                $perPage  = $request->query('per_page', 10);
+            $search   = $request->query('search');
+            $perPage  = $request->query('per_page', 10);
 
-                // Remove global scopes for Category
-                $category = Category::withoutGlobalScopes()->find($id);
+            // Remove global scopes for Category
+            $category = Category::withoutGlobalScopes()->find($id);
 
-                if (!$category) {
-                    return response()->json(['error' => 'Category not found'], 404);
-                }
+            if (!$category) {
+                return response()->json(['error' => 'Category not found'], 404);
+            }
 
 
 
-                switch ($category->title) {
+            switch ($category->title) {
 
-                    case "projects":
-                        $query = Project::latest()->withoutGlobalScopes();
-                        if ($search) {
-                            $query->where("title", 'like', "%{$search}%")->orWhere("type",$search);
-                        }
-                        $items = $query->paginate($perPage);
+                case "projects":
+                    $query = Project::latest()->withoutGlobalScopes();
+                    if ($search) {
+                        $query->where("title", 'like', "%{$search}%")->orWhere("type", $search);
+                    }
+                    $items = $query->paginate($perPage);
 
-                        $items->getCollection()->transform(function ($item) {
-                                return [
-                                    'id'    => $item->id,
-                                    'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => $item->type,
-                                ];
-                            });
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title, // ⬅ عنوان الـ admin
+                            'extra'  => $item->type,
+                        ];
+                    });
 
-                        break;
+                    break;
 
-                    case "notes":
-                        if (!boula()) break;
+                case "notes":
+                    if (!boula()) break;
 
-                        $query = Note::latest()->withoutGlobalScopes()->where("isOverthinking", 0);
-                        if ($search) {
-                            $query->where("title", 'like', "%{$search}%");
-                        }
-                        $items = $query->paginate($perPage);
+                    $query = Note::latest()->withoutGlobalScopes()->where("isOverthinking", 0);
+                    if ($search) {
+                        $query->where("title", 'like', "%{$search}%");
+                    }
+                    $items = $query->paginate($perPage);
 
-                        $items->getCollection()->transform(function ($item) {
-                                return [
-                                    'id'    => $item->id,
-                                    'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => 'notes',
-                                ];
-                            });
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title, // ⬅ عنوان الـ admin
+                            'extra'  => 'notes',
+                        ];
+                    });
 
-                        break;
+                    break;
 
-                        case "admins":
-                            $query = Admin::latest()->withoutGlobalScopes()->orderBy('name', 'ASC');
-                            if ($search) {
-                                $query->where("name", 'like', "%{$search}%")->orWhere("type",$search);
+                case "admins":
+                    $query = Admin::latest()->withoutGlobalScopes()->orderBy('name', 'ASC');
+                    if ($search) {
+                        $query->where("name", 'like', "%{$search}%")->orWhere("type", $search);
+                    }
+                    $items = $query->paginate($perPage);
+
+                    // تحويل الـ paginator عشان يضيف title
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->name, // ⬅ عنوان الـ admin
+                            'extra'  => $item->type,
+                        ];
+                    });
+
+                    break;
+
+
+                case "navigations":
+                    $query = Navigation::latest()->withoutGlobalScopes()->orderBy('title', 'ASC');
+                    if ($search) {
+                        $query->where("title", 'like', "%{$search}%");
+                    }
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title, // ⬅ عنوان الـ admin
+                            'extra'  => 'navigations',
+                        ];
+                    });
+
+                    break;
+
+                case "categories":
+                    $query = Category::latest()->withoutGlobalScopes();
+
+                    
+
+                    if ($search) {
+                        $query->where("type", $search)->orWhereHas('translations', function($t) use ($search) {
+                            $t->where('title', 'LIKE', "%{$search}%")
+                            ->orWhere('description', 'LIKE', "%{$search}%");
+                        });
+                    }
+
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title, // ⬅ عنوان الـ admin
+                            'extra'  => $item->type,
+                        ];
+                    });
+
+                    break;
+
+
+                case "roles":
+                    if (!boula()) break;
+
+                    $query = Role::latest()->withoutGlobalScopes();
+                    if ($search) {
+                        $query->where("name", 'like', "%{$search}%");
+                    }
+                    $items = $query->paginate($perPage);
+
+                    // تحويل الـ paginator عشان يضيف title
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->name, // ⬅ هنا عنوان الـ role
+                            'extra'  => 'roles',
+                        ];
+                    });
+
+                    break;
+
+
+                case "d_b_credentials":
+                    $query = DBCredential::latest()->withoutGlobalScopes();
+                    if ($search) {
+                        $query->where("db_name", 'like', "%{$search}%")->orWhere("type", $search);
+                    }
+                    $items = $query->paginate($perPage);
+
+                    // ✨ هنا التحويل
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'        => $item->id,
+                            'title'     => $item->db_name, // ⬅ عنوان الـ item
+                            'extra'      => $item->db_username . ", " . $item->db_password,
+                        ];
+                    });
+
+                    break;
+
+
+                case "issues":
+                    if (!boula()) break;
+
+                    $query = Issue::latest()->withoutGlobalScopes();
+                    if ($search) {
+                        $query->where("title", 'like', "%{$search}%")->orWhere("type", $search);
+                    }
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title, // ⬅ عنوان الـ admin
+                            'extra'  => 'issues',
+                        ];
+                    });
+
+                    break;
+
+                case "portfolios":
+                    $query = Gallery::latest()->withoutGlobalScopes();
+                    if ($search) {
+                        $query->where("type", $search)->orWhereHas('translations', function($t) use ($search) {
+                            $t->where('title', 'LIKE', "%{$search}%")
+                            ->orWhere('description', 'LIKE', "%{$search}%");
+                        });
+                    }
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title, // ⬅ عنوان الـ admin
+                            'extra'  => 'portfolios',
+                        ];
+                    });
+
+                    break;
+
+                case "videos":
+                    $query = Video::latest()->withoutGlobalScopes();
+                    if ($search) {
+                        $query->where("title", 'like', "%{$search}%")->orWhere("type", $search);
+                    }
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title, // ⬅ عنوان الـ admin
+                            'extra'  => 'admin',
+                        ];
+                    });
+
+                    break;
+                case "deadlines":
+
+                    $query = Deadline::latest()->withoutGlobalScopes();
+
+                    if ($search) {
+
+                        // convert only when valid
+                        $keyword = null;
+                        if ($search === "Finished") $keyword = 1;
+                        if ($search === "Live") $keyword = 0;
+
+                        $query->where(function ($q) use ($search, $keyword) {
+
+                            // Title search
+                            $q->where("title", "like", "%{$search}%");
+
+                            // Status search (only when Live/Finished)
+                            if (!is_null($keyword)) {
+                                $q->orWhere("status", $keyword);
                             }
-                            $items = $query->paginate($perPage);
+                        });
+                    }
 
-                            // تحويل الـ paginator عشان يضيف title
-                            $items->getCollection()->transform(function ($item) {
-                                return [
-                                    'id'    => $item->id,
-                                    'title' => $item->name, // ⬅ عنوان الـ admin
-                                    'extra'  => $item->type,
-                                ];
-                            });
+                    $items = $query->paginate($perPage);
 
-                            break;
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => $item->status == 1 ? "Finished" : "Live",
+                        ];
+                    });
 
-
-                    case "navigations":
-                        $query = Navigation::latest()->withoutGlobalScopes()->orderBy('title', 'ASC');
-                        if ($search) {
-                            $query->where("title", 'like', "%{$search}%");
-                        }
-                        $items = $query->paginate($perPage);
-
-                        $items->getCollection()->transform(function ($item) {
-                                return [
-                                    'id'    => $item->id,
-                                    'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => 'navigations',
-                                ];
-                            });
-
-                        break;
-
-                        case "categories":
-                            $query = Category::latest()->withoutGlobalScopes();
-
-                        if ($search) {
-                            $query->where("title", 'like', "%{$search}%")->orWhere("type",$search);
-                        }
-
-                            $items = $query->paginate($perPage);
-
-                            $items->getCollection()->transform(function ($item) {
-                                return [
-                                    'id'    => $item->id,
-                                    'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => $item->type,
-                                ];
-                            });
-
-                            break;
+                    break;
 
 
-                            case "roles":
-                                if (!boula()) break;
+                case "fees":
+                    $query = Fee::withoutGlobalScopes()->latest();
+                    if ($search) {
+                        $query->where(function ($q) use ($search) {
+                            $q->where('amount', $search) // task title
+                                ->orWhereHas('project', function ($p) use ($search) {
+                                    $p->where('title', 'LIKE', "%{$search}%"); // project title
+                                })->orWhere("note", 'LIKE', "%{$search}%");
+                        });
+                    }
+                    $items = $query->paginate($perPage);
 
-                                $query = Role::latest()->withoutGlobalScopes();
-                                if ($search) {
-                                    $query->where("name", 'like', "%{$search}%");
-                                }
-                                $items = $query->paginate($perPage);
+                    // إضافة title لكل عنصر
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->amount . " EGP", // ⬅ عنوان الـ fee
+                            'extra'  => (isset($item->note) ? $item->note : "Non note") . ", " . optional($item->project)->title,
+                        ];
+                    });
 
-                                // تحويل الـ paginator عشان يضيف title
-                                $items->getCollection()->transform(function ($item) {
-                                    return [
-                                        'id'    => $item->id,
-                                        'title' => $item->name, // ⬅ هنا عنوان الـ role
-                                        'extra'  => 'roles',
-                                    ];
+                    break;
+
+
+                case "tasks":
+
+                    $search = $request->query('search');
+                    $perPage = $request->query('per_page', 20);
+
+                    $query = Task::latest()->with('project') // load project title
+                        ->withoutGlobalScopes();
+
+                    // 🔍 Apply search on both task title + project title
+                    if ($search) {
+
+                        $query->where(function ($q) use ($search) {
+
+                            $status = null;
+                            if (strtolower($search) === "live") $status = 0;
+                            if (strtolower($search) === "finished") $status = 1;
+
+                            // Search title + project title
+                            $q->where('title', 'LIKE', "%{$search}%")
+                                ->orWhereHas('project', function ($p) use ($search) {
+                                    $p->where('title', 'LIKE', "%{$search}%");
                                 });
 
-                                break;
-
-
-                        case "d_b_credentials":
-                            $query = DBCredential::latest()->withoutGlobalScopes();
-                            if ($search) {
-                            $query->where("db_name", 'like', "%{$search}%")->orWhere("type",$search);
-                             }
-                            $items = $query->paginate($perPage);
-
-                            // ✨ هنا التحويل
-                            $items->getCollection()->transform(function ($item) {
-                                return [
-                                    'id'        => $item->id,
-                                    'title'     => $item->db_name, // ⬅ عنوان الـ item
-                                    'extra'      => $item->db_username.", ".$item->db_password,
-                                ];
-                            });
-
-                            break;
-
-
-                    case "issues":
-                        if (!boula()) break;
-
-                        $query = Issue::latest()->withoutGlobalScopes();
-                            if ($search) {
-                            $query->where("title", 'like', "%{$search}%")->orWhere("type",$search);
-                        }
-                        $items = $query->paginate($perPage);
-
-                            $items->getCollection()->transform(function ($item) {
-                                return [
-                                    'id'    => $item->id,
-                                    'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => 'issues',
-                                ];
-                            });
-
-                        break;
-
-                    case "portfolios":
-                        $query = Gallery::latest()->withoutGlobalScopes();
-                            if ($search) {
-                            $query->where("title", 'like', "%{$search}%")->orWhere("type",$search);
-                             }
-                        $items = $query->paginate($perPage);
-
-                        $items->getCollection()->transform(function ($item) {
-                                return [
-                                    'id'    => $item->id,
-                                    'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => 'portfolios',
-                                ];
-                            });
-
-                        break;
-
-                    case "videos":
-                        $query = Video::latest()->withoutGlobalScopes();
-                            if ($search) {
-                            $query->where("title", 'like', "%{$search}%")->orWhere("type",$search);
-                             }
-                        $items = $query->paginate($perPage);
-
-                        $items->getCollection()->transform(function ($item) {
-                                return [
-                                    'id'    => $item->id,
-                                    'title' => $item->title, // ⬅ عنوان الـ admin
-                                    'extra'  => 'admin',
-                                ];
-                            });
-
-                        break;
-                        case "deadlines":
-
-                            $query = Deadline::latest()->withoutGlobalScopes();
-
-                            if ($search) {
-
-                                // convert only when valid
-                                $keyword = null;
-                                if ($search === "Finished") $keyword = 1;
-                                if ($search === "Live") $keyword = 0;
-
-                                $query->where(function($q) use ($search, $keyword) {
-
-                                    // Title search
-                                    $q->where("title", "like", "%{$search}%");
-
-                                    // Status search (only when Live/Finished)
-                                    if (!is_null($keyword)) {
-                                        $q->orWhere("status", $keyword);
-                                    }
-
-                                });
+                            // Search status only if valid
+                            if (!is_null($status)) {
+                                $q->orWhere('status', $status);
                             }
+                        });
+                    }
 
-                            $items = $query->paginate($perPage);
 
-                            $items->getCollection()->transform(function ($item) {
-                                return [
-                                    'id'    => $item->id,
-                                    'title' => $item->title,
-                                    'extra' => $item->status==1 ? "Finished" : "Live",
-                                ];
-                            });
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title, // ⬅ عنوان الـ admin
+                            'extra'  => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished"),
+                        ];
+                    });
 
-                            break;
 
-
-                                                case "fees":
-                                                    $query = Fee::withoutGlobalScopes()->latest();
-                                                    if ($search) {
-                                                        $query->where(function($q) use ($search) {
-                                                            $q->where('amount', $search) // task title
-                                                            ->orWhereHas('project', function($p) use ($search) {
-                                                                $p->where('title', 'LIKE', "%{$search}%"); // project title
-                                                            })->orWhere("note", 'LIKE', "%{$search}%");
-                                                        });
-                                                    }
-                                                    $items = $query->paginate($perPage);
-
-                                                    // إضافة title لكل عنصر
-                                                    $items->getCollection()->transform(function ($item) {
-                                                        return [
-                                                            'id'    => $item->id,
-                                                            'title' => $item->amount . " EGP", // ⬅ عنوان الـ fee
-                                                            'extra'  => (isset($item->note)?$item->note:"Non note").", ".optional($item->project)->title,
-                                                        ];
-                                                    });
-
-                                                    break;
-
-
-                                                case "tasks":
-
-                                                    $search = $request->query('search');
-                                                    $perPage = $request->query('per_page', 20);
+                    break;
 
-                                                    $query = Task::latest()->with('project') // load project title
-                                                                ->withoutGlobalScopes();
-
-                                                    // 🔍 Apply search on both task title + project title
-                                                    if ($search) {
-
-                                                        $query->where(function($q) use ($search) {
-
-                                                            $status = null;
-                                                            if (strtolower($search) === "live") $status = 0;
-                                                            if (strtolower($search) === "finished") $status = 1;
-
-                                                            // Search title + project title
-                                                            $q->where('title', 'LIKE', "%{$search}%")
-                                                            ->orWhereHas('project', function($p) use ($search) {
-                                                                $p->where('title', 'LIKE', "%{$search}%");
-                                                            });
 
-                                                            // Search status only if valid
-                                                            if (!is_null($status)) {
-                                                                $q->orWhere('status', $status);
-                                                            }
-                                                        });
-                                                    }
+                default:
+                    return response()->json(['error' => 'Unsupported category'], 400);
+            }
 
+            return successResponse([
+                "elements"   => $items,     // full pagination object
+                "isExpired"  => isExpired()[0],
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
 
-                                                    $items = $query->paginate($perPage);
 
-                                                    $items->getCollection()->transform(function ($item) {
-                                                        return [
-                                                            'id'    => $item->id,
-                                                            'title' => $item->title, // ⬅ عنوان الـ admin
-                                                            'extra'  => $item->project->title.", ".($item->status==0?"live":"finished"),
-                                                        ];
-                                                    });
+    public function deadlines()
+    {
+        try {
 
+            $deadlines = Deadline::where("status", 0)->latest()->orderBy("date", "asc")->get();
+            $data["deadlines"] = $deadlines;
+            $data["isExpired"] = isExpired()[0];
+            if (boula())
+                return successResponse($data);
+            else
+                return successResponse([]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+    public function bases()
+    {
+        try {
 
-                                                    break;
+            $bases = Base::get();
+            $data["bases"] = $bases;
+            $data["isExpired"] = isExpired()[0];
+            return successResponse($data);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
 
 
-                                            default:
-                                                return response()->json(['error' => 'Unsupported category'], 400);
-                                        }
 
-                                        return successResponse([
-                                            "elements"   => $items,     // full pagination object
-                                            "isExpired"  => isExpired()[0],
-                                        ]);
+    public function updateDeadline(Request $request)
+    {
+        try {
+            $deadline = Deadline::find($request->id);
+            if ($request->action == "delete")
+                $deadline->update(["status" => !$deadline->status]);
+            else if (isset($request->date))
+                $deadline->update(["date" => $request->date, "title" => isset($request->title) ? $request->title : $deadline->title]);
 
-                                    } catch (Exception $e) {
-                                        return response()->json(['error' => $e->getMessage()]);
-                                    }
-                                }
+            $deadlines = Deadline::orderBy("date", "asc")->get();
 
 
-                            public function deadlines()
-                            {
-                                try {
+            $data = ["boardProjects" => $deadlines, "action" => $request->action];
 
-                                    $deadlines = Deadline::where("status",0)->latest()->orderBy("date", "asc")->get();
-                                    $data["deadlines"] = $deadlines;
-                                    $data["isExpired"] = isExpired()[0];
-                                    if (boula())
-                                        return successResponse($data);
-                                    else
-                                        return successResponse([]);
-                                } catch (Exception $e) {
-                                    return response()->json(['error' => $e->getMessage()]);
-                                }
-                            }
-                            public function bases()
-                            {
-                                try {
+            return successResponse($data);
+        } catch (Exception $e) {
+            DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(),]);
+            return failedResponse($e->getMessage());
+        }
+    }
 
-                                    $bases = Base::get();
-                                    $data["bases"] = $bases;
-                                    $data["isExpired"] = isExpired()[0];
-                                    return successResponse($data);
-                                } catch (Exception $e) {
-                                    return response()->json(['error' => $e->getMessage()]);
-                                }
-                            }
+    public function updateProjectDeadline(Request $request)
+    {
+        try {
 
+            DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode($request->all()), 'created_at' => now(),]);
+            $deadline = Project::find($request->id);
 
+            $deadlineTime = Carbon::parse($request->date, 'UTC')->setTimezone('Africa/Cairo');
+            $deadline->update(["deadline" => $deadlineTime]);
 
-                            public function updateDeadline(Request $request)
-                            {
-                                try {
-                                    $deadline = Deadline::find($request->id);
-                                    if ($request->action == "delete")
-                                        $deadline->update(["status" => !$deadline->status]);
-                                    else if (isset($request->date))
-                                        $deadline->update(["date" => $request->date, "title" => isset($request->title) ? $request->title : $deadline->title]);
+            $deadlines = Project::orderBy("deadline", "asc")->get();
 
-                                    $deadlines = Deadline::orderBy("date", "asc")->get();
 
+            $data = ["boardProjects" => ProjectResource::collection(
+                Project::orderBy("deadline", "asc")
+                    ->get()
+                    ->filter(fn($project) => $project->status != 1)
+            )];
 
-                                    $data = ["boardProjects" => $deadlines, "action" => $request->action];
+            return successResponse($data);
+        } catch (Exception $e) {
+            DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(),]);
+            return failedResponse($e->getMessage());
+        }
+    }
 
-                                    return successResponse($data);
-                                } catch (Exception $e) {
-                                    DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(),]);
-                                    return failedResponse($e->getMessage());
-                                }
-                            }
 
-                            public function updateProjectDeadline(Request $request)
-                            {
-                                try {
 
-                                    DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode($request->all()), 'created_at' => now(),]);
-                                    $deadline = Project::find($request->id);
 
-                                    $deadlineTime = Carbon::parse($request->date, 'UTC')->setTimezone('Africa/Cairo');
-                                    $deadline->update(["deadline" => $deadlineTime]);
+    public function storeDeadline(Request $request)
+    {
+        try {
+            if (boula())
+                $deadline = Deadline::create(["title" => $request->title, "date" => $request->date]);
 
-                                    $deadlines = Project::orderBy("deadline", "asc")->get();
+            $deadlines = Deadline::orderBy("date", "asc")->get();
 
 
-                                    $data = ["boardProjects" => ProjectResource::collection(
-                                        Project::orderBy("deadline", "asc")
-                                            ->get()
-                                            ->filter(fn($project) => $project->status != 1)
-                                    )];
+            $data = ["deadlines" => $deadlines, "action" => $request->action];
 
-                                    return successResponse($data);
-                                } catch (Exception $e) {
-                                    DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(),]);
-                                    return failedResponse($e->getMessage());
-                                }
-                            }
+            return successResponse($data);
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
+    }
 
 
 
 
-                            public function storeDeadline(Request $request)
-                            {
-                                try {
-                                    if (boula())
-                                        $deadline = Deadline::create(["title" => $request->title, "date" => $request->date]);
 
-                                    $deadlines = Deadline::orderBy("date", "asc")->get();
 
+    public function track(Request $request)
+    {
 
-                                    $data = ["deadlines" => $deadlines, "action" => $request->action];
+        try {
 
-                                    return successResponse($data);
-                                } catch (Exception $e) {
-                                    return failedResponse($e->getMessage());
-                                }
-                            }
+            $data = [];
 
+            DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode(request()->all()), 'created_at' => now(), 'updated_at' => now(),]);
 
+            return response()->json([
+                'message' => 'User successfully registered',
+                'user' => $data
+            ], 201);
+        } catch (Ecxception $e) {
+            dd($e->getMessage());
+        }
+    }
 
+    public function lifIssue()
+    {
 
+        try {
+            if (boula()) {
 
+                $lifeIssue = Issue::where("id", 66)->first();
 
-                            public function track(Request $request)
-                            {
 
-                                try {
-
-                                    $data = [];
-
-                                    DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode(request()->all()), 'created_at' => now(), 'updated_at' => now(),]);
-
-                                    return response()->json([
-                                        'message' => 'User successfully registered',
-                                        'user' => $data
-                                    ], 201);
-                                } catch (Ecxception $e) {
-                                    dd($e->getMessage());
-                                }
-                            }
-
-                            public function lifIssue()
-                            {
-
-                                try {
-                                    if (boula()) {
-
-                                        $lifeIssue = Issue::where("id", 66)->first();
-
-
-                                        return response()->json([
-                                            'message' => 'User is Boula',
-                                            'data' => $lifeIssue
-                                        ], 201);
-                                    }
-                                } catch (Ecxception $e) {
-                                    dd($e->getMessage());
-                                }
-                            }
-
-
-                        }
+                return response()->json([
+                    'message' => 'User is Boula',
+                    'data' => $lifeIssue
+                ], 201);
+            }
+        } catch (Ecxception $e) {
+            dd($e->getMessage());
+        }
+    }
+}
