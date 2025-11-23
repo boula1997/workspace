@@ -887,7 +887,7 @@ public function elements($id, Request $request)
             ],
             'categories' => [
                 'model' => Category::class,
-                'keys'  => ['type', 'title', 'description'],
+                'keys'  => ['title','type', 'description'],
                 'transform' => function ($item) {
                     return [
                         'id'    => $item->id,
