@@ -750,550 +750,210 @@ class TaskController extends Controller
 
 
 
-    public function elements($id, Request $request)
-    {
-        try {
-
-            $search   = $request->query('search');
-            $perPage  = $request->query('per_page', 10);
-
-            // Remove global scopes for Category
-            $category = Category::withoutGlobalScopes()->find($id);
-
-            if (!$category) {
-                return response()->json(['error' => 'Category not found'], 404);
-            }
-
-
-
-            switch ($category->title) {
-
-                case "projects":
-                    $query = Project::latest()->withoutGlobalScopes();
-
-                    if ($search) {
-                        // Split search by commas and trim whitespace
-                        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-                        $query->where(function ($outer) use ($keywords) {
-                            foreach ($keywords as $word) {
-                                $outer->where(function ($q) use ($word) {
-                                    // Title search (always)
-                                    $q->where('title', 'LIKE', "%{$word}%");
-
-                                    // Cost search (only if numeric)
-                                    if (is_numeric($word)) {
-                                        $q->where('cost', $word);
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->title,
-                            'extra' => $item->cost . ", " . rest($item),
-                        ];
-                    });
-
-                    break;
-
-
-
-                case "notes":
-                    if (!boula()) break;
-
-                    $query = Note::latest()->withoutGlobalScopes()->where("isOverthinking", 0);
-
-                    if ($search) {
-                        // Split search by commas and trim whitespace
-                        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-                        $query->where(function ($outer) use ($keywords) {
-                            foreach ($keywords as $word) {
-                                $outer->where(function ($q) use ($word) {
-                                    $q->where("title", 'like', "%{$word}%")
-                                        ->where("type", 'like', "%{$word}%");
-                                });
-                            }
-                        });
-                    }
-
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->title, // ⬅ عنوان الـ admin
-                            'extra' => 'notes',
-                        ];
-                    });
-
-                    break;
-
-
-                case "admins":
-
-                    $query = Admin::latest()
-                        ->withoutGlobalScopes()
-                        ->orderBy('name', 'ASC');
-
-                    if ($search) {
-                        // Split search by commas and trim whitespace
-                        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-                        $query->where(function ($outer) use ($keywords) {
-                            foreach ($keywords as $word) {
-                                $outer->where(function ($q) use ($word) {
-                                    $q->where("name", "LIKE", "%{$word}%")
-                                        ->where("type", $word);
-                                });
-                            }
-                        });
-                    }
-
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->name, // ⬅ عنوان الـ admin
-                            'extra' => $item->type,
-                        ];
-                    });
-
-                    break;
-
-
-
-                case "navigations":
-
-                    $query = Navigation::latest()
-                        ->withoutGlobalScopes()
-                        ->orderBy('title', 'ASC');
-
-                    if ($search) {
-
-                        // 1️⃣ Convert "home,about,contact" → ["home", "about", "contact"]
-                        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-                        $query->where(function ($outer) use ($keywords) {
-
-                            foreach ($keywords as $word) {
-                                $outer->where(function ($q) use ($word) {
-                                    $q->where("title", "LIKE", "%{$word}%")
-                                        ->where("link", "LIKE", "%{$word}%");
-                                });
-                            }
-                        });
-                    }
-
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->title,
-                            'extra' => 'navigations',
-                        ];
-                    });
-
-                    break;
-
-
-                case "categories":
-                    $query = Category::latest()->withoutGlobalScopes();
-
-                    if ($search) {
-
-                        // 1️⃣ Split into words → ["word1", "word2", ...]
-                        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-                        $query->where(function ($outer) use ($keywords) {
-
-                            foreach ($keywords as $word) {
-
-                                $outer->where(function ($q) use ($word) {
-
-                                    // Search in main table (type)
-                                    $q->where("type", "LIKE", "%{$word}%")
-
-                                        // Search in translations table
-                                        ->orWhereHas('translations', function ($t) use ($word) {
-                                            $t->where('title', 'LIKE', "%{$word}%")
-                                                ->where('description', 'LIKE', "%{$word}%");
-                                        });
-                                });
-                            }
-                        });
-                    }
-
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->title,
-                            'extra' => $item->type,
-                        ];
-                    });
-
-                    break;
-
-
-
-                case "roles":
-                    if (!boula()) break;
-
-                    $query = Role::latest()->withoutGlobalScopes();
-
-                    if ($search) {
-
-                        // 1️⃣ Convert "word1, word2" → ["word1", "word2"]
-                        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-                        $query->where(function ($outer) use ($keywords) {
-
-                            foreach ($keywords as $word) {
-                                $outer->where(function ($q) use ($word) {
-                                    $q->where("name", "LIKE", "%{$word}%")
-                                        ->where("guard_name", "LIKE", "%{$word}%");
-                                });
-                            }
-                        });
-                    }
-
-                    $items = $query->paginate($perPage);
-
-                    // ✨ Transform output
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->name,
-                            'extra' => "roles",
-                        ];
-                    });
-
-                    break;
-
-
-
-                case "d_b_credentials":
-
-                    $query = DBCredential::latest()->withoutGlobalScopes();
-
-                    if ($search) {
-
-                        // 1️⃣ Convert "word1, word2" → ["word1", "word2"]
-                        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-                        $query->where(function ($outer) use ($keywords) {
-
-                            foreach ($keywords as $word) {
-                                $outer->where(function ($q) use ($word) {
-                                    $q->where("db_name", "LIKE", "%{$word}%")
-                                        ->where("db_username", "LIKE", "%{$word}%")
-                                        ->where("db_password", "LIKE", "%{$word}%");
-                                });
-                            }
-                        });
-                    }
-
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->db_name,
-                            'extra' => $item->db_username . ", " . $item->db_password,
-                        ];
-                    });
-
-                    break;
-
-
-
-                case "issues":
-
-                    if (!boula()) break;
-
-                    $query = Issue::latest()->withoutGlobalScopes();
-
-                    if ($search) {
-
-                        // 1️⃣ Convert "word1, word2" → ["word1", "word2"]
-                        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-                        $query->where(function ($outer) use ($keywords) {
-
-                            foreach ($keywords as $word) {
-
-                                $outer->where(function ($q) use ($word) {
-                                    $q->where("title", "LIKE", "%{$word}%")
-                                        ->where("script", "LIKE", "%{$word}%");
-                                });
-                            }
-                        });
-                    }
-
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->title,
-                            'extra' => 'issues',
-                        ];
-                    });
-
-                    break;
-
-
-                case "clienttracks":
-
-                    $query = Clienttrack::latest()->withoutGlobalScopes();
-
-                    if ($search) {
-
-                        // 1️⃣ Split into array: ["keyword1", "keyword2", ...]
-                        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-                        // 2️⃣ Loop through all keywords
-                        $query->where(function ($outer) use ($keywords) {
-
-                            foreach ($keywords as $word) {
-
-                                $outer->where(function ($q) use ($word) {
-
-                                    $q->where('action', 'LIKE', "%{$word}%")   // ClientTrack action
-                                        ->where('src', 'LIKE', "%{$word}%")    // source
-                                        ->orWhereHas('project', function ($p) use ($word) {
-                                            $p->where('title', 'LIKE', "%{$word}%"); // project title
-                                        });
-                                });
-                            }
-                        });
-                    }
-
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->action,
-                            'extra' => $item->project->title . ", " . ($item->src ?? "none") . ", " . $item->created_at,
-                        ];
-                    });
-
-                    break;
-
-                case "videos":
-
-                    $query = Video::latest()->withoutGlobalScopes();
-
-                    if ($search) {
-
-                        // 1️⃣ Convert "key1,key2" → ["key1", "key2"]
-                        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-                        $query->where(function ($outer) use ($keywords) {
-
-                            foreach ($keywords as $word) {
-
-                                $outer->where(function ($q) use ($word) {
-                                    $q->where("title", "like", "%{$word}%")
-                                        ->where("link", "like", "%{$word}%");
-                                });
-                            }
-                        });
-                    }
-
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->title,
-                            'extra' => 'admin',
-                        ];
-                    });
-
-                    break;
-
-                case "deadlines":
-
-                    $query = Deadline::latest()->withoutGlobalScopes();
-
-                    if ($search) {
-
-                        // 1️⃣ Split "keyword1,keyword2" → ["keyword1","keyword2"]
-                        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-                        // 2️⃣ Apply search
-                        $query->where(function ($outer) use ($keywords) {
-
-                            foreach ($keywords as $word) {
-
-                                // Convert special words (Live/Finished)
-                                $statusKeyword = null;
-                                if (strcasecmp($word, "Finished") === 0) $statusKeyword = 1;
-                                if (strcasecmp($word, "Live") === 0)     $statusKeyword = 0;
-
-                                $outer->where(function ($q) use ($word, $statusKeyword) {
-
-                                    // Search in title
-                                    $q->where("title", "LIKE", "%{$word}%");
-
-                                    // If word = Live or Finished → search by status
-                                    if (!is_null($statusKeyword)) {
-                                        $q->where("status", $statusKeyword);
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->title,
-                            'extra' => $item->status == 1 ? "Finished" : "Live",
-                        ];
-                    });
-
-                    break;
-
-
-
-                case "fees":
-
-                    $query = Fee::withoutGlobalScopes()->latest();
-
-                    if ($search) {
-
-                        $search = trim($search);
-
-                        // Special case: "-" → all negative amounts, "+" → all positive amounts
-                        if ($search === '-') {
-                            $query->where('amount', '<', 0);
-                        } elseif ($search === '+') {
-                            $query->where('amount', '>', 0);
-                        } else {
-                            // Split keywords: "200,logo,marketing"
-                            $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-                            $query->where(function ($outer) use ($keywords) {
-
-                                foreach ($keywords as $word) {
-
-                                    $outer->where(function ($q) use ($word) {
-
-                                        if (is_numeric($word)) {
-                                            // Numeric search only on amount
-                                            $q->where('amount', $word);
-                                        } else {
-                                            // Text search on note or project title
-                                            $q->where('note', 'LIKE', "%{$word}%")
-                                                ->orWhereHas('project', function ($p) use ($word) {
-                                                    $p->where('title', 'LIKE', "%{$word}%");
-                                                });
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    }
-
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->amount . " EGP",
-                            'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title . ", " . $item->created_at,
-                        ];
-                    });
-
-                    break;
-
-
-
-
-                case "tasks":
-
-                    $search = $request->query('search');
-                    $perPage = $request->query('per_page', 20);
-
-                    $query = Task::latest()
-                        ->with('project')
-                        ->withoutGlobalScopes();
-
-                    if ($search) {
-
-                        // 1️⃣ Split into array: ["keyword1", "keyword2"]
-                        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-                        // 2️⃣ Apply search
-                        $query->where(function ($outer) use ($keywords) {
-
-                            foreach ($keywords as $word) {
-
-                                $outer->where(function ($q) use ($word) {
-
-                                    // Status keyword conversion
-                                    $status = null;
-                                    if (strcasecmp($word, "live") === 0)     $status = 0;
-                                    if (strcasecmp($word, "finished") === 0) $status = 1;
-
-                                    // Task title search
-                                    $q->where('title', 'LIKE', "%{$word}%")
-
-                                        // Project title search
-                                        ->orWhereHas('project', function ($p) use ($word) {
-                                            $p->where('title', 'LIKE', "%{$word}%");
-                                        });
-
-                                    // If the keyword is "live" or "finished"
-                                    if (!is_null($status)) {
-                                        $q->where('status', $status);
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->title,
-                            'extra' => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished"),
-                        ];
-                    });
-
-                    break;
-
-
-
-                default:
-                    return response()->json(['error' => 'Unsupported category'], 400);
-            }
-
-            return successResponse([
-                "elements"   => $items,     // full pagination object
-                "isExpired"  => isExpired()[0],
-            ]);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
+public function elements($id, Request $request)
+{
+    try {
+        $search   = $request->query('search');
+        $perPage  = $request->query('per_page', 20);
+
+        $category = Category::withoutGlobalScopes()->find($id);
+
+        if (!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
         }
+
+        // Map category to model and key mappings
+        $categoryMap = [
+            'projects' => [
+                'model' => Project::class,
+                'keys'  => ['title', 'cost'], // fields for filtering
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'title' => $item->title,
+                        'extra' => $item->cost . ", " . rest($item),
+                    ];
+                }
+            ],
+            'fees' => [
+                'model' => Fee::class,
+                'keys'  => ['amount', 'note', 'project_title'], // project_title → relation
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'title' => $item->amount . " EGP",
+                        'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title . ", " . $item->created_at,
+                    ];
+                }
+            ],
+            'tasks' => [
+                'model' => Task::class,
+                'keys'  => ['title', 'project_title', 'status'],
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'title' => $item->title,
+                        'extra' => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished"),
+                    ];
+                }
+            ],
+            'deadlines' => [
+                'model' => Deadline::class,
+                'keys'  => ['title', 'status'],
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'title' => $item->title,
+                        'extra' => $item->status == 1 ? "Finished" : "Live",
+                    ];
+                }
+            ],
+            'admins' => [
+                'model' => Admin::class,
+                'keys'  => ['name', 'type'],
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'title' => $item->name,
+                        'extra' => $item->type,
+                    ];
+                }
+            ],
+            'navigations' => [
+                'model' => Navigation::class,
+                'keys'  => ['title', 'link'],
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'title' => $item->title,
+                        'extra' => 'navigations',
+                    ];
+                }
+            ],
+            'roles' => [
+                'model' => Role::class,
+                'keys'  => ['name', 'guard_name'],
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'title' => $item->name,
+                        'extra' => 'roles',
+                    ];
+                }
+            ],
+            'd_b_credentials' => [
+                'model' => DBCredential::class,
+                'keys'  => ['db_name', 'db_username', 'db_password'],
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'title' => $item->db_name,
+                        'extra' => $item->db_username . ", " . $item->db_password,
+                    ];
+                }
+            ],
+            'clienttracks' => [
+                'model' => Clienttrack::class,
+                'keys'  => ['action', 'src', 'project_title'],
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'title' => $item->action,
+                        'extra' => $item->project->title . ", " . ($item->src ?? "none") . ", " . $item->created_at,
+                    ];
+                }
+            ],
+            'videos' => [
+                'model' => Video::class,
+                'keys'  => ['title', 'link'],
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'title' => $item->title,
+                        'extra' => 'admin',
+                    ];
+                }
+            ],
+            'notes' => [
+                'model' => Note::class,
+                'keys'  => ['title', 'type'],
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'title' => $item->title,
+                        'extra' => 'notes',
+                    ];
+                }
+            ],
+            'categories' => [
+                'model' => Category::class,
+                'keys'  => ['type', 'title', 'description'],
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'title' => $item->title,
+                        'extra' => $item->type,
+                    ];
+                }
+            ],
+        ];
+
+        if (!isset($categoryMap[$category->title])) {
+            return response()->json(['error' => 'Unsupported category'], 400);
+        }
+
+        $model = $categoryMap[$category->title]['model'];
+        $keys = $categoryMap[$category->title]['keys'];
+        $transform = $categoryMap[$category->title]['transform'];
+
+        $query = $model::latest()->withoutGlobalScopes();
+
+        if ($search) {
+            $values = array_filter(array_map('trim', explode(',', $search)));
+
+            $query->where(function ($q) use ($keys, $values) {
+                foreach ($values as $i => $val) {
+                    if (!isset($keys[$i])) break;
+
+                    $key = $keys[$i];
+
+                    $q->where(function ($sub) use ($key, $val) {
+                        // Special handling
+                        if (is_numeric($val)) {
+                            $sub->where($key, $val);
+                        } elseif (in_array(strtolower($val), ['live', 'finished'])) {
+                            $status = strtolower($val) === 'live' ? 0 : 1;
+                            $sub->where($key, $status);
+                        } elseif ($val === '-') {
+                            $sub->where($key, '<', 0);
+                        } elseif ($val === '+') {
+                            $sub->where($key, '>', 0);
+                        } elseif ($key === 'project_title') {
+                            $sub->whereHas('project', function ($p) use ($val) {
+                                $p->where('title', 'LIKE', "%{$val}%");
+                            });
+                        } else {
+                            $sub->where($key, 'LIKE', "%{$val}%");
+                        }
+                    });
+                }
+            });
+        }
+
+        $items = $query->paginate($perPage);
+
+        $items->getCollection()->transform($transform);
+
+        return successResponse([
+            "elements"   => $items,
+            "isExpired"  => isExpired()[0],
+        ]);
+
+    } catch (Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
     }
+}
+
 
 
     public function deadlines()
