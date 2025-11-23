@@ -770,85 +770,18 @@ class TaskController extends Controller
 
                 case "projects":
                     $query = Project::latest()->withoutGlobalScopes();
-                    if ($search) {
-                        $query->where("title", 'like', "%{$search}%");
-                    }
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->title, // ⬅ عنوان الـ admin
-                            'extra'  => $item->type,
-                        ];
-                    });
-
-                    break;
-
-                case "notes":
-                    if (!boula()) break;
-
-                    $query = Note::latest()->withoutGlobalScopes()->where("isOverthinking", 0);
-                    if ($search) {
-                        $query->where("title", 'like', "%{$search}%");
-                    }
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->title, // ⬅ عنوان الـ admin
-                            'extra'  => 'notes',
-                        ];
-                    });
-
-                    break;
-
-                case "admins":
-                    $query = Admin::latest()->withoutGlobalScopes()->orderBy('name', 'ASC');
-                    if ($search) {
-                        $query->where("name", 'like', "%{$search}%")->orWhere("type", $search);
-                    }
-                    $items = $query->paginate($perPage);
-
-                    // تحويل الـ paginator عشان يضيف title
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->name, // ⬅ عنوان الـ admin
-                            'extra'  => $item->type,
-                        ];
-                    });
-
-                    break;
-
-
-                case "navigations":
-                    $query = Navigation::latest()->withoutGlobalScopes()->orderBy('title', 'ASC');
-                    if ($search) {
-                        $query->where("title", 'like', "%{$search}%");
-                    }
-                    $items = $query->paginate($perPage);
-
-                    $items->getCollection()->transform(function ($item) {
-                        return [
-                            'id'    => $item->id,
-                            'title' => $item->title, // ⬅ عنوان الـ admin
-                            'extra'  => 'navigations',
-                        ];
-                    });
-
-                    break;
-
-                case "categories":
-                    $query = Category::latest()->withoutGlobalScopes();
-
-                    
 
                     if ($search) {
-                        $query->where("type", $search)->orWhereHas('translations', function($t) use ($search) {
-                            $t->where('title', 'LIKE', "%{$search}%")
-                            ->orWhere('description', 'LIKE', "%{$search}%");
+                        // Split search by commas and trim whitespace
+                        $keywords = array_filter(array_map('trim', explode(',', $search)));
+
+                        $query->where(function ($outer) use ($keywords) {
+                            foreach ($keywords as $word) {
+                                $outer->orWhere(function ($q) use ($word) {
+                                    $q->where("title", 'like', "%{$word}%")
+                                        ->orWhere("cost", $word); // exact match for cost
+                                });
+                            }
                         });
                     }
 
@@ -858,328 +791,481 @@ class TaskController extends Controller
                         return [
                             'id'    => $item->id,
                             'title' => $item->title, // ⬅ عنوان الـ admin
-                            'extra'  => $item->type,
+                            'extra' => $item->type,
                         ];
                     });
 
                     break;
+
+
+                case "notes":
+                    if (!boula()) break;
+
+                    $query = Note::latest()->withoutGlobalScopes()->where("isOverthinking", 0);
+
+                    if ($search) {
+                        // Split search by commas and trim whitespace
+                        $keywords = array_filter(array_map('trim', explode(',', $search)));
+
+                        $query->where(function ($outer) use ($keywords) {
+                            foreach ($keywords as $word) {
+                                $outer->where(function ($q) use ($word) {
+                                    $q->where("title", 'like', "%{$word}%")
+                                        ->orWhere("type", 'like', "%{$word}%");
+                                });
+                            }
+                        });
+                    }
+
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title, // ⬅ عنوان الـ admin
+                            'extra' => 'notes',
+                        ];
+                    });
+
+                    break;
+
+
+                case "admins":
+
+                    $query = Admin::latest()
+                        ->withoutGlobalScopes()
+                        ->orderBy('name', 'ASC');
+
+                    if ($search) {
+                        // Split search by commas and trim whitespace
+                        $keywords = array_filter(array_map('trim', explode(',', $search)));
+
+                        $query->where(function ($outer) use ($keywords) {
+                            foreach ($keywords as $word) {
+                                $outer->where(function ($q) use ($word) {
+                                    $q->where("name", "LIKE", "%{$word}%")
+                                        ->orWhere("type", $word);
+                                });
+                            }
+                        });
+                    }
+
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->name, // ⬅ عنوان الـ admin
+                            'extra' => $item->type,
+                        ];
+                    });
+
+                    break;
+
+
+
+                case "navigations":
+
+                    $query = Navigation::latest()
+                        ->withoutGlobalScopes()
+                        ->orderBy('title', 'ASC');
+
+                    if ($search) {
+
+                        // 1️⃣ Convert "home,about,contact" → ["home", "about", "contact"]
+                        $keywords = array_filter(array_map('trim', explode(',', $search)));
+
+                        $query->where(function ($outer) use ($keywords) {
+
+                            foreach ($keywords as $word) {
+                                $outer->where(function ($q) use ($word) {
+                                    $q->where("title", "LIKE", "%{$word}%")
+                                        ->orWhere("link", "LIKE", "%{$word}%");
+                                });
+                            }
+                        });
+                    }
+
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => 'navigations',
+                        ];
+                    });
+
+                    break;
+
+
+                case "categories":
+                    $query = Category::latest()->withoutGlobalScopes();
+
+                    if ($search) {
+
+                        // 1️⃣ Split into words → ["word1", "word2", ...]
+                        $keywords = array_filter(array_map('trim', explode(',', $search)));
+
+                        $query->where(function ($outer) use ($keywords) {
+
+                            foreach ($keywords as $word) {
+
+                                $outer->where(function ($q) use ($word) {
+
+                                    // Search in main table (type)
+                                    $q->where("type", "LIKE", "%{$word}%")
+
+                                        // Search in translations table
+                                        ->orWhereHas('translations', function ($t) use ($word) {
+                                            $t->where('title', 'LIKE', "%{$word}%")
+                                                ->orWhere('description', 'LIKE', "%{$word}%");
+                                        });
+                                });
+                            }
+                        });
+                    }
+
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => $item->type,
+                        ];
+                    });
+
+                    break;
+
 
 
                 case "roles":
                     if (!boula()) break;
 
                     $query = Role::latest()->withoutGlobalScopes();
+
                     if ($search) {
-                        $query->where("name", 'like', "%{$search}%")->orWhere("guard_name", 'like', "%{$search}%");
+
+                        // 1️⃣ Convert "word1, word2" → ["word1", "word2"]
+                        $keywords = array_filter(array_map('trim', explode(',', $search)));
+
+                        $query->where(function ($outer) use ($keywords) {
+
+                            foreach ($keywords as $word) {
+                                $outer->where(function ($q) use ($word) {
+                                    $q->where("name", "LIKE", "%{$word}%")
+                                        ->orWhere("guard_name", "LIKE", "%{$word}%");
+                                });
+                            }
+                        });
                     }
+
                     $items = $query->paginate($perPage);
 
-                    // تحويل الـ paginator عشان يضيف title
+                    // ✨ Transform output
                     $items->getCollection()->transform(function ($item) {
                         return [
                             'id'    => $item->id,
-                            'title' => $item->name, // ⬅ هنا عنوان الـ role
-                            'extra'  => 'roles',
+                            'title' => $item->name,
+                            'extra' => "roles",
                         ];
                     });
 
                     break;
 
 
-case "d_b_credentials":
 
-    $query = DBCredential::latest()->withoutGlobalScopes();
+                case "d_b_credentials":
 
-    if ($search) {
+                    $query = DBCredential::latest()->withoutGlobalScopes();
 
-        // 1️⃣ Convert "word1, word2" → ["word1", "word2"]
-        $keywords = array_filter(array_map('trim', explode(',', $search)));
+                    if ($search) {
 
-        $query->where(function ($outer) use ($keywords) {
+                        // 1️⃣ Convert "word1, word2" → ["word1", "word2"]
+                        $keywords = array_filter(array_map('trim', explode(',', $search)));
 
-            foreach ($keywords as $word) {
-                $outer->where(function ($q) use ($word) {
-                    $q->where("db_name", "LIKE", "%{$word}%")
-                      ->orWhere("db_username", "LIKE", "%{$word}%")
-                      ->orWhere("db_password", "LIKE", "%{$word}%");
-                });
-            }
+                        $query->where(function ($outer) use ($keywords) {
 
-        });
-    }
+                            foreach ($keywords as $word) {
+                                $outer->where(function ($q) use ($word) {
+                                    $q->where("db_name", "LIKE", "%{$word}%")
+                                        ->orWhere("db_username", "LIKE", "%{$word}%")
+                                        ->orWhere("db_password", "LIKE", "%{$word}%");
+                                });
+                            }
+                        });
+                    }
 
-    $items = $query->paginate($perPage);
+                    $items = $query->paginate($perPage);
 
-    $items->getCollection()->transform(function ($item) {
-        return [
-            'id'    => $item->id,
-            'title' => $item->db_name,
-            'extra' => $item->db_username . ", " . $item->db_password,
-        ];
-    });
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->db_name,
+                            'extra' => $item->db_username . ", " . $item->db_password,
+                        ];
+                    });
 
-    break;
+                    break;
 
 
 
                 case "issues":
-case "issues":
+                case "issues":
 
-    if (!boula()) break;
+                    if (!boula()) break;
 
-    $query = Issue::latest()->withoutGlobalScopes();
+                    $query = Issue::latest()->withoutGlobalScopes();
 
-    if ($search) {
+                    if ($search) {
 
-        // 1️⃣ Convert "word1, word2" → ["word1", "word2"]
-        $keywords = array_filter(array_map('trim', explode(',', $search)));
+                        // 1️⃣ Convert "word1, word2" → ["word1", "word2"]
+                        $keywords = array_filter(array_map('trim', explode(',', $search)));
 
-        $query->where(function ($outer) use ($keywords) {
+                        $query->where(function ($outer) use ($keywords) {
 
-            foreach ($keywords as $word) {
+                            foreach ($keywords as $word) {
 
-                $outer->where(function ($q) use ($word) {
-                    $q->where("title", "LIKE", "%{$word}%")
-                      ->orWhere("script", "LIKE", "%{$word}%");
-                });
-
-            }
-        });
-    }
-
-    $items = $query->paginate($perPage);
-
-    $items->getCollection()->transform(function ($item) {
-        return [
-            'id'    => $item->id,
-            'title' => $item->title,
-            'extra' => 'issues',
-        ];
-    });
-
-    break;
-
-
-case "clienttracks":
-
-    $query = Clienttrack::latest()->withoutGlobalScopes();
-
-    if ($search) {
-
-        // 1️⃣ Split into array: ["keyword1", "keyword2", ...]
-        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-        // 2️⃣ Loop through all keywords
-        $query->where(function ($outer) use ($keywords) {
-
-            foreach ($keywords as $word) {
-
-                $outer->where(function ($q) use ($word) {
-
-                    $q->where('action', 'LIKE', "%{$word}%")   // ClientTrack action
-                      ->orWhere('src', 'LIKE', "%{$word}%")    // source
-                      ->orWhereHas('project', function ($p) use ($word) {
-                          $p->where('title', 'LIKE', "%{$word}%"); // project title
-                      });
-                });
-            }
-
-        });
-    }
-
-    $items = $query->paginate($perPage);
-
-    $items->getCollection()->transform(function ($item) {
-        return [
-            'id'    => $item->id,
-            'title' => $item->action,
-            'extra' => $item->project->title.", ".($item->src ?? "none").", ".$item->created_at,
-        ];
-    });
-
-    break;
-
-case "videos":
-
-    $query = Video::latest()->withoutGlobalScopes();
-
-    if ($search) {
-
-        // 1️⃣ Convert "key1,key2" → ["key1", "key2"]
-        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-        $query->where(function ($outer) use ($keywords) {
-
-            foreach ($keywords as $word) {
-
-                $outer->where(function ($q) use ($word) {
-                    $q->where("title", "like", "%{$word}%")
-                      ->orWhere("link", "like", "%{$word}%");
-                });
-
-            }
-        });
-    }
-
-    $items = $query->paginate($perPage);
-
-    $items->getCollection()->transform(function ($item) {
-        return [
-            'id'    => $item->id,
-            'title' => $item->title,
-            'extra' => 'admin',
-        ];
-    });
-
-    break;
-
-case "deadlines":
-
-    $query = Deadline::latest()->withoutGlobalScopes();
-
-    if ($search) {
-
-        // 1️⃣ Split "keyword1,keyword2" → ["keyword1","keyword2"]
-        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-        // 2️⃣ Apply search
-        $query->where(function($outer) use ($keywords) {
-
-            foreach ($keywords as $word) {
-
-                // Convert special words (Live/Finished)
-                $statusKeyword = null;
-                if (strcasecmp($word, "Finished") === 0) $statusKeyword = 1;
-                if (strcasecmp($word, "Live") === 0)     $statusKeyword = 0;
-
-                $outer->where(function($q) use ($word, $statusKeyword) {
-
-                    // Search in title
-                    $q->where("title", "LIKE", "%{$word}%");
-
-                    // If word = Live or Finished → search by status
-                    if (!is_null($statusKeyword)) {
-                        $q->orWhere("status", $statusKeyword);
-                    }
-                });
-            }
-        });
-    }
-
-    $items = $query->paginate($perPage);
-
-    $items->getCollection()->transform(function ($item) {
-        return [
-            'id'    => $item->id,
-            'title' => $item->title,
-            'extra' => $item->status == 1 ? "Finished" : "Live",
-        ];
-    });
-
-    break;
-
-
-
-case "fees":
-
-    $query = Fee::withoutGlobalScopes()->latest();
-
-    if ($search) {
-
-        // 1️⃣ Split: "200,logo,marketing" → ["200","logo","marketing"]
-        $keywords = array_filter(array_map('trim', explode(',', $search)));
-
-        // 2️⃣ Apply search
-        $query->where(function ($outer) use ($keywords) {
-
-            foreach ($keywords as $word) {
-
-                $outer->where(function ($q) use ($word) {
-
-                    // Amount (exact or partial numeric match)
-                    if (is_numeric($word)) {
-                        $q->where('amount', $word);
+                                $outer->where(function ($q) use ($word) {
+                                    $q->where("title", "LIKE", "%{$word}%")
+                                        ->orWhere("script", "LIKE", "%{$word}%");
+                                });
+                            }
+                        });
                     }
 
-                    // Note text search
-                    $q->orWhere('note', 'LIKE', "%{$word}%");
+                    $items = $query->paginate($perPage);
 
-                    // Project title search
-                    $q->orWhereHas('project', function ($p) use ($word) {
-                        $p->where('title', 'LIKE', "%{$word}%");
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => 'issues',
+                        ];
                     });
-                });
-            }
-        });
-    }
 
-    $items = $query->paginate($perPage);
-
-    $items->getCollection()->transform(function ($item) {
-        return [
-            'id'    => $item->id,
-            'title' => $item->amount . " EGP",
-            'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title.", ".$item->created_at,
-        ];
-    });
-
-    break;
+                    break;
 
 
-case "tasks":
+                case "clienttracks":
 
-    $search = $request->query('search');
-    $perPage = $request->query('per_page', 20);
+                    $query = Clienttrack::latest()->withoutGlobalScopes();
 
-    $query = Task::latest()
-        ->with('project') 
-        ->withoutGlobalScopes();
+                    if ($search) {
 
-    if ($search) {
+                        // 1️⃣ Split into array: ["keyword1", "keyword2", ...]
+                        $keywords = array_filter(array_map('trim', explode(',', $search)));
 
-        // 1️⃣ Split into array: ["keyword1", "keyword2"]
-        $keywords = array_filter(array_map('trim', explode(',', $search)));
+                        // 2️⃣ Loop through all keywords
+                        $query->where(function ($outer) use ($keywords) {
 
-        // 2️⃣ Apply search
-        $query->where(function ($outer) use ($keywords) {
+                            foreach ($keywords as $word) {
 
-            foreach ($keywords as $word) {
+                                $outer->where(function ($q) use ($word) {
 
-                $outer->where(function ($q) use ($word) {
-
-                    // Status keyword conversion
-                    $status = null;
-                    if (strcasecmp($word, "live") === 0)     $status = 0;
-                    if (strcasecmp($word, "finished") === 0) $status = 1;
-
-                    // Task title search
-                    $q->where('title', 'LIKE', "%{$word}%")
-
-                      // Project title search
-                      ->orWhereHas('project', function ($p) use ($word) {
-                          $p->where('title', 'LIKE', "%{$word}%");
-                      });
-
-                    // If the keyword is "live" or "finished"
-                    if (!is_null($status)) {
-                        $q->orWhere('status', $status);
+                                    $q->where('action', 'LIKE', "%{$word}%")   // ClientTrack action
+                                        ->orWhere('src', 'LIKE', "%{$word}%")    // source
+                                        ->orWhereHas('project', function ($p) use ($word) {
+                                            $p->where('title', 'LIKE', "%{$word}%"); // project title
+                                        });
+                                });
+                            }
+                        });
                     }
-                });
-            }
-        });
-    }
 
-    $items = $query->paginate($perPage);
+                    $items = $query->paginate($perPage);
 
-    $items->getCollection()->transform(function ($item) {
-        return [
-            'id'    => $item->id,
-            'title' => $item->title,
-            'extra' => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished"),
-        ];
-    });
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->action,
+                            'extra' => $item->project->title . ", " . ($item->src ?? "none") . ", " . $item->created_at,
+                        ];
+                    });
 
-    break;
+                    break;
+
+                case "videos":
+
+                    $query = Video::latest()->withoutGlobalScopes();
+
+                    if ($search) {
+
+                        // 1️⃣ Convert "key1,key2" → ["key1", "key2"]
+                        $keywords = array_filter(array_map('trim', explode(',', $search)));
+
+                        $query->where(function ($outer) use ($keywords) {
+
+                            foreach ($keywords as $word) {
+
+                                $outer->where(function ($q) use ($word) {
+                                    $q->where("title", "like", "%{$word}%")
+                                        ->orWhere("link", "like", "%{$word}%");
+                                });
+                            }
+                        });
+                    }
+
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => 'admin',
+                        ];
+                    });
+
+                    break;
+
+                case "deadlines":
+
+                    $query = Deadline::latest()->withoutGlobalScopes();
+
+                    if ($search) {
+
+                        // 1️⃣ Split "keyword1,keyword2" → ["keyword1","keyword2"]
+                        $keywords = array_filter(array_map('trim', explode(',', $search)));
+
+                        // 2️⃣ Apply search
+                        $query->where(function ($outer) use ($keywords) {
+
+                            foreach ($keywords as $word) {
+
+                                // Convert special words (Live/Finished)
+                                $statusKeyword = null;
+                                if (strcasecmp($word, "Finished") === 0) $statusKeyword = 1;
+                                if (strcasecmp($word, "Live") === 0)     $statusKeyword = 0;
+
+                                $outer->where(function ($q) use ($word, $statusKeyword) {
+
+                                    // Search in title
+                                    $q->where("title", "LIKE", "%{$word}%");
+
+                                    // If word = Live or Finished → search by status
+                                    if (!is_null($statusKeyword)) {
+                                        $q->orWhere("status", $statusKeyword);
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => $item->status == 1 ? "Finished" : "Live",
+                        ];
+                    });
+
+                    break;
+
+
+
+                case "fees":
+
+                    $query = Fee::withoutGlobalScopes()->latest();
+
+                    if ($search) {
+
+                        // 1️⃣ Split: "200,logo,marketing" → ["200","logo","marketing"]
+                        $keywords = array_filter(array_map('trim', explode(',', $search)));
+
+                        // 2️⃣ Apply search
+                        $query->where(function ($outer) use ($keywords) {
+
+                            foreach ($keywords as $word) {
+
+                                $outer->where(function ($q) use ($word) {
+
+                                    // Amount (exact or partial numeric match)
+                                    if (is_numeric($word)) {
+                                        $q->where('amount', $word);
+                                    }
+
+                                    // Note text search
+                                    $q->orWhere('note', 'LIKE', "%{$word}%");
+
+                                    // Project title search
+                                    $q->orWhereHas('project', function ($p) use ($word) {
+                                        $p->where('title', 'LIKE', "%{$word}%");
+                                    });
+                                });
+                            }
+                        });
+                    }
+
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->amount . " EGP",
+                            'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title . ", " . $item->created_at,
+                        ];
+                    });
+
+                    break;
+
+
+                case "tasks":
+
+                    $search = $request->query('search');
+                    $perPage = $request->query('per_page', 20);
+
+                    $query = Task::latest()
+                        ->with('project')
+                        ->withoutGlobalScopes();
+
+                    if ($search) {
+
+                        // 1️⃣ Split into array: ["keyword1", "keyword2"]
+                        $keywords = array_filter(array_map('trim', explode(',', $search)));
+
+                        // 2️⃣ Apply search
+                        $query->where(function ($outer) use ($keywords) {
+
+                            foreach ($keywords as $word) {
+
+                                $outer->where(function ($q) use ($word) {
+
+                                    // Status keyword conversion
+                                    $status = null;
+                                    if (strcasecmp($word, "live") === 0)     $status = 0;
+                                    if (strcasecmp($word, "finished") === 0) $status = 1;
+
+                                    // Task title search
+                                    $q->where('title', 'LIKE', "%{$word}%")
+
+                                        // Project title search
+                                        ->orWhereHas('project', function ($p) use ($word) {
+                                            $p->where('title', 'LIKE', "%{$word}%");
+                                        });
+
+                                    // If the keyword is "live" or "finished"
+                                    if (!is_null($status)) {
+                                        $q->orWhere('status', $status);
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    $items = $query->paginate($perPage);
+
+                    $items->getCollection()->transform(function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished"),
+                        ];
+                    });
+
+                    break;
 
 
 
