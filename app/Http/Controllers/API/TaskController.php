@@ -901,7 +901,7 @@ public function elements($id, Request $request)
                 'transform' => function ($item) {
                     return [
                         'id'    => $item->id,
-                        'url' => $item->url,
+                        'title' => $item->url,
                         'extra' => $item->created_at,
                     ];
                 }
