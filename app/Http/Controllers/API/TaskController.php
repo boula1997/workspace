@@ -895,6 +895,16 @@ public function elements($id, Request $request)
                         'extra' => $item->type. ", " . $item->created_at,
                     ];
                 }
+            ], 'bases' => [
+                'model' => Base::class,
+                'keys'  => ['url'],
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'url' => $item->url,
+                        'extra' => $item->created_at,
+                    ];
+                }
             ],
         ];
 
