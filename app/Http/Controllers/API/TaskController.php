@@ -771,7 +771,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => $item->cost . ", " . rest($item),
+                        'extra' => $item->cost . ", " . rest($item). ", " . $item->created_at,
                     ];
                 }
             ],
@@ -793,7 +793,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished").", ".taskEmployees($item,"mobile"),
+                        'extra' => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished").", ".taskEmployees($item,"mobile"). ", " . $item->created_at,
                     ];
                 }
             ],
@@ -804,7 +804,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => $item->status == 1 ? "Finished" : "Live",
+                        'extra' => ($item->status == 1 ? "Finished" : "Live"). ", " . $item->created_at,
                     ];
                 }
             ],
@@ -815,7 +815,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->name,
-                        'extra' => $item->type,
+                        'extra' => $item->type. ", " . $item->created_at,
                     ];
                 }
             ],
@@ -826,7 +826,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => 'navigations',
+                        'extra' => 'navigations'. ", " . $item->created_at,
                     ];
                 }
             ],
@@ -837,7 +837,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->name,
-                        'extra' => 'roles',
+                        'extra' => 'roles'. ", " . $item->created_at,
                     ];
                 }
             ],
@@ -848,7 +848,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->db_name,
-                        'extra' => $item->db_username . ", " . $item->db_password,
+                        'extra' => $item->db_username . ", " . $item->db_password. ", " . $item->created_at,
                     ];
                 }
             ],
@@ -870,7 +870,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => 'admin',
+                        'extra' => 'admin'. ", " . $item->created_at,
                     ];
                 }
             ],
@@ -881,7 +881,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => 'notes',
+                        'extra' => 'notes'. ", " . $item->created_at,
                     ];
                 }
             ],
@@ -892,7 +892,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => $item->type,
+                        'extra' => $item->type. ", " . $item->created_at,
                     ];
                 }
             ],
