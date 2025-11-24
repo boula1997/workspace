@@ -771,7 +771,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => $item->cost . ", " . rest($item). ", " . $item->created_at,
+                        'extra' => $item->cost . ", " . rest($item). ", " . date($item->created_at),
                     ];
                 }
             ],
@@ -782,7 +782,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->amount . " EGP",
-                        'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title . ", " . $item->created_at,
+                        'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title . ", " . date($item->created_at),
                     ];
                 }
             ],
@@ -793,7 +793,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished").", ".taskEmployees($item,"mobile"). ", " . $item->created_at,
+                        'extra' => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished").", ".taskEmployees($item,"mobile"). ", " . date($item->created_at),
                     ];
                 }
             ],
@@ -804,7 +804,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => ($item->status == 1 ? "Finished" : "Live"). ", " . $item->created_at,
+                        'extra' => ($item->status == 1 ? "Finished" : "Live"). ", " . date($item->created_at),
                     ];
                 }
             ],
@@ -815,7 +815,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->name,
-                        'extra' => $item->type. ", " . $item->created_at,
+                        'extra' => $item->type. ", " . date($item->created_at),
                     ];
                 }
             ],
@@ -826,7 +826,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => 'navigations'. ", " . $item->created_at,
+                        'extra' => 'navigations'. ", " . date($item->created_at),
                     ];
                 }
             ],
@@ -837,7 +837,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->name,
-                        'extra' => 'roles'. ", " . $item->created_at,
+                        'extra' => 'roles'. ", " . date($item->created_at),
                     ];
                 }
             ],
@@ -848,7 +848,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->db_name,
-                        'extra' => $item->db_username . ", " . $item->db_password. ", " . $item->created_at,
+                        'extra' => $item->db_username . ", " . $item->db_password. ", " . date($item->created_at),
                     ];
                 }
             ],
@@ -859,7 +859,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->action,
-                        'extra' => $item->project->title . ", " . ($item->src ?? "none") . ", " . $item->created_at,
+                        'extra' => $item->project->title . ", " . ($item->src ?? "none") . ", " . date($item->created_at),
                     ];
                 }
             ],
@@ -870,7 +870,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => 'admin'. ", " . $item->created_at,
+                        'extra' => 'admin'. ", " . date($item->created_at),
                     ];
                 }
             ],
@@ -881,7 +881,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => 'notes'. ", " . $item->created_at,
+                        'extra' => 'notes'. ", " . date($item->created_at),
                     ];
                 }
             ],
@@ -892,7 +892,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => $item->type. ", " . $item->created_at,
+                        'extra' => $item->type. ", " . date($item->created_at),
                     ];
                 }
             ], 'bases' => [
@@ -902,7 +902,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->url,
-                        'extra' => $item->created_at,
+                        'extra' => date($item->created_at),
                     ];
                 }
             ],
