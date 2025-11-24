@@ -766,7 +766,7 @@ public function elements($id, Request $request)
         $categoryMap = [
             'projects' => [
                 'model' => Project::class,
-                'keys'  => ['title', 'cost'], // fields for filtering
+                'keys'  => ['title', 'cost'],
                 'transform' => function ($item) {
                     return [
                         'id'    => $item->id,
@@ -777,7 +777,7 @@ public function elements($id, Request $request)
             ],
             'fees' => [
                 'model' => Fee::class,
-                'keys'  => ['amount', 'note', 'project_title'], // project_title → relation
+                'keys'  => ['amount', 'note', 'project_title'],
                 'transform' => function ($item) {
                     return [
                         'id'    => $item->id,
@@ -898,6 +898,16 @@ public function elements($id, Request $request)
             ],
         ];
 
+        // 🔒 Restrict categories based on boula()
+        if (!boula()) {
+            // Define allowed categories for non-boula users
+            $allowedCategories = ['projects', 'tasks', 'admins', 'fees']; // Add the categories you want to allow
+            
+            if (!in_array($category->title, $allowedCategories)) {
+                return response()->json(['error' => 'Category not accessible'], 403);
+            }
+        }
+
         if (!isset($categoryMap[$category->title])) {
             return response()->json(['error' => 'Unsupported category'], 400);
         }
@@ -918,7 +928,6 @@ public function elements($id, Request $request)
                 if ($to)   $q->whereDate('created_at', '<=', $to);
             });
         }
-
 
         if ($search) {
             $values = array_filter(array_map('trim', explode(',', $search)));
@@ -944,20 +953,17 @@ public function elements($id, Request $request)
                             $sub->whereHas('project', function ($p) use ($val) {
                                 $p->where('title', 'LIKE', "%{$val}%");
                             });
-                        }elseif ($key === 'admin_title') {
-                            // 1️⃣ Get all admin IDs that match the search term
+                        } elseif ($key === 'admin_title') {
                             $adminIds = Admin::where('name', 'LIKE', "%{$val}%")->pluck('id')->toArray();
 
                             if (!empty($adminIds)) {
-                                // 2️⃣ Filter tasks whose JSON employees array contains any of the IDs
                                 $sub->where(function($q) use ($adminIds) {
                                     foreach ($adminIds as $id) {
                                         $q->orWhereJsonContains('employees', $id);
                                     }
                                 });
                             }
-                        }
-                        else {
+                        } else {
                             $sub->where($key, 'LIKE', "%{$val}%");
                         }
                     });
