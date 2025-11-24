@@ -908,6 +908,18 @@ public function elements($id, Request $request)
 
         $query = $model::latest()->withoutGlobalScopes();
 
+        // 📌 Universal created_at from/to filter
+        $from = $request->query('from');
+        $to   = $request->query('to');
+
+        if ($from || $to) {
+            $query->where(function ($q) use ($from, $to) {
+                if ($from) $q->whereDate('created_at', '>=', $from);
+                if ($to)   $q->whereDate('created_at', '<=', $to);
+            });
+        }
+
+
         if ($search) {
             $values = array_filter(array_map('trim', explode(',', $search)));
 
