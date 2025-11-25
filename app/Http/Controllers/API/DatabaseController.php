@@ -42,11 +42,13 @@ class DatabaseController extends Controller
         DB::beginTransaction(); // Start transaction
 
         try {
+
+
             $credential = DBCredential::where('id', $request->credential_id)->first();
-            $dbHost = isset($credential->db_host) ? $credential->db_host : '192.185.41.219';
-            $dbName = $credential->db_name ?? 'automation';
-            $dbUser = $credential->db_username ?? 'root';
-            $dbPass = $credential->db_password ?? '';
+            $dbHost = isset($credential->db_host) ? $credential->db_host : '192.168.56.1';
+            $dbName = isset($credential->db_name) ?? 'laravel';
+            $dbUser = isset($credential->db_username) ?? 'root';
+            $dbPass = isset($credential->db_password) ?? '';
 
             config([
                 'database.connections.dynamic' => [
