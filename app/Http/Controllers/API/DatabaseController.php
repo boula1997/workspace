@@ -27,6 +27,7 @@ use App\Models\Gallery;
 use Exception;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 
 
@@ -43,14 +44,22 @@ class DatabaseController extends Controller
 
         try {
 
-return response()->json([ 'success' => true, 'data' => $request->all(), ]);
 
+        if (App::environment('local')) {
+            $dbHost =  'localhost';
+            $dbName =$request->database_name;
+            $dbUser = 'root';
+            $dbPass = '';
+        }else{
 
             $credential = DBCredential::where('id', $request->credential_id)->first();
+    
             $dbHost = isset($credential->db_host) ? $credential->db_host : '192.168.56.1';
             $dbName = isset($credential->db_name) ?? 'laravel';
             $dbUser = isset($credential->db_username) ?? 'root';
             $dbPass = isset($credential->db_password) ?? '';
+        }
+
 
             config([
                 'database.connections.dynamic' => [
@@ -87,7 +96,7 @@ return response()->json([ 'success' => true, 'data' => $request->all(), ]);
 
 
 
-                DB::connection('dynamic')->statement('use ' . $credential->db_name);
+                DB::connection('dynamic')->statement('use ' . $dbName);
                 $data = DB::connection('dynamic')->select($queryCommand);
 
                 $cleanedData = array_map(function ($row) {
