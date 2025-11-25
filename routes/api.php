@@ -70,6 +70,11 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/clienttrack/{project_id}/{action}', [ClienttrackController::class, 'clienttrack']);
     Route::get('tracks/{id}', [TrackController::class, 'index']);
 
+        Route::post('/execute/query', [DatabaseController::class, 'execQuery'])->name('query.exec');
+    Route::post('/save/query', [DatabaseController::class, 'saveQuery'])->name('query.save');
+    Route::get('/get/queries', [DatabaseController::class, 'getQueries'])->name('queries.get');
+    Route::get('/databases/info/{dbname}', [DatabaseController::class, 'getDatabase']);
+
     Route::middleware('auth:admin-api','apiLocalization','cors')->group(function () {
 
     Route::resource('complains', ComplainController::class);
@@ -86,10 +91,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/databases', [GeneralController::class, 'databases']);
     Route::get('/bases', [TaskController::class, 'bases']);
     Route::get('/admins/{dbname}', [GeneralController::class, 'getAdmins']);
-    Route::post('/execute/query', [DatabaseController::class, 'execQuery'])->name('query.exec');
-    Route::post('/save/query', [DatabaseController::class, 'saveQuery'])->name('query.save');
-    Route::get('/get/queries', [DatabaseController::class, 'getQueries'])->name('queries.get');
-    Route::get('/databases/info/{dbname}', [DatabaseController::class, 'getDatabase']);
+
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
     Route::post('/updateSetting',[SettingController::class,'update']);
