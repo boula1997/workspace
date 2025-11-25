@@ -213,7 +213,7 @@ public function getDatabase($dbname,$namedb)
 
             $credential = DBCredential::where('id', $dbname)->first();
 
-            return response()->json([ 'success' => true, 'data' =>  $credential, ]);
+
 
 
     
