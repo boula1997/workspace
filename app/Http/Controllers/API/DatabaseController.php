@@ -43,6 +43,8 @@ class DatabaseController extends Controller
 
         try {
 
+return response()->json([ 'success' => true, 'data' => $request->all(), ]);
+
 
             $credential = DBCredential::where('id', $request->credential_id)->first();
             $dbHost = isset($credential->db_host) ? $credential->db_host : '192.168.56.1';
