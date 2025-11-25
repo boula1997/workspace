@@ -46,7 +46,7 @@ class DatabaseController extends Controller
 
 
         if (App::environment('local')) {
-            $dbHost =  'localhost';
+            $dbHost =  'http://192.168.56.3';
             $dbName =$request->database_name;
             $dbUser = 'root';
             $dbPass = '';
@@ -54,7 +54,7 @@ class DatabaseController extends Controller
 
             $credential = DBCredential::where('id', $request->credential_id)->first();
     
-            $dbHost = isset($credential->db_host) ? $credential->db_host : '192.168.56.1';
+            $dbHost = isset($credential->db_host) ? $credential->db_host : '192.168.56.3';
             $dbName = isset($credential->db_name) ?? 'laravel';
             $dbUser = isset($credential->db_username) ?? 'root';
             $dbPass = isset($credential->db_password) ?? '';
@@ -205,15 +205,19 @@ public function getDatabase($dbname,$namedb)
     try {
 
         if (App::environment('local')) {
-            $dbHost =  'localhost';
+            $dbHost =  'http://192.168.56.3';
             $dbName =$namedb;
             $dbUser = 'root';
             $dbPass = '';
         }else{
 
             $credential = DBCredential::where('id', $dbname)->first();
+
+            return response()->json([ 'success' => true, 'data' =>  $credential, ]);
+
+
     
-            $dbHost = isset($credential->db_host) ? $credential->db_host : '192.168.56.1';
+            $dbHost = isset($credential->db_host) ? $credential->db_host : '192.168.56.3';
             $dbName = isset($credential->db_name) ?? 'laravel';
             $dbUser = isset($credential->db_username) ?? 'root';
             $dbPass = isset($credential->db_password) ?? '';
