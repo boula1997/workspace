@@ -73,7 +73,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
         Route::post('/execute/query', [DatabaseController::class, 'execQuery'])->name('query.exec');
     Route::post('/save/query', [DatabaseController::class, 'saveQuery'])->name('query.save');
     Route::get('/get/queries', [DatabaseController::class, 'getQueries'])->name('queries.get');
-    Route::get('/databases/info/{dbname}', [DatabaseController::class, 'getDatabase']);
+    Route::get('/databases/info/{dbname}/{namedb}', [DatabaseController::class, 'getDatabase']);
 
     Route::middleware('auth:admin-api','apiLocalization','cors')->group(function () {
 

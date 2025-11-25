@@ -200,27 +200,40 @@ class DatabaseController extends Controller
 
 
 
-public function getDatabase($dbname)
+public function getDatabase($dbname,$namedb)
 {
     try {
 
-        $credential = DBCredential::find($dbname);
-        
-        // Configure connection dynamically
-        config([
-            'database.connections.dynamic' => [
-                'driver' => 'mysql',
-                'host' => isset($credential->db_host) ? $credential->db_host : '192.185.41.219',
-                'database' => $credential->db_name,
-                'username' => $credential->db_username,
-                'password' => $credential->db_password,
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-            ],
-        ]);
+        if (App::environment('local')) {
+            $dbHost =  'localhost';
+            $dbName =$namedb;
+            $dbUser = 'root';
+            $dbPass = '';
+        }else{
 
-        DB::purge('dynamic');
-        DB::reconnect('dynamic');
+            $credential = DBCredential::where('id', $dbname)->first();
+    
+            $dbHost = isset($credential->db_host) ? $credential->db_host : '192.168.56.1';
+            $dbName = isset($credential->db_name) ?? 'laravel';
+            $dbUser = isset($credential->db_username) ?? 'root';
+            $dbPass = isset($credential->db_password) ?? '';
+        }
+
+
+            config([
+                'database.connections.dynamic' => [
+                    'driver' => 'mysql',
+                    'host' => $dbHost,
+                    'database' => $dbName,
+                    'username' => $dbUser,
+                    'password' => $dbPass,
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                ],
+            ]);
+
+            DB::purge('dynamic');
+            DB::reconnect('dynamic');
 
 
         $tables = DB::connection('dynamic')->select("SHOW TABLES");
