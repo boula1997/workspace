@@ -240,39 +240,47 @@ public function getDatabase($dbname,$namedb)
             DB::reconnect('dynamic');
 
 
-        $tables = DB::connection('dynamic')->select("SHOW TABLES");
+        $tables = DB::connection('dynamic')->select("
+    SELECT TABLE_NAME, TABLE_TYPE 
+    FROM information_schema.tables 
+    WHERE table_schema = ?
+", [$dbName]);
         $results = [];
 
-        foreach ($tables as $t) {
-            $tableName = array_values((array)$t)[0];
-                        // Get row count for table
-                         $tableType = $t->TABLE_TYPE;  // BASE TABLE or VIEW
-// Skip views to avoid DEFINER error
+foreach ($tables as $t) {
+
+    $tableName = $t->TABLE_NAME;
+    $tableType = $t->TABLE_TYPE;  // BASE TABLE or VIEW
+
+    // Safe row count
     if ($tableType === 'VIEW') {
-        $rowCount = null; // or 0
+        $rowCount = null;  // avoid DEFINER error
     } else {
-        $rowCount = DB::connection('dynamic')->table($tableName)->count();
-    }
-            $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
-            foreach ($columns as $col) {
-                $col->TABLE_NAME = $tableName;
-                $col->ROW_COUNT = $rowCount;
-            }
-            $results = array_merge($results, $columns);
+        try {
+            $rowCount = DB::connection('dynamic')->table($tableName)->count();
+        } catch (\Exception $e) {
+            $rowCount = null; // fallback
         }
+    }
+
+     // Get table columns
+    $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
 
 
-        foreach ($columns as $col) {
+
+    foreach ($columns as $col) {
         $results[] = (object)[
-            'TABLE_NAME' => $tableName,
-            'COLUMN_NAME' => $col->Field,
-            'DATA_TYPE' => $col->Type,
-            'IS_NULLABLE' => $col->Null,
+            'TABLE_NAME'     => $tableName,
+            'TABLE_TYPE'     => $tableType,
+            'ROW_COUNT'      => $rowCount,
+            'COLUMN_NAME'    => $col->Field,
+            'DATA_TYPE'      => $col->Type,
+            'IS_NULLABLE'    => $col->Null,
             'COLUMN_DEFAULT' => $col->Default,
         ];
-        }
+    }
 
-
+}
 
 
         return response()->json([
