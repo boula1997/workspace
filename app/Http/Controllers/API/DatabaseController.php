@@ -245,8 +245,6 @@ public function getDatabase($dbname,$namedb)
 
         foreach ($tables as $t) {
             $tableName = array_values((array)$t)[0];
-                        // Get row count for table
-            $rowCount = DB::connection('dynamic')->table($tableName)->count();
             $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
             foreach ($columns as $col) {
                 $col->TABLE_NAME = $tableName;
@@ -255,6 +253,8 @@ public function getDatabase($dbname,$namedb)
         }
 
         foreach ($columns as $col) {
+                                    // Get row count for table
+            $rowCount = DB::connection('dynamic')->table($tableName)->count();
         $results[] = (object)[
             'TABLE_NAME' => $tableName,
             'COLUMN_NAME' => $col->Field,
