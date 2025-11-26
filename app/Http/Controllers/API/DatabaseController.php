@@ -259,7 +259,6 @@ public function getDatabase($dbname,$namedb)
             'TABLE_NAME' => $tableName,
             'COLUMN_NAME' => $col->Field,
             'ROW_COUNT'      => $rowCount,
-
             'DATA_TYPE' => $col->Type,
             'IS_NULLABLE' => $col->Null,
             'COLUMN_DEFAULT' => $col->Default,
