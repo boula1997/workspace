@@ -200,68 +200,78 @@ class DatabaseController extends Controller
 
 
 
-public function getDatabase($dbname, $namedb)
+public function getDatabase($dbname,$namedb)
 {
     try {
-        // Database credentials
+
         if (App::environment('local')) {
-            $dbHost = 'localhost';
-            $dbName = $namedb;
+            $dbHost =  'localhost';
+            $dbName =$namedb;
             $dbUser = 'root';
             $dbPass = '';
-        } else {
-            $credential = DBCredential::find($dbname);
+        }else{
 
-            $dbHost = $credential->db_host ?? 'localhost';
-            $dbName = $credential->db_name ?? 'laravel';
-            $dbUser = $credential->db_username ?? 'root';
-            $dbPass = $credential->db_password ?? '';
+            $credential = DBCredential::where('id', $dbname)->first();
+
+
+
+
+    
+            $dbHost = isset($credential->db_host) ? $credential->db_host : 'localhost';
+            $dbName = isset($credential->db_name) ?$credential->db_name: 'laravel';
+            $dbUser = isset($credential->db_username) ?$credential->db_username: 'root';
+            $dbPass = isset($credential->db_password) ?$credential->db_password: '';
         }
 
-        // Configure dynamic connection
-        config([
-            'database.connections.dynamic' => [
-                'driver'    => 'mysql',
-                'host'      => $dbHost,
-                'database'  => $dbName,
-                'username'  => $dbUser,
-                'password'  => $dbPass,
-                'charset'   => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-            ],
-        ]);
 
-        DB::purge('dynamic');
-        DB::reconnect('dynamic');
+            config([
+                'database.connections.dynamic' => [
+                    'driver' => 'mysql',
+                    'host' => $dbHost,
+                    'database' => $dbName,
+                    'username' => $dbUser,
+                    'password' => $dbPass,
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                ],
+            ]);
+
+            DB::purge('dynamic');
+            DB::reconnect('dynamic');
+
 
         $tables = DB::connection('dynamic')->select("SHOW TABLES");
         $results = [];
 
         foreach ($tables as $t) {
             $tableName = array_values((array)$t)[0];
-
-            // Get row count for table
+                        // Get row count for table
             $rowCount = DB::connection('dynamic')->table($tableName)->count();
-
-            // Get columns for table
             $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
-
             foreach ($columns as $col) {
-                $results[] = (object)[
-                    'TABLE_NAME'     => $tableName,
-                    'ROW_COUNT'      => $rowCount,
-                    'COLUMN_NAME'    => $col->Field,
-                    'DATA_TYPE'      => $col->Type,
-                    'IS_NULLABLE'    => $col->Null,
-                    'COLUMN_DEFAULT' => $col->Default,
-                ];
+                $col->TABLE_NAME = $tableName;
             }
+            $results = array_merge($results, $columns);
         }
+
+        foreach ($columns as $col) {
+        $results[] = (object)[
+            'TABLE_NAME' => $tableName,
+            'COLUMN_NAME' => $col->Field,
+            'ROW_COUNT'      => $rowCount,
+
+            'DATA_TYPE' => $col->Type,
+            'IS_NULLABLE' => $col->Null,
+            'COLUMN_DEFAULT' => $col->Default,
+        ];
+        }
+
 
         return response()->json([
             'success' => true,
-            'data'    => $results,
+            'data' => $results,
         ]);
+
 
     } catch (\Exception $e) {
         return response()->json([
@@ -270,6 +280,5 @@ public function getDatabase($dbname, $namedb)
         ], 500);
     }
 }
-
 
 }
