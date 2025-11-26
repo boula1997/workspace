@@ -245,20 +245,20 @@ public function getDatabase($dbname,$namedb)
 
         foreach ($tables as $t) {
             $tableName = array_values((array)$t)[0];
+                        // Get row count for table
+            $rowCount = DB::connection('dynamic')->table($tableName)->count();
             $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
             foreach ($columns as $col) {
                 $col->TABLE_NAME = $tableName;
+                $col->ROW_COUNT = $rowCount;
             }
             $results = array_merge($results, $columns);
         }
 
         foreach ($columns as $col) {
-                                    // Get row count for table
-            $rowCount = DB::connection('dynamic')->table($tableName)->count();
         $results[] = (object)[
             'TABLE_NAME' => $tableName,
             'COLUMN_NAME' => $col->Field,
-            'ROW_COUNT'      => $rowCount,
             'DATA_TYPE' => $col->Type,
             'IS_NULLABLE' => $col->Null,
             'COLUMN_DEFAULT' => $col->Default,
