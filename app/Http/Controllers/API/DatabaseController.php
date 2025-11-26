@@ -255,6 +255,7 @@ public function getDatabase($dbname,$namedb)
             $results = array_merge($results, $columns);
         }
 
+
         foreach ($columns as $col) {
         $results[] = (object)[
             'TABLE_NAME' => $tableName,
@@ -264,6 +265,8 @@ public function getDatabase($dbname,$namedb)
             'COLUMN_DEFAULT' => $col->Default,
         ];
         }
+
+
 
 
         return response()->json([
