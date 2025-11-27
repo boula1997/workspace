@@ -1322,7 +1322,7 @@ $(this).click(); // Trigger the click event
                             <p class="text-warning">Pinned Clipboard elements</p>
 
 
-                            <p title="auto fill password">start msedge https://yousab-tech.com/workspace/public/en</p>
+                            <p title="auto fill password">start msedge http://localhost:8081/</p>
                             <p title="auto fill password">exit</p>
                             <p title="auto fill password">cls</p>
                             <br>
