@@ -1325,6 +1325,7 @@ $(this).click(); // Trigger the click event
                             <p title="auto fill password">cd /d E:\xampp\htdocs\yousab-app/</p>
                             <p title="auto fill password">start msedge http://localhost:8081/</p>
                             <p title="auto fill password">npx expo start/</p>
+                            <p title="auto fill password">cls</p>
                             <br>
                             <hr class="text-white">
                              <textarea name="" readonly id="" cols="100" rows="15">
