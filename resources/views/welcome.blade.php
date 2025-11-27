@@ -1067,33 +1067,43 @@ $trackingCode1 = <<<'EOT'
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-$(function() {
-  const clientId = 52;
-  const action = encodeURIComponent('browse company website'); // encode spaces/special chars
-  const url = `https://yousab-tech.com/workspace/public/api/clienttrack/${clientId}/${action}`;
+    $(function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const srcValue = urlParams.get("src") || ""; // get ?src=value
+        const clientId = 52;
+        const action = encodeURIComponent('browse company website');
 
-  $.ajax({
-    url: url,
-    method: 'GET',
-    headers: {
-      'locale': 'en'
-    },
-    success: function(res) {
-      console.log('boula', res.data);
-    },
-    error: function(xhr, status, err) {
-      if (xhr.responseJSON) {
-        console.error('❌ Server Error Details:', xhr.responseJSON);
-        alert(`Error ${xhr.status}: ${JSON.stringify(xhr.responseJSON)}`);
-      } else if (status === 'timeout' || status === 'error') {
-        alert('No response from server. Check API link or network.');
-      } else {
-        alert('Error: ' + err);
-      }
-    },
-    timeout: 10000
-  });
-});
+        const srcQuery = srcValue ? `?src=${encodeURIComponent(srcValue)}` : "";
+
+        const url = `https://yousab-tech.com/workspace/public/api/clienttrack/${clientId}/${action}${srcQuery}`;
+
+
+        $.ajax({
+            url: url,
+            method: 'GET',
+            headers: {
+                'locale': 'en'
+            },
+            success: function(res) {
+                // assume response has same shape as your React code
+                console.log('boula', res.data);
+                // manipulate DOM or local state here
+            },
+            error: function(xhr, status, err) {
+                if (xhr.responseJSON) {
+                    console.error('❌ Server Error Details:', xhr.responseJSON);
+                    alert(`Error ${xhr.status}: ${JSON.stringify(xhr.responseJSON)}`);
+                } else if (status === 'timeout' || status === 'error') {
+                    console.log('⚠️ No response from server or network error', err);
+                    alert('No response from server. Check API link or network.');
+                } else {
+                    console.log('⚙️ Ajax setup error:', err);
+                    alert('Error: ' + err);
+                }
+            },
+            timeout: 10000 // optional
+        });
+    });
 </script>
 EOT;
 @endphp
@@ -1113,32 +1123,38 @@ $trackingCode2 = <<<'EOT'
 
 <script>
 $(function() {
-  const clientId = 52;
-  const projectTitle = $("#itemTitle").attr("itemTitle");
-  const action = encodeURIComponent(`Single project ${projectTitle}`); // encode spaces/special chars
-  const url = `https://yousab-tech.com/workspace/public/api/clienttrack/${clientId}/${action}`;
 
-  $.ajax({
-    url: url,
-    method: 'GET',
-    headers: {
-      'locale': 'en'
-    },
-    success: function(res) {
-      console.log('boula', res.data);
-    },
-    error: function(xhr, status, err) {
-      if (xhr.responseJSON) {
-        console.error('❌ Server Error Details:', xhr.responseJSON);
-        alert(`Error ${xhr.status}: ${JSON.stringify(xhr.responseJSON)}`);
-      } else if (status === 'timeout' || status === 'error') {
-        alert('No response from server. Check API link or network.');
-      } else {
-        alert('Error: ' + err);
-      }
-    },
-    timeout: 10000
-  });
+    // Read ?src=value from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const srcValue = urlParams.get("src") || "";
+
+    // Read portfolio title from the <p> tag
+    const portfolioTitle = $("#ptitle").attr("ptitle");
+
+    // Build action text
+    const action = encodeURIComponent(`View Portfolio ${portfolioTitle}`);
+
+    const clientId = 52;
+
+    // Add ?src=VALUE if exists
+    const srcQuery = srcValue ? `?src=${encodeURIComponent(srcValue)}` : "";
+
+    // Full API request
+    const url = `https://yousab-tech.com/workspace/public/api/clienttrack/${clientId}/${action}${srcQuery}`;
+
+    // Send request
+    $.ajax({
+        url: url,
+        method: 'GET',
+        headers: { 'locale': 'en' },
+        success: function(res) {
+            console.log("Tracking success:", res.data);
+        },
+        error: function(xhr, status, err) {
+            console.error("Tracking error:", err);
+        }
+    });
+
 });
 </script>
 EOT;
