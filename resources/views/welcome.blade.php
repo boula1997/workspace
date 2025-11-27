@@ -983,7 +983,7 @@ import React, { useEffect, useRef, useState } from "react";
       console.log("SRC FOUND:", src);
 
       fetch(
-        `https://yousab-tech.com/workspace/public/api/clienttrack/297/browse portfolio Homepage?src=${src}`,
+        `https://yousab-tech.com/workspace/public/api/clienttrack/297/browse Homepage?src=${src}`,
         {
           method: "GET",
           headers: {
