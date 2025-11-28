@@ -146,7 +146,7 @@ class TaskController extends Controller
         }
 
         if(auth("api")->user()->email=="parcel@gmail.com")
-            $tasksQuery = Task::where("project_id",parcelProject()->id);
+            $tasksQuery = Task::where("status", 0)->where("project_id",parcelProject()->id);
 
         // Paginate tasks 
         $tasks = $tasksQuery->paginate(10);
@@ -527,8 +527,8 @@ class TaskController extends Controller
             });
         }
             if(auth("api")->user()->email=="parcel@gmail.com")
-            $tasksQuery = Task::where("project_id",parcelProject()->id);
-
+            $tasksQuery = Task::where("status", 1)
+            ->latest('updated_at')->where("project_id",parcelProject()->id);
         // Paginate tasks 
         $tasks = $tasksQuery->paginate(20);
 
@@ -558,7 +558,8 @@ class TaskController extends Controller
             ->latest('updated_at');
 
             if(auth("api")->user()->email=="parcel@gmail.com")
-            $tasksQuery = Task::where("project_id",parcelProject()->id);
+            $tasksQuery = Task::where("status", 1)
+            ->latest('updated_at')->where("project_id",parcelProject()->id);
 
         // Apply search filter if present
         if ($request->has('search') && $request->search != '') {
