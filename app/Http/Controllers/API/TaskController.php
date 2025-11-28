@@ -89,6 +89,10 @@ class TaskController extends Controller
         $projects = Project::orderBy("title", "asc")
             ->get();
 
+            if(auth("api")->user()->email=="parcel@gmail.com")
+            $projects = Project::orderBy("title", "asc")->where("title","Parcel Express")
+                ->get();
+
 
         $allEmployees = Admin::where("type", "!=", "client")->where("type", "!=", "prospective")->orderBy('name', 'ASC')->get();
         $allClients = Admin::where("type", "client")->orderBy('name', 'ASC')->get();
