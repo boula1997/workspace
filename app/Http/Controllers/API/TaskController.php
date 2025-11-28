@@ -80,6 +80,9 @@ class TaskController extends Controller
             ")
             ->orderBy('name', 'ASC')
             ->get();
+
+        if(auth("api")->user()->email=="parcel@gmail.com")
+            $employees =Admin::where("email",auth("api")->user()->email)->get();
         $clients = Admin::where("isActive", 1)->where("type", "client")->orderBy('name', 'ASC')->get();
         $prospectives = Admin::where("isActive", 1)->where("type", "prospective")->orderBy('name', 'ASC')->get();
 
@@ -140,6 +143,9 @@ class TaskController extends Controller
                 });
             });
         }
+
+        if(auth("api")->user()->email=="parcel@gmail.com")
+            $tasksQuery = Task::where("project_id",parcelProject()->id);
 
         // Paginate tasks 
         $tasks = $tasksQuery->paginate(10);

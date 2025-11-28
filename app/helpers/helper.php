@@ -532,6 +532,12 @@ function products()
 
     return $products;
 }
+function parcelProject()
+{
+    $project = Project::where("title","Parcel Express")->first();
+
+    return $project;
+}
 
 function followupEmployees($title)
 {
