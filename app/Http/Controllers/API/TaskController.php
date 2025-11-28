@@ -96,14 +96,11 @@ class TaskController extends Controller
 
         $allEmployees = Admin::where("type", "!=", "client")->where("type", "!=", "prospective")->orderBy('name', 'ASC')->get();
         $allClients = Admin::where("type", "client")->orderBy('name', 'ASC')->get();
-        $projects = Project::orderBy("title", "asc")
-            ->get();
+
 
         $naviagations = Navigation::orderBy('title', 'ASC')->get();
         $categories = Category::get();
 
-        $projects = Project::orderBy("title", "asc")
-            ->get();
 
 
 
