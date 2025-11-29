@@ -45,20 +45,20 @@ class DatabaseController extends Controller
         try {
 
 
-        if (App::environment('local')) {
-            $dbHost =  'localhost';
-            $dbName =$request->database_name;
-            $dbUser = 'root';
-            $dbPass = '';
-        }else{
+            if (App::environment('local')) {
+                $dbHost =  'localhost';
+                $dbName = $request->database_name;
+                $dbUser = 'root';
+                $dbPass = '';
+            } else {
 
-            $credential = DBCredential::where('id', $request->credential_id)->first();
-    
-            $dbHost = isset($credential->db_host) ? $credential->db_host : 'localhost';
-            $dbName = isset($credential->db_name) ?$credential->db_name: 'laravel';
-            $dbUser = isset($credential->db_username) ?$credential->db_username: 'root';
-            $dbPass = isset($credential->db_password) ?$credential->db_password: '';
-        }
+                $credential = DBCredential::where('id', $request->credential_id)->first();
+
+                $dbHost = isset($credential->db_host) ? $credential->db_host : 'localhost';
+                $dbName = isset($credential->db_name) ? $credential->db_name : 'laravel';
+                $dbUser = isset($credential->db_username) ? $credential->db_username : 'root';
+                $dbPass = isset($credential->db_password) ? $credential->db_password : '';
+            }
 
 
             config([
@@ -200,28 +200,28 @@ class DatabaseController extends Controller
 
 
 
-public function getDatabase($dbname,$namedb)
-{
-    try {
+    public function getDatabase($dbname, $namedb)
+    {
+        try {
 
-        if (App::environment('local')) {
-            $dbHost =  'localhost';
-            $dbName =$namedb;
-            $dbUser = 'root';
-            $dbPass = '';
-        }else{
+            if (App::environment('local')) {
+                $dbHost =  'localhost';
+                $dbName = $namedb;
+                $dbUser = 'root';
+                $dbPass = '';
+            } else {
 
-            $credential = DBCredential::where('id', $dbname)->first();
-
-
+                $credential = DBCredential::where('id', $dbname)->first();
 
 
-    
-            $dbHost = isset($credential->db_host) ? $credential->db_host : 'localhost';
-            $dbName = isset($credential->db_name) ?$credential->db_name: 'laravel';
-            $dbUser = isset($credential->db_username) ?$credential->db_username: 'root';
-            $dbPass = isset($credential->db_password) ?$credential->db_password: '';
-        }
+
+
+
+                $dbHost = isset($credential->db_host) ? $credential->db_host : 'localhost';
+                $dbName = isset($credential->db_name) ? $credential->db_name : 'laravel';
+                $dbUser = isset($credential->db_username) ? $credential->db_username : 'root';
+                $dbPass = isset($credential->db_password) ? $credential->db_password : '';
+            }
 
 
             config([
@@ -240,63 +240,50 @@ public function getDatabase($dbname,$namedb)
             DB::reconnect('dynamic');
 
 
-        $tables = DB::connection('dynamic')->select("SHOW TABLES");
-        $results = [];
+          $tables = DB::connection('dynamic')->select("SHOW TABLES");
+$results = [];
 
-        foreach ($tables as $t) {
-            $tableName = array_values((array)$t)[0];
-// Detect if table is a VIEW
-$isView = DB::connection('dynamic')->selectOne("
-    SELECT TABLE_TYPE 
-    FROM information_schema.tables 
-    WHERE table_schema = ? AND table_name = ?
-", [$dbName, $tableName]);
+foreach ($tables as $t) {
 
-$tableType = $isView->TABLE_TYPE ?? 'BASE TABLE';
+    $tableName = array_values((array)$t)[0];
 
-// Skip views safely
-if ($tableType === 'VIEW') {
-    $rowCount = null;
-} else {
-    $rowCount = DB::connection('dynamic')->table($tableName)->count();
-}
+    // Check if view
+    $isView = DB::connection('dynamic')->selectOne("
+        SELECT TABLE_TYPE 
+        FROM information_schema.tables 
+        WHERE table_schema = ? AND table_name = ?
+    ", [$dbName, $tableName]);
 
-            $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
-            foreach ($columns as $col) {
-                $col->TABLE_NAME = $tableName;
-                $col->ROW_COUNT = $rowCount;
-            }
-            $results = array_merge($results, $columns);
-        }
+    $tableType = $isView->TABLE_TYPE ?? 'BASE TABLE';
+    $rowCount = ($tableType === 'VIEW') ? null :
+        DB::connection('dynamic')->table($tableName)->count();
 
+    $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
 
-        foreach ($columns as $col) {
+    foreach ($columns as $col) {
         $results[] = (object)[
-            'TABLE_NAME' => $tableName,
-            'COLUMN_NAME' => $col->Field,
-            'DATA_TYPE' => $col->Type,
-            'IS_NULLABLE' => $col->Null,
-            'COLUMN_DEFAULT' => $col->Default,
+            'TABLE_NAME'      => $tableName,
+            'COLUMN_NAME'     => $col->Field,
+            'DATA_TYPE'       => $col->Type,
+            'IS_NULLABLE'     => $col->Null,
+            'COLUMN_DEFAULT'  => $col->Default,
+            'ROW_COUNT'       => $rowCount,
         ];
-        }
-
-
-usort($results, function ($a, $b) {
-    return strcmp($a->COLUMN_NAME, $b->COLUMN_NAME);
-});
-
-        return response()->json([
-            'success' => true,
-            'data' => $results,
-        ]);
-
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to load database info: ' . $e->getMessage(),
-        ], 500);
     }
 }
 
+// 🔥 Sort alphabetically by COLUMN_NAME
+usort($results, fn($a, $b) => strcmp($a->COLUMN_NAME, $b->COLUMN_NAME));
+
+            return response()->json([
+                'success' => true,
+                'data' => $results,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load database info: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 }
