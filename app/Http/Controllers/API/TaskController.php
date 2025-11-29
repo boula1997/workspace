@@ -152,7 +152,7 @@ class TaskController extends Controller
         $tasks = $tasksQuery->paginate(10);
 
         $credentials = DBCredential::get();
-        
+
         $tablePprojects = Project::where("status", "!=", 0)->orWhere("deal", 0)->orderBy("title", "asc")->get();
         if (boula())
             $data = [
@@ -190,6 +190,8 @@ class TaskController extends Controller
         else
             $data = [
                 "projects" => ProjectResource::collection($projects),
+                "queries" => $queries,
+
                 "infoProjects" => ProjectResource::collection($infoProjects),
                 "boardProjects" => ProjectResource::collection(
                     Project::orderBy("deadline", "asc")
