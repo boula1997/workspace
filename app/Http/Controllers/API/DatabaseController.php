@@ -30,7 +30,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 
-use Illuminate\Support\Facades\Schema;
+
 class DatabaseController extends Controller
 {
 
@@ -99,22 +99,28 @@ class DatabaseController extends Controller
                 DB::connection('dynamic')->statement('use ' . $dbName);
                 $data = DB::connection('dynamic')->select($queryCommand);
 
-                $cleanedData = array_map(function ($row) {
-                    $row = (array) $row; // Ensure it's an array, not stdClass
-                    if (isset($row['codeLinks'])) {
-                        $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
-                        $row['codeLinks'] = trim($row['codeLinks']);
-                    }
-                    if (isset($row['script'])) {
-                        $row['script'] = preg_replace('/\s+/', ' ', $row['script']);
-                        $row['script'] = trim($row['script']);
-                    }
-                    if (isset($row['dispatch_status'])) {
-                        $row['dispatch_status'] = preg_replace('/\s+/', ' ', $row['dispatch_status']);
-                        $row['dispatch_status'] = trim($row['dispatch_status']);
-                    }
-                    return $row;
-                }, $data);
+$cleanedData = array_map(function ($row) {
+    $row = (array) $row; // Ensure it's an array, not stdClass
+
+    if (isset($row['codeLinks'])) {
+        $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
+        $row['codeLinks'] = trim($row['codeLinks']);
+    }
+    if (isset($row['script'])) {
+        $row['script'] = preg_replace('/\s+/', ' ', $row['script']);
+        $row['script'] = trim($row['script']);
+    }
+    if (isset($row['dispatch_status'])) {
+        $row['dispatch_status'] = preg_replace('/\s+/', ' ', $row['dispatch_status']);
+        $row['dispatch_status'] = trim($row['dispatch_status']);
+    }
+
+    // 🔥 SORT COLUMNS A → Z
+    ksort($row);
+
+    return $row;
+}, $data);
+
 
                 $finalResult[] = [
                     'query' => $queryCommand,
@@ -139,41 +145,41 @@ class DatabaseController extends Controller
             ]);
         }
     }
-public function saveQuery(Request $request)
-{
-    DB::beginTransaction();
+    public function saveQuery(Request $request)
+    {
 
-    try {
+        DB::beginTransaction(); // Start transaction
 
-        $query = Query::updateOrCreate(
-            ['title' => $request->title],
-            ['updated_at' => now()]
-        );
+        try {
 
-        $queries = Query::latest("updated_at")->get();
 
-        // 🔥 Get table columns and sort A → Z
-        $columns = Schema::getColumnListing('queries');
-        sort($columns); // alphabetical order
 
-        DB::commit();
+            $query = Query::updateOrCreate(
+                ['title' => $request->title],
+                ['updated_at' => now()]
+            );
+            $queries = Query::latest("updated_at")->get();
 
-        return response()->json([
-            'success'  => "Done Successfully",
-            'queries'  => $queries,
-            'columns'  => $columns,   // ← sorted columns
-        ]);
 
-    } catch (\Exception $e) {
 
-        DB::rollBack();
+            DB::commit(); // Commit transaction if everything is fine
 
-        return response()->json([
-            'success' => false,
-            'error'   => $e->getMessage(),
-        ]);
+            return response()->json([
+                'success' => "Done Successfully",
+                'queries' => $queries,
+
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback if something goes wrong
+
+
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'data' => $e->getMessage(),
+            ]);
+        }
     }
-}
     public function getQueries()
     {
         try {
