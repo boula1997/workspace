@@ -240,40 +240,53 @@ class DatabaseController extends Controller
             DB::reconnect('dynamic');
 
 
-          $tables = DB::connection('dynamic')->select("SHOW TABLES");
-$results = [];
+            $tables = DB::connection('dynamic')->select("SHOW TABLES");
+            $results = [];
 
-foreach ($tables as $t) {
+            foreach ($tables as $t) {
+                $tableName = array_values((array)$t)[0];
+                // Detect if table is a VIEW
+                $isView = DB::connection('dynamic')->selectOne("
+    SELECT TABLE_TYPE 
+    FROM information_schema.tables 
+    WHERE table_schema = ? AND table_name = ?
+", [$dbName, $tableName]);
 
-    $tableName = array_values((array)$t)[0];
+                $tableType = $isView->TABLE_TYPE ?? 'BASE TABLE';
 
-    // Check if view
-    $isView = DB::connection('dynamic')->selectOne("
-        SELECT TABLE_TYPE 
-        FROM information_schema.tables 
-        WHERE table_schema = ? AND table_name = ?
-    ", [$dbName, $tableName]);
+                // Skip views safely
+                if ($tableType === 'VIEW') {
+                    $rowCount = null;
+                } else {
+                    $rowCount = DB::connection('dynamic')->table($tableName)->count();
+                }
 
-    $tableType = $isView->TABLE_TYPE ?? 'BASE TABLE';
-    $rowCount = ($tableType === 'VIEW') ? null :
-        DB::connection('dynamic')->table($tableName)->count();
+                $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
+                foreach ($columns as $col) {
+                    $col->TABLE_NAME = $tableName;
+                    $col->ROW_COUNT = $rowCount;
+                }
+                $results = array_merge($results, $columns);
+            }
 
-    $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
 
-    foreach ($columns as $col) {
-        $results[] = (object)[
-            'TABLE_NAME'      => $tableName,
-            'COLUMN_NAME'     => $col->Field,
-            'DATA_TYPE'       => $col->Type,
-            'IS_NULLABLE'     => $col->Null,
-            'COLUMN_DEFAULT'  => $col->Default,
-            'ROW_COUNT'       => $rowCount,
-        ];
-    }
-}
+            foreach ($columns as $col) {
+                $results[] = (object)[
+                    'TABLE_NAME' => $tableName,
+                    'COLUMN_NAME' => $col->Field,
+                    'DATA_TYPE' => $col->Type,
+                    'IS_NULLABLE' => $col->Null,
+                    'COLUMN_DEFAULT' => $col->Default,
+                ];
+            }
 
-// 🔥 Sort alphabetically by COLUMN_NAME
-usort($results, fn($a, $b) => strcmp($a->COLUMN_NAME, $b->COLUMN_NAME));
+
+// Sort alphabetically by COLUMN_NAME if present, otherwise by Field
+usort($results, function ($a, $b) {
+    $nameA = $a->COLUMN_NAME ?? ($a->Field ?? '');
+    $nameB = $b->COLUMN_NAME ?? ($b->Field ?? '');
+    return strcmp($nameA, $nameB);
+});
 
             return response()->json([
                 'success' => true,
