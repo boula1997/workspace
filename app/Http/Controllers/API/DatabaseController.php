@@ -281,7 +281,9 @@ if ($tableType === 'VIEW') {
         }
 
 
-
+usort($results, function ($a, $b) {
+    return strcmp($a->COLUMN_NAME, $b->COLUMN_NAME);
+});
 
         return response()->json([
             'success' => true,
