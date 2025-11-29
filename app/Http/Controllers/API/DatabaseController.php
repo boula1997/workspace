@@ -139,41 +139,41 @@ class DatabaseController extends Controller
             ]);
         }
     }
-    public function saveQuery(Request $request)
-    {
+public function saveQuery(Request $request)
+{
+    DB::beginTransaction();
 
-        DB::beginTransaction(); // Start transaction
+    try {
 
-        try {
+        $query = Query::updateOrCreate(
+            ['title' => $request->title],
+            ['updated_at' => now()]
+        );
 
+        $queries = Query::latest("updated_at")->get();
 
+        // 🔥 Get table columns and sort A → Z
+        $columns = Schema::getColumnListing('queries');
+        sort($columns); // alphabetical order
 
-            $query = Query::updateOrCreate(
-                ['title' => $request->title],
-                ['updated_at' => now()]
-            );
-            $queries = Query::latest("updated_at")->get();
+        DB::commit();
 
+        return response()->json([
+            'success'  => "Done Successfully",
+            'queries'  => $queries,
+            'columns'  => $columns,   // ← sorted columns
+        ]);
 
+    } catch (\Exception $e) {
 
-            DB::commit(); // Commit transaction if everything is fine
+        DB::rollBack();
 
-            return response()->json([
-                'success' => "Done Successfully",
-                'queries' => $queries,
-
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack(); // Rollback if something goes wrong
-
-
-            return response()->json([
-                'success' => false,
-                'error' => $e->getMessage(),
-                'data' => $e->getMessage(),
-            ]);
-        }
+        return response()->json([
+            'success' => false,
+            'error'   => $e->getMessage(),
+        ]);
     }
+}
     public function getQueries()
     {
         try {
