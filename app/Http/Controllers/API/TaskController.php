@@ -152,6 +152,7 @@ class TaskController extends Controller
         $tasks = $tasksQuery->paginate(10);
 
         $credentials = DBCredential::get();
+        
         $tablePprojects = Project::where("status", "!=", 0)->orWhere("deal", 0)->orderBy("title", "asc")->get();
         if (boula())
             $data = [
