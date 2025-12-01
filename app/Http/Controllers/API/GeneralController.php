@@ -80,7 +80,7 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         }
     }
 
-    $data["id"]=$request->id;
+    $data["id"]=$itemId;
 
     // 🕒 Step 3.1: Add timestamps manually
     $now = now(); // Carbon instance
