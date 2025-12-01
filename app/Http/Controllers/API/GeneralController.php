@@ -80,39 +80,46 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
         }
     }
 
-    // 🕒 Step 3.1: Add timestamps manually
-    $now = now(); // Carbon instance
+// 🕒 Step 3.1: Add timestamps manually
+$now = now(); // Carbon instance
+
+// ✅ Fix: check if there are translation fields
+$hasTranslations =
+    ($request->has('en') && is_array($request->input('en'))) ||
+    ($request->has('ar') && is_array($request->input('ar')));
+
+// ❌ Prevent empty update only if there are NO translations
+if (empty($data) && !$hasTranslations) {
+    return response()->json([
+        'success' => false,
+        'message' => 'No fields were provided to update.',
+    ], 422);
+}
 
 if ($itemId && $itemId !== "undefined") {
-
-    // only set updated_at if the table has this column
+    // 🟢 UPDATE — set updated_at only
     if (in_array('updated_at', $columnNames)) {
         $data['updated_at'] = $now;
     }
 
-    // ❗ FIX: prevent empty update
-    if (empty($data)) {
-        return response()->json([
-            'success' => false,
-            'message' => 'No fields were provided to update.',
-        ], 422);
+    // Only run update if $data has fields
+    if (!empty($data)) {
+        DB::connection('dynamic')->table($table)
+            ->where('id', $itemId)
+            ->update($data);
+    }
+} else {
+    // 🟡 CREATE — set both created_at and updated_at
+    if (in_array('created_at', $columnNames)) {
+        $data['created_at'] = $now;
+    }
+    if (in_array('updated_at', $columnNames)) {
+        $data['updated_at'] = $now;
     }
 
-    DB::connection('dynamic')->table($table)
-        ->where('id', $itemId)
-        ->update($data);
+    $itemId = DB::connection('dynamic')->table($table)->insertGetId($data);
 }
- else {
-        // 🟡 CREATE — set both created_at and updated_at
-        if (in_array('created_at', $columnNames)) {
-            $data['created_at'] = $now;
-        }
-        if (in_array('updated_at', $columnNames)) {
-            $data['updated_at'] = $now;
-        }
 
-        $itemId = DB::connection('dynamic')->table($table)->insertGetId($data);
-    }
 
     // Step 4: Handle image & images via files table (unchanged)
     $fileableType = 'App\\Models\\' . Str::studly(Str::singular($table));
