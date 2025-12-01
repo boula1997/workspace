@@ -93,8 +93,8 @@ if (empty($data) && !$hasTranslations) {
     // 🕒 Step 3.1: Add timestamps manually
     $now = now(); // Carbon instance
 
-    if ($itemId && $itemId !== "undefined") {
-        // 🟢 UPDATE — set updated_at only
+if ($itemId && $itemId !== "undefined") {
+    if (!empty($data)) {
         if (in_array('updated_at', $columnNames)) {
             $data['updated_at'] = $now;
         }
@@ -102,7 +102,10 @@ if (empty($data) && !$hasTranslations) {
         DB::connection('dynamic')->table($table)
             ->where('id', $itemId)
             ->update($data);
-    } else {
+    }
+    // else: skip updating main table, only translations will be updated
+}
+else {
         // 🟡 CREATE — set both created_at and updated_at
         if (in_array('created_at', $columnNames)) {
             $data['created_at'] = $now;
