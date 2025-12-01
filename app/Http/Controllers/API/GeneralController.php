@@ -83,16 +83,26 @@ public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     // 🕒 Step 3.1: Add timestamps manually
     $now = now(); // Carbon instance
 
-    if ($itemId && $itemId !== "undefined") {
-        // 🟢 UPDATE — set updated_at only
-        if (in_array('updated_at', $columnNames)) {
-            $data['updated_at'] = $now;
-        }
+if ($itemId && $itemId !== "undefined") {
 
-        DB::connection('dynamic')->table($table)
-            ->where('id', $itemId)
-            ->update($data);
-    } else {
+    // only set updated_at if the table has this column
+    if (in_array('updated_at', $columnNames)) {
+        $data['updated_at'] = $now;
+    }
+
+    // ❗ FIX: prevent empty update
+    if (empty($data)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No fields were provided to update.',
+        ], 422);
+    }
+
+    DB::connection('dynamic')->table($table)
+        ->where('id', $itemId)
+        ->update($data);
+}
+ else {
         // 🟡 CREATE — set both created_at and updated_at
         if (in_array('created_at', $columnNames)) {
             $data['created_at'] = $now;
