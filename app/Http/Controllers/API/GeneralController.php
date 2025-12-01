@@ -100,9 +100,9 @@ if ($itemId && $itemId !== "undefined") {
         $data = ['updated_at' => $now, 'id' => $itemId];
     }
 
-    DB::connection('dynamic')->table($table)
-        ->where('id', $itemId)
-        ->update($data);
+    // DB::connection('dynamic')->table($table)
+    //     ->where('id', $itemId)
+    //     ->update($data);
 }
 else {
         // 🟡 CREATE — set both created_at and updated_at
