@@ -215,10 +215,10 @@ foreach ($translationData as $locale => $fields) {
         ->first();
 
     if ($existing) {
-        DB::connection('dynamic')->table($translationTable)
-            ->where($foreignKey, $itemId)
-            ->where('locale', $locale)
-            ->update($fields);
+        // DB::connection('dynamic')->table($translationTable)
+        //     ->where($foreignKey, $itemId)
+        //     ->where('locale', $locale)
+        //     ->update($fields);
     } else {
         DB::connection('dynamic')->table($translationTable)->insert($fields);
     }
