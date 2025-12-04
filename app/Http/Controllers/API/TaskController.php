@@ -1016,7 +1016,7 @@ public function elements($id, Request $request)
     {
         try {
 
-            $deadlines = Deadline::where("status", 0)->latest()->orderBy("date", "asc")->get();
+            $deadlines = Deadline::where("status", 0)->orderBy("date", "asc")->get();
             $data["deadlines"] = $deadlines;
             $data["isExpired"] = isExpired()[0];
             if (boula())

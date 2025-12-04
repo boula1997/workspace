@@ -100,9 +100,9 @@ if ($itemId && $itemId !== "undefined") {
         $data = ['updated_at' => $now, 'id' => $itemId];
     }
 
-    // DB::connection('dynamic')->table($table)
-    //     ->where('id', $itemId)
-    //     ->update($data);
+    DB::connection('dynamic')->table($table)
+        ->where('id', $itemId)
+        ->update($data);
 }
 else {
         // 🟡 CREATE — set both created_at and updated_at
@@ -215,10 +215,10 @@ foreach ($translationData as $locale => $fields) {
         ->first();
 
     if ($existing) {
-        // DB::connection('dynamic')->table($translationTable)
-        //     ->where($foreignKey, $itemId)
-        //     ->where('locale', $locale)
-        //     ->update($fields);
+        DB::connection('dynamic')->table($translationTable)
+            ->where($foreignKey, $itemId)
+            ->where('locale', $locale)
+            ->update($fields);
     } else {
         DB::connection('dynamic')->table($translationTable)->insert($fields);
     }
