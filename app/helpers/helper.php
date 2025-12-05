@@ -1055,7 +1055,6 @@ function projectExpectedExpense($project)
 
     // Sum of negative fees (as positive)
     $negativeFees = $feeses->where('amount', '<', 0)->sum('amount') * -1;
-    dd($feeses);
 
     // Return the greater of negative fees or expected expense
     return max($negativeFees, $project->expectedExpense);
