@@ -928,7 +928,7 @@ public function elements($id, Request $request)
                 'transform' => function ($item) {
                     return [
                         'id'    => $item->id,
-                        'extra' => (isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
+                        'extra' => $item->project->title." ".(isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
                     ];
                 }
             ],'issues' => [
