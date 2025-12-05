@@ -21,7 +21,7 @@ class ProjectResource extends JsonResource
             'status' => $this->status,
             'cost' => $this->cost,
             'dailyWorks' => count($this->dailyWorks),
-            'projectBudgetDays' => projectBudgetDays(rest($this)),
+            'projectBudgetDays' => projectBudgetDays($this),
             'renewalDate' => $this->renewalDate,
             'payed' => $this->payed,
             'deadline' => $this->deadline,
