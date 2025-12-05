@@ -32,7 +32,9 @@ class Project extends \App\Models\BaseModel
       return $this->cost-rest($this);
     }
     
-    public function feeses(){ return $this->hasMany(Fee::class); }
+    public function fees() {
+    return $this->hasMany(Fee::class);
+}
     public function tasks(){ return $this->hasMany(Task::class); }
 
     public function getImagesAttribute()

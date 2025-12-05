@@ -467,7 +467,7 @@ function services()
 function rest($project)
 {
     $totalFee = 0;
-    foreach ($project->feeses as $fee) {
+    foreach ($project->fees as $fee) {
         if ($fee->amount > 0)
             $totalFee += $fee->amount;
     }
@@ -1048,7 +1048,7 @@ function projectBudgetDays($project)
 
 function projectExpectedExpense($project)
 {
-    $negativeFees = abs($project->feeses->where("amount", "<", 0)->sum());
+    $negativeFees = abs($project->fees->where("amount", "<", 0)->sum());
 
     return max($negativeFees, $project->expectedExpense);
 }
