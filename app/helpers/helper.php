@@ -1049,8 +1049,11 @@ function projectBudgetDays($project)
 
 function projectExpectedExpense($project)
 {
+    // Make sure relationship is loaded
+    $feeses = $project->feeses; // This returns a Collection of Fee models
+
     // Sum of negative fees (as positive)
-    $negativeFees = abs($project->getRelation('feeses')->where('amount', '<', 0)->sum('amount'));
+    $negativeFees = $feeses->where('amount', '<', 0)->sum('amount') * -1;
 
     // Return the greater of negative fees or expected expense
     return max($negativeFees, $project->expectedExpense);
