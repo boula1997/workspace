@@ -21,6 +21,7 @@ use App\Models\Base;
 use App\Models\Navigation;
 use App\Models\Clienttrack;
 use App\Models\Task;
+use App\Models\DailyWork;
 use App\Models\DBCredential;
 use Spatie\Permission\Models\Role;
 
@@ -921,7 +922,25 @@ public function elements($id, Request $request)
                         'extra' => isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
                     ];
                 }
-            ],
+            ],'daily_works' => [
+                'model' => DailyWork::class,
+                'keys'  => ['url'],
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'extra' => isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
+                    ];
+                }
+            ],'issues' => [
+                'model' => Issue::class,
+                'keys'  => ['url'],
+                'transform' => function ($item) {
+                    return [
+                        'id'    => $item->id,
+                        'extra' => $item->title." ".isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
+                    ];
+                }
+            ],  
         ];
 
         // 🔒 Restrict categories based on boula()
