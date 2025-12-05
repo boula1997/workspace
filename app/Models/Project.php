@@ -62,4 +62,7 @@ public function getStatusAttribute()
     }
 }
 
+    public function dailyWorks(){ return $this->hasMany(DailyWork::class); }
+
+
 }
