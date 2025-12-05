@@ -1048,7 +1048,7 @@ function projectBudgetDays($project)
 
 function projectExpectedExpense($project)
 {
-    $negativeFees = abs($project->fees->where("amount", "<", 0)->sum());
+    $negativeFees = abs($project->feeses->where("amount", "<", 0)->sum());
 
     return max($negativeFees, $project->expectedExpense);
 }
