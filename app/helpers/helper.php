@@ -1043,7 +1043,7 @@ function boula()
 
 function projectBudgetDays($project)
 {
-    $total = ((rest($project) - projectExpectedExpense($project)) * 0.6) / 500;
+    $total = ((rest($project)) * 0.6) / 500;
     return max(0, $total);
 }
 
