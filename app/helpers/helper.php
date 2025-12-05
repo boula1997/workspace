@@ -1043,22 +1043,11 @@ function boula()
 
 function projectBudgetDays($project)
 {
-    $total = ((rest($project)) * 0.6) / 500;
+    $total = ((rest($project) - $project->expectedExpense) * 0.6) / 500;
     return max(0, $total);
 }
 
-function projectExpectedExpense($project)
-{
-    // Make sure relationship is loaded
-    $feeses = $project->feeses; // This returns a Collection of Fee models
 
-
-    // Sum of negative fees (as positive)
-    $negativeFees = $feeses->where('amount', '<', 0)->sum('amount') * -1;
-
-    // Return the greater of negative fees or expected expense
-    return max($negativeFees, $project->expectedExpense);
-}
 
 
 function isWithinWorkingHours(){
