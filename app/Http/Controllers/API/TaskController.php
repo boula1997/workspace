@@ -924,7 +924,7 @@ public function elements($id, Request $request)
                 }
             ],'daily_works' => [
                 'model' => DailyWork::class,
-                'keys'  => ['url'],
+                'keys'  => ['project_title'],
                 'transform' => function ($item) {
                     return [
                         'id'    => $item->id,
