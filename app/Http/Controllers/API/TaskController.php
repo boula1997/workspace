@@ -786,7 +786,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => $item->cost . ", " . rest($item). ", " . $item->created_at->format('d-m-Y H:i') ,
+                        'extra' => $item->cost . ", " . rest($item). ", " . isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
                     ];
                 }
             ],
@@ -797,7 +797,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->amount . " EGP",
-                        'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title . ", " . $item->created_at->format('d-m-Y H:i') ,
+                        'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title . ", " . isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
                     ];
                 }
             ],
@@ -808,7 +808,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished").", ".taskEmployees($item,"mobile"). ", " . $item->created_at->format('d-m-Y H:i') ,
+                        'extra' => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished").", ".taskEmployees($item,"mobile"). ", " . isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
                     ];
                 }
             ],
@@ -819,7 +819,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => ($item->status == 1 ? "Finished" : "Live"). ", " . $item->created_at->format('d-m-Y H:i') ,
+                        'extra' => ($item->status == 1 ? "Finished" : "Live"). ", " . isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
                     ];
                 }
             ],
@@ -830,7 +830,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->name,
-                        'extra' => $item->type. ", " . $item->created_at->format('d-m-Y H:i') ,
+                        'extra' => $item->type. ", " . isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
                     ];
                 }
             ],
@@ -841,7 +841,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => 'navigations'. ", " . $item->created_at->format('d-m-Y H:i') ,
+                        'extra' => 'navigations'. ", " . isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
                     ];
                 }
             ],
@@ -852,7 +852,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->name,
-                        'extra' => 'roles'. ", " . $item->created_at->format('d-m-Y H:i') ,
+                        'extra' => 'roles'. ", " . isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
                     ];
                 }
             ],
@@ -863,7 +863,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->db_name,
-                        'extra' => $item->db_username . ", " . $item->db_password. ", " . $item->created_at->format('d-m-Y H:i') ,
+                        'extra' => $item->db_username . ", " . $item->db_password. ", " . isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
                     ];
                 }
             ],
@@ -874,7 +874,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->action,
-                        'extra' => $item->project->title . ", " . ($item->src ?? "none") . ", " . $item->created_at->format('d-m-Y H:i') ,
+                        'extra' => $item->project->title . ", " . ($item->src ?? "none") . ", " . isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
                     ];
                 }
             ],
@@ -885,7 +885,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => 'admin'. ", " . $item->created_at->format('d-m-Y H:i') ,
+                        'extra' => 'admin'. ", " . isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
                     ];
                 }
             ],
@@ -896,7 +896,8 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => 'notes'. ", " . $item->created_at->format('d-m-Y H:i') ,
+                        'extra' => 'notes'. ", " . isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
+                        
                     ];
                 }
             ],
@@ -907,7 +908,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->title,
-                        'extra' => $item->type. ", " . $item->created_at->format('d-m-Y H:i') ,
+                        'extra' => $item->type. ", " . isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
                     ];
                 }
             ], 'bases' => [
@@ -917,7 +918,7 @@ public function elements($id, Request $request)
                     return [
                         'id'    => $item->id,
                         'title' => $item->url,
-                        'extra' => $item->created_at->format('d-m-Y H:i') ,
+                        'extra' => isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date' ,
                     ];
                 }
             ],
