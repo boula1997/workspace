@@ -1052,10 +1052,10 @@ function projectExpectedExpense($project)
     // Make sure relationship is loaded
     $feeses = $project->feeses; // This returns a Collection of Fee models
 
-    dd($feeses);
 
     // Sum of negative fees (as positive)
     $negativeFees = $feeses->where('amount', '<', 0)->sum('amount') * -1;
+    dd($feeses);
 
     // Return the greater of negative fees or expected expense
     return max($negativeFees, $project->expectedExpense);
