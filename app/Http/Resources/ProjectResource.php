@@ -35,8 +35,8 @@ class ProjectResource extends JsonResource
             'tasks' => $this->tasks()
             ->where('status', 0)
             ->pluck('title'),
-            'lastPayed' => optional($this->fees->where('amount', '>', 0)->last())->created_at?->format('d-m-Y'),
-            "color" => sprintf(
+            'lastPayed' => optional($this->feeses->where('amount', '>', 0)->last())->created_at?->format('d-m-Y'),
+            "color" => sprintf(`
                 "#%06s",
                 substr(md5($this->id), 0, 6) // hash project id -> stable hex
             ),
