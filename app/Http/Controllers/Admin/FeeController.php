@@ -64,7 +64,7 @@ class FeeController extends Controller
     {
         try {
             $project=Project::find($request->project_id);
-            $latestFee = $project->fees()->latest()->first();
+            $latestFee = $project->feeses()->latest()->first();
             // if(($latestFee ? $latestFee->rest : $project->cost)-$request->amount<0)
             // return redirect()->back()->with(['error' => __('amount exceeded the cost')]);
 
@@ -124,7 +124,7 @@ class FeeController extends Controller
         try {
             // return redirect()->back()->with(['error' => __('amount exceeded the cost')]);
 
-            $latestFee = $fee->project->fees()->latest()->first();
+            $latestFee = $fee->project->feeses()->latest()->first();
             
             // if(($latestFee ? $latestFee->rest : $fee->project->cost)-($fee->amount-$request->amount)<0)
      
