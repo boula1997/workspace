@@ -13,7 +13,7 @@ class ProjectResource extends JsonResource
      * @return array<string, mixed>
      */
     public function toArray($request)
-    {
+    {  
         return [
             "id" => $this->id,
             'title' => $this->title,
@@ -21,6 +21,7 @@ class ProjectResource extends JsonResource
             'status' => $this->status,
             'cost' => $this->cost,
             'dailyWorks' => count($this->dailyWorks),
+            'projectBudgetDays' => projectBudgetDays(rest($this)),
             'renewalDate' => $this->renewalDate,
             'payed' => $this->payed,
             'deadline' => $this->deadline,

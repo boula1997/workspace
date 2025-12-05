@@ -1041,6 +1041,11 @@ function boula()
     return false;
 }
 
+function projectBudgetDays($rest)
+{
+    return ($rest*0.6)/500;
+}
+
 
 function isWithinWorkingHours(){
         return true;    
