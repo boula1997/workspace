@@ -1042,14 +1042,17 @@ function boula()
 }
 
 function projectBudgetDays($project)
-{  $total=((rest($project)-projectExpectedExpense($project))*0.6)/500;
-    return $total<0?0:$total;
+{
+    $total = ((rest($project) - projectExpectedExpense($project)) * 0.6) / 500;
+    return max(0, $total);
 }
 
 function projectExpectedExpense($project)
 {
-    $negativeFees = abs($project->feeses()->where("amount", "<", 0)->sum());
+    // Sum of negative fees (as positive)
+    $negativeFees = abs($project->feeses->where('amount', '<', 0)->sum('amount'));
 
+    // Return the greater of negative fees or expected expense
     return max($negativeFees, $project->expectedExpense);
 }
 

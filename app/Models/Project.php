@@ -33,8 +33,8 @@ class Project extends \App\Models\BaseModel
     }
     
     public function feeses() {
-    return $this->hasMany(Fee::class);
-}
+     return $this->hasMany(Fee::class);
+    }
     public function tasks(){ return $this->hasMany(Task::class); }
 
     public function getImagesAttribute()
