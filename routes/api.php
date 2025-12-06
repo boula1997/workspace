@@ -117,6 +117,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/issue', [TaskController::class, 'lifIssue'])->name('life.issue');
     Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
     Route::get('/apptask/create', [TaskController::class, 'create']);
+    Route::get('/board/projects', [TaskController::class, 'boardProjects']);
     Route::get('/apptask/tasks', [TaskController::class, 'tasks']);
     Route::get('/apptask/finished/tasks', [TaskController::class, 'finishedTasks']);
     Route::get('/note', [TaskController::class, 'lifNote'])->name('life.note');

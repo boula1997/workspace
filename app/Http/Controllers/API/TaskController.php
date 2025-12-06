@@ -82,16 +82,16 @@ class TaskController extends Controller
             ->orderBy('name', 'ASC')
             ->get();
 
-        if(auth("api")->user()->email=="parcel@gmail.com")
-            $employees =Admin::where("email",auth("api")->user()->email)->get();
+        if (auth("api")->user()->email == "parcel@gmail.com")
+            $employees = Admin::where("email", auth("api")->user()->email)->get();
         $clients = Admin::where("isActive", 1)->where("type", "client")->orderBy('name', 'ASC')->get();
         $prospectives = Admin::where("isActive", 1)->where("type", "prospective")->orderBy('name', 'ASC')->get();
 
         $projects = Project::orderBy("title", "asc")
             ->get();
 
-            if(auth("api")->user()->email=="parcel@gmail.com")
-            $projects = Project::orderBy("title", "asc")->where("title","Parcel Express")
+        if (auth("api")->user()->email == "parcel@gmail.com")
+            $projects = Project::orderBy("title", "asc")->where("title", "Parcel Express")
                 ->get();
 
 
@@ -145,8 +145,8 @@ class TaskController extends Controller
             });
         }
 
-        if(auth("api")->user()->email=="parcel@gmail.com")
-            $tasksQuery = Task::where("status", 0)->where("project_id",parcelProject()->id);
+        if (auth("api")->user()->email == "parcel@gmail.com")
+            $tasksQuery = Task::where("status", 0)->where("project_id", parcelProject()->id);
 
         // Paginate tasks 
         $tasks = $tasksQuery->paginate(10);
@@ -157,11 +157,6 @@ class TaskController extends Controller
             $data = [
                 "projects" => ProjectResource::collection($projects),
                 "infoProjects" => ProjectResource::collection($infoProjects),
-                "boardProjects" => ProjectResource::collection(
-                    Project::orderBy("deadline", "asc")
-                        ->get()
-                        ->filter(fn($project) => $project->status == 1)
-                ),
                 "tablePprojects" => ProjectResource::collection($tablePprojects),
                 "refrences" => IssueResource::collection($issues),
                 "employees" => $employees,
@@ -189,11 +184,6 @@ class TaskController extends Controller
                 "projects" => ProjectResource::collection($projects),
 
                 "infoProjects" => ProjectResource::collection($infoProjects),
-                "boardProjects" => ProjectResource::collection(
-                    Project::orderBy("deadline", "asc")
-                        ->get()
-                        ->filter(fn($project) => $project->status == 1)
-                ),
                 "employees" => $employees,
                 "clients" => $clients,
                 "prospectives" => $prospectives,
@@ -524,9 +514,9 @@ class TaskController extends Controller
                 });
             });
         }
-            if(auth("api")->user()->email=="parcel@gmail.com")
+        if (auth("api")->user()->email == "parcel@gmail.com")
             $tasksQuery = Task::where("status", 1)
-            ->latest('updated_at')->where("project_id",parcelProject()->id);
+                ->latest('updated_at')->where("project_id", parcelProject()->id);
         // Paginate tasks 
         $tasks = $tasksQuery->paginate(20);
 
@@ -555,9 +545,9 @@ class TaskController extends Controller
         $tasksQuery = Task::where("status", 1)
             ->latest('updated_at');
 
-            if(auth("api")->user()->email=="parcel@gmail.com")
+        if (auth("api")->user()->email == "parcel@gmail.com")
             $tasksQuery = Task::where("status", 1)
-            ->latest('updated_at')->where("project_id",parcelProject()->id);
+                ->latest('updated_at')->where("project_id", parcelProject()->id);
 
         // Apply search filter if present
         if ($request->has('search') && $request->search != '') {
@@ -760,269 +750,271 @@ class TaskController extends Controller
 
 
 
-public function elements($id, Request $request)
-{
-    try {
-        $search   = $request->query('search');
-        $perPage  = $request->query('per_page', 20);
+    public function elements($id, Request $request)
+    {
+        try {
+            $search   = $request->query('search');
+            $perPage  = $request->query('per_page', 20);
 
-        $category = Category::withoutGlobalScopes()->find($id);
+            $category = Category::withoutGlobalScopes()->find($id);
 
-        if (!$category) {
-            return response()->json(['error' => 'Category not found'], 404);
-        }
-
-        // Map category to model and key mappings
-        $categoryMap = [
-            'projects' => [
-                'model' => Project::class,
-                'keys'  => ['title', 'cost'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'title' => $item->title,
-                        'extra' => $item->cost . ", " . rest($item). ", " . (isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                    ];
-                }
-            ],
-            'fees' => [
-                'model' => Fee::class,
-                'keys'  => ['amount', 'note', 'project_title'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'title' => $item->amount . " EGP",
-                        'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title . ", " . (isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                    ];
-                }
-            ],
-            'tasks' => [
-                'model' => Task::class,
-                'keys'  => ['title', 'project_title','admin_title','status'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'title' => $item->title,
-                        'extra' => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished").", ".taskEmployees($item,"mobile"). ", " . (isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                    ];
-                }
-            ],
-            'deadlines' => [
-                'model' => Deadline::class,
-                'keys'  => ['title', 'status'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'title' => $item->title,
-                        'extra' => ($item->status == 1 ? "Finished" : "Live"). ", " . (isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                    ];
-                }
-            ],
-            'admins' => [
-                'model' => Admin::class,
-                'keys'  => ['name', 'type'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'title' => $item->name,
-                        'extra' => $item->type. ", " . (isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                    ];
-                }
-            ],
-            'navigations' => [
-                'model' => Navigation::class,
-                'keys'  => ['title', 'link'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'title' => $item->title,
-                        'extra' => 'navigations'. ", " . (isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                    ];
-                }
-            ],
-            'roles' => [
-                'model' => Role::class,
-                'keys'  => ['name', 'guard_name'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'title' => $item->name,
-                        'extra' => 'roles'. ", " . (isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                    ];
-                }
-            ],
-            'd_b_credentials' => [
-                'model' => DBCredential::class,
-                'keys'  => ['db_name', 'db_username', 'db_password'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'title' => $item->db_name,
-                        'extra' => $item->db_username . ", " . $item->db_password. ", " . (isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                    ];
-                }
-            ],
-            'clienttracks' => [
-                'model' => Clienttrack::class,
-                'keys'  => ['action', 'src', 'project_title'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'title' => $item->action,
-                        'extra' => $item->project->title . ", " . ($item->src ?? "none") . ", " . (isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                    ];
-                }
-            ],
-            'videos' => [
-                'model' => Video::class,
-                'keys'  => ['title', 'link'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'title' => $item->title,
-                        'extra' => 'admin'. ", " . (isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                    ];
-                }
-            ],
-            'notes' => [
-                'model' => Note::class,
-                'keys'  => ['title', 'type'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'title' => $item->title,
-                        'extra' => 'notes'. ", " . (isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                        
-                    ];
-                }
-            ],
-            'categories' => [
-                'model' => Category::class,
-                'keys'  => ['title','type', 'description'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'title' => $item->title,
-                        'extra' => $item->type. ", " . (isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                    ];
-                }
-            ], 'bases' => [
-                'model' => Base::class,
-                'keys'  => ['url'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'title' => $item->url,
-                        'extra' => (isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                    ];
-                }
-            ],'daily_works' => [
-                'model' => DailyWork::class,
-                'keys'  => ['project_title'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'extra' => $item->project->title." ".(isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                    ];
-                }
-            ],'issues' => [
-                'model' => Issue::class,
-                'keys'  => ['url'],
-                'transform' => function ($item) {
-                    return [
-                        'id'    => $item->id,
-                        'extra' => $item->title." ".(isset($item->created_at)?$item->created_at->format('d-m-Y H:i'):'No date') ,
-                    ];
-                }
-            ],  
-        ];
-
-        // 🔒 Restrict categories based on boula()
-        if (!boula()) {
-            // Define allowed categories for non-boula users
-            $allowedCategories = ['projects', 'tasks', 'admins', 'fees']; // Add the categories you want to allow
-            
-            if (!in_array($category->title, $allowedCategories)) {
-                return response()->json(['error' => 'Category not accessible'], 403);
+            if (!$category) {
+                return response()->json(['error' => 'Category not found'], 404);
             }
-        }
 
-        if (!isset($categoryMap[$category->title])) {
-            return response()->json(['error' => 'Unsupported category'], 400);
-        }
+            // Map category to model and key mappings
+            $categoryMap = [
+                'projects' => [
+                    'model' => Project::class,
+                    'keys'  => ['title', 'cost'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => $item->cost . ", " . rest($item) . ", " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+                'fees' => [
+                    'model' => Fee::class,
+                    'keys'  => ['amount', 'note', 'project_title'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->amount . " EGP",
+                            'extra' => ($item->note ?? "No note") . ", " . optional($item->project)->title . ", " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+                'tasks' => [
+                    'model' => Task::class,
+                    'keys'  => ['title', 'project_title', 'admin_title', 'status'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => $item->project->title . ", " . ($item->status == 0 ? "live" : "finished") . ", " . taskEmployees($item, "mobile") . ", " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+                'deadlines' => [
+                    'model' => Deadline::class,
+                    'keys'  => ['title', 'status'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => ($item->status == 1 ? "Finished" : "Live") . ", " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+                'admins' => [
+                    'model' => Admin::class,
+                    'keys'  => ['name', 'type'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->name,
+                            'extra' => $item->type . ", " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+                'navigations' => [
+                    'model' => Navigation::class,
+                    'keys'  => ['title', 'link'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => 'navigations' . ", " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+                'roles' => [
+                    'model' => Role::class,
+                    'keys'  => ['name', 'guard_name'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->name,
+                            'extra' => 'roles' . ", " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+                'd_b_credentials' => [
+                    'model' => DBCredential::class,
+                    'keys'  => ['db_name', 'db_username', 'db_password'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->db_name,
+                            'extra' => $item->db_username . ", " . $item->db_password . ", " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+                'clienttracks' => [
+                    'model' => Clienttrack::class,
+                    'keys'  => ['action', 'src', 'project_title'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->action,
+                            'extra' => $item->project->title . ", " . ($item->src ?? "none") . ", " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+                'videos' => [
+                    'model' => Video::class,
+                    'keys'  => ['title', 'link'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => 'admin' . ", " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+                'notes' => [
+                    'model' => Note::class,
+                    'keys'  => ['title', 'type'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => 'notes' . ", " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
 
-        $model = $categoryMap[$category->title]['model'];
-        $keys = $categoryMap[$category->title]['keys'];
-        $transform = $categoryMap[$category->title]['transform'];
+                        ];
+                    }
+                ],
+                'categories' => [
+                    'model' => Category::class,
+                    'keys'  => ['title', 'type', 'description'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => $item->type . ", " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+                'bases' => [
+                    'model' => Base::class,
+                    'keys'  => ['url'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->url,
+                            'extra' => (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+                'daily_works' => [
+                    'model' => DailyWork::class,
+                    'keys'  => ['project_title'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'extra' => $item->project->title . " " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+                'issues' => [
+                    'model' => Issue::class,
+                    'keys'  => ['url'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'extra' => $item->title . " " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+            ];
 
-        $query = $model::latest()->withoutGlobalScopes();
+            // 🔒 Restrict categories based on boula()
+            if (!boula()) {
+                // Define allowed categories for non-boula users
+                $allowedCategories = ['projects', 'tasks', 'admins', 'fees']; // Add the categories you want to allow
 
-        // 📌 Universal created_at from/to filter
-        $from = $request->query('from');
-        $to   = $request->query('to');
-
-        if ($from || $to) {
-            $query->where(function ($q) use ($from, $to) {
-                if ($from) $q->whereDate('created_at', '>=', $from);
-                if ($to)   $q->whereDate('created_at', '<=', $to);
-            });
-        }
-
-        if ($search) {
-            $values = array_filter(array_map('trim', explode(',', $search)));
-
-            $query->where(function ($q) use ($keys, $values) {
-                foreach ($values as $i => $val) {
-                    if (!isset($keys[$i])) break;
-
-                    $key = $keys[$i];
-
-                    $q->where(function ($sub) use ($key, $val) {
-                        // Special handling
-                        if (is_numeric($val)) {
-                            $sub->where($key, $val);
-                        } elseif (in_array(strtolower($val), ['live', 'finished'])) {
-                            $status = strtolower($val) === 'live' ? 0 : 1;
-                            $sub->where($key, $status);
-                        } elseif ($val === '-') {
-                            $sub->where($key, '<', 0);
-                        } elseif ($val === '+') {
-                            $sub->where($key, '>', 0);
-                        } elseif ($key === 'project_title') {
-                            $sub->whereHas('project', function ($p) use ($val) {
-                                $p->where('title', 'LIKE', "%{$val}%");
-                            });
-                        } elseif ($key === 'admin_title') {
-                            $adminIds = Admin::where('name', 'LIKE', "%{$val}%")->pluck('id')->toArray();
-
-                            if (!empty($adminIds)) {
-                                $sub->where(function($q) use ($adminIds) {
-                                    foreach ($adminIds as $id) {
-                                        $q->orWhereJsonContains('employees', $id);
-                                    }
-                                });
-                            }
-                        } else {
-                            $sub->where($key, 'LIKE', "%{$val}%");
-                        }
-                    });
+                if (!in_array($category->title, $allowedCategories)) {
+                    return response()->json(['error' => 'Category not accessible'], 403);
                 }
-            });
+            }
+
+            if (!isset($categoryMap[$category->title])) {
+                return response()->json(['error' => 'Unsupported category'], 400);
+            }
+
+            $model = $categoryMap[$category->title]['model'];
+            $keys = $categoryMap[$category->title]['keys'];
+            $transform = $categoryMap[$category->title]['transform'];
+
+            $query = $model::latest()->withoutGlobalScopes();
+
+            // 📌 Universal created_at from/to filter
+            $from = $request->query('from');
+            $to   = $request->query('to');
+
+            if ($from || $to) {
+                $query->where(function ($q) use ($from, $to) {
+                    if ($from) $q->whereDate('created_at', '>=', $from);
+                    if ($to)   $q->whereDate('created_at', '<=', $to);
+                });
+            }
+
+            if ($search) {
+                $values = array_filter(array_map('trim', explode(',', $search)));
+
+                $query->where(function ($q) use ($keys, $values) {
+                    foreach ($values as $i => $val) {
+                        if (!isset($keys[$i])) break;
+
+                        $key = $keys[$i];
+
+                        $q->where(function ($sub) use ($key, $val) {
+                            // Special handling
+                            if (is_numeric($val)) {
+                                $sub->where($key, $val);
+                            } elseif (in_array(strtolower($val), ['live', 'finished'])) {
+                                $status = strtolower($val) === 'live' ? 0 : 1;
+                                $sub->where($key, $status);
+                            } elseif ($val === '-') {
+                                $sub->where($key, '<', 0);
+                            } elseif ($val === '+') {
+                                $sub->where($key, '>', 0);
+                            } elseif ($key === 'project_title') {
+                                $sub->whereHas('project', function ($p) use ($val) {
+                                    $p->where('title', 'LIKE', "%{$val}%");
+                                });
+                            } elseif ($key === 'admin_title') {
+                                $adminIds = Admin::where('name', 'LIKE', "%{$val}%")->pluck('id')->toArray();
+
+                                if (!empty($adminIds)) {
+                                    $sub->where(function ($q) use ($adminIds) {
+                                        foreach ($adminIds as $id) {
+                                            $q->orWhereJsonContains('employees', $id);
+                                        }
+                                    });
+                                }
+                            } else {
+                                $sub->where($key, 'LIKE', "%{$val}%");
+                            }
+                        });
+                    }
+                });
+            }
+
+            $items = $query->paginate($perPage);
+
+            $items->getCollection()->transform($transform);
+
+            return successResponse([
+                "elements"   => $items,
+                "isExpired"  => isExpired()[0],
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
         }
-
-        $items = $query->paginate($perPage);
-
-        $items->getCollection()->transform($transform);
-
-        return successResponse([
-            "elements"   => $items,
-            "isExpired"  => isExpired()[0],
-        ]);
-
-    } catch (Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
     }
-}
 
 
 
@@ -1163,5 +1155,18 @@ public function elements($id, Request $request)
         } catch (Ecxception $e) {
             dd($e->getMessage());
         }
+    }
+
+
+    public function boardProjects()
+    {
+
+
+
+        return successResponse(["boardProjects" => ProjectResource::collection(
+            Project::orderBy("deadline", "asc")
+                ->get()
+                ->filter(fn($project) => $project->status == 1)
+        ),]);
     }
 }
