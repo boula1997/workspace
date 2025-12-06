@@ -118,6 +118,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
     Route::get('/apptask/create', [TaskController::class, 'create']);
     Route::get('/board/projects', [TaskController::class, 'boardProjects']);
+    Route::get('/data/info', [TaskController::class, 'info']);
     Route::get('/apptask/tasks', [TaskController::class, 'tasks']);
     Route::get('/apptask/finished/tasks', [TaskController::class, 'finishedTasks']);
     Route::get('/note', [TaskController::class, 'lifNote'])->name('life.note');

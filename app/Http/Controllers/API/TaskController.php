@@ -115,9 +115,6 @@ class TaskController extends Controller
                 ->latest('updated_at')            // Then by latest update
                 // Limit to 300 tasks
             ;
-            $issues = Issue::where("isOverthinking", 0)->orderBy("title", "asc")->get();
-
-            $infoProjects = Project::where("isOverthinking", 0)->orderBy("title", "asc")->get(); // ✅ sort
 
         } else {
             $tasksQuery = Task::where("status", 0)
@@ -125,9 +122,6 @@ class TaskController extends Controller
                 ->latest('updated_at')            // Then by latest update
                 // Limit to 300 tasks
             ;
-            $infoProjects = Project::orderBy("title", "asc")
-                ->get();
-            $issues = Issue::orderBy("title", "asc")->get();
         }
 
         // Apply search filter if present
@@ -156,9 +150,7 @@ class TaskController extends Controller
         if (boula())
             $data = [
                 "projects" => ProjectResource::collection($projects),
-                "infoProjects" => ProjectResource::collection($infoProjects),
                 "tablePprojects" => ProjectResource::collection($tablePprojects),
-                "refrences" => IssueResource::collection($issues),
                 "employees" => $employees,
                 "clients" => $clients,
                 "prospectives" => $prospectives,
@@ -183,7 +175,7 @@ class TaskController extends Controller
             $data = [
                 "projects" => ProjectResource::collection($projects),
 
-                "infoProjects" => ProjectResource::collection($infoProjects),
+      
                 "employees" => $employees,
                 "clients" => $clients,
                 "prospectives" => $prospectives,
@@ -1168,5 +1160,16 @@ class TaskController extends Controller
                 ->get()
                 ->filter(fn($project) => $project->status == 1)
         ),]);
+    }
+    public function info()
+    {
+            $infoProjects = Project::orderBy("title", "asc")
+                ->get();
+            $issues = Issue::orderBy("title", "asc")->get();
+
+        return successResponse([
+            "infoProjects" => ProjectResource::collection($infoProjects),
+            "refrences" => IssueResource::collection($issues),
+        ]);
     }
 }
