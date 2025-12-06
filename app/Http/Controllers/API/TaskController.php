@@ -94,20 +94,6 @@ class TaskController extends Controller
             $projects = Project::orderBy("title", "asc")->where("title", "Parcel Express")
                 ->get();
 
-
-        $allEmployees = Admin::where("type", "!=", "client")->where("type", "!=", "prospective")->orderBy('name', 'ASC')->get();
-        $allClients = Admin::where("type", "client")->orderBy('name', 'ASC')->get();
-
-
-        $naviagations = Navigation::orderBy('title', 'ASC')->get();
-        $categories = Category::get();
-
-
-
-
-
-
-
         if (!isWithinWorkingHours()) {
             $tasksQuery = Task::where("status", 0)
                 ->where("isOverthinking", 0)
@@ -174,8 +160,6 @@ class TaskController extends Controller
         else
             $data = [
                 "projects" => ProjectResource::collection($projects),
-
-      
                 "employees" => $employees,
                 "clients" => $clients,
                 "prospectives" => $prospectives,
@@ -193,6 +177,8 @@ class TaskController extends Controller
 
         return successResponse($data);
     }
+
+
     public function tasks(Request $request)
     {
 
@@ -247,6 +233,8 @@ class TaskController extends Controller
 
         return successResponse($data);
     }
+
+    
     public function stats($date = null)
     {
 
