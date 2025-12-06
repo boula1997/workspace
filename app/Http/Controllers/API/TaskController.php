@@ -107,7 +107,6 @@ class TaskController extends Controller
 
 
 
-        $queries = Query::latest("updated_at")->get();
 
         if (!isWithinWorkingHours()) {
             $tasksQuery = Task::where("status", 0)
@@ -152,12 +151,10 @@ class TaskController extends Controller
         // Paginate tasks 
         $tasks = $tasksQuery->paginate(10);
 
-        $credentials = DBCredential::get();
 
         $tablePprojects = Project::where("status", "!=", 0)->orWhere("deal", 0)->orderBy("title", "asc")->get();
         if (boula())
             $data = [
-                "queries" => $queries,
                 "projects" => ProjectResource::collection($projects),
                 "infoProjects" => ProjectResource::collection($infoProjects),
                 "boardProjects" => ProjectResource::collection(
@@ -170,7 +167,6 @@ class TaskController extends Controller
                 "employees" => $employees,
                 "clients" => $clients,
                 "prospectives" => $prospectives,
-                "credentials" => $credentials,
                 "tasks" => TaskResource::collection($tasks),
                 "tasks_meta" => [
                     "current_page" => $tasks->currentPage(),
@@ -191,7 +187,6 @@ class TaskController extends Controller
         else
             $data = [
                 "projects" => ProjectResource::collection($projects),
-                "queries" => $queries,
 
                 "infoProjects" => ProjectResource::collection($infoProjects),
                 "boardProjects" => ProjectResource::collection(
@@ -199,7 +194,6 @@ class TaskController extends Controller
                         ->get()
                         ->filter(fn($project) => $project->status == 1)
                 ),
-                "credentials" => $credentials,
                 "employees" => $employees,
                 "clients" => $clients,
                 "prospectives" => $prospectives,

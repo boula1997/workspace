@@ -185,9 +185,12 @@ $cleanedData = array_map(function ($row) {
         try {
 
             $queries = Query::latest("updated_at")->get();
+            $credentials = DBCredential::get();
+
             return response()->json([
                 'success' => "Done Successfully",
                 'queries' => $queries,
+                'credentials' => $credentials,
 
             ]);
         } catch (\Exception $e) {
