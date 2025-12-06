@@ -83,16 +83,18 @@ class TaskController extends Controller
             ->get();
 
         if (auth("api")->user()->email == "parcel@gmail.com")
-            $employees = Admin::where("email", auth("api")->user()->email)->get();
+        $employees = Admin::where("email", auth("api")->user()->email)->get();
         $clients = Admin::where("isActive", 1)->where("type", "client")->orderBy('name', 'ASC')->get();
         $prospectives = Admin::where("isActive", 1)->where("type", "prospective")->orderBy('name', 'ASC')->get();
 
-        $projects = Project::orderBy("title", "asc")
-            ->get();
+
 
         if (auth("api")->user()->email == "parcel@gmail.com")
             $projects = Project::orderBy("title", "asc")->where("title", "Parcel Express")
                 ->get();
+        else
+            $projects = Project::orderBy("title", "asc")
+            ->get();
 
         if (!isWithinWorkingHours()) {
             $tasksQuery = Task::where("status", 0)
@@ -132,11 +134,9 @@ class TaskController extends Controller
         $tasks = $tasksQuery->paginate(10);
 
 
-        $tablePprojects = Project::where("status", "!=", 0)->orWhere("deal", 0)->orderBy("title", "asc")->get();
         if (boula())
             $data = [
                 "projects" => ProjectResource::collection($projects),
-                "tablePprojects" => ProjectResource::collection($tablePprojects),
                 "employees" => $employees,
                 "clients" => $clients,
                 "prospectives" => $prospectives,
@@ -234,7 +234,7 @@ class TaskController extends Controller
         return successResponse($data);
     }
 
-    
+
     public function stats($date = null)
     {
 
@@ -442,23 +442,6 @@ class TaskController extends Controller
 
     public function createFinished(Request $request)
     {
-        $employees = Admin::where("isActive", 1)
-            ->where("type", "!=", "client")
-            ->select('admins.*')
-            ->selectRaw("
-            (
-                SELECT COUNT(*)
-                FROM tasks
-                WHERE tasks.status = 1
-                AND JSON_CONTAINS(tasks.employees, JSON_QUOTE(CAST(admins.id AS CHAR)))
-            ) as pending_tasks_count
-        ")
-            ->orderBy('name', 'ASC')
-            ->get();
-
-
-
-        $projects = Project::orderBy("title", "asc")->get();
 
         // Base query for tasks
         if (!isWithinWorkingHours()) {
@@ -501,8 +484,6 @@ class TaskController extends Controller
         $tasks = $tasksQuery->paginate(20);
 
         $data = [
-            "projects" => ProjectResource::collection($projects),
-            "employees" => $employees,
             "tasks" => TaskResource::collection($tasks),
             "tasks_meta" => [
                 "current_page" => $tasks->currentPage(),
