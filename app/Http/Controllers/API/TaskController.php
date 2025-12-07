@@ -874,7 +874,8 @@ class TaskController extends Controller
                     'transform' => function ($item) {
                         return [
                             'id'    => $item->id,
-                            'extra' => $item->project->title . " " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                            'title' =>$item->project->title,
+                            'extra' => (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
                         ];
                     }
                 ],
@@ -884,7 +885,8 @@ class TaskController extends Controller
                     'transform' => function ($item) {
                         return [
                             'id'    => $item->id,
-                            'extra' => $item->title . " " . (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                            'title' => $item->title,
+                            'extra' => (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
                         ];
                     }
                 ],
