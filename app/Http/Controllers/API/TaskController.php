@@ -171,7 +171,6 @@ class TaskController extends Controller
                     "total" => $tasks->total(),
                 ],
                 "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
-                "tablePprojects" => ProjectResource::collection($tablePprojects),
 
             ];
 
