@@ -57,7 +57,7 @@ public function getStatusAttribute()
 
     if (!$tasksWithStatus0 && rest($this) > 1) {
         return 2;
-    } elseif ($tasksWithStatus0 && rest($this) > 0) {
+    } elseif (rest($this) > 0) {
         return 1;
     } else {
         return 0;
