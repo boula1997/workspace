@@ -1016,7 +1016,7 @@ class TaskController extends Controller
             $deadline = Deadline::find($request->id);
             if ($request->action == "delete"){
                 if($deadline->isForever)
-                 return failedResponse([], "Deadline is forever!", 400);
+                 return successResponse([], "Deadline is forever!", 201);
                 else
                  $deadline->update(["status" => !$deadline->status]);
             }
