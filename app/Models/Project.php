@@ -66,5 +66,8 @@ public function getStatusAttribute()
 
     public function dailyWorks(){ return $this->hasMany(DailyWork::class); }
 
-
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'admin_id');
+    }
 }
