@@ -30,7 +30,7 @@ class ProjectResource extends JsonResource
                 ? now()->diffInDays(\Carbon\Carbon::parse($this->deadline), false)+1 // false => allow negative
                 : null,
             'rest' => rest($this),
-            'whatsapp' => $this->admin->whatsapp,
+            'whatsapp' => isset($this->admin)?$this->admin->whatsapp:null,
             'tasksCount' => $this->tasks()
             ->where('status', 0)
             ->count('title'),
