@@ -31,6 +31,8 @@ class ProjectResource extends JsonResource
                 : null,
             'rest' => rest($this),
             'whatsapp' => isset($this->admin)?$this->admin->whatsapp:null,
+            'phone' => isset($this->admin)?$this->admin->phone:null,
+            'messanger_id' => isset($this->admin)?$this->admin->messanger_id:null,
             'tasksCount' => $this->tasks()
             ->where('status', 0)
             ->count('title'),
