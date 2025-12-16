@@ -10,7 +10,7 @@ use App\Http\Resources\IssueResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
 use App\Models\Issue;
-use App\Models\Query;
+use App\Models\Overtime;
 use App\Models\Fee;
 use App\Models\Note;
 use App\Models\Admin;
@@ -886,6 +886,16 @@ class TaskController extends Controller
                         return [
                             'id'    => $item->id,
                             'title' => $item->title,
+                            'extra' => (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],                'overtimes' => [
+                    'model' => Overtime::class,
+                    'keys'  => ['hours'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->hours,
                             'extra' => (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
                         ];
                     }
