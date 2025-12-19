@@ -87,6 +87,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
       }
 
 
+    Route::get('/issue', [TaskController::class, 'hollyMass'])->name('hollyMass.issue');
 
     Route::middleware('auth:admin-api','apiLocalization','cors')->group(function () {
 
@@ -114,7 +115,6 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/links/category/{id}', [TaskController::class, 'links'])->name('links');
     Route::get('/elements/category/{id}', [TaskController::class, 'elements'])->name('elements');
     Route::get('/last/{date}', 'App\Http\Controllers\ActionController@lastUpdate')->name('last.update');
-    Route::get('/issue', [TaskController::class, 'hollyMass'])->name('hollyMass.issue');
     Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
     Route::get('/apptask/create', [TaskController::class, 'create']);
     Route::get('/board/projects', [TaskController::class, 'boardProjects']);
