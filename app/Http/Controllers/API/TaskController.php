@@ -1125,18 +1125,18 @@ class TaskController extends Controller
         }
     }
 
-    public function lifIssue()
+    public function hollyMass()
     {
 
         try {
             if (boula()) {
 
-                $lifeIssue = Issue::where("id", 66)->first();
+                $hollyMass = Issue::where("id", 66)->first();
 
 
                 return response()->json([
                     'message' => 'User is Boula',
-                    'data' => $lifeIssue
+                    'data' => $hollyMass
                 ], 201);
             }
         } catch (Ecxception $e) {
