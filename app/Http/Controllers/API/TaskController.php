@@ -882,7 +882,7 @@ class TaskController extends Controller
                 ],
                 'issues' => [
                     'model' => Issue::class,
-                    'keys'  => ['url','codeLinks'],
+                    'keys'  => ['title','codeLinks'],
                     'transform' => function ($item) {
                         return [
                             'id'    => $item->id,
