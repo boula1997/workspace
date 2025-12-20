@@ -45,6 +45,7 @@ public function getFunction(Request $request)
         if ($action == "getNotifications") {
             $notifications = []; // one single string
             $boardProjects = Project::get();
+            $deadlines = Deadline::where("status",0)->latest()->get();
             $moneyProjects = $boardProjects->filter(function ($project) {
                 return $project->status == 2 && $project->cost > 0;
             });
@@ -75,12 +76,18 @@ public function getFunction(Request $request)
                     $notifications[] = $project->title . " due on " . $deadline;
                 }
             }
+            if ($deadlines->isNotEmpty() && boula()) {
+                foreach ($deadlines as $deadline) {
+                    $notifications[] = $deadline->title . " due on " . $deadline->date;
+                }
+            }
 
 
             // Final output: ONE notification string
             if(boula()){
-            $notifications[] = "Yousab Tech + LapMob Ecommerce + Fixed Salary Programming Job";
-            $notifications[]="Your role is Marketting + Project Mangement";}
+                $notifications[] = "Yousab Tech + LapMob Ecommerce + Fixed Salary Programming Job";
+                $notifications[]="Your role is Marketting + Project Mangement";
+            }
 
             // Shuffle notifications to randomize order
             shuffle($notifications);
