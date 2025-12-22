@@ -93,9 +93,15 @@ class TaskController extends Controller
         if (auth("api")->user()->email == "parcel@gmail.com")
             $projects = Project::orderBy("title", "asc")->where("title", "Parcel Express")
                 ->get();
-        else
-            $projects = Project::orderBy("title", "asc")
+        else{
+            $allProjects = Project::orderBy("title", "asc")
             ->get();
+
+            $projects = $allProjects->filter(function ($project) {
+                return rest($project) > 0;
+            });
+
+        }
 
         if (!isWithinWorkingHours()) {
             $tasksQuery = Task::where("status", 0)
