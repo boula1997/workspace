@@ -57,6 +57,14 @@ public function getFunction(Request $request)
                 ->orderBy('renewalDate', 'asc')->whereDate('renewalDate', '<=', Carbon::now()->addWeek())
                 ->get();
 
+            $tasks = Task::where("status",0)->latest()->get();
+            
+            if ($tasks->isNotEmpty()) {
+                foreach ($tasks as $task) {
+                    $notifications[] = $task->title;
+                }
+            }
+
             if ($moneyProjects->isNotEmpty()) {
                 foreach ($moneyProjects as $project) {
                     $notifications[] = $project->title . " with " . rest($project);
