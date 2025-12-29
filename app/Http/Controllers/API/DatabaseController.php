@@ -309,4 +309,29 @@ public function getDatabase($dbname, $namedb)
     }
 }
 
+
+    public function getQueries()
+    {
+        try {
+
+            $queries = Query::latest("updated_at")->get();
+            $credentials = DBCredential::get();
+
+            return response()->json([
+                'success' => "Done Successfully",
+                'queries' => $queries,
+                'credentials' => $credentials,
+
+            ]);
+        } catch (\Exception $e) {
+
+
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'data' => $e->getMessage(),
+            ]);
+        }
+    }
+
 }
