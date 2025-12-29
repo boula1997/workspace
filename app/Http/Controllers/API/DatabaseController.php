@@ -309,7 +309,4 @@ public function getDatabase($dbname, $namedb)
     }
 }
 
-
-
-c
 }
