@@ -53,6 +53,8 @@ public function getFunction(Request $request)
                     ->get()
                     ->filter(fn($project) => $project->status == 1) ;
 
+            $dealProjects =Project::where('deal',0)->get();
+
             $renewProjects = Project::whereNotNull('renewalDate')
                 ->orderBy('renewalDate', 'asc')->whereDate('renewalDate', '<=', Carbon::now()->addWeek())
                 ->get();
@@ -68,6 +70,13 @@ public function getFunction(Request $request)
             if ($moneyProjects->isNotEmpty()) {
                 foreach ($moneyProjects as $project) {
                     $notifications[] = $project->title . " with " . rest($project);
+                }
+            }
+
+
+            if ($dealProjects->isNotEmpty() && boula()) {
+                foreach ($dealProjects as $project) {
+                    $notifications[] = $project->title . " deal not closed yet";
                 }
             }
 
