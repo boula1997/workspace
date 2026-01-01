@@ -282,17 +282,30 @@ class DatabaseController extends Controller
 
                     // Count rows sharing the same timestamps
                     if ($hasCreatedAt && $latestCreatedAt) {
+                        $latestCreatedAtCarbon = Carbon::parse($latestCreatedAt);
+
+                        // ±1 minute window
+                        $start = $latestCreatedAtCarbon->copy()->subMinute();
+                        $end   = $latestCreatedAtCarbon->copy()->addMinute();
+
                         $latestCreatedAtCount = DB::connection('dynamic')
                             ->table($tableName)
-                            ->where('created_at', $latestCreatedAt)
+                            ->whereBetween('created_at', [$start, $end])
                             ->count();
+
                     }
 
                     if ($hasUpdatedAt && $latestUpdatedAt) {
-                        $latestUpdatedAtCount = DB::connection('dynamic')
-                            ->table($tableName)
-                            ->where('updated_at', $latestUpdatedAt)
-                            ->count();
+                    $latestUpdatedAtCarbon = Carbon::parse($latestUpdatedAt);
+
+                    // ±1 minute range
+                    $start = $latestUpdatedAtCarbon->copy()->subMinute();
+                    $end   = $latestUpdatedAtCarbon->copy()->addMinute();
+
+                    $latestUpdatedAtCount = DB::connection('dynamic')
+                        ->table($tableName)
+                        ->whereBetween('updated_at', [$start, $end])
+                        ->count();
                     }
                 }
 
