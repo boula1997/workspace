@@ -257,6 +257,8 @@ class DatabaseController extends Controller
                 // Defaults
                 $latestCreatedAt = null;
                 $latestUpdatedAt = null;
+                $latestCreatedAtCount = null;
+                $latestUpdatedAtCount = null;
 
                 // Get latest timestamps only if columns exist and not a view
                 if ($tableType !== 'VIEW' && ($hasCreatedAt || $hasUpdatedAt)) {
@@ -293,6 +295,7 @@ class DatabaseController extends Controller
                             ->count();
                     }
                 }
+
 
 
                 // Keep your existing logic and just append new fields
