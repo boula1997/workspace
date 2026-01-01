@@ -99,27 +99,27 @@ class DatabaseController extends Controller
                 DB::connection('dynamic')->statement('use ' . $dbName);
                 $data = DB::connection('dynamic')->select($queryCommand);
 
-        $cleanedData = array_map(function ($row) {
-            $row = (array) $row; // Ensure it's an array, not stdClass
+                $cleanedData = array_map(function ($row) {
+                    $row = (array) $row; // Ensure it's an array, not stdClass
 
-            if (isset($row['codeLinks'])) {
-                $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
-                $row['codeLinks'] = trim($row['codeLinks']);
-            }
-            if (isset($row['script'])) {
-                $row['script'] = preg_replace('/\s+/', ' ', $row['script']);
-                $row['script'] = trim($row['script']);
-            }
-            if (isset($row['dispatch_status'])) {
-                $row['dispatch_status'] = preg_replace('/\s+/', ' ', $row['dispatch_status']);
-                $row['dispatch_status'] = trim($row['dispatch_status']);
-            }
+                    if (isset($row['codeLinks'])) {
+                        $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
+                        $row['codeLinks'] = trim($row['codeLinks']);
+                    }
+                    if (isset($row['script'])) {
+                        $row['script'] = preg_replace('/\s+/', ' ', $row['script']);
+                        $row['script'] = trim($row['script']);
+                    }
+                    if (isset($row['dispatch_status'])) {
+                        $row['dispatch_status'] = preg_replace('/\s+/', ' ', $row['dispatch_status']);
+                        $row['dispatch_status'] = trim($row['dispatch_status']);
+                    }
 
-            // 🔥 SORT COLUMNS A → Z
-            ksort($row);
+                    // 🔥 SORT COLUMNS A → Z
+                    ksort($row);
 
-            return $row;
-        }, $data);
+                    return $row;
+                }, $data);
 
 
                 $finalResult[] = [
@@ -184,130 +184,146 @@ class DatabaseController extends Controller
     }
 
 
-public function getDatabase($dbname, $namedb)
-{
-    try {
+    public function getDatabase($dbname, $namedb)
+    {
 
-        if (App::environment('local')) {
-            $dbHost = 'localhost';
-            $dbName = $namedb;
-            $dbUser = 'root';
-            $dbPass = '';
-        } else {
+        try {
 
-            $credential = DBCredential::where('id', $dbname)->first();
-
-            $dbHost = $credential->db_host ?? 'localhost';
-            $dbName = $credential->db_name ?? 'laravel';
-            $dbUser = $credential->db_username ?? 'root';
-            $dbPass = $credential->db_password ?? '';
-        }
-
-        config([
-            'database.connections.dynamic' => [
-                'driver' => 'mysql',
-                'host' => $dbHost,
-                'database' => $dbName,
-                'username' => $dbUser,
-                'password' => $dbPass,
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-            ],
-        ]);
-
-        DB::purge('dynamic');
-        DB::reconnect('dynamic');
-
-        $tables = DB::connection('dynamic')->select("SHOW TABLES");
-        $results = [];
-
-        foreach ($tables as $t) {
-
-            $tableName = array_values((array)$t)[0];
-
-            // Detect VIEW or BASE TABLE
-            $isView = DB::connection('dynamic')->selectOne("
-                SELECT TABLE_TYPE 
-                FROM information_schema.tables 
-                WHERE table_schema = ? AND table_name = ?
-            ", [$dbName, $tableName]);
-
-            $tableType = $isView->TABLE_TYPE ?? 'BASE TABLE';
-
-            // Row count (skip views)
-            if ($tableType === 'VIEW') {
-                $rowCount = null;
+            if (App::environment('local')) {
+                $dbHost = 'localhost';
+                $dbName = $namedb;
+                $dbUser = 'root';
+                $dbPass = '';
             } else {
-                $rowCount = DB::connection('dynamic')->table($tableName)->count();
+
+                $credential = DBCredential::where('id', $dbname)->first();
+
+                $dbHost = $credential->db_host ?? 'localhost';
+                $dbName = $credential->db_name ?? 'laravel';
+                $dbUser = $credential->db_username ?? 'root';
+                $dbPass = $credential->db_password ?? '';
             }
 
-            // Get columns
-            $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
+            config([
+                'database.connections.dynamic' => [
+                    'driver' => 'mysql',
+                    'host' => $dbHost,
+                    'database' => $dbName,
+                    'username' => $dbUser,
+                    'password' => $dbPass,
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                ],
+            ]);
 
-            // Detect timestamp columns
-            $hasCreatedAt = false;
-            $hasUpdatedAt = false;
+            DB::purge('dynamic');
+            DB::reconnect('dynamic');
 
-            foreach ($columns as $c) {
-                if ($c->Field === 'created_at') $hasCreatedAt = true;
-                if ($c->Field === 'updated_at') $hasUpdatedAt = true;
-            }
+            $tables = DB::connection('dynamic')->select("SHOW TABLES");
+            $results = [];
 
-            // Defaults
-            $latestCreatedAt = null;
-            $latestUpdatedAt = null;
+            foreach ($tables as $t) {
 
-            // Get latest timestamps only if columns exist and not a view
-            if ($tableType !== 'VIEW' && ($hasCreatedAt || $hasUpdatedAt)) {
+                $tableName = array_values((array)$t)[0];
 
-                $selects = [];
+                // Detect VIEW or BASE TABLE
+                $isView = DB::connection('dynamic')->selectOne("
+                        SELECT TABLE_TYPE 
+                        FROM information_schema.tables 
+                        WHERE table_schema = ? AND table_name = ?
+                    ", [$dbName, $tableName]);
 
-                if ($hasCreatedAt) {
-                    $selects[] = 'MAX(created_at) as latest_created_at';
+                $tableType = $isView->TABLE_TYPE ?? 'BASE TABLE';
+
+                // Row count (skip views)
+                if ($tableType === 'VIEW') {
+                    $rowCount = null;
+                } else {
+                    $rowCount = DB::connection('dynamic')->table($tableName)->count();
                 }
-                if ($hasUpdatedAt) {
-                    $selects[] = 'MAX(updated_at) as latest_updated_at';
+
+                // Get columns
+                $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
+
+                // Detect timestamp columns
+                $hasCreatedAt = false;
+                $hasUpdatedAt = false;
+
+                foreach ($columns as $c) {
+                    if ($c->Field === 'created_at') $hasCreatedAt = true;
+                    if ($c->Field === 'updated_at') $hasUpdatedAt = true;
                 }
 
-                $dates = DB::connection('dynamic')
-                    ->table($tableName)
-                    ->selectRaw(implode(', ', $selects))
-                    ->first();
+                // Defaults
+                $latestCreatedAt = null;
+                $latestUpdatedAt = null;
 
-                $latestCreatedAt = $dates->latest_created_at ?? null;
-                $latestUpdatedAt = $dates->latest_updated_at ?? null;
+                // Get latest timestamps only if columns exist and not a view
+                if ($tableType !== 'VIEW' && ($hasCreatedAt || $hasUpdatedAt)) {
+
+                    $selects = [];
+
+                    if ($hasCreatedAt) {
+                        $selects[] = 'MAX(created_at) as latest_created_at';
+                    }
+                    if ($hasUpdatedAt) {
+                        $selects[] = 'MAX(updated_at) as latest_updated_at';
+                    }
+
+                    $dates = DB::connection('dynamic')
+                        ->table($tableName)
+                        ->selectRaw(implode(', ', $selects))
+                        ->first();
+
+                    $latestCreatedAt = $dates->latest_created_at ?? null;
+                    $latestUpdatedAt = $dates->latest_updated_at ?? null;
+
+                    // Count rows sharing the same timestamps
+                    if ($hasCreatedAt && $latestCreatedAt) {
+                        $latestCreatedAtCount = DB::connection('dynamic')
+                            ->table($tableName)
+                            ->where('created_at', $latestCreatedAt)
+                            ->count();
+                    }
+
+                    if ($hasUpdatedAt && $latestUpdatedAt) {
+                        $latestUpdatedAtCount = DB::connection('dynamic')
+                            ->table($tableName)
+                            ->where('updated_at', $latestUpdatedAt)
+                            ->count();
+                    }
+                }
+
+
+                // Keep your existing logic and just append new fields
+                foreach ($columns as $col) {
+                    $col->TABLE_NAME = $tableName;
+                    $col->ROW_COUNT = $rowCount;
+                    $col->LATEST_CREATED_AT = $latestCreatedAt;
+                    $col->LATEST_UPDATED_AT = $latestUpdatedAt;
+                }
+
+                $results = array_merge($results, $columns);
             }
 
-            // Keep your existing logic and just append new fields
-            foreach ($columns as $col) {
-                $col->TABLE_NAME = $tableName;
-                $col->ROW_COUNT = $rowCount;
-                $col->LATEST_CREATED_AT = $latestCreatedAt;
-                $col->LATEST_UPDATED_AT = $latestUpdatedAt;
-            }
+            // Keep your existing sort logic
+            usort($results, function ($a, $b) {
+                $nameA = $a->COLUMN_NAME ?? ($a->Field ?? '');
+                $nameB = $b->COLUMN_NAME ?? ($b->Field ?? '');
+                return strcmp($nameA, $nameB);
+            });
 
-            $results = array_merge($results, $columns);
+            return response()->json([
+                'success' => true,
+                'data' => $results,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load database info: ' . $e->getMessage(),
+            ], 500);
         }
-
-        // Keep your existing sort logic
-        usort($results, function ($a, $b) {
-            $nameA = $a->COLUMN_NAME ?? ($a->Field ?? '');
-            $nameB = $b->COLUMN_NAME ?? ($b->Field ?? '');
-            return strcmp($nameA, $nameB);
-        });
-
-        return response()->json([
-            'success' => true,
-            'data' => $results,
-        ]);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to load database info: ' . $e->getMessage(),
-        ], 500);
     }
-}
 
 
     public function getQueries()
@@ -333,5 +349,4 @@ public function getDatabase($dbname, $namedb)
             ]);
         }
     }
-
 }
