@@ -299,9 +299,14 @@ class DatabaseController extends Controller
                 foreach ($columns as $col) {
                     $col->TABLE_NAME = $tableName;
                     $col->ROW_COUNT = $rowCount;
+
                     $col->LATEST_CREATED_AT = $latestCreatedAt;
+                    $col->LATEST_CREATED_AT_COUNT = $latestCreatedAtCount;
+
                     $col->LATEST_UPDATED_AT = $latestUpdatedAt;
+                    $col->LATEST_UPDATED_AT_COUNT = $latestUpdatedAtCount;
                 }
+
 
                 $results = array_merge($results, $columns);
             }
