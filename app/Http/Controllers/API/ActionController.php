@@ -8,6 +8,7 @@ use App\Models\Message;
 use App\Models\Project;
 use App\Models\Issue;
 use App\Models\Deadline;
+use App\Models\Note;
 use App\Models\Task;
 use Exception;
 use Illuminate\Http\Request;
@@ -59,8 +60,26 @@ public function getFunction(Request $request)
                 ->orderBy('renewalDate', 'asc')->whereDate('renewalDate', '<=', Carbon::now()->addWeek())
                 ->get();
 
-            $tasks = Task::where("status",0)->latest()->get();
+            $tasks = Task::where('status', 0)
+                ->inRandomOrder()
+                ->limit(10)
+                ->get();
+
+            $notes = Note::inRandomOrder()
+                ->limit(10)
+                ->get();
+
+            if ($notes->isNotEmpty()) {
+                foreach ($notes as $note) {
+                    $notifications[] = $note->title;
+                }
+            }
             
+            if ($tasks->isNotEmpty()) {
+                foreach ($tasks as $task) {
+                    $notifications[] = $task->title;
+                }
+            }
             if ($tasks->isNotEmpty()) {
                 foreach ($tasks as $task) {
                     $notifications[] = $task->title;
