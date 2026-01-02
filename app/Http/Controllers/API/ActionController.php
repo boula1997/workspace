@@ -9,6 +9,7 @@ use App\Models\Project;
 use App\Models\Issue;
 use App\Models\Deadline;
 use App\Models\Note;
+use App\Models\Repeat;
 use App\Models\Task;
 use Exception;
 use Illuminate\Http\Request;
@@ -69,17 +70,21 @@ public function getFunction(Request $request)
                 ->limit(10)
                 ->get();
 
-            if ($notes->isNotEmpty()) {
+            $last = Repeat::latest()
+                ->first();
+                
+            if(boula()){
+
+                $notifications[] = "Last time was " . $last->created_at;
+            }
+
+            if ($notes->isNotEmpty()  && boula()) {
                 foreach ($notes as $note) {
                     $notifications[] = $note->title;
                 }
             }
             
-            if ($tasks->isNotEmpty()) {
-                foreach ($tasks as $task) {
-                    $notifications[] = $task->title;
-                }
-            }
+
             if ($tasks->isNotEmpty()) {
                 foreach ($tasks as $task) {
                     $notifications[] = $task->title;
