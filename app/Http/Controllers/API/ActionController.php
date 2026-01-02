@@ -8,6 +8,7 @@ use App\Models\Message;
 use App\Models\Project;
 use App\Models\Issue;
 use App\Models\Deadline;
+use App\Models\Fee;
 use App\Models\Note;
 use App\Models\Repeat;
 use App\Models\Task;
@@ -72,9 +73,14 @@ public function getFunction(Request $request)
 
             $last = Repeat::latest()
                 ->first();
+            $date = request()->query('date') ? Carbon::parse(request()->query('date')) : Carbon::now();
+            $startOfMonth = $date->copy()->startOfMonth();
+            $endOfMonth = $date->copy()->endOfMonth();
+            $incomeFees = Fee::where('amount', '>', 0)->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
                 
             if(boula()){
 
+                $notifications[] = "Your income fees this month is " . $incomeFees;
                 $notifications[] = "Last time was " . $last->created_at;
             }
 
