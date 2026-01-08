@@ -25,138 +25,107 @@ class GeneralController extends Controller
 {
 
 
-public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
-{
-    // Step 0: Get DB credentials
-    $credential = DBCredential::where('db_name', $dbname)->first();
+    public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
+    {
+          try{
+        // Step 0: Get DB credentials
+        $credential = DBCredential::where('db_name', $dbname)->first();
 
-    $dbHost = $credential->db_host ?? '192.185.41.219';
-    $dbName = $credential->db_name ?? 'automation';
-    $dbUser = $credential->db_username ?? 'root';
-    $dbPass = $credential->db_password ?? '';
+        $dbHost = $credential->db_host ?? '192.185.41.219';
+        $dbName = $credential->db_name ?? 'automation';
+        $dbUser = $credential->db_username ?? 'root';
+        $dbPass = $credential->db_password ?? '';
 
-    // Step 1: Configure dynamic connection
-    config([
-        'database.connections.dynamic' => [
-            'driver' => 'mysql',
-            'host' => $dbHost,
-            'database' => $dbName,
-            'username' => $dbUser,
-            'password' => $dbPass,
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-        ],
-    ]);
+        // Step 1: Configure dynamic connection
+        config([
+            'database.connections.dynamic' => [
+                'driver' => 'mysql',
+                'host' => $dbHost,
+                'database' => $dbName,
+                'username' => $dbUser,
+                'password' => $dbPass,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+            ],
+        ]);
 
-    DB::purge('dynamic');
-    DB::reconnect('dynamic');
-    DB::connection('dynamic')->statement('USE ' . $dbName);
+        DB::purge('dynamic');
+        DB::reconnect('dynamic');
+        DB::connection('dynamic')->statement('USE ' . $dbName);
 
-    // Step 2: Get main table columns
-    $columns = DB::connection('dynamic')->select("
+        // Step 2: Get main table columns
+        $columns = DB::connection('dynamic')->select("
         SELECT COLUMN_NAME
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = DATABASE()
         AND TABLE_NAME = ?;
     ", [$table]);
 
-    $columnNames = collect($columns)->pluck('COLUMN_NAME')->toArray();
-    $exclude = ['id'];
-    $data = [];
+        $columnNames = collect($columns)->pluck('COLUMN_NAME')->toArray();
+        $exclude = ['id'];
+        $data = [];
 
-    // Step 3: Collect column values (excluding image/images)
-    foreach ($columnNames as $column) {
-        if (in_array($column, $exclude)) continue;
-        if (in_array($column, ['image', 'images'])) continue;
+        // Step 3: Collect column values (excluding image/images)
+        foreach ($columnNames as $column) {
+            if (in_array($column, $exclude)) continue;
+            if (in_array($column, ['image', 'images'])) continue;
 
-        if ($request->has($column)) {
-            $value = $request->input($column);
+            if ($request->has($column)) {
+                $value = $request->input($column);
 
-            if ($column === 'password' && !empty($value)) {
-                $data[$column] = \Illuminate\Support\Facades\Hash::make($value);
-            } else {
-                $data[$column] = $value;
+                if ($column === 'password' && !empty($value)) {
+                    $data[$column] = \Illuminate\Support\Facades\Hash::make($value);
+                } else {
+                    $data[$column] = $value;
+                }
             }
         }
-    }
 
-    $data["id"]=$itemId;
+        $data["id"] = $itemId;
 
-    // 🕒 Step 3.1: Add timestamps manually
-    $now = now(); // Carbon instance
+        // 🕒 Step 3.1: Add timestamps manually
+        $now = now(); // Carbon instance
 
-if ($itemId && $itemId !== "undefined") {
+        if ($itemId && $itemId !== "undefined") {
 
-    // Always update id
-    $data['id'] = $itemId;
+            // Always update id
+            $data['id'] = $itemId;
 
-    // Always update updated_at
-    if (in_array('updated_at', $columnNames)) {
-        $data['updated_at'] = $now;
-    }
+            // Always update updated_at
+            if (in_array('updated_at', $columnNames)) {
+                $data['updated_at'] = $now;
+            }
 
-    // Prevent empty updates by ensuring at least one field changes
-    if (count($data) === 0) {
-        $data = ['updated_at' => $now, 'id' => $itemId];
-    }
+            // Prevent empty updates by ensuring at least one field changes
+            if (count($data) === 0) {
+                $data = ['updated_at' => $now, 'id' => $itemId];
+            }
 
-    DB::connection('dynamic')->table($table)
-        ->where('id', $itemId)
-        ->update($data);
-}
-else {
-        // 🟡 CREATE — set both created_at and updated_at
-        if (in_array('created_at', $columnNames)) {
-            $data['created_at'] = $now;
-        }
-        if (in_array('updated_at', $columnNames)) {
-            $data['updated_at'] = $now;
-        }
+            DB::connection('dynamic')->table($table)
+                ->where('id', $itemId)
+                ->update($data);
+        } else {
+            // 🟡 CREATE — set both created_at and updated_at
+            if (in_array('created_at', $columnNames)) {
+                $data['created_at'] = $now;
+            }
+            if (in_array('updated_at', $columnNames)) {
+                $data['updated_at'] = $now;
+            }
 
-        $itemId = DB::connection('dynamic')->table($table)->insertGetId($data);
-    }
-
-    // Step 4: Handle image & images via files table (unchanged)
-    $fileableType = 'App\\Models\\' . Str::studly(Str::singular($table));
-
-    if ($request->hasFile('image')) {
-        $currentImage = DB::connection('dynamic')->table('files')
-            ->where('fileable_type', $fileableType)
-            ->where('fileable_id', $itemId)
-            ->where('isMultiply', 0)
-            ->first();
-
-        if ($currentImage && file_exists($currentImage->url)) {
-            File::delete($currentImage->url);
-        }
-        if ($currentImage) {
-            DB::connection('dynamic')->table('files')
-                ->where('id', $currentImage->id)
-                ->delete();
+            $itemId = DB::connection('dynamic')->table($table)->insertGetId($data);
         }
 
-        $file = $request->file('image');
-        $image = $file->store('images');
-        $file->move('images', $image);
+        // Step 4: Handle image & images via files table (unchanged)
+        $fileableType = 'App\\Models\\' . Str::studly(Str::singular($table));
 
-        DB::connection('dynamic')->table('files')->insert([
-            'url' => $image,
-            'fileable_type' => $fileableType,
-            'fileable_id' => $itemId,
-            'isMultiply' => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    }
+        if ($request->hasFile('image')) {
+            $currentImage = DB::connection('dynamic')->table('files')
+                ->where('fileable_type', $fileableType)
+                ->where('fileable_id', $itemId)
+                ->where('isMultiply', 0)
+                ->first();
 
-    if ($request->hasFile('images')) {
-        $currentImages = DB::connection('dynamic')->table('files')
-            ->where('fileable_type', $fileableType)
-            ->where('fileable_id', $itemId)
-            ->where('isMultiply', 1)
-            ->get();
-
-        foreach ($currentImages as $currentImage) {
             if ($currentImage && file_exists($currentImage->url)) {
                 File::delete($currentImage->url);
             }
@@ -165,91 +134,128 @@ else {
                     ->where('id', $currentImage->id)
                     ->delete();
             }
-        }
 
-        foreach ($request->file('images') as $file) {
-            $data['image'] = $file->store('images');
-            $file->move('images', $data['image']);
+            $file = $request->file('image');
+            $image = $file->store('images');
+            $file->move('images', $image);
 
             DB::connection('dynamic')->table('files')->insert([
-                'url' => $data['image'],
+                'url' => $image,
                 'fileable_type' => $fileableType,
                 'fileable_id' => $itemId,
-                'isMultiply' => 1,
+                'isMultiply' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
-    }
 
-    // Step 5: Translations (unchanged)
-    $translationTable = Str::singular($table) . '_translations';
-    $foreignKey = Str::singular($table) . '_id';
+        if ($request->hasFile('images')) {
+            $currentImages = DB::connection('dynamic')->table('files')
+                ->where('fileable_type', $fileableType)
+                ->where('fileable_id', $itemId)
+                ->where('isMultiply', 1)
+                ->get();
 
-    if (Schema::connection('dynamic')->hasTable($translationTable)) {
-        $translationData = [];
+            foreach ($currentImages as $currentImage) {
+                if ($currentImage && file_exists($currentImage->url)) {
+                    File::delete($currentImage->url);
+                }
+                if ($currentImage) {
+                    DB::connection('dynamic')->table('files')
+                        ->where('id', $currentImage->id)
+                        ->delete();
+                }
+            }
 
-        foreach (['en', 'ar'] as $locale) {
-            if ($request->has($locale) && is_array($request->input($locale))) {
-                $translationData[$locale] = $request->input($locale);
+            foreach ($request->file('images') as $file) {
+                $data['image'] = $file->store('images');
+                $file->move('images', $data['image']);
+
+                DB::connection('dynamic')->table('files')->insert([
+                    'url' => $data['image'],
+                    'fileable_type' => $fileableType,
+                    'fileable_id' => $itemId,
+                    'isMultiply' => 1,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
             }
         }
 
-foreach ($translationData as $locale => $fields) {
-    $fields[$foreignKey] = $itemId;
-    $fields['locale'] = $locale;
-    $fields['updated_at'] = $now;
+        // Step 5: Translations (unchanged)
+        $translationTable = Str::singular($table) . '_translations';
+        $foreignKey = Str::singular($table) . '_id';
 
-    // ✅ Ensure isActive is not null
-    if (!isset($fields['isActive'])) {
-        $fields['isActive'] = 1; // default active
+        if (Schema::connection('dynamic')->hasTable($translationTable)) {
+            $translationData = [];
+
+            foreach (['en', 'ar'] as $locale) {
+                if ($request->has($locale) && is_array($request->input($locale))) {
+                    $translationData[$locale] = $request->input($locale);
+                }
+            }
+
+            foreach ($translationData as $locale => $fields) {
+                $fields[$foreignKey] = $itemId;
+                $fields['locale'] = $locale;
+                $fields['updated_at'] = $now;
+
+                // ✅ Ensure isActive is not null
+                if (!isset($fields['isActive'])) {
+                    $fields['isActive'] = 1; // default active
+                }
+
+                if (in_array('created_at', Schema::connection('dynamic')->getColumnListing($translationTable))) {
+                    $fields['created_at'] = $now;
+                }
+
+                $existing = DB::connection('dynamic')->table($translationTable)
+                    ->where($foreignKey, $itemId)
+                    ->where('locale', $locale)
+                    ->first();
+
+                if ($existing) {
+                    DB::connection('dynamic')->table($translationTable)
+                        ->where($foreignKey, $itemId)
+                        ->where('locale', $locale)
+                        ->update($fields);
+                } else {
+                    DB::connection('dynamic')->table($translationTable)->insert($fields);
+                }
+            }
+        }
+
+        // Step 6: Return response
+        $files = DB::connection('dynamic')->table('files')
+            ->where('fileable_type', $fileableType)
+            ->where('fileable_id', $itemId)
+            ->where('isMultiply', 1)
+            ->get();
+        $file = DB::connection('dynamic')->table('files')
+            ->where('fileable_type', $fileableType)
+            ->where('fileable_id', $itemId)
+            ->where('isMultiply', 0)
+            ->first();
+
+        $image = $file->url ?? null;
+        $images = $files->pluck('url')->map(fn($url) => asset('storage/' . $url))->toArray();
+          }catch(Exception $e){
+              return response()->json([
+                  'success' => false,
+                  'message' => 'Error: ' . $e->getMessage(),
+              ], 500);
+          }
+
+        return response()->json([
+            'success' => true,
+            'message' => $itemId ? 'Record updated successfully.' : 'Record inserted successfully.',
+            'data' => $data,
+            'id' => $itemId,
+            'image' => $image ? asset('storage/' . $image) : null,
+            'images' => $images,
+        ]);
     }
 
-    if (in_array('created_at', Schema::connection('dynamic')->getColumnListing($translationTable))) {
-        $fields['created_at'] = $now;
-    }
-
-    $existing = DB::connection('dynamic')->table($translationTable)
-        ->where($foreignKey, $itemId)
-        ->where('locale', $locale)
-        ->first();
-
-    if ($existing) {
-        DB::connection('dynamic')->table($translationTable)
-            ->where($foreignKey, $itemId)
-            ->where('locale', $locale)
-            ->update($fields);
-    } else {
-        DB::connection('dynamic')->table($translationTable)->insert($fields);
-    }
-}
-
-    }
-
-    // Step 6: Return response
-    $files = DB::connection('dynamic')->table('files')
-        ->where('fileable_type', $fileableType)
-        ->where('fileable_id', $itemId)
-        ->where('isMultiply', 1)
-        ->get();
-    $file = DB::connection('dynamic')->table('files')
-        ->where('fileable_type', $fileableType)
-        ->where('fileable_id', $itemId)
-        ->where('isMultiply', 0)
-        ->first();
-
-    $image = $file->url ?? null;
-    $images = $files->pluck('url')->map(fn($url) => asset('storage/' . $url))->toArray();
-
-    return response()->json([
-        'success' => true,
-        'message' => $itemId ? 'Record updated successfully.' : 'Record inserted successfully.',
-        'data' => $data,
-        'id' => $itemId,
-        'image' => $image ? asset('storage/' . $image) : null,
-        'images' => $images,
-    ]);
-}
 
 
 
@@ -259,8 +265,7 @@ foreach ($translationData as $locale => $fields) {
 
 
 
-
-   public function showEditCreate($dbname, $table, $itemId = null)
+    public function showEditCreate($dbname, $table, $itemId = null)
     {
         // Step 0: Get DB credentials
         $credential = DBCredential::where('db_name', $dbname)->first();
@@ -603,7 +608,7 @@ foreach ($translationData as $locale => $fields) {
     }
 
 
-    public function index($dbname, $table,$column=null,$equal=null)
+    public function index($dbname, $table, $column = null, $equal = null)
     {
         // Step 0: Dynamic DB connection
         $credential = DBCredential::where('db_name', $dbname)->first();
@@ -653,10 +658,10 @@ foreach ($translationData as $locale => $fields) {
             $translationCols = collect($translationCols)->pluck('COLUMN_NAME')->toArray();
 
             $expectedForeignKey = Str::snake(Str::singular($table)) . '_id';
-            $foreignKey = in_array($expectedForeignKey, $translationCols) 
-                ? $expectedForeignKey 
+            $foreignKey = in_array($expectedForeignKey, $translationCols)
+                ? $expectedForeignKey
                 : collect($translationCols)
-                    ->first(fn($col) => Str::endsWith($col, '_id') && $col !== 'id')
+                ->first(fn($col) => Str::endsWith($col, '_id') && $col !== 'id')
                 ?? $expectedForeignKey;
 
             $dataQuery->leftJoin(
@@ -736,7 +741,7 @@ foreach ($translationData as $locale => $fields) {
                 ", [$dbName, $relatedTrans]);
                 $transCols = collect($transCols)->pluck('COLUMN_NAME')->toArray();
 
-                $foreignKeyInRelTrans = collect($transCols)->first(fn($col) => Str::endsWith($col, '_id')) 
+                $foreignKeyInRelTrans = collect($transCols)->first(fn($col) => Str::endsWith($col, '_id'))
                     ?? Str::snake(Str::singular($relatedBase)) . '_id';
 
                 // Detect translatable display column
@@ -762,49 +767,49 @@ foreach ($translationData as $locale => $fields) {
         }
 
 
-            // Step 7: Apply filters
+        // Step 7: Apply filters
 
-            // ✅ Custom column/equal filter
-            if (!is_null($column) && !is_null($equal) && $column !== 'null' && $equal !== 'null') {
-                $dataQuery->where("$table.$column", $equal);
-            }
+        // ✅ Custom column/equal filter
+        if (!is_null($column) && !is_null($equal) && $column !== 'null' && $equal !== 'null') {
+            $dataQuery->where("$table.$column", $equal);
+        }
 
-            // ✅ Request-based filters (fallback)
-            foreach (request()->query() as $key => $value) {
-                if ($key === 'page') continue;
+        // ✅ Request-based filters (fallback)
+        foreach (request()->query() as $key => $value) {
+            if ($key === 'page') continue;
 
-                if (is_array($value) && in_array($key, ['en', 'ar']) && $hasMainTranslation) {
-                    foreach ($value as $fld => $val) {
-                        $dataQuery->where("$translationTable.$fld", 'like', "%$val%");
-                    }
-                } else {
-                    // 🔍 Detect the column’s data type
-                    $colMeta = collect($columns)->firstWhere('COLUMN_NAME', $key);
-                    $dataType = $colMeta['DATA_TYPE'] ?? null;
+            if (is_array($value) && in_array($key, ['en', 'ar']) && $hasMainTranslation) {
+                foreach ($value as $fld => $val) {
+                    $dataQuery->where("$translationTable.$fld", 'like', "%$val%");
+                }
+            } else {
+                // 🔍 Detect the column’s data type
+                $colMeta = collect($columns)->firstWhere('COLUMN_NAME', $key);
+                $dataType = $colMeta['DATA_TYPE'] ?? null;
 
-                    // 🧠 Check if it’s numeric foreign key
-                    if (is_numeric($value) && Str::endsWith($key, '_id')) {
-                        $dataQuery->where("$table.$key", $value);
+                // 🧠 Check if it’s numeric foreign key
+                if (is_numeric($value) && Str::endsWith($key, '_id')) {
+                    $dataQuery->where("$table.$key", $value);
 
                     // 📅 Handle date/datetime values
-                    } elseif (in_array($dataType, ['date', 'datetime', 'timestamp']) && strtotime($value)) {
-                        // Example: return all records from or after this date
-                        $dataQuery->whereDate("$table.$key", '>=', date('Y-m-d', strtotime($value)));
+                } elseif (in_array($dataType, ['date', 'datetime', 'timestamp']) && strtotime($value)) {
+                    // Example: return all records from or after this date
+                    $dataQuery->whereDate("$table.$key", '>=', date('Y-m-d', strtotime($value)));
 
                     // 🔢 Numeric (non-ID)
-                    } elseif (is_numeric($value)) {
-                        $dataQuery->where("$table.$key", '>=', $value);
+                } elseif (is_numeric($value)) {
+                    $dataQuery->where("$table.$key", '>=', $value);
 
                     // 🔤 Text / fallback
-                    } else {
-                        $dataQuery->where("$table.$key", 'like', "%$value%");
-                    }
+                } else {
+                    $dataQuery->where("$table.$key", 'like', "%$value%");
                 }
             }
+        }
 
 
 
-         $dataQuery->orderBy("$table.id", 'desc');
+        $dataQuery->orderBy("$table.id", 'desc');
 
         // Step 8: Pagination
         $paginated = $dataQuery->paginate(10);
@@ -911,7 +916,7 @@ foreach ($translationData as $locale => $fields) {
 
 
 
-    public function allTableNames($dbname,$admin_id=null)
+    public function allTableNames($dbname, $admin_id = null)
     {
         // Step 0: Get DB credentials
         $credential = DBCredential::where('db_name', $dbname)->first();
@@ -938,7 +943,7 @@ foreach ($translationData as $locale => $fields) {
         DB::reconnect('dynamic');
         DB::connection('dynamic')->statement('USE ' . $dbName);
 
-                    $blockedModules = [];
+        $blockedModules = [];
 
 
         // Step 2: Get all table names
@@ -951,7 +956,7 @@ foreach ($translationData as $locale => $fields) {
 
 
 
-                  // Step 3: Get blocked tables filtered by dbname
+        // Step 3: Get blocked tables filtered by dbname
         try {
             if (isset($admin_id)) {
                 // Fetch the permissions JSON from the admin
@@ -972,7 +977,7 @@ foreach ($translationData as $locale => $fields) {
                     ->table('blocked_modules')
                     ->pluck('table_name');
 
-                    $blockedModules = [];
+                $blockedModules = [];
             }
         } catch (\Exception $e) {
             $blockedTables = collect();
@@ -993,7 +998,7 @@ foreach ($translationData as $locale => $fields) {
             return ['TABLE_NAME' => $table];
         });
 
-        $admins=Admin::latest()->get();
+        $admins = Admin::latest()->get();
 
         return response()->json([
             'success' => trans('general.sent_successfully'),
@@ -1059,44 +1064,44 @@ foreach ($translationData as $locale => $fields) {
     }
 
 
-public function getAdmins($dbname)
-{
-    try {
-        $credential = DBCredential::where('db_name', $dbname)->firstOrFail();
+    public function getAdmins($dbname)
+    {
+        try {
+            $credential = DBCredential::where('db_name', $dbname)->firstOrFail();
 
-        // Configure connection dynamically
-        config([
-            'database.connections.dynamic' => [
-                'driver' => 'mysql',
-                'host' => $credential->db_host,
-                'database' => $credential->db_name,
-                'username' => $credential->db_username,
-                'password' => $credential->db_password,
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-            ],
-        ]);
+            // Configure connection dynamically
+            config([
+                'database.connections.dynamic' => [
+                    'driver' => 'mysql',
+                    'host' => $credential->db_host,
+                    'database' => $credential->db_name,
+                    'username' => $credential->db_username,
+                    'password' => $credential->db_password,
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                ],
+            ]);
 
-        DB::purge('dynamic');
-        DB::reconnect('dynamic');
+            DB::purge('dynamic');
+            DB::reconnect('dynamic');
 
-        // Fetch all admins
-        $admins = DB::connection('dynamic')->table('admins')
-            ->select('id', 'name')
-            ->orderBy('id')
-            ->get();
+            // Fetch all admins
+            $admins = DB::connection('dynamic')->table('admins')
+                ->select('id', 'name')
+                ->orderBy('id')
+                ->get();
 
-        return response()->json([
-            'success' => true,
-            'admins' => $admins,
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to load admins: ' . $e->getMessage(),
-        ], 500);
+            return response()->json([
+                'success' => true,
+                'admins' => $admins,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load admins: ' . $e->getMessage(),
+            ], 500);
+        }
     }
-}
 
 
 
@@ -1108,7 +1113,4 @@ public function getAdmins($dbname)
             'databases' => databases(),
         ]);
     }
-
-
-
 }
