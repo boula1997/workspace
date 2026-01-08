@@ -20,6 +20,8 @@ use App\Models\Admin;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Throwable;
+use Illuminate\Database\QueryException;
 
 class GeneralController extends Controller
 {
@@ -239,12 +241,20 @@ class GeneralController extends Controller
 
         $image = $file->url ?? null;
         $images = $files->pluck('url')->map(fn($url) => asset('storage/' . $url))->toArray();
-          }catch(Exception $e){
-              return response()->json([
-                  'success' => false,
-                  'message' => 'Error: ' . $e->getMessage(),
-              ], 500);
-          }
+          }catch (QueryException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Database error',
+                'error'   => $e->getMessage(), // 👈 frontend reads this
+            ], 500);
+
+        } catch (Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Server error',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
 
         return response()->json([
             'success' => true,
