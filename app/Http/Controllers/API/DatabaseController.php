@@ -92,41 +92,92 @@ class DatabaseController extends Controller
                 }
             }
 
-            foreach ($queryCommands as $queryCommand) {
+foreach ($queryCommands as $queryCommand) {
 
+    DB::connection('dynamic')->statement('use ' . $dbName);
 
+    $normalizedQuery = preg_replace(
+        '/\s+/',
+        ' ',
+        strtolower(trim($queryCommand, "; \t\n\r\0\x0B"))
+    );
 
-                DB::connection('dynamic')->statement('use ' . $dbName);
-                $data = DB::connection('dynamic')->select($queryCommand);
+    // ---------- SELECT ----------
+    if (str_starts_with($normalizedQuery, 'select')) {
 
-                $cleanedData = array_map(function ($row) {
-                    $row = (array) $row; // Ensure it's an array, not stdClass
+        $data = DB::connection('dynamic')->select($queryCommand);
 
-                    if (isset($row['codeLinks'])) {
-                        $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
-                        $row['codeLinks'] = trim($row['codeLinks']);
-                    }
-                    if (isset($row['script'])) {
-                        $row['script'] = preg_replace('/\s+/', ' ', $row['script']);
-                        $row['script'] = trim($row['script']);
-                    }
-                    if (isset($row['dispatch_status'])) {
-                        $row['dispatch_status'] = preg_replace('/\s+/', ' ', $row['dispatch_status']);
-                        $row['dispatch_status'] = trim($row['dispatch_status']);
-                    }
+        $cleanedData = array_map(function ($row) {
+            $row = (array) $row;
 
-                    // 🔥 SORT COLUMNS A → Z
-                    ksort($row);
-
-                    return $row;
-                }, $data);
-
-
-                $finalResult[] = [
-                    'query' => $queryCommand,
-                    'result' => $cleanedData,
-                ];
+            foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
+                if (isset($row[$field])) {
+                    $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
+                }
             }
+
+            ksort($row);
+            return $row;
+        }, $data);
+
+        $finalResult[] = [
+            'query' => $queryCommand,
+            'count' => count($cleanedData),
+            'result' => $cleanedData,
+        ];
+
+        continue;
+    }
+
+    // ---------- UPDATE ----------
+    if (str_starts_with($normalizedQuery, 'update')) {
+
+        $affected = DB::connection('dynamic')->update($queryCommand);
+
+        $finalResult[] = [
+            'query' => $queryCommand,
+            'count' => $affected,
+        ];
+
+        continue;
+    }
+
+    // ---------- DELETE ----------
+    if (str_starts_with($normalizedQuery, 'delete')) {
+
+        $affected = DB::connection('dynamic')->delete($queryCommand);
+
+        $finalResult[] = [
+            'query' => $queryCommand,
+            'count' => $affected,
+        ];
+
+        continue;
+    }
+
+    // ---------- INSERT / CREATE ----------
+    if (str_starts_with($normalizedQuery, 'insert')) {
+
+        DB::connection('dynamic')->statement($queryCommand);
+
+        // MySQL has no reliable affected rows for raw INSERT
+        $finalResult[] = [
+            'query' => $queryCommand,
+            'count' => 1, // best possible signal for "executed"
+        ];
+
+        continue;
+    }
+
+    // ---------- FALLBACK ----------
+    DB::connection('dynamic')->statement($queryCommand);
+
+    $finalResult[] = [
+        'query' => $queryCommand,
+        'count' => 0,
+    ];
+}
+
 
             DB::commit(); // Commit transaction if everything is fine
 
