@@ -34,7 +34,13 @@ use Illuminate\Support\Facades\DB;
 class DatabaseController extends Controller
 {
 
-
+private function extractTableFromSelect(string $sql): ?string
+{
+    if (preg_match('/from\s+`?([a-zA-Z0-9_]+)`?/i', $sql, $matches)) {
+        return $matches[1];
+    }
+    return null;
+}
 
 
     public function execQuery(Request $request)
@@ -103,31 +109,43 @@ foreach ($queryCommands as $queryCommand) {
     );
 
     // ---------- SELECT ----------
-    if (str_starts_with($normalizedQuery, 'select')) {
+if (str_starts_with($normalizedQuery, 'select')) {
 
-        $data = DB::connection('dynamic')->select($queryCommand);
+    $data = DB::connection('dynamic')->select($queryCommand);
 
-        $cleanedData = array_map(function ($row) {
-            $row = (array) $row;
+    $cleanedData = array_map(function ($row) {
+        $row = (array) $row;
 
-            foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
-                if (isset($row[$field])) {
-                    $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
-                }
+        foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
+            if (isset($row[$field])) {
+                $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
             }
+        }
 
-            ksort($row);
-            return $row;
-        }, $data);
+        ksort($row);
+        return $row;
+    }, $data);
 
-        $finalResult[] = [
-            'query' => $queryCommand,
-            'count' => count($cleanedData),
-            'result' => $cleanedData,
-        ];
+    // 🔹 Extract table name
+    $tableName = $this->extractTableFromSelect($queryCommand);
 
-        continue;
+    // 🔹 Get table description
+    $tableDesc = [];
+    if ($tableName) {
+        $tableDesc = DB::connection('dynamic')
+            ->select("DESCRIBE `$tableName`");
     }
+
+    $finalResult[] = [
+        'query'      => $queryCommand,
+        'count'      => count($cleanedData),
+        'result'     => $cleanedData,
+        'table_desc' => $tableDesc, // ✅ HERE
+    ];
+
+    continue;
+}
+
 
     // ---------- UPDATE ----------
     if (str_starts_with($normalizedQuery, 'update')) {
