@@ -109,45 +109,43 @@ foreach ($queryCommands as $queryCommand) {
     );
 
     // ---------- SELECT ----------
-    if (str_starts_with($normalizedQuery, 'select')) {
 
-        $data = DB::connection('dynamic')->select($queryCommand);
+if (str_starts_with($normalizedQuery, 'select')) {
 
-        // 🔹 Normal cleaning
-        $cleanedData = array_map(function ($row) {
-            $row = (array) $row;
+    $data = DB::connection('dynamic')->select($queryCommand);
 
-            foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
-                if (isset($row[$field])) {
-                    $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
-                }
+    $cleanedData = array_map(function ($row) {
+        $row = (array) $row;
+
+        foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
+            if (isset($row[$field])) {
+                $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
             }
-
-            ksort($row);
-            return $row;
-        }, $data);
-
-        // 🔹 IF EMPTY RESULT → build 1 null row from column names
-        if (empty($cleanedData)) {
-            // get column names from first row of result metadata
-            $meta = DB::connection('dynamic')->select("EXPLAIN $queryCommand");
-
-            $nullRow = [];
-            foreach ($meta as $col) {
-                $nullRow[$col->Field] = null;
-            }
-
-            $cleanedData = [$nullRow]; // 👈 one fake row
         }
 
-        $finalResult[] = [
-            'query'  => $queryCommand,
-            'count'  => count($data), // real row count
-            'result' => $cleanedData,
-        ];
+        ksort($row);
+        return $row;
+    }, $data);
 
-        continue;
+    // 🔹 IF EMPTY RESULT → create one NULL row with all columns
+    if (empty($cleanedData)) {
+
+        $tableName = $this->extractTableFromSelect($queryCommand);
+
+        if ($tableName && Schema::connection('dynamic')->hasTable($tableName)) {
+            $columns = Schema::connection('dynamic')->getColumnListing($tableName);
+            $cleanedData = [array_fill_keys($columns, null)];
+        }
     }
+
+    $finalResult[] = [
+        'query'  => $queryCommand,
+        'count'  => count($data), // real DB count
+        'result' => $cleanedData,
+    ];
+
+    continue;
+}
 
     // ---------- UPDATE ----------
 if (str_starts_with($normalizedQuery, 'select')) {
