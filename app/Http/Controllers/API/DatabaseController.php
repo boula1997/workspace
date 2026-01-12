@@ -109,43 +109,45 @@ foreach ($queryCommands as $queryCommand) {
     );
 
     // ---------- SELECT ----------
-if (str_starts_with($normalizedQuery, 'select')) {
+    if (str_starts_with($normalizedQuery, 'select')) {
 
-    $data = DB::connection('dynamic')->select($queryCommand);
+        $data = DB::connection('dynamic')->select($queryCommand);
 
-    $cleanedData = array_map(function ($row) {
-        $row = (array) $row;
+        // 🔹 Normal cleaning
+        $cleanedData = array_map(function ($row) {
+            $row = (array) $row;
 
-        foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
-            if (isset($row[$field])) {
-                $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
+            foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
+                if (isset($row[$field])) {
+                    $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
+                }
             }
+
+            ksort($row);
+            return $row;
+        }, $data);
+
+        // 🔹 IF EMPTY RESULT → build 1 null row from column names
+        if (empty($cleanedData)) {
+            // get column names from first row of result metadata
+            $meta = DB::connection('dynamic')->select("EXPLAIN $queryCommand");
+
+            $nullRow = [];
+            foreach ($meta as $col) {
+                $nullRow[$col->Field] = null;
+            }
+
+            $cleanedData = [$nullRow]; // 👈 one fake row
         }
 
-        ksort($row);
-        return $row;
-    }, $data);
+        $finalResult[] = [
+            'query'  => $queryCommand,
+            'count'  => count($data), // real row count
+            'result' => $cleanedData,
+        ];
 
-    // 🔹 Extract table name
-    $tableName = $this->extractTableFromSelect($queryCommand);
-
-    // 🔹 Get table description
-    $tableDesc = [];
-    if ($tableName) {
-        $tableDesc = DB::connection('dynamic')
-            ->select("DESCRIBE `$tableName`");
+        continue;
     }
-
-    $finalResult[] = [
-        'query'      => $queryCommand,
-        'count'      => count($cleanedData),
-        'result'     => $cleanedData,
-        'table_desc' => $tableDesc, // ✅ HERE
-    ];
-
-    continue;
-}
-
 
     // ---------- UPDATE ----------
     if (str_starts_with($normalizedQuery, 'update')) {
