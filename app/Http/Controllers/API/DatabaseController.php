@@ -29,7 +29,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseController extends Controller
 {
@@ -150,17 +150,44 @@ foreach ($queryCommands as $queryCommand) {
     }
 
     // ---------- UPDATE ----------
-    if (str_starts_with($normalizedQuery, 'update')) {
+if (str_starts_with($normalizedQuery, 'select')) {
 
-        $affected = DB::connection('dynamic')->update($queryCommand);
+    $data = DB::connection('dynamic')->select($queryCommand);
 
-        $finalResult[] = [
-            'query' => $queryCommand,
-            'count' => $affected,
-        ];
+    $cleanedData = array_map(function ($row) {
+        $row = (array) $row;
 
-        continue;
+        foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
+            if (isset($row[$field])) {
+                $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
+            }
+        }
+
+        ksort($row);
+        return $row;
+    }, $data);
+
+    // 🔹 IF EMPTY RESULT → return one NULL row with all columns
+    if (empty($cleanedData)) {
+
+        $tableName = $this->extractTableFromSelect($queryCommand);
+
+        if ($tableName && Schema::connection('dynamic')->hasTable($tableName)) {
+            $columns = Schema::connection('dynamic')->getColumnListing($tableName);
+
+            $nullRow = array_fill_keys($columns, null);
+            $cleanedData = [$nullRow];
+        }
     }
+
+    $finalResult[] = [
+        'query'  => $queryCommand,
+        'count'  => count($data), // real DB count (0 if empty)
+        'result' => $cleanedData,
+    ];
+
+    continue;
+}
 
     // ---------- DELETE ----------
     if (str_starts_with($normalizedQuery, 'delete')) {
