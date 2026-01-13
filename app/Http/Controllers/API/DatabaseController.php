@@ -109,38 +109,36 @@ foreach ($queryCommands as $queryCommand) {
     );
 
     // ---------- SELECT ----------
-
+$suggestions = [];
 if (str_starts_with($normalizedQuery, 'select')) {
 
     $data = DB::connection('dynamic')->select($queryCommand);
 
     $cleanedData = array_map(function ($row) {
         $row = (array) $row;
-
-        foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
-            if (isset($row[$field])) {
-                $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
-            }
-        }
-
         ksort($row);
         return $row;
     }, $data);
 
-    // 🔹 IF EMPTY RESULT → create one NULL row with all columns
-    if (empty($cleanedData)) {
+    // 🔥 Extract table name
+    $tableName = $this->extractTableFromSelect($queryCommand);
 
-        $tableName = $this->extractTableFromSelect($queryCommand);
+    // 🔥 Get columns ONLY if table exists
+    if ($tableName && Schema::connection('dynamic')->hasTable($tableName)) {
+        $columns = Schema::connection('dynamic')->getColumnListing($tableName);
 
-        if ($tableName && Schema::connection('dynamic')->hasTable($tableName)) {
-            $columns = Schema::connection('dynamic')->getColumnListing($tableName);
-            $cleanedData = [array_fill_keys($columns, null)];
-        }
+        // clean + quote columns (optional)
+        $suggestions = array_map(fn ($c) => $c, $columns);
+    }
+
+    // 🔹 Empty result fallback
+    if (empty($cleanedData) && isset($columns)) {
+        $cleanedData = [array_fill_keys($columns, null)];
     }
 
     $finalResult[] = [
         'query'  => $queryCommand,
-        'count'  => count($data), // real DB count
+        'count'  => count($data),
         'result' => $cleanedData,
     ];
 
@@ -221,12 +219,7 @@ if (str_starts_with($normalizedQuery, 'select')) {
         'query' => $queryCommand,
         'count' => 0,
     ];
-}
-$suggestions = [
-    '"id"',
-    '"created_at"',
-    '"updated_at"',
-];
+    }
 
             DB::commit(); // Commit transaction if everything is fine
 
