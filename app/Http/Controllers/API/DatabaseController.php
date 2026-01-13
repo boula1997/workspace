@@ -126,7 +126,8 @@ if (str_starts_with($normalizedQuery, 'select')) {
     // 🔥 Get columns ONLY if table exists
     if ($tableName && Schema::connection('dynamic')->hasTable($tableName)) {
         $columns = Schema::connection('dynamic')->getColumnListing($tableName);
-
+        // ✅ sort alphabetically
+        sort($columns);
         // clean + quote columns (optional)
         $suggestions = array_map(fn ($c) => '"' . $c . '"', $columns);
     }
