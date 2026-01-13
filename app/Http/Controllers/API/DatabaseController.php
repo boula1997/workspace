@@ -233,7 +233,7 @@ $suggestions = [
             return response()->json([
                 'success' => "Done Successfully",
                  'data' => $finalResult,
-                  'suggestions' => $suggestions,
+                  'suggestions' => array_values($suggestions ?? []),
 
             ]);
         } catch (\Exception $e) {
