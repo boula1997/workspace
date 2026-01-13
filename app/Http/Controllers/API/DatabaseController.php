@@ -222,9 +222,11 @@ if (str_starts_with($normalizedQuery, 'select')) {
         'count' => 0,
     ];
 }
-    $suggestions[] = [
-    '"id"','"created_at"','"updated_at"'
-    ];
+$suggestions = [
+    '"id"',
+    '"created_at"',
+    '"updated_at"',
+];
 
             DB::commit(); // Commit transaction if everything is fine
 
