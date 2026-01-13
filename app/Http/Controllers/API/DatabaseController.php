@@ -222,7 +222,6 @@ if (str_starts_with($normalizedQuery, 'select')) {
     $finalResult[] = [
         'query' => $queryCommand,
         'count' => 0,
-        'suggestions' => $suggestions,
     ];
 }
 
@@ -231,7 +230,9 @@ if (str_starts_with($normalizedQuery, 'select')) {
 
             return response()->json([
                 'success' => "Done Successfully",
-                'data' => $finalResult,
+                 'data' => $finalResult,
+                  'suggestions' => $suggestions,
+
             ]);
         } catch (\Exception $e) {
             DB::rollBack(); // Rollback if something goes wrong
