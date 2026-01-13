@@ -128,7 +128,7 @@ if (str_starts_with($normalizedQuery, 'select')) {
         $columns = Schema::connection('dynamic')->getColumnListing($tableName);
 
         // clean + quote columns (optional)
-        $suggestions = array_map(fn ($c) => $c, ".$columns.");
+        $suggestions = array_map(fn ($c) => '"' . $c . '"', $columns);
     }
 
     // 🔹 Empty result fallback
