@@ -213,13 +213,16 @@ if (str_starts_with($normalizedQuery, 'select')) {
 
         continue;
     }
-
+    $suggestions[] = [
+    '"id"','"created_at"','"updated_at"'
+    ];
     // ---------- FALLBACK ----------
     DB::connection('dynamic')->statement($queryCommand);
 
     $finalResult[] = [
         'query' => $queryCommand,
         'count' => 0,
+        'suggestions' => $suggestions,
     ];
 }
 
