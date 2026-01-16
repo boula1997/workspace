@@ -270,10 +270,36 @@ private function extractTableFromSelect(string $sql): ?string
     {
 
         try {
-            $credential = DBCredential::where('id', $dbname)->first();
 
-            // Call the static method
-            self::setDynamicConnection($credential->db_name,$credential->id);
+            if (App::environment('local')) {
+                $dbHost = 'localhost';
+                $dbName = $namedb;
+                $dbUser = 'root';
+                $dbPass = '';
+            } else {
+
+                $credential = DBCredential::where('id', $dbname)->first();
+
+                $dbHost = $credential->db_host ?? 'localhost';
+                $dbName = $credential->db_name ?? 'laravel';
+                $dbUser = $credential->db_username ?? 'root';
+                $dbPass = $credential->db_password ?? '';
+            }
+
+            config([
+                'database.connections.dynamic' => [
+                    'driver' => 'mysql',
+                    'host' => $dbHost,
+                    'database' => $dbName,
+                    'username' => $dbUser,
+                    'password' => $dbPass,
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                ],
+            ]);
+
+            DB::purge('dynamic');
+            DB::reconnect('dynamic');
 
             $tables = DB::connection('dynamic')->select("SHOW TABLES");
             $results = [];
@@ -289,7 +315,7 @@ private function extractTableFromSelect(string $sql): ?string
                         SELECT TABLE_TYPE 
                         FROM information_schema.tables 
                         WHERE table_schema = ? AND table_name = ?
-                    ", [$namedb, $tableName]);
+                    ", [$dbName, $tableName]);
 
                 $tableType = $isView->TABLE_TYPE ?? 'BASE TABLE';
 
