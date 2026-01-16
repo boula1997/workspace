@@ -113,7 +113,7 @@ private function extractTableFromSelect(string $sql): ?string
 
         foreach ($queryCommands as $queryCommand) {
 
-        DB::connection('dynamic')->statement('use ' . $dbName);
+        DB::connection('dynamic')->statement('use ' . $credential->db_name);
 
         $normalizedQuery = preg_replace(
             '/\s+/',
