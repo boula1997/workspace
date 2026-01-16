@@ -34,6 +34,47 @@ use Illuminate\Support\Facades\Schema;
 class DatabaseController extends Controller
 {
 
+
+        // ✅ Static function inside controller
+    public static function setDynamicConnection($dbname,$credentialId=null)
+    {
+        if (App::environment('local')) {
+            $dbHost = 'localhost';
+            $dbName = $dbname ?? 'laravel';
+            $dbUser = 'root';
+            $dbPass = '';
+        } else {
+            if(isset($credentialId)){
+                $credential = DBCredential::find($credentialId);
+                $dbHost = $credential->db_host ?? 'localhost';
+                $dbName = $credential->db_name ?? 'laravel';
+                $dbUser = $credential->db_username ?? 'root';
+                $dbPass = $credential->db_password ?? '';
+            }else{
+                //Here if outer system like erp and you copied code there
+                $dbHost =  'localhost';
+                $dbName =  'laravel';
+                $dbUser =  'root';
+                $dbPass =  '';
+            }
+        }
+
+        config([
+            'database.connections.dynamic' => [
+                'driver' => 'mysql',
+                'host' => $dbHost,
+                'database' => $dbName,
+                'username' => $dbUser,
+                'password' => $dbPass,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+            ],
+        ]);
+
+        DB::purge('dynamic');
+        DB::reconnect('dynamic');
+    }
+
 private function extractTableFromSelect(string $sql): ?string
 {
     if (preg_match('/from\s+`?([a-zA-Z0-9_]+)`?/i', $sql, $matches)) {
@@ -50,37 +91,9 @@ private function extractTableFromSelect(string $sql): ?string
 
         try {
 
-
-            if (App::environment('local')) {
-                $dbHost =  'localhost';
-                $dbName = $request->database_name;
-                $dbUser = 'root';
-                $dbPass = '';
-            } else {
-
-                $credential = DBCredential::where('id', $request->credential_id)->first();
-
-                $dbHost = isset($credential->db_host) ? $credential->db_host : 'localhost';
-                $dbName = isset($credential->db_name) ? $credential->db_name : 'laravel';
-                $dbUser = isset($credential->db_username) ? $credential->db_username : 'root';
-                $dbPass = isset($credential->db_password) ? $credential->db_password : '';
-            }
-
-
-            config([
-                'database.connections.dynamic' => [
-                    'driver' => 'mysql',
-                    'host' => $dbHost,
-                    'database' => $dbName,
-                    'username' => $dbUser,
-                    'password' => $dbPass,
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                ],
-            ]);
-
-            DB::purge('dynamic');
-            DB::reconnect('dynamic');
+            $credential = DBCredential::where('id', $request->credential_id)->first();
+            // Call the static method
+            self::setDynamicConnection($credential->db_name,$credential->id);
 
             $queryCommands = explode('++', $request->title);
             $finalResult = [];
@@ -98,19 +111,19 @@ private function extractTableFromSelect(string $sql): ?string
                 }
             }
 
-foreach ($queryCommands as $queryCommand) {
+        foreach ($queryCommands as $queryCommand) {
 
-    DB::connection('dynamic')->statement('use ' . $dbName);
+        DB::connection('dynamic')->statement('use ' . $dbName);
 
-    $normalizedQuery = preg_replace(
-        '/\s+/',
-        ' ',
-        strtolower(trim($queryCommand, "; \t\n\r\0\x0B"))
-    );
+        $normalizedQuery = preg_replace(
+            '/\s+/',
+            ' ',
+            strtolower(trim($queryCommand, "; \t\n\r\0\x0B"))
+        );
 
-    // ---------- SELECT ----------
-$suggestions = [];
-if (str_starts_with($normalizedQuery, 'select')) {
+        // ---------- SELECT ----------
+    $suggestions = [];
+    if (str_starts_with($normalizedQuery, 'select')) {
 
     $data = DB::connection('dynamic')->select($queryCommand);
 
@@ -147,44 +160,44 @@ if (str_starts_with($normalizedQuery, 'select')) {
 }
 
     // ---------- UPDATE ----------
-if (str_starts_with($normalizedQuery, 'select')) {
+    if (str_starts_with($normalizedQuery, 'select')) {
 
-    $data = DB::connection('dynamic')->select($queryCommand);
+        $data = DB::connection('dynamic')->select($queryCommand);
 
-    $cleanedData = array_map(function ($row) {
-        $row = (array) $row;
+        $cleanedData = array_map(function ($row) {
+            $row = (array) $row;
 
-        foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
-            if (isset($row[$field])) {
-                $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
+            foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
+                if (isset($row[$field])) {
+                    $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
+                }
+            }
+
+            ksort($row);
+            return $row;
+        }, $data);
+
+        // 🔹 IF EMPTY RESULT → return one NULL row with all columns
+        if (empty($cleanedData)) {
+
+            $tableName = $this->extractTableFromSelect($queryCommand);
+
+            if ($tableName && Schema::connection('dynamic')->hasTable($tableName)) {
+                $columns = Schema::connection('dynamic')->getColumnListing($tableName);
+
+                $nullRow = array_fill_keys($columns, null);
+                $cleanedData = [$nullRow];
             }
         }
 
-        ksort($row);
-        return $row;
-    }, $data);
+        $finalResult[] = [
+            'query'  => $queryCommand,
+            'count'  => count($data), // real DB count (0 if empty)
+            'result' => $cleanedData,
+        ];
 
-    // 🔹 IF EMPTY RESULT → return one NULL row with all columns
-    if (empty($cleanedData)) {
-
-        $tableName = $this->extractTableFromSelect($queryCommand);
-
-        if ($tableName && Schema::connection('dynamic')->hasTable($tableName)) {
-            $columns = Schema::connection('dynamic')->getColumnListing($tableName);
-
-            $nullRow = array_fill_keys($columns, null);
-            $cleanedData = [$nullRow];
-        }
+        continue;
     }
-
-    $finalResult[] = [
-        'query'  => $queryCommand,
-        'count'  => count($data), // real DB count (0 if empty)
-        'result' => $cleanedData,
-    ];
-
-    continue;
-}
 
     // ---------- DELETE ----------
     if (str_starts_with($normalizedQuery, 'delete')) {
@@ -284,36 +297,10 @@ if (str_starts_with($normalizedQuery, 'select')) {
     {
 
         try {
+            $credential = DBCredential::where('id', $dbname)->first();
 
-            if (App::environment('local')) {
-                $dbHost = 'localhost';
-                $dbName = $namedb;
-                $dbUser = 'root';
-                $dbPass = '';
-            } else {
-
-                $credential = DBCredential::where('id', $dbname)->first();
-
-                $dbHost = $credential->db_host ?? 'localhost';
-                $dbName = $credential->db_name ?? 'laravel';
-                $dbUser = $credential->db_username ?? 'root';
-                $dbPass = $credential->db_password ?? '';
-            }
-
-            config([
-                'database.connections.dynamic' => [
-                    'driver' => 'mysql',
-                    'host' => $dbHost,
-                    'database' => $dbName,
-                    'username' => $dbUser,
-                    'password' => $dbPass,
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                ],
-            ]);
-
-            DB::purge('dynamic');
-            DB::reconnect('dynamic');
+            // Call the static method
+            self::setDynamicConnection($credential->db_name,$credential->id);
 
             $tables = DB::connection('dynamic')->select("SHOW TABLES");
             $results = [];
@@ -329,7 +316,7 @@ if (str_starts_with($normalizedQuery, 'select')) {
                         SELECT TABLE_TYPE 
                         FROM information_schema.tables 
                         WHERE table_schema = ? AND table_name = ?
-                    ", [$dbName, $tableName]);
+                    ", [$namedb, $tableName]);
 
                 $tableType = $isView->TABLE_TYPE ?? 'BASE TABLE';
 
