@@ -160,40 +160,13 @@ private function extractTableFromSelect(string $sql): ?string
 }
 
     // ---------- UPDATE ----------
-    if (str_starts_with($normalizedQuery, 'select')) {
-
-        $data = DB::connection('dynamic')->select($queryCommand);
-
-        $cleanedData = array_map(function ($row) {
-            $row = (array) $row;
-
-            foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
-                if (isset($row[$field])) {
-                    $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
-                }
-            }
-
-            ksort($row);
-            return $row;
-        }, $data);
-
-        // 🔹 IF EMPTY RESULT → return one NULL row with all columns
-        if (empty($cleanedData)) {
-
-            $tableName = $this->extractTableFromSelect($queryCommand);
-
-            if ($tableName && Schema::connection('dynamic')->hasTable($tableName)) {
-                $columns = Schema::connection('dynamic')->getColumnListing($tableName);
-
-                $nullRow = array_fill_keys($columns, null);
-                $cleanedData = [$nullRow];
-            }
-        }
+    if (str_starts_with($normalizedQuery, 'update')) {
+        // Execute the update and get affected rows
+        $affected = DB::connection('dynamic')->update($queryCommand);
 
         $finalResult[] = [
-            'query'  => $queryCommand,
-            'count'  => count($data), // real DB count (0 if empty)
-            'result' => $cleanedData,
+            'query' => $queryCommand,
+            'count' => $affected,
         ];
 
         continue;
