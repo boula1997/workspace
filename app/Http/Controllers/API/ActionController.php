@@ -62,14 +62,14 @@ public function getFunction(Request $request)
                 ->orderBy('renewalDate', 'asc')->whereDate('renewalDate', '<=', Carbon::now()->addWeek())
                 ->get();
 
-            $tasks = Task::where('status', 0)
-                ->inRandomOrder()
-                ->limit(10)
-                ->get();
+            // $tasks = Task::where('status', 0)
+            //     ->inRandomOrder()
+            //     ->limit(10)
+            //     ->get();
 
-            $notes = Note::inRandomOrder()
-                ->limit(10)
-                ->get();
+            // $notes = Note::inRandomOrder()
+            //     ->limit(10)
+            //     ->get();
 
             $last = Repeat::latest()
                 ->first();
@@ -84,18 +84,18 @@ public function getFunction(Request $request)
                 $notifications[] = "Last time was " . $last->created_at;
             }
 
-            if ($notes->isNotEmpty()  && boula()) {
-                foreach ($notes as $note) {
-                    $notifications[] = $note->title;
-                }
-            }
+            // if ($notes->isNotEmpty()  && boula()) {
+            //     foreach ($notes as $note) {
+            //         $notifications[] = $note->title;
+            //     }
+            // }
             
 
-            if ($tasks->isNotEmpty()) {
-                foreach ($tasks as $task) {
-                    $notifications[] = $task->title;
-                }
-            }
+            // if ($tasks->isNotEmpty()) {
+            //     foreach ($tasks as $task) {
+            //         $notifications[] = $task->title;
+            //     }
+            // }
 
             if ($moneyProjects->isNotEmpty()) {
                 foreach ($moneyProjects as $project) {
