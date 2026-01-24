@@ -51,7 +51,7 @@
     </div>
     <div class="col-md-3">
         <h6>Github Token</h6>
-        <p class="clickable-text" content="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">token</p>
+        <p class="clickable-text" content="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">token</p>
         <p class="clickable-text" content="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">token2</p>
     </div>
     <div class="col-md-3">
