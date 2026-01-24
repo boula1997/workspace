@@ -225,6 +225,26 @@ private function extractTableFromSelect(string $sql): ?string
         continue;
     }
 
+    // ---------- SHOW ----------
+    if (str_starts_with($normalizedQuery, 'show')) {
+
+        $data = DB::connection('dynamic')->select($queryCommand);
+
+        $cleanedData = array_map(function ($row) {
+            $row = (array) $row;
+            ksort($row);
+            return $row;
+        }, $data);
+
+        $finalResult[] = [
+            'query'  => $queryCommand,
+            'count'  => count($data),
+            'result' => $cleanedData,
+        ];
+
+        continue;
+    }
+
     // ---------- FALLBACK ----------
     DB::connection('dynamic')->statement($queryCommand);
 
