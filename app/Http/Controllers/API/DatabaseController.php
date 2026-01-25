@@ -300,9 +300,6 @@ private function extractTableFromSelect(string $sql): ?string
         DB::beginTransaction(); // Start transaction
 
         try {
-
-
-
             $query = Query::updateOrCreate(
                 ['title' => $request->title],
                 ['updated_at' => now()]
