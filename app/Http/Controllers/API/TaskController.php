@@ -917,7 +917,7 @@ class TaskController extends Controller
                             'extra' => (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
                         ];
                     }
-                ],'quey_groups' => [
+                ],'query_groups' => [
                     'model' => QueryGroup::class,
                     'keys'  => ['title','command','project_title'],
                     'transform' => function ($item) {
