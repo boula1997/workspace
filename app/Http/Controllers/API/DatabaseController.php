@@ -307,7 +307,7 @@ private function extractTableFromSelect(string $sql): ?string
                 ['title' => $request->title],
                 ['updated_at' => now()]
             );
-            $queries = Query::latest("updated_at")->get();
+            $queries = Query::latest("updated_at")->take(100)->get();
 
 
 
@@ -485,7 +485,7 @@ private function extractTableFromSelect(string $sql): ?string
     {
         try {
 
-            $queries = Query::latest("updated_at")->get();
+            $queries = Query::latest("updated_at")->take(100)->get();
             $credentials = DBCredential::get();
 
             return response()->json([
