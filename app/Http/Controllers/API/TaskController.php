@@ -8,6 +8,7 @@ use App\Http\Resources\ProjectResource;
 use App\Http\Resources\NavigationResource;
 use App\Http\Resources\IssueResource;
 use App\Http\Resources\TaskResource;
+use App\Models\QueryGroup;
 use App\Models\Project;
 use App\Models\Issue;
 use App\Models\Overtime;
