@@ -919,11 +919,11 @@ class TaskController extends Controller
                     }
                 ],'quey_groups' => [
                     'model' => QueryGroup::class,
-                    'keys'  => ['hours'],
+                    'keys'  => ['title','command','project_title'],
                     'transform' => function ($item) {
                         return [
                             'id'    => $item->id,
-                            'title' => null,
+                            'title' => $item->title,
                             'extra' => (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
                         ];
                     }
