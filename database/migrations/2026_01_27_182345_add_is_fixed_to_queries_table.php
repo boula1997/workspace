@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('queries', function (Blueprint $table) {
-            $table->boolean('is_fixed')->default(false);
+            $table->boolean('isFixed')->default(false);
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('queries', function (Blueprint $table) {
-            $table->dropColumn('is_fixed');
+            $table->dropColumn('isFixed');
         });
     }
 };
