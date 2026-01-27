@@ -28,6 +28,7 @@ use App\Models\DBCredential;
 use Spatie\Permission\Models\Role;
 
 use App\Models\Gallery;
+use App\Models\Query;
 use Exception;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -917,9 +918,9 @@ class TaskController extends Controller
                             'extra' => (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
                         ];
                     }
-                ],'query_groups' => [
-                    'model' => QueryGroup::class,
-                    'keys'  => ['title','command','project_title'],
+                ],'queries' => [
+                    'model' => Query::class,
+                    'keys'  => ['title'],
                     'transform' => function ($item) {
                         return [
                             'id'    => $item->id,
