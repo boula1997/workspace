@@ -304,7 +304,14 @@ private function extractTableFromSelect(string $sql): ?string
                 ['title' => $request->title],
                 ['updated_at' => now()]
             );
-            $queries = Query::latest("updated_at")->take(100)->get();
+            $fixed = Query::where('isFixed', 1)->get();
+
+            $others = Query::where('isFixed', '!=', 1)
+                ->latest('updated_at')
+                ->take(100)
+                ->get();
+
+            $queries = $fixed->merge($others);
 
 
 
@@ -482,7 +489,14 @@ private function extractTableFromSelect(string $sql): ?string
     {
         try {
 
-            $queries = Query::latest("updated_at")->take(100)->get();
+            $fixed = Query::where('isFixed', 1)->get();
+
+            $others = Query::where('isFixed', '!=', 1)
+                ->latest('updated_at')
+                ->take(100)
+                ->get();
+
+            $queries = $fixed->merge($others);
             $credentials = DBCredential::get();
 
             return response()->json([
