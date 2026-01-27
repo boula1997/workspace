@@ -9,6 +9,7 @@ use App\Http\Resources\NavigationResource;
 use App\Http\Resources\IssueResource;
 use App\Http\Resources\TaskResource;
 use App\Models\QueryGroup;
+use App\Models\Query;
 use App\Models\Project;
 use App\Models\Issue;
 use App\Models\Overtime;
@@ -28,7 +29,6 @@ use App\Models\DBCredential;
 use Spatie\Permission\Models\Role;
 
 use App\Models\Gallery;
-use App\Models\Query;
 use Exception;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -918,7 +918,18 @@ class TaskController extends Controller
                             'extra' => (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
                         ];
                     }
-                ],'queries' => [
+                ],'query_groups' => [
+                    'model' => QueryGroup::class,
+                    'keys'  => ['title','command','project_title'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' => (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],
+                  'queries' => [
                     'model' => Query::class,
                     'keys'  => ['title'],
                     'transform' => function ($item) {
