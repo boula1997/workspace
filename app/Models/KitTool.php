@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
   
-class QueryGroup extends \App\Models\BaseModel
+class KitTool extends \App\Models\BaseModel
 {
     use HasFactory;
   
@@ -15,7 +15,7 @@ class QueryGroup extends \App\Models\BaseModel
      * @var array
      */
     protected $fillable = [
-        'title', 'command', 'project_id'
+        'title', 'content', 'project_id'
     ];
 
 

@@ -8,7 +8,7 @@ use App\Http\Resources\ProjectResource;
 use App\Http\Resources\NavigationResource;
 use App\Http\Resources\IssueResource;
 use App\Http\Resources\TaskResource;
-use App\Models\QueryGroup;
+use App\Models\KitTool;
 use App\Models\Query;
 use App\Models\Project;
 use App\Models\Issue;
@@ -918,9 +918,9 @@ class TaskController extends Controller
                             'extra' => (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
                         ];
                     }
-                ],'query_groups' => [
-                    'model' => QueryGroup::class,
-                    'keys'  => ['title','command','project_title'],
+                ],'kit_tools' => [
+                    'model' => KitTool::class,
+                    'keys'  => ['title','content','project_title'],
                     'transform' => function ($item) {
                         return [
                             'id'    => $item->id,
