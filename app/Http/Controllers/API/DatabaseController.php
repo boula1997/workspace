@@ -306,12 +306,11 @@ private function extractTableFromSelect(string $sql): ?string
             );
             $fixed = Query::where('isFixed', 1)->get();
 
-            $others = Query::where('isFixed', '!=', 1)
-                ->latest('updated_at')
-                ->take(100)
+            $all = Query::latest('updated_at')
+                ->take(200)
                 ->get();
 
-            $queries = $fixed->merge($others);
+            $queries = $all->merge($fixed);
 
 
 
@@ -491,12 +490,11 @@ private function extractTableFromSelect(string $sql): ?string
 
             $fixed = Query::where('isFixed', 1)->get();
 
-            $others = Query::where('isFixed', '!=', 1)
-                ->latest('updated_at')
-                ->take(100)
+            $all = Query::latest('updated_at')
+                ->take(200)
                 ->get();
 
-            $queries = $fixed->merge($others);
+            $queries = $all->merge($fixed);
             $credentials = DBCredential::get();
 
             return response()->json([
