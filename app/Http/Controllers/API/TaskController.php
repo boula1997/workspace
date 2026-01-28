@@ -26,6 +26,7 @@ use App\Models\Clienttrack;
 use App\Models\Task;
 use App\Models\DailyWork;
 use App\Models\DBCredential;
+use App\Models\Deal;
 use Spatie\Permission\Models\Role;
 
 use App\Models\Gallery;
@@ -925,7 +926,7 @@ class TaskController extends Controller
                         return [
                             'id'    => $item->id,
                             'title' => $item->title,
-                            'extra' => (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                            'extra' =>  $item->project->title.", ".(isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
                         ];
                     }
                 ],
@@ -937,6 +938,16 @@ class TaskController extends Controller
                             'id'    => $item->id,
                             'title' => $item->title,
                             'extra' => $item->isFixed . ", " .(isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],'deals' => [
+                    'model' => Deal::class,
+                    'keys'  => ['title','description','cost','project_title'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->title,
+                            'extra' =>$item->project->title.", ".$item->cost.", " .(isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
                         ];
                     }
                 ],

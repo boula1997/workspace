@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('title');          // varchar(255)
             $table->longText('description')->nullable();  // longtext
             $table->integer('cost');          // integer
+            $table->unsignedBigInteger('project_id')->nullable(); 
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
             $table->timestamps();
         });
     }

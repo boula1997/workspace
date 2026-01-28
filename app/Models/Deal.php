@@ -14,4 +14,9 @@ class Deal extends Model
         'description',
         'cost',
     ];
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 }
