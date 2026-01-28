@@ -931,12 +931,12 @@ class TaskController extends Controller
                 ],
                   'queries' => [
                     'model' => Query::class,
-                    'keys'  => ['title'],
+                    'keys'  => ['title','isFixed'],
                     'transform' => function ($item) {
                         return [
                             'id'    => $item->id,
                             'title' => $item->title,
-                            'extra' => (isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                            'extra' => $item->isFixed . ", " .(isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
                         ];
                     }
                 ],
