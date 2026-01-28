@@ -8,6 +8,7 @@ use App\Models\Message;
 use App\Models\Project;
 use App\Models\Issue;
 use App\Models\Deadline;
+use App\Models\Deal;
 use App\Models\Fee;
 use App\Models\Note;
 use App\Models\Repeat;
@@ -60,6 +61,8 @@ public function getFunction(Request $request)
 
             $dealProjects =Project::where('deal',0)->get();
 
+            $deals =Deal::get();
+
             $renewProjects = Project::whereNotNull('renewalDate')
                 ->orderBy('renewalDate', 'asc')->whereDate('renewalDate', '<=', Carbon::now()->addWeek())
                 ->get();
@@ -86,9 +89,15 @@ public function getFunction(Request $request)
                 $notifications[] = "Last time was " . $last->created_at;
             }
 
-            if ($notes->isNotEmpty()  && boula()) {
-                foreach ($notes as $note) {
-                    $notifications[] = $note->title;
+            // if ($notes->isNotEmpty()  && boula()) {
+            //     foreach ($notes as $note) {
+            //         $notifications[] = $note->title;
+            //     }
+            // }
+
+            if ($deals->isNotEmpty()  && boula()) {
+                foreach ($deals as $deal) {
+                    $notifications[] = $deal->title ." with cost ".$deal->cost;
                 }
             }
             
