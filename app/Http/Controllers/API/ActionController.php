@@ -102,11 +102,11 @@ public function getFunction(Request $request)
             }
             
 
-            if ($tasks->isNotEmpty()) {
-                foreach ($tasks as $task) {
-                    $notifications[] = $task->title;
-                }
-            }
+            // if ($tasks->isNotEmpty()) {
+            //     foreach ($tasks as $task) {
+            //         $notifications[] = $task->title;
+            //     }
+            // }
 
             if ($moneyProjects->isNotEmpty()) {
                 foreach ($moneyProjects as $project) {
