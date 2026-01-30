@@ -347,3 +347,10 @@ Stack trace:
 #3 /home3/yousabte/public_html/workspace/public/index.php(48): require_once('/home3/yousabte...')
 #4 {main}
   thrown in /home3/yousabte/public_html/workspace/vendor/laravel/framework/src/Illuminate/Foundation/Application.php on line 34
+[30-Jan-2026 12:04:49 Africa/Cairo] PHP Fatal error:  Namespace declaration statement has to be the very first statement or after any declare call in the script in /home3/yousabte/public_html/workspace/app/Models/Project.php on line 5
+[30-Jan-2026 12:04:49 Africa/Cairo] PHP Fatal error:  Namespace declaration statement has to be the very first statement or after any declare call in the script in /home3/yousabte/public_html/workspace/app/Models/Project.php on line 5
+[30-Jan-2026 12:05:40 Africa/Cairo] PHP Fatal error:  Namespace declaration statement has to be the very first statement or after any declare call in the script in /home3/yousabte/public_html/workspace/app/Models/Project.php on line 5
+[30-Jan-2026 12:05:46 Africa/Cairo] PHP Fatal error:  Namespace declaration statement has to be the very first statement or after any declare call in the script in /home3/yousabte/public_html/workspace/app/Models/Project.php on line 5
+[30-Jan-2026 12:08:07 Africa/Cairo] PHP Fatal error:  Namespace declaration statement has to be the very first statement or after any declare call in the script in /home3/yousabte/public_html/workspace/app/Models/Project.php on line 6
+[30-Jan-2026 12:08:07 Africa/Cairo] PHP Fatal error:  Namespace declaration statement has to be the very first statement or after any declare call in the script in /home3/yousabte/public_html/workspace/app/Models/Project.php on line 6
+[30-Jan-2026 12:09:13 Africa/Cairo] PHP Fatal error:  Namespace declaration statement has to be the very first statement or after any declare call in the script in /home3/yousabte/public_html/workspace/app/Models/Project.php on line 6

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Carbon\Carbon;
+use App\Models\Deal;
 
 class Project extends \App\Models\BaseModel
 {
@@ -20,6 +21,8 @@ class Project extends \App\Models\BaseModel
    protected $casts = [
         'deadline' => 'datetime',
     ];
+    
+    protected $appends = ['deal'];
 
     public function getDeadlineAttribute($value)
     {
@@ -70,4 +73,19 @@ public function getStatusAttribute()
     {
         return $this->belongsTo(Admin::class, 'admin_id');
     }
+    
+    public function deals()
+{
+    return $this->hasMany(Deal::class, 'project_id');
+}
+
+public function getDealAttribute()
+{
+    // لو فيه أي deal مش settled
+    $hasUnsettledDeal = $this->deals()
+        ->where('isSettled', 0)
+        ->exists();
+
+    return $hasUnsettledDeal ? 0 : 1;
+}
 }

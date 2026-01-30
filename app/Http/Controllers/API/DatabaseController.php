@@ -300,10 +300,15 @@ private function extractTableFromSelect(string $sql): ?string
         DB::beginTransaction(); // Start transaction
 
         try {
+            
+            
             $query = Query::updateOrCreate(
-                ['title' => $request->title],
-                ['updated_at' => now()]
-            );
+    ['title' => $request->title],
+    [
+        'd_b_credential_id' => $request->credential_id,
+        'updated_at' => now()
+    ]
+);
             $fixed = Query::where('isFixed', 1)->get();
 
             $all = Query::latest('updated_at')
@@ -314,7 +319,7 @@ private function extractTableFromSelect(string $sql): ?string
 
 
 
-            DB::commit(); // Commit transaction if everything is fine
+            DB::commit(); // Commit transaction if everything0 is fine
 
             return response()->json([
                 'success' => "Done Successfully",
