@@ -131,6 +131,6 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
     Route::middleware('businessHours')->group(function () {
     Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
-    Route::get('/piority/tasks', [TaskController::class, 'piorityTasks'])->name('piority.tasks');
+    Route::get('/deals', [TaskController::class, 'deals'])->name('deals');
     });
 });

@@ -704,12 +704,12 @@ class TaskController extends Controller
             return response()->json(['error' => $e->getMessage()]);
         }
     }
-    public function piorityTasks()
+    public function deals()
     {
         try {
 
-            $tasks = Task::where("status", 0)->where("piority", 1)->latest()->get();
-            $data["tasks"] = TaskResource::collection($tasks);
+            $deals = Deal::where("isSettled", 0)->latest()->get();
+            $data["deals"] = DealResource::collection($deals);
             $data["isExpired"] = isExpired()[0];
             return successResponse($data);
         } catch (Exception $e) {
