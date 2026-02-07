@@ -8,6 +8,7 @@ use App\Http\Resources\ProjectResource;
 use App\Http\Resources\NavigationResource;
 use App\Http\Resources\IssueResource;
 use App\Http\Resources\TaskResource;
+use App\Http\Resources\DealResource;
 use App\Models\KitTool;
 use App\Models\Query;
 use App\Models\Project;
