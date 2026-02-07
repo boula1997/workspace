@@ -59,7 +59,9 @@ public function getFunction(Request $request)
                     ->get()
                     ->filter(fn($project) => $project->status == 1) ;
 
-            $dealProjects =Project::where('deal',0)->get();
+            $dealProjects = Project::whereHas('deals', function ($query) {
+                $query->where('isSettled', 0);
+            })->get();
 
             $deals =Deal::get();
 
