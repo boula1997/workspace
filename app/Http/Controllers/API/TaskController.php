@@ -14,6 +14,7 @@ use App\Models\Query;
 use App\Models\Project;
 use App\Models\Issue;
 use App\Models\Overtime;
+use App\Models\Fear;
 use App\Models\Repeat;
 use App\Models\Fee;
 use App\Models\Note;
@@ -949,6 +950,16 @@ class TaskController extends Controller
                             'id'    => $item->id,
                             'title' => $item->title,
                             'extra' =>$item->project->title.", ".$item->cost.", " .(isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                        ];
+                    }
+                ],'fears' => [
+                    'model' => Fear::class,
+                    'keys'  => ['question','answer'],
+                    'transform' => function ($item) {
+                        return [
+                            'id'    => $item->id,
+                            'title' => $item->question,
+                            'extra' =>(isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
                         ];
                     }
                 ],
