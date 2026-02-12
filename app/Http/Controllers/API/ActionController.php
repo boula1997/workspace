@@ -99,7 +99,7 @@ public function getFunction(Request $request)
 
             if ($deals->isNotEmpty()  && boula()) {
                 foreach ($deals as $deal) {
-                    $notifications[] = $deal->title ." with cost ".$deal->cost;
+                    $notifications[] = $deal->title ." with cost ".$deal->cost." in project ". $deal->project->title;
                 }
             }
             
