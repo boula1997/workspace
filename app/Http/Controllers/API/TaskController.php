@@ -1223,7 +1223,7 @@ class TaskController extends Controller
 
     public function updateAllDeadlinesToToday()
     {
-        Deadline::query()->where("status",0)update([
+        Deadline::query()->where("status",0)->update([
             'date' => Carbon::today()->toDateString(),
             'updated_at' => now(),
         ]);
