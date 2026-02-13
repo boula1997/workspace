@@ -107,6 +107,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);
+    Route::post('/updateAllDeadlinesToToday',[TaskController::class,'updateAllDeadlinesToToday']);
     Route::post('/updateSetting',[SettingController::class,'update']);
     Route::post('/updateProjectDeadline',[TaskController::class,'updateProjectDeadline']);
     Route::post('/storeDeadline',[TaskController::class,'storeDeadline']);
