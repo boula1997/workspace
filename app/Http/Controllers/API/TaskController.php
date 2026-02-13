@@ -1221,18 +1221,26 @@ class TaskController extends Controller
     }
 
 
-public function updateAllDeadlinesToToday()
+
+public function updatedSelectedDeadlines(Request $request)
 {
-    $today = Carbon::today()->toDateString();
+    $request->validate([
+        'ids'  => 'required|array|min:1',
+        'ids.*'=> 'integer|exists:deadlines,id',
+        'date' => 'required|date',
+    ]);
+
+    $date = Carbon::parse($request->date)->toDateString();
 
     Deadline::query()
-        ->where('status', 0)
-        ->whereDate('date', '<', $today) // only dates before today
+        ->whereIn('id', $request->ids)
+        ->where('status', 0) // only unfinished
         ->update([
-            'date' => $today,
+            'date' => $date,
             'updated_at' => now(),
         ]);
 
     return successResponse([]);
 }
+
 }
