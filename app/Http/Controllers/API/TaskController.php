@@ -1219,4 +1219,17 @@ class TaskController extends Controller
             "refrences" => IssueResource::collection($issues),
         ]);
     }
+
+
+    public function updateAllDeadlinesToToday()
+    {
+        Deadline::query()->update([
+            'date' => Carbon::today()->toDateString(),
+            'updated_at' => now(),
+        ]);
+
+        return response()->json([
+            'message' => 'All deadlines updated to today successfully'
+        ]);
+    }
 }
