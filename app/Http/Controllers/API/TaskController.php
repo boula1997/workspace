@@ -1228,8 +1228,7 @@ class TaskController extends Controller
             'updated_at' => now(),
         ]);
 
-        return response()->json([
-            'message' => 'All deadlines updated to today successfully'
-        ]);
+            return successResponse([]);
+
     }
 }
