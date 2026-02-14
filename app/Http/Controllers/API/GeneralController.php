@@ -8,7 +8,6 @@ use App\Models\Message;
 use App\Models\Project;
 use App\Models\Deadline;
 use App\Models\Issue;
-use App\Models\Deadline;
 use App\Models\Task;
 use Exception;
 use Illuminate\Http\Request;
