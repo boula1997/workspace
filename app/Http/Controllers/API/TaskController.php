@@ -713,7 +713,7 @@ class TaskController extends Controller
             $deals = Deal::where("isSettled", 0)->latest()->get();
             $data["deals"] = DealResource::collection($deals);
             $data["isExpired"] = isExpired()[0];
-            return successResponse([]);
+            return successResponse($data);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
