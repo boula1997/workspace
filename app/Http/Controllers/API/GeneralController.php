@@ -17,6 +17,7 @@ use App\Models\DBCredential;
 use Illuminate\Support\Facades\File;
 
 use App\Models\Admin;
+use App\Models\Deadline;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -241,6 +242,14 @@ class GeneralController extends Controller
 
         $image = $file->url ?? null;
         $images = $files->pluck('url')->map(fn($url) => asset('storage/' . $url))->toArray();
+
+        if($table=="deals"){
+            $project=Project::find($request->project_id);
+            Deadline::create([
+                "title"=>"Get " . $request->cost . " from " . $project->title . " deal",
+                "date"=>Carbon::now()->addDays(1),
+            ]);
+        }
           }catch (QueryException $e) {
             return response()->json([
                 'success' => false,
