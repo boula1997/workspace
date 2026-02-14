@@ -31,7 +31,7 @@ class GeneralController extends Controller
     {
           try{
             // add deadline for deals if cost
-            if ($table === "deals" && !isset($itemId)) {
+            if ($table == "deals" && $itemId==null) {
 
                 $project = Project::find($request->project_id);
 
