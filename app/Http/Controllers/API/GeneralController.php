@@ -30,9 +30,8 @@ class GeneralController extends Controller
     public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     {
           try{
-            return successResponse([$table,$itemId]);
             // add deadline for deals if cost
-            if ($table == "deals" && $itemId==null) {
+            if ($table == "deals" && $itemId=="undefined") {
                 $project = Project::find($request->project_id);
 
                 if (!$project) {
