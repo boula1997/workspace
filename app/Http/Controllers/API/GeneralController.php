@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\MessageRequest;
 use App\Models\Message;
 use App\Models\Project;
+use App\Models\Deadline;
 use App\Models\Issue;
 use App\Models\Deadline;
 use App\Models\Task;
@@ -17,7 +18,6 @@ use App\Models\DBCredential;
 use Illuminate\Support\Facades\File;
 
 use App\Models\Admin;
-use App\Models\Deadline;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -31,6 +31,21 @@ class GeneralController extends Controller
     public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     {
           try{
+
+            if ($table === "deals") {
+
+                $project = Project::find($request->project_id);
+
+                if (!$project) {
+                    return failedResponse("Project not found");
+                }
+
+                Deadline::create([
+                    'title'  => "Get {$request->cost} from {$project->title} deal",
+                    'date'   => Carbon::now()->addDay()->toDateString(),
+                ]);
+            }
+
         // Step 0: Get DB credentials
         $credential = DBCredential::where('db_name', $dbname)->first();
 
@@ -242,14 +257,6 @@ class GeneralController extends Controller
 
         $image = $file->url ?? null;
         $images = $files->pluck('url')->map(fn($url) => asset('storage/' . $url))->toArray();
-
-        if($table=="deals"){
-            $project=Project::find($request->project_id);
-            Deadline::create([
-                "title"=>"Get " . $request->cost . " from " . $project->title . " deal",
-                "date"=>Carbon::now()->addDays(1),
-            ]);
-        }
           }catch (QueryException $e) {
             return response()->json([
                 'success' => false,
