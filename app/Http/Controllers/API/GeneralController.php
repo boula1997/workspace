@@ -31,8 +31,8 @@ class GeneralController extends Controller
     public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
     {
           try{
-
-            if ($table === "deals") {
+            // add deadline for deals if cost
+            if ($table === "deals" && !isset($itemId)) {
 
                 $project = Project::find($request->project_id);
 
