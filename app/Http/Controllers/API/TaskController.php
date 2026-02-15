@@ -223,10 +223,10 @@ class TaskController extends Controller
                 });
 
                 if($search=="priority"){
-                    $q->orWhere('priority', 1);
+                    $q->orWhere('piority', 1);
                 }
                 if($search=="!priority"){
-                    $q->orWhere('priority', 0);
+                    $q->orWhere('piority', 0);
                 }
             });
         }
