@@ -753,6 +753,10 @@ class TaskController extends Controller
                 ->latest()
                 ->get();
 
+                $tasks = Task::where("status", 0)->where("piority", 1)
+                ->latest()
+                ->get();
+
             $locks = [];
 
             foreach ($deals as $deal) {
@@ -760,6 +764,9 @@ class TaskController extends Controller
             }
             foreach ($deadlines as $deadline) {
                 $locks[] = $deadline->title;
+            }
+            foreach ($tasks as $task) {
+                $locks[] = $task->title." in ".$task->project->title;
             }
 
             $data["lock"] = $locks;
