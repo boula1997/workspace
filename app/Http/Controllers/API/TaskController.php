@@ -221,6 +221,13 @@ class TaskController extends Controller
                             AND admins.name LIKE ?
                         )", ["%$search%"]);
                 });
+
+                if($search=="priority"){
+                    $q->orWhere('priority', 1);
+                }
+                if($search=="!priority"){
+                    $q->orWhere('priority', 0);
+                }
             });
         }
 
