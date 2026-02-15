@@ -493,6 +493,13 @@ class TaskController extends Controller
                 AND admins.name LIKE ?
             )", ["%$search%"]);
                 });
+
+                if($search=="priority"){
+                    $q->orWhere('piority', 1);
+                }
+                if($search=="!priority"){
+                    $q->orWhere('piority', 0);
+                }
             });
         }
         if (auth("api")->user()->email == "parcel@gmail.com")
