@@ -201,35 +201,44 @@ class TaskController extends Controller
 
         // Apply search filter if present
         if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
+            $searchTerms = explode(',', $request->search); // split by comma
 
-            $tasksQuery->where(function ($q) use ($search) {
-                // Search by title
-                $q->where('title', 'like', "%$search%");
+            $tasksQuery->where(function ($q) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    $term = trim($term);
+                    if (!$term) continue;
 
-                // Search by project title
-                $q->orWhereHas('project', function ($qp) use ($search) {
-                    $qp->where('title', 'like', "%$search%");
-                });
+                    $q->orWhere(function ($sub) use ($term) {
+                        // Search by title
+                        $sub->where('title', 'like', "%$term%");
 
-                // Search by employees JSON column
-                $q->orWhere(function ($qe) use ($search) {
-                    $qe->whereRaw("EXISTS (
-                            SELECT 1
-                            FROM admins
-                            WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
-                            AND admins.name LIKE ?
-                        )", ["%$search%"]);
-                });
+                        // Search by project title
+                        $sub->orWhereHas('project', function ($qp) use ($term) {
+                            $qp->where('title', 'like', "%$term%");
+                        });
 
-                if($search=="priority"){
-                    $q->orWhere('piority', 1);
-                }
-                if($search=="!priority"){
-                    $q->orWhere('piority', 0);
+                        // Search by employees JSON column
+                        $sub->orWhere(function ($qe) use ($term) {
+                            $qe->whereRaw("EXISTS (
+                                SELECT 1
+                                FROM admins
+                                WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
+                                AND admins.name LIKE ?
+                            )", ["%$term%"]);
+                        });
+
+                        // Handle priority keywords
+                        if (strtolower($term) === "priority") {
+                            $sub->orWhere('piority', 1);
+                        }
+                        if (strtolower($term) === "!priority") {
+                            $sub->orWhere('piority', 0);
+                        }
+                    });
                 }
             });
         }
+
 
         // Paginate tasks 
         $tasks = $tasksQuery->paginate(10);
@@ -473,32 +482,40 @@ class TaskController extends Controller
 
         // Apply search filter if present
         if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
+            $searchTerms = explode(',', $request->search); // split by comma
 
-            $tasksQuery->where(function ($q) use ($search) {
-                // Search by title
-                $q->where('title', 'like', "%$search%");
+            $tasksQuery->where(function ($q) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    $term = trim($term);
+                    if (!$term) continue;
 
-                // Search by project title
-                $q->orWhereHas('project', function ($qp) use ($search) {
-                    $qp->where('title', 'like', "%$search%");
-                });
+                    $q->orWhere(function ($sub) use ($term) {
+                        // Search by title
+                        $sub->where('title', 'like', "%$term%");
 
-                // Search by employees JSON column
-                $q->orWhere(function ($qe) use ($search) {
-                    $qe->whereRaw("EXISTS (
-                SELECT 1
-                FROM admins
-                WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
-                AND admins.name LIKE ?
-            )", ["%$search%"]);
-                });
+                        // Search by project title
+                        $sub->orWhereHas('project', function ($qp) use ($term) {
+                            $qp->where('title', 'like', "%$term%");
+                        });
 
-                if($search=="priority"){
-                    $q->orWhere('piority', 1);
-                }
-                if($search=="!priority"){
-                    $q->orWhere('piority', 0);
+                        // Search by employees JSON column
+                        $sub->orWhere(function ($qe) use ($term) {
+                            $qe->whereRaw("EXISTS (
+                                SELECT 1
+                                FROM admins
+                                WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
+                                AND admins.name LIKE ?
+                            )", ["%$term%"]);
+                        });
+
+                        // Handle priority keywords
+                        if (strtolower($term) === "priority") {
+                            $sub->orWhere('piority', 1);
+                        }
+                        if (strtolower($term) === "!priority") {
+                            $sub->orWhere('piority', 0);
+                        }
+                    });
                 }
             });
         }
