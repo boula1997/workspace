@@ -720,13 +720,34 @@ class TaskController extends Controller
             return response()->json(['error' => $e->getMessage()]);
         }
     }
-    public function deals()
+
+    public function lock()
     {
         try {
-
             $deals = Deal::where("isSettled", 0)->latest()->get();
-            $data["deals"] = DealResource::collection($deals);
+
+            // Get today's and tomorrow's dates
+            $today = Carbon::today();
+            $tomorrow = Carbon::tomorrow();
+
+            // Only deadlines with date today or tomorrow
+            $deadlines = Deadline::where("status", 0)
+                ->whereIn('deadlineDate', [$today->toDateString(), $tomorrow->toDateString()])
+                ->latest()
+                ->get();
+
+            $locks = [];
+
+            foreach ($deals as $deal) {
+                $locks[] = "Get".$deal->cost." ".$deal->project->title;
+            }
+            foreach ($deadlines as $deadline) {
+                $locks[] = $deadline->title;
+            }
+
+            $data["lock"] = $locks;
             $data["isExpired"] = isExpired()[0];
+
             return successResponse($data);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
