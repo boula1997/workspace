@@ -732,7 +732,7 @@ class TaskController extends Controller
 
             // Only deadlines with date today or tomorrow
             $deadlines = Deadline::where("status", 0)
-                ->whereIn('deadlineDate', [$today->toDateString(), $tomorrow->toDateString()])
+                ->whereIn('date', [$today->toDateString(), $tomorrow->toDateString()])
                 ->latest()
                 ->get();
 
