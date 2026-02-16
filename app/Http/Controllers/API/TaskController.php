@@ -1031,7 +1031,7 @@ if ($request->has('search') && $request->search != '') {
                     }
                 ],'deals' => [
                     'model' => Deal::class,
-                    'keys'  => ['title','description','cost','project_title'],
+                    'keys'  => ['title','description','cost','project_title',"isSettled"],
                     'transform' => function ($item) {
                         return [
                             'id'    => $item->id,
