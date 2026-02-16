@@ -1036,7 +1036,7 @@ if ($request->has('search') && $request->search != '') {
                         return [
                             'id'    => $item->id,
                             'title' => $item->title,
-                            'extra' =>$item->project->title.", ".$item->cost.", " .(isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
+                            'extra' =>$item->project->title.", ".($item->isSettled?"settled":"pending").", ".$item->cost.", " .(isset($item->created_at) ? $item->created_at->format('d-m-Y H:i') : 'No date'),
                         ];
                     }
                 ],'fears' => [
