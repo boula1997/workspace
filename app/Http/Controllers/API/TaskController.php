@@ -1330,4 +1330,32 @@ public function updatedSelectedDeadlines(Request $request)
     return successResponse([]);
 }
 
+
+public function createLastRepeatTime(Request $request)
+{
+    $request->validate([
+        'date' => 'required|date',
+    ]);
+
+    $date = Carbon::parse($request->date)->toDateString();
+
+    Repeat::create([
+        'created_at' => $date,
+        'updated_at' => now(),
+        ]);
+
+    return successResponse([]);
+}
+
+
+public function lastRepeatTime(Request $request)
+{
+
+    $lastRepeat=Repeat::latest()->first();
+
+    return successResponse([
+        "lastRepeat"=>$lastRepeat
+    ]);
+}
+
 }

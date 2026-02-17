@@ -133,5 +133,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::middleware('businessHours')->group(function () {
     Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
     Route::get('/lock', [TaskController::class, 'lock'])->name('lock');
+    Route::get('/lastRepeatTime', [TaskController::class, 'lastRepeatTime'])->name('lastRepeatTime');
+    Route::post('/createLastRepeatTime', [TaskController::class, 'createLastRepeatTime'])->name('createLastRepeatTime');
     });
 });
