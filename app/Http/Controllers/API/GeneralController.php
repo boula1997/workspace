@@ -38,10 +38,16 @@ class GeneralController extends Controller
                     return failedResponse("Project not found");
                 }
 
-                Deadline::create([
-                    'title'  => "Get {$request->cost} from {$project->title} deal",
-                    'date'   => Carbon::now()->addDay()->toDateString(),
-                ]);
+                Deadline::updateOrCreate(
+                    [
+                        // Condition to check existing record
+                        'title' => "Get {$request->cost} from {$project->title} deal",
+                    ],
+                    [
+                        // Values to update or insert
+                        'date' => Carbon::now()->addDay()->toDateString(),
+                    ]
+                );
             }
 
         // Step 0: Get DB credentials

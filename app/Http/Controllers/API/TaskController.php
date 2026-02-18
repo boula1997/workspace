@@ -728,11 +728,15 @@ if ($request->has('search') && $request->search != '') {
             $task->update(['piority' => !$task->piority]);
 
             if($task->piority){
-                Deadline::create([
-                    'title' => $task->title,
-                    'date'   => Carbon::now()->addDay()->toDateString(),
+            Deadline::updateOrCreate(
+                [
+                    'title' => $task->title, // condition
+                ],
+                [
+                    'date' => Carbon::now()->addDay()->toDateString(),
+                ]
+            );
 
-                ]);
             }
             return response()->json(['success' => __('general.changed_successfully' . $task->piority)]);
         } catch (Exception $e) {
