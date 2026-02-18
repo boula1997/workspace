@@ -643,6 +643,7 @@ if ($request->has('search') && $request->search != '') {
                     'piority' => 0,
                     'employees' => json_encode($request->employees),
                 ]);
+                
             }
 
 
@@ -725,6 +726,14 @@ if ($request->has('search') && $request->search != '') {
             // Find and toggle the level for the given task ID
             $task = Task::find($id);
             $task->update(['piority' => !$task->piority]);
+
+            if($task->piority){
+                Deadline::create([
+                    'title' => $task->title,
+                    'date'   => Carbon::now()->addDay()->toDateString(),
+
+                ]);
+            }
             return response()->json(['success' => __('general.changed_successfully' . $task->piority)]);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
