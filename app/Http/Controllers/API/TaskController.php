@@ -1350,14 +1350,11 @@ public function createLastRepeatTime(Request $request)
 
 public function lastRepeatTime(Request $request)
 {
-    $lastRepeat = Repeat::latest()->first();
+
+    $lastRepeat=Repeat::latest()->first();
 
     return successResponse([
-        "lastRepeat" => $lastRepeat
-            ? Carbon::parse($lastRepeat->created_at)
-                ->timezone('Africa/Cairo')
-                ->toDateString() // YYYY-MM-DD
-            : null
+        "lastRepeat"=>date("Y-m-d", strtotime($lastRepeat->created_at))
     ]);
 }
 
