@@ -800,15 +800,15 @@ if ($request->has('search') && $request->search != '') {
 
             $locks = [];
 
-            foreach ($deals as $deal) {
-                $locks[] = "Get".$deal->cost." ".$deal->project->title;
-            }
+            // foreach ($deals as $deal) {
+            //     $locks[] = "Get".$deal->cost." ".$deal->project->title;
+            // }
             foreach ($deadlines as $deadline) {
                 $locks[] = $deadline->title;
             }
-            foreach ($tasks as $task) {
-                $locks[] = $task->title." in ".$task->project->title;
-            }
+            // foreach ($tasks as $task) {
+            //     $locks[] = $task->title." in ".$task->project->title;
+            // }
 
             $data["lock"] = $locks;
             $data["isExpired"] = isExpired()[0];
