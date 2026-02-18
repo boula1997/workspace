@@ -769,7 +769,7 @@ if ($request->has('search') && $request->search != '') {
     public function lock()
     {
         try {
-            $deals = Deal::where("isSettled", 0)->latest()->get();
+            // $deals = Deal::where("isSettled", 0)->latest()->get();
 
             // Get today's and tomorrow's dates
             $today = Carbon::today();
@@ -781,9 +781,9 @@ if ($request->has('search') && $request->search != '') {
                 ->latest()
                 ->get();
 
-            $tasks = Task::where("status", 0)->where("piority", 1)
-                ->latest()
-                ->get();
+            // $tasks = Task::where("status", 0)->where("piority", 1)
+            //     ->latest()
+            //     ->get();
 
             $locks = [];
 
