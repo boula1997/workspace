@@ -730,7 +730,7 @@ if ($request->has('search') && $request->search != '') {
             if($task->piority){
             Deadline::updateOrCreate(
                 [
-                    'title' => $task->title, // condition
+                    'title' => $task->title ." in ".$task->project->title, // condition
                 ],
                 [
                     'date' => Carbon::now()->addDay()->toDateString(),
