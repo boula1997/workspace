@@ -1209,7 +1209,7 @@ if ($request->has('search') && $request->search != '') {
 
                         if ($task) {
                             $task->update([
-                                'status' => $deadline->status ? 'completed' : 'pending',
+                                'status' => $deadline->status,
                             ]);
                         }
                     }
