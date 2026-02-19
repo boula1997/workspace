@@ -277,6 +277,8 @@ class GeneralController extends Controller
                 return failedResponse("Deal not found");
             }
 
+            dd($deal);
+
             // Create or update deadline linked to the deal
             Deadline::updateOrCreate(
                 [
