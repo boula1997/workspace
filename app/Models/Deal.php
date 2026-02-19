@@ -19,4 +19,9 @@ class Deal extends Model
     {
         return $this->belongsTo(Project::class);
     }
+
+    public function deadlines()
+    {
+        return $this->morphMany(Deadline::class, 'deadlineable');
+    }
 }

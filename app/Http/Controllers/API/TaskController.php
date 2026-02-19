@@ -727,17 +727,21 @@ if ($request->has('search') && $request->search != '') {
             $task = Task::find($id);
             $task->update(['piority' => !$task->piority]);
 
-            if($task->piority){
-            Deadline::updateOrCreate(
-                [
-                    'title' => $task->title ." in ".$task->project->title, // condition
-                ],
-                [
-                    'date' => Carbon::now()->addDay()->toDateString(),
-                ]
-            );
-
+            if ($task->piority) {
+                Deadline::updateOrCreate(
+                    [
+                        // Condition: same title + same task
+                        'title' => $task->title . " in " . $task->project->title,
+                        'deadlineable_id' => $task->id,
+                        'deadlineable_type' => Task::class, // link to Task model
+                    ],
+                    [
+                        'date' => Carbon::now()->addDay()->toDateString(),
+                        'isActive' => 1, // optional, default active
+                    ]
+                );
             }
+
             return response()->json(['success' => __('general.changed_successfully' . $task->piority)]);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
@@ -1188,10 +1192,43 @@ if ($request->has('search') && $request->search != '') {
         try {
             $deadline = Deadline::find($request->id);
             if ($request->action == "delete"){
-                if($deadline->isForever)
-                 return successResponse([], "Deadline is forever!", 201);
-                else
-                 $deadline->update(["status" => !$deadline->status]);
+
+                if ($deadline->isForever) {
+                    return successResponse([], "Deadline is forever!", 201);
+                } else {
+
+                    // Toggle deadline status
+                    $deadline->update([
+                        "status" => !$deadline->status,
+                    ]);
+
+                    // If linked to Task
+                    if ($deadline->deadlineable_type === Task::class && $deadline->deadlineable_id) {
+
+                        $task = Task::find($deadline->deadlineable_id);
+
+                        if ($task) {
+                            $task->update([
+                                'status' => $deadline->status ? 'completed' : 'pending',
+                            ]);
+                        }
+                    }
+
+                    // If linked to Deal AND status became 1
+                    if (
+                        $deadline->deadlineable_type === Deal::class &&
+                        $deadline->deadlineable_id &&
+                        $deadline->status == 1
+                    ) {
+                        $deal = Deal::find($deadline->deadlineable_id);
+
+                        if ($deal) {
+                            $deal->delete();
+                        }
+                    }
+                }
+
+
             }
             else if (isset($request->date))
                 $deadline->update(["date" => $request->date, "title" => isset($request->title) ? $request->title : $deadline->title]);
@@ -1353,7 +1390,8 @@ public function createLastRepeatTime(Request $request)
     $date = Carbon::parse($request->date)->toDateString();
 
     Repeat::create([
-        'created_at' => $date,
+        'date' => $date,
+        'created_at' => now(),
         'updated_at' => now(),
         ]);
 
@@ -1367,7 +1405,7 @@ public function lastRepeatTime(Request $request)
 
     return successResponse([
         "lastRepeat" => $lastRepeat
-            ? Carbon::parse($lastRepeat->created_at)
+            ? Carbon::parse($lastRepeat->date)
                 ->timezone('Africa/Cairo')
                 ->toDateString() // YYYY-MM-DD
             : null

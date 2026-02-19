@@ -10,4 +10,10 @@ class Deadline extends \App\Models\BaseModel
     use HasFactory;
 
     protected $guarded = [];
+
+        // Polymorphic relation
+    public function deadlineable()
+    {
+        return $this->morphTo();
+    }
 }

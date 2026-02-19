@@ -56,4 +56,9 @@ class Task extends \App\Models\BaseModel
             ->whereIn('admins.id', $this->employees ?? []);
     }
 
+        public function deadlines()
+    {
+        return $this->morphMany(Deadline::class, 'deadlineable');
+    }
+
 }
