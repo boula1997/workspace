@@ -272,12 +272,11 @@ class GeneralController extends Controller
             }
 
             // Find the deal (you probably meant to use $request->deal_id or similar)
-            $deal = Deal::find($request->deal_id ?? null); // or $itemId if passed
+            $deal = Deal::find($itemId ); // or $itemId if passed
             if (!$deal) {
                 return failedResponse("Deal not found");
             }
 
-            dd($deal);
 
             // Create or update deadline linked to the deal
             Deadline::updateOrCreate(
