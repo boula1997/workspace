@@ -1022,7 +1022,7 @@ if ($request->has('search') && $request->search != '') {
                         return [
                             'id'    => $item->id,
                             'title' => null,
-                            'extra' => (isset($item->date) ? $item->date->format('d-m-Y') : 'No date'),
+                            'extra' => (isset($item->date) ? $item->date : 'No date'),
                         ];
                     }
                 ],'kit_tools' => [
