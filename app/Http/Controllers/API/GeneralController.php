@@ -264,7 +264,7 @@ class GeneralController extends Controller
 
 
                 // add deadline for deals if cost
-        if ($table == "deals" && $itemId == "undefined") {
+        if ($table == "deals") {
             // Find the project
             $project = Project::find($request->project_id);
             if (!$project) {
