@@ -8,6 +8,7 @@ use App\Models\Message;
 use App\Models\Project;
 use App\Models\Deadline;
 use App\Models\Issue;
+use App\Models\Deal;
 use App\Models\Task;
 use Exception;
 use Illuminate\Http\Request;
@@ -123,35 +124,7 @@ class GeneralController extends Controller
         // Step 4: Handle image & images via files table (unchanged)
         $fileableType = 'App\\Models\\' . Str::studly(Str::singular($table));
 
-                    // add deadline for deals if cost
-            if ($table == "deals" && $itemId == "undefined") {
-                // Find the project
-                $project = Project::find($request->project_id);
-                if (!$project) {
-                    return failedResponse("Project not found");
-                }
 
-                // Find the deal (you probably meant to use $request->deal_id or similar)
-                $deal = Deal::find($request->deal_id ?? null); // or $itemId if passed
-                if (!$deal) {
-                    return failedResponse("Deal not found");
-                }
-
-                // Create or update deadline linked to the deal
-                Deadline::updateOrCreate(
-                    [
-                        // Condition: same title + same deal
-                        'title' => "Get {$request->cost} from {$project->title} deal",
-                        'deadlineable_id' => $deal->id,
-                        'deadlineable_type' => Deal::class,
-                    ],
-                    [
-                        // Values to insert/update
-                        'date' => Carbon::now()->addDay()->toDateString(),
-                        'isActive' => 1, // optional
-                    ]
-                );
-            }
 
 
         if ($request->hasFile('image')) {
@@ -287,6 +260,37 @@ class GeneralController extends Controller
                 'message' => 'Server error',
                 'error'   => $e->getMessage(),
             ], 500);
+        }
+
+
+                // add deadline for deals if cost
+        if ($table == "deals" && $itemId == "undefined") {
+            // Find the project
+            $project = Project::find($request->project_id);
+            if (!$project) {
+                return failedResponse("Project not found");
+            }
+
+            // Find the deal (you probably meant to use $request->deal_id or similar)
+            $deal = Deal::find($request->deal_id ?? null); // or $itemId if passed
+            if (!$deal) {
+                return failedResponse("Deal not found");
+            }
+
+            // Create or update deadline linked to the deal
+            Deadline::updateOrCreate(
+                [
+                    // Condition: same title + same deal
+                    'title' => "Get {$request->cost} from {$project->title} deal",
+                    'deadlineable_id' => $deal->id,
+                    'deadlineable_type' => Deal::class,
+                ],
+                [
+                    // Values to insert/update
+                    'date' => Carbon::now()->addDay()->toDateString(),
+                    'isActive' => 1, // optional
+                ]
+            );
         }
 
         return response()->json([
