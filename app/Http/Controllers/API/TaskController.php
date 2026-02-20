@@ -745,7 +745,10 @@ if ($request->has('search') && $request->search != '') {
             }else{
                 $deadline=Deadline::where("deadlineable_type",Task::class)->where("deadlineable_id",$task->id)->first();
                 if($deadline && $deadline->status==0){
-                return failedResponse("Delete it from deadlines first");
+               return response()->json([
+    'status' => false,
+    'message' => 'Delete it from deadlines first'
+], 400);
 
                 }else{
                    $task->update(['piority' => !$priority]);
