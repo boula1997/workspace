@@ -725,9 +725,10 @@ if ($request->has('search') && $request->search != '') {
 
             // Find and toggle the level for the given task ID
             $task = Task::find($id);
-            $task->update(['piority' => !$task->piority]);
+            $priority=$task->piority;
+            $task->update(['piority' => !$priority]);
 
-            if ($task->piority) {
+            if ($priority) {
                 Deadline::updateOrCreate(
                     [
                         // Condition: same title + same task
