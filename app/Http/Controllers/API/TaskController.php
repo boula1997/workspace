@@ -726,19 +726,17 @@ if ($request->has('search') && $request->search != '') {
             // Find and toggle the level for the given task ID
             $task = Task::find($id);
             $priority=$task->piority;
-            $task->update(['piority' => !$priority]);
 
             if ($priority) {
                 Deadline::updateOrCreate(
                     [
-                        // Condition: same title + same task
                         'title' => $task->title . " in " . $task->project->title,
                         'deadlineable_id' => $task->id,
-                        'deadlineable_type' => Task::class, // link to Task model
+                        'deadlineable_type' => Task::class,
                     ],
                     [
                         'date' => Carbon::now()->addDay()->toDateString(),
-                        'isActive' => 1, // optional, default active
+                        'isActive' => 1,
                     ]
                 );
             }else{
@@ -747,6 +745,10 @@ if ($request->has('search') && $request->search != '') {
                 return response()->json(['error' => "Delete it from deadlines first"]);
 
             }
+
+            $task->update(['piority' => !$priority]);
+
+
 
             return response()->json(['success' => __('general.changed_successfully' . $task->piority)]);
         } catch (Exception $e) {
