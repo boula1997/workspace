@@ -727,7 +727,7 @@ if ($request->has('search') && $request->search != '') {
             $task = Task::find($id);
             $priority=$task->piority;
 
-            if ($priority) {
+            if (!$priority) {
                 Deadline::updateOrCreate(
                     [
                         'title' => $task->title . " in " . $task->project->title,
