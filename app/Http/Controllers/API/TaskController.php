@@ -762,25 +762,37 @@ if ($request->has('search') && $request->search != '') {
             return response()->json(['error' => $e->getMessage()]);
         }
     }
-    public function toggleStatus($id)
-    {
-        try {
+public function toggleStatus($id)
+{
+    try {
 
-            if (!isWithinWorkingHours())
-                return failedResponse([]);
+        if (!isWithinWorkingHours())
+            return failedResponse([]);
 
-            // Find and toggle the level for the given task ID
-            $task = Task::find($id);
-            $task->update(['status' => !$task->status]);
+        $task = Task::findOrFail($id);
 
-            $task = Task::find($id);
+        // Toggle task status
+        $newStatus = !$task->status;
+        $task->update(['status' => $newStatus]);
 
-            return successResponse($task);
-            return response()->json(['success' => __('general.deleted_successfully')]);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
+        // ✅ If task has linked deadline → update its status too
+        $deadline = Deadline::where('deadlineable_type', Task::class)
+            ->where('deadlineable_id', $task->id)
+            ->first();
+
+        if ($deadline) {
+            $deadline->update([
+                'status' => $newStatus
+            ]);
         }
+
+        return successResponse($task);
+
+    } catch (Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
     }
+}
+
 
     public function links($id)
     {
