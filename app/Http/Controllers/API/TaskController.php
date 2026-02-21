@@ -859,17 +859,25 @@ public function toggleStatus($id)
 public function elements($id, Request $request)
 {
     try {
+
         $category = Category::withoutGlobalScopes()->findOrFail($id);
 
-        if (!$category->model || !class_exists($category->model)) {
-            return response()->json(['error' => 'Invalid model'], 400);
-        }
+        // Ensure search_keys and filter_keys are arrays
+        $searchKeys = is_array($category->search_keys) 
+            ? $category->search_keys 
+            : ($category->search_keys ? explode(',', $category->search_keys) : []);
+
+        $filterKeys = is_array($category->filter_keys) 
+            ? $category->filter_keys 
+            : ($category->filter_keys ? explode(',', $category->filter_keys) : []);
 
         $model = $category->model;
-        $searchKeys = $category->search_keys ? explode(',', $category->search_keys) : [];
-        $filterKeys = $category->filter_keys ? explode(',', $category->filter_keys) : [];
         $titleField = $category->title_field ?? 'id';
         $configClass = $category->config_class ?? \App\CategoryConfigs\BaseCategoryConfig::class;
+
+        if (!$model || !class_exists($model)) {
+            return response()->json(['error' => 'Invalid model'], 400);
+        }
 
         if (!class_exists($configClass)) {
             return response()->json(['error' => 'Invalid config class'], 400);
@@ -877,18 +885,35 @@ public function elements($id, Request $request)
 
         $query = $model::query()->latest()->withoutGlobalScopes();
 
-        // Date filters
-        if ($request->from) $query->whereDate('created_at', '>=', $request->from);
-        if ($request->to) $query->whereDate('created_at', '<=', $request->to);
+        /*
+        |----------------------------------------------------------------------
+        | Date Filter
+        |----------------------------------------------------------------------
+        */
+        if ($request->from) {
+            $query->whereDate('created_at', '>=', $request->from);
+        }
 
-        // Exact filters
+        if ($request->to) {
+            $query->whereDate('created_at', '<=', $request->to);
+        }
+
+        /*
+        |----------------------------------------------------------------------
+        | Dynamic Exact Filters
+        |----------------------------------------------------------------------
+        */
         foreach ($filterKeys as $key) {
             if ($request->has($key)) {
                 $query->where($key, $request->$key);
             }
         }
 
-        // Search
+        /*
+        |----------------------------------------------------------------------
+        | Dynamic Search
+        |----------------------------------------------------------------------
+        */
         if ($request->search) {
             $values = array_filter(array_map('trim', explode(',', $request->search)));
             $configClass::applySearch($query, $values, $searchKeys);
@@ -896,24 +921,29 @@ public function elements($id, Request $request)
 
         $items = $query->paginate($request->per_page ?? 20);
 
-        // Transform items & add extra concatenated values
+        /*
+        |----------------------------------------------------------------------
+        | Dynamic Transform with extra concatenation
+        |----------------------------------------------------------------------
+        */
         $items->getCollection()->transform(function ($item) use ($configClass, $titleField, $searchKeys, $filterKeys) {
-            $data = $configClass::transform($item, $titleField);
 
-            // Concatenate values for extra
-            $extra = [];
-            foreach (array_merge($searchKeys, $filterKeys) as $key) {
-                $keys = explode('.', $key);
-                $value = $item;
-                foreach ($keys as $k) {
-                    $value = $value->{$k} ?? null;
-                }
-                $extra[] = $value;
+            $transformed = $configClass::transform($item, $titleField);
+
+            // Add 'extra' by concatenating all search and filter keys
+            $extraValues = [];
+
+            foreach ($searchKeys as $key) {
+                $extraValues[] = data_get($item, trim($key), '');
             }
 
-            $data['extra'] = implode(', ', array_filter($extra));
+            foreach ($filterKeys as $key) {
+                $extraValues[] = data_get($item, trim($key), '');
+            }
 
-            return $data;
+            $transformed['extra'] = implode(', ', array_filter($extraValues));
+
+            return $transformed;
         });
 
         return response()->json([
@@ -925,6 +955,7 @@ public function elements($id, Request $request)
         ]);
 
     } catch (\Exception $e) {
+
         return response()->json([
             "status" => 500,
             "message" => $e->getMessage()
