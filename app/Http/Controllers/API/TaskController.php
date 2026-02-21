@@ -868,7 +868,6 @@ public function elements($id, Request $request)
 
         $model = $category->model;
         $searchKeys = $category->search_keys ?? [];
-        $filterKeys = $category->filter_keys ?? [];
         $titleField = $category->title_field ?? 'id';
         $configClass = $category->config_class ?? \App\CategoryConfigs\BaseCategoryConfig::class;
 
@@ -878,11 +877,10 @@ public function elements($id, Request $request)
 
         // Ensure keys are arrays
         if (is_string($searchKeys)) $searchKeys = array_map('trim', explode(',', $searchKeys));
-        if (is_string($filterKeys)) $filterKeys = array_map('trim', explode(',', $filterKeys));
 
         // Eager load relations used in search/filter keys
         $relations = [];
-        foreach (array_merge($searchKeys, $filterKeys) as $key) {
+        foreach ($searchKeys as $key) {
             $parts = explode('.', $key);
             if (count($parts) > 1) $relations[] = $parts[0];
         }
@@ -903,11 +901,7 @@ public function elements($id, Request $request)
         | Dynamic Exact Filters
         |----------------------------------------------------------------------
         */
-        foreach ($filterKeys as $key) {
-            if ($request->has($key)) {
-                $query->where($key, $request->$key);
-            }
-        }
+
 
         /*
         |----------------------------------------------------------------------
@@ -926,14 +920,14 @@ public function elements($id, Request $request)
         | Dynamic Transform + extra field
         |----------------------------------------------------------------------
         */
-        $items->getCollection()->transform(function ($item) use ($configClass, $titleField, $searchKeys, $filterKeys) {
+        $items->getCollection()->transform(function ($item) use ($configClass, $titleField, $searchKeys) {
 
             $transformed = $configClass::transform($item, $titleField);
 
             // Concatenate all search/filter key values into 'extra'
             $extraValues = [];
 
-            foreach (array_merge($searchKeys, $filterKeys) as $key) {
+            foreach ($searchKeys as $key) {
                 $key = trim($key);
                 $value = data_get($item, $key);
                 if ($value !== null && $value !== '') {
