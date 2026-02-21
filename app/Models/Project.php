@@ -81,9 +81,9 @@ public function getStatusAttribute()
 
 public function getDealAttribute()
 {
-    // لو فيه أي deal مش settled
+    // لو فيه أي deal مش paid
     $hasUnsettledDeal = $this->deals()
-        ->where('isSettled', 0)
+        ->where('isPaid', 0)
         ->exists();
 
     return $hasUnsettledDeal ? 0 : 1;
