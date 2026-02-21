@@ -862,41 +862,41 @@ public function elements($id, Request $request)
 
         $category = Category::withoutGlobalScopes()->findOrFail($id);
 
-        // Ensure search_keys and filter_keys are arrays
-        $searchKeys = is_array($category->search_keys) 
-            ? $category->search_keys 
-            : ($category->search_keys ? explode(',', $category->search_keys) : []);
-
-        $filterKeys = is_array($category->filter_keys) 
-            ? $category->filter_keys 
-            : ($category->filter_keys ? explode(',', $category->filter_keys) : []);
-
-        $model = $category->model;
-        $titleField = $category->title_field ?? 'id';
-        $configClass = $category->config_class ?? \App\CategoryConfigs\BaseCategoryConfig::class;
-
-        if (!$model || !class_exists($model)) {
+        if (!$category->model || !class_exists($category->model)) {
             return response()->json(['error' => 'Invalid model'], 400);
         }
+
+        $model = $category->model;
+        $searchKeys = $category->search_keys ?? [];
+        $filterKeys = $category->filter_keys ?? [];
+        $titleField = $category->title_field ?? 'id';
+        $configClass = $category->config_class ?? \App\CategoryConfigs\BaseCategoryConfig::class;
 
         if (!class_exists($configClass)) {
             return response()->json(['error' => 'Invalid config class'], 400);
         }
 
-        $query = $model::query()->latest()->withoutGlobalScopes();
+        // Ensure keys are arrays
+        if (is_string($searchKeys)) $searchKeys = array_map('trim', explode(',', $searchKeys));
+        if (is_string($filterKeys)) $filterKeys = array_map('trim', explode(',', $filterKeys));
+
+        // Eager load relations used in search/filter keys
+        $relations = [];
+        foreach (array_merge($searchKeys, $filterKeys) as $key) {
+            $parts = explode('.', $key);
+            if (count($parts) > 1) $relations[] = $parts[0];
+        }
+        $relations = array_unique($relations);
+
+        $query = $model::with($relations)->latest()->withoutGlobalScopes();
 
         /*
         |----------------------------------------------------------------------
         | Date Filter
         |----------------------------------------------------------------------
         */
-        if ($request->from) {
-            $query->whereDate('created_at', '>=', $request->from);
-        }
-
-        if ($request->to) {
-            $query->whereDate('created_at', '<=', $request->to);
-        }
+        if ($request->from) $query->whereDate('created_at', '>=', $request->from);
+        if ($request->to) $query->whereDate('created_at', '<=', $request->to);
 
         /*
         |----------------------------------------------------------------------
@@ -923,25 +923,25 @@ public function elements($id, Request $request)
 
         /*
         |----------------------------------------------------------------------
-        | Dynamic Transform with extra concatenation
+        | Dynamic Transform + extra field
         |----------------------------------------------------------------------
         */
         $items->getCollection()->transform(function ($item) use ($configClass, $titleField, $searchKeys, $filterKeys) {
 
             $transformed = $configClass::transform($item, $titleField);
 
-            // Add 'extra' by concatenating all search and filter keys
+            // Concatenate all search/filter key values into 'extra'
             $extraValues = [];
 
-            foreach ($searchKeys as $key) {
-                $extraValues[] = data_get($item, trim($key), '');
+            foreach (array_merge($searchKeys, $filterKeys) as $key) {
+                $key = trim($key);
+                $value = data_get($item, $key);
+                if ($value !== null && $value !== '') {
+                    $extraValues[] = $value;
+                }
             }
 
-            foreach ($filterKeys as $key) {
-                $extraValues[] = data_get($item, trim($key), '');
-            }
-
-            $transformed['extra'] = implode(', ', array_filter($extraValues));
+            $transformed['extra'] = implode(', ', $extraValues);
 
             return $transformed;
         });
@@ -962,7 +962,6 @@ public function elements($id, Request $request)
         ]);
     }
 }
-
 
 
     public function deadlines()
