@@ -26,12 +26,22 @@ class Category extends \App\Models\BaseModel
     }
     public function getPlaceholderAttribute()
     {
-        return $this->search_keys;
+        return json_encode($this->search_keys);
     }
 
     /*
     |--------------------------------------------------------------------------
-    | Convert search_keys string → array
+    | Convert search_keys string → arracd public_html/workspace
+
+git add .
+
+git commit -m "commit"
+
+git pull origin main
+
+git push origin main
+
+clsy
     |--------------------------------------------------------------------------
     | Example in DB:
     | "title,project.title,status"
