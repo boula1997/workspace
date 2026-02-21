@@ -868,7 +868,7 @@ public function elements($id, Request $request)
 
         $model = $category->model;
         $searchKeys = $category->search_keys ?? [];
-        $titleField = $category->title_field ?? 'id';
+        $titleField = 'id';
         $configClass = $category->config_class ?? \App\CategoryConfigs\BaseCategoryConfig::class;
 
         if (!class_exists($configClass)) {

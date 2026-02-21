@@ -14,10 +14,8 @@ return new class extends Migration
 
             // Comma separated values (stored as string)
             $table->text('search_keys')->nullable()->after('model');
-            $table->text('filter_keys')->nullable()->after('search_keys');
 
-            $table->string('title_field')->nullable()->after('filter_keys');
-            $table->string('config_class')->nullable()->after('title_field');
+            $table->string('config_class')->nullable()->after('search_keys');
 
         });
     }
@@ -29,8 +27,6 @@ return new class extends Migration
             $table->dropColumn([
                 'model',
                 'search_keys',
-                'filter_keys',
-                'title_field',
                 'config_class',
             ]);
 
