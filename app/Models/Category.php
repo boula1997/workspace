@@ -24,6 +24,10 @@ class Category extends \App\Models\BaseModel
             ? asset($this->file->url)
             : settings()->logo;
     }
+    public function getPlaceholderAttribute()
+    {
+        return $this->search_keys;
+    }
 
     /*
     |--------------------------------------------------------------------------
