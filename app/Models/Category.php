@@ -31,17 +31,7 @@ class Category extends \App\Models\BaseModel
 
     /*
     |--------------------------------------------------------------------------
-    | Convert search_keys string → arracd public_html/workspace
-
-git add .
-
-git commit -m "commit"
-
-git pull origin main
-
-git push origin main
-
-clsy
+    | Convert search_keys string → array
     |--------------------------------------------------------------------------
     | Example in DB:
     | "title,project.title,status"
