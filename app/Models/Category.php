@@ -24,10 +24,12 @@ class Category extends \App\Models\BaseModel
             ? asset($this->file->url)
             : settings()->logo;
     }
-    public function getPlaceholderAttribute()
-    {
-        return json_encode($this->search_keys);
-    }
+public function getPlaceholderAttribute()
+{
+    return is_array($this->search_keys)
+        ? implode(',', $this->search_keys)
+        : $this->search_keys;
+}
 
     /*
     |--------------------------------------------------------------------------
