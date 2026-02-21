@@ -859,7 +859,6 @@ public function toggleStatus($id)
 public function elements($id, Request $request)
 {
     try {
-
         $category = Category::withoutGlobalScopes()->findOrFail($id);
 
         if (!$category->model || !class_exists($category->model)) {
@@ -867,8 +866,8 @@ public function elements($id, Request $request)
         }
 
         $model = $category->model;
-        $searchKeys = $category->search_keys;
-        $filterKeys = $category->filter_keys;
+        $searchKeys = $category->search_keys ? explode(',', $category->search_keys) : [];
+        $filterKeys = $category->filter_keys ? explode(',', $category->filter_keys) : [];
         $titleField = $category->title_field ?? 'id';
         $configClass = $category->config_class ?? \App\CategoryConfigs\BaseCategoryConfig::class;
 
@@ -878,49 +877,43 @@ public function elements($id, Request $request)
 
         $query = $model::query()->latest()->withoutGlobalScopes();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Date Filter
-        |--------------------------------------------------------------------------
-        */
-        if ($request->from)
-            $query->whereDate('created_at', '>=', $request->from);
+        // Date filters
+        if ($request->from) $query->whereDate('created_at', '>=', $request->from);
+        if ($request->to) $query->whereDate('created_at', '<=', $request->to);
 
-        if ($request->to)
-            $query->whereDate('created_at', '<=', $request->to);
-
-        /*
-        |--------------------------------------------------------------------------
-        | Dynamic Exact Filters
-        |--------------------------------------------------------------------------
-        */
+        // Exact filters
         foreach ($filterKeys as $key) {
             if ($request->has($key)) {
                 $query->where($key, $request->$key);
             }
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Dynamic Search
-        |--------------------------------------------------------------------------
-        */
+        // Search
         if ($request->search) {
-
             $values = array_filter(array_map('trim', explode(',', $request->search)));
-
             $configClass::applySearch($query, $values, $searchKeys);
         }
 
         $items = $query->paginate($request->per_page ?? 20);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Dynamic Transform
-        |--------------------------------------------------------------------------
-        */
-        $items->getCollection()->transform(function ($item) use ($configClass, $titleField) {
-            return $configClass::transform($item, $titleField);
+        // Transform items & add extra concatenated values
+        $items->getCollection()->transform(function ($item) use ($configClass, $titleField, $searchKeys, $filterKeys) {
+            $data = $configClass::transform($item, $titleField);
+
+            // Concatenate values for extra
+            $extra = [];
+            foreach (array_merge($searchKeys, $filterKeys) as $key) {
+                $keys = explode('.', $key);
+                $value = $item;
+                foreach ($keys as $k) {
+                    $value = $value->{$k} ?? null;
+                }
+                $extra[] = $value;
+            }
+
+            $data['extra'] = implode(', ', array_filter($extra));
+
+            return $data;
         });
 
         return response()->json([
@@ -932,7 +925,6 @@ public function elements($id, Request $request)
         ]);
 
     } catch (\Exception $e) {
-
         return response()->json([
             "status" => 500,
             "message" => $e->getMessage()
