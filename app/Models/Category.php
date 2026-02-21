@@ -26,7 +26,7 @@ class Category extends \App\Models\BaseModel
     }
     public function getPlaceholderAttribute()
     {
-        return json_encode($this->filter_keys);
+        return json_encode($this->search_keys);
     }
 
     /*
