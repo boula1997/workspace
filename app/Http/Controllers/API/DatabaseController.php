@@ -339,76 +339,87 @@ private function extractTableFromSelect(string $sql): ?string
     }
 
 
-  public function getDatabase($dbname, $namedb)
-    {
+public function getDatabase($dbname, $namedb)
+{
+    try {
+        // Call the static method
+        self::setDynamicConnection($namedb, $dbname);
 
-        try {
+        $tables = DB::connection('dynamic')->select("SHOW TABLES");
+        $results = [];
+        $latestOverallDate = null;
+        
+        // NEW: Array to store all ID columns and their tables
+        $idColumns = [];
 
-            // Call the static method
-            self::setDynamicConnection($namedb,$dbname);
+        foreach ($tables as $t) {
+            $tableName = array_values((array)$t)[0];
 
-            $tables = DB::connection('dynamic')->select("SHOW TABLES");
-            $results = [];
-           $latestOverallDate = null;
+            // Detect VIEW or BASE TABLE
+            $isView = DB::connection('dynamic')->selectOne("
+                    SELECT TABLE_TYPE 
+                    FROM information_schema.tables 
+                    WHERE table_schema = ? AND table_name = ?
+                ", [$namedb, $tableName]);
 
+            $tableType = $isView->TABLE_TYPE ?? 'BASE TABLE';
 
-            foreach ($tables as $t) {
+            // Row count (skip views)
+            if ($tableType === 'VIEW') {
+                $rowCount = null;
+            } else {
+                $rowCount = DB::connection('dynamic')->table($tableName)->count();
+            }
 
-                $tableName = array_values((array)$t)[0];
+            // Get columns
+            $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
 
-                // Detect VIEW or BASE TABLE
-                $isView = DB::connection('dynamic')->selectOne("
-                        SELECT TABLE_TYPE 
-                        FROM information_schema.tables 
-                        WHERE table_schema = ? AND table_name = ?
-                    ", [$namedb, $tableName]);
+            // NEW: Find all columns ending with '_id' in this table
+            foreach ($columns as $col) {
+                if (str_ends_with($col->Field, '_id')) {
+                    $idColumns[] = [
+                        'column_name' => $col->Field,
+                        'table_name' => $tableName,
+                        'referenced_table' => $this->getReferencedTableName($col->Field),
+                        'data_type' => $col->Type,
+                        'is_nullable' => $col->Null === 'YES',
+                    ];
+                }
+            }
 
-                $tableType = $isView->TABLE_TYPE ?? 'BASE TABLE';
+            // Detect timestamp columns
+            $hasCreatedAt = false;
+            $hasUpdatedAt = false;
 
-                // Row count (skip views)
-                if ($tableType === 'VIEW') {
-                    $rowCount = null;
-                } else {
-                    $rowCount = DB::connection('dynamic')->table($tableName)->count();
+            foreach ($columns as $c) {
+                if ($c->Field === 'created_at') $hasCreatedAt = true;
+                if ($c->Field === 'updated_at') $hasUpdatedAt = true;
+            }
+
+            // Defaults
+            $latestCreatedAt = null;
+            $latestUpdatedAt = null;
+            $latestCreatedAtCount = null;
+            $latestUpdatedAtCount = null;
+
+            // Get latest timestamps only if columns exist and not a view
+            if ($tableType !== 'VIEW' && ($hasCreatedAt || $hasUpdatedAt)) {
+                $selects = [];
+
+                if ($hasCreatedAt) {
+                    $selects[] = 'MAX(created_at) as latest_created_at';
+                }
+                if ($hasUpdatedAt) {
+                    $selects[] = 'MAX(updated_at) as latest_updated_at';
                 }
 
-                // Get columns
-                $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
+                $dates = DB::connection('dynamic')
+                    ->table($tableName)
+                    ->selectRaw(implode(', ', $selects))
+                    ->first();
 
-                // Detect timestamp columns
-                $hasCreatedAt = false;
-                $hasUpdatedAt = false;
-
-                foreach ($columns as $c) {
-                    if ($c->Field === 'created_at') $hasCreatedAt = true;
-                    if ($c->Field === 'updated_at') $hasUpdatedAt = true;
-                }
-
-                // Defaults
-                $latestCreatedAt = null;
-                $latestUpdatedAt = null;
-                $latestCreatedAtCount = null;
-                $latestUpdatedAtCount = null;
-
-                // Get latest timestamps only if columns exist and not a view
-                if ($tableType !== 'VIEW' && ($hasCreatedAt || $hasUpdatedAt)) {
-
-                    $selects = [];
-
-                    if ($hasCreatedAt) {
-                        $selects[] = 'MAX(created_at) as latest_created_at';
-                    }
-                    if ($hasUpdatedAt) {
-                        $selects[] = 'MAX(updated_at) as latest_updated_at';
-                    }
-
-                    $dates = DB::connection('dynamic')
-                        ->table($tableName)
-                        ->selectRaw(implode(', ', $selects))
-                        ->first();
-
-                    $latestCreatedAt = $dates->latest_created_at ?? null;
-                    $latestUpdatedAt = $dates->latest_updated_at ?? null;
+                $latestCreatedAt = $dates->latest_created_at ?? null;
+                $latestUpdatedAt = $dates->latest_updated_at ?? null;
 
                 foreach ([$latestCreatedAt, $latestUpdatedAt] as $dt) {
                     if ($dt) {
@@ -418,22 +429,21 @@ private function extractTableFromSelect(string $sql): ?string
                     }
                 }
 
-                    // Count rows sharing the same timestamps
-                    if ($hasCreatedAt && $latestCreatedAt) {
-                        $latestCreatedAtCarbon = Carbon::parse($latestCreatedAt);
+                // Count rows sharing the same timestamps
+                if ($hasCreatedAt && $latestCreatedAt) {
+                    $latestCreatedAtCarbon = Carbon::parse($latestCreatedAt);
 
-                        // ±1 minute window
-                        $start = $latestCreatedAtCarbon->copy()->subMinute();
-                        $end   = $latestCreatedAtCarbon->copy()->addMinute();
+                    // ±1 minute window
+                    $start = $latestCreatedAtCarbon->copy()->subMinute();
+                    $end   = $latestCreatedAtCarbon->copy()->addMinute();
 
-                        $latestCreatedAtCount = DB::connection('dynamic')
-                            ->table($tableName)
-                            ->whereBetween('created_at', [$start, $end])
-                            ->count();
+                    $latestCreatedAtCount = DB::connection('dynamic')
+                        ->table($tableName)
+                        ->whereBetween('created_at', [$start, $end])
+                        ->count();
+                }
 
-                    }
-
-                    if ($hasUpdatedAt && $latestUpdatedAt) {
+                if ($hasUpdatedAt && $latestUpdatedAt) {
                     $latestUpdatedAtCarbon = Carbon::parse($latestUpdatedAt);
 
                     // ±1 minute range
@@ -444,48 +454,86 @@ private function extractTableFromSelect(string $sql): ?string
                         ->table($tableName)
                         ->whereBetween('updated_at', [$start, $end])
                         ->count();
-                    }
                 }
-
-
-
-                // Keep your existing logic and just append new fields
-                foreach ($columns as $col) {
-                    $col->TABLE_NAME = $tableName;
-                    $col->ROW_COUNT = $rowCount;
-
-                    $col->LATEST_CREATED_AT = $latestCreatedAt;
-                    $col->LATEST_CREATED_AT_COUNT = $latestCreatedAtCount;
-
-                    $col->LATEST_UPDATED_AT = $latestUpdatedAt;
-                    $col->LATEST_UPDATED_AT_COUNT = $latestUpdatedAtCount;
-                }
-
-
-                $results = array_merge($results, $columns);
             }
 
-            // Keep your existing sort logic
-            usort($results, function ($a, $b) {
-                $nameA = $a->COLUMN_NAME ?? ($a->Field ?? '');
-                $nameB = $b->COLUMN_NAME ?? ($b->Field ?? '');
-                return strcmp($nameA, $nameB);
-            });
+            // Keep your existing logic and just append new fields
+            foreach ($columns as $col) {
+                $col->TABLE_NAME = $tableName;
+                $col->ROW_COUNT = $rowCount;
 
-            return response()->json([
-                'success' => true,
-                'data' => $results,
-            'latest_overall_date' => $latestOverallDate, // NEW: Latest date in whole DB
+                $col->LATEST_CREATED_AT = $latestCreatedAt;
+                $col->LATEST_CREATED_AT_COUNT = $latestCreatedAtCount;
 
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to load database info: ' . $e->getMessage(),
-            ], 500);
+                $col->LATEST_UPDATED_AT = $latestUpdatedAt;
+                $col->LATEST_UPDATED_AT_COUNT = $latestUpdatedAtCount;
+            }
+
+            $results = array_merge($results, $columns);
         }
-    }
 
+        // Keep your existing sort logic
+        usort($results, function ($a, $b) {
+            $nameA = $a->COLUMN_NAME ?? ($a->Field ?? '');
+            $nameB = $b->COLUMN_NAME ?? ($b->Field ?? '');
+            return strcmp($nameA, $nameB);
+        });
+
+        // NEW: Group ID columns by their referenced table for easier use on frontend
+        $groupedIdColumns = [];
+        foreach ($idColumns as $idCol) {
+            $referencedTable = $idCol['referenced_table'];
+            if (!isset($groupedIdColumns[$referencedTable])) {
+                $groupedIdColumns[$referencedTable] = [];
+            }
+            $groupedIdColumns[$referencedTable][] = $idCol;
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $results,
+            'latest_overall_date' => $latestOverallDate,
+            // NEW: Add ID columns information
+            'id_columns' => $idColumns,
+            'grouped_id_columns' => $groupedIdColumns, // Grouped by referenced table
+            'id_columns_summary' => [
+                'total_count' => count($idColumns),
+                'by_referenced_table' => array_map(function($group) {
+                    return count($group);
+                }, $groupedIdColumns)
+            ]
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to load database info: ' . $e->getMessage(),
+        ], 500);
+    }
+}
+
+/**
+ * Helper function to determine the referenced table name from an ID column
+ */
+private function getReferencedTableName($columnName)
+{
+    // Remove '_id' from the end
+    $baseName = substr($columnName, 0, -3);
+    
+    // Handle common pluralization rules
+    if (str_ends_with($baseName, 'y')) {
+        // category -> categories, company -> companies
+        return substr($baseName, 0, -1) . 'ies';
+    } else if (str_ends_with($baseName, 's') || 
+               str_ends_with($baseName, 'x') || 
+               str_ends_with($baseName, 'ch') || 
+               str_ends_with($baseName, 'sh')) {
+        // class -> classes, box -> boxes, match -> matches
+        return $baseName . 'es';
+    } else {
+        // Default: add 's'
+        return $baseName . 's';
+    }
+}
 
 
 
