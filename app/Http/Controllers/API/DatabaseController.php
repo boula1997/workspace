@@ -349,7 +349,7 @@ public function getDatabase($dbname, $namedb)
         $results = [];
         $latestOverallDate = null;
         
-        // NEW: Array to store all ID columns and their tables
+        // Array to store all ID columns and their tables
         $idColumns = [];
 
         foreach ($tables as $t) {
@@ -374,13 +374,36 @@ public function getDatabase($dbname, $namedb)
             // Get columns
             $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
 
-            // NEW: Find all columns ending with '_id' in this table
+            // Get actual foreign key information for this table
+            $foreignKeys = DB::connection('dynamic')->select("
+                SELECT 
+                    COLUMN_NAME,
+                    REFERENCED_TABLE_NAME,
+                    REFERENCED_COLUMN_NAME
+                FROM information_schema.KEY_COLUMN_USAGE 
+                WHERE 
+                    TABLE_SCHEMA = ? 
+                    AND TABLE_NAME = ? 
+                    AND REFERENCED_TABLE_NAME IS NOT NULL
+            ", [$namedb, $tableName]);
+
+            // Create a lookup array for quick access
+            $fkLookup = [];
+            foreach ($foreignKeys as $fk) {
+                $fkLookup[$fk->COLUMN_NAME] = $fk->REFERENCED_TABLE_NAME;
+            }
+
+            // Find all columns ending with '_id' in this table
             foreach ($columns as $col) {
                 if (str_ends_with($col->Field, '_id')) {
+                    // Check if this column has an actual foreign key constraint
+                    $referencedTable = $fkLookup[$col->Field] ?? null;
+                    
                     $idColumns[] = [
                         'column_name' => $col->Field,
                         'table_name' => $tableName,
-                        'referenced_table' => $this->getReferencedTableName($col->Field),
+                        'referenced_table' => $referencedTable, // Will be null if no FK constraint
+                        'has_foreign_key_constraint' => $referencedTable !== null,
                         'data_type' => $col->Type,
                         'is_nullable' => $col->Null === 'YES',
                     ];
@@ -467,6 +490,15 @@ public function getDatabase($dbname, $namedb)
 
                 $col->LATEST_UPDATED_AT = $latestUpdatedAt;
                 $col->LATEST_UPDATED_AT_COUNT = $latestUpdatedAtCount;
+                
+                // Add foreign key information if this column has a constraint
+                if (isset($fkLookup[$col->Field])) {
+                    $col->IS_FOREIGN_KEY = true;
+                    $col->REFERENCED_TABLE = $fkLookup[$col->Field];
+                } else {
+                    $col->IS_FOREIGN_KEY = false;
+                    $col->REFERENCED_TABLE = null;
+                }
             }
 
             $results = array_merge($results, $columns);
@@ -479,25 +511,34 @@ public function getDatabase($dbname, $namedb)
             return strcmp($nameA, $nameB);
         });
 
-        // NEW: Group ID columns by their referenced table for easier use on frontend
+        // Group ID columns by their referenced table (only those with actual FK constraints)
         $groupedIdColumns = [];
         foreach ($idColumns as $idCol) {
-            $referencedTable = $idCol['referenced_table'];
-            if (!isset($groupedIdColumns[$referencedTable])) {
-                $groupedIdColumns[$referencedTable] = [];
+            // Only include columns that have actual foreign key constraints
+            if ($idCol['has_foreign_key_constraint']) {
+                $referencedTable = $idCol['referenced_table'];
+                if (!isset($groupedIdColumns[$referencedTable])) {
+                    $groupedIdColumns[$referencedTable] = [];
+                }
+                $groupedIdColumns[$referencedTable][] = $idCol;
             }
-            $groupedIdColumns[$referencedTable][] = $idCol;
         }
 
         return response()->json([
             'success' => true,
             'data' => $results,
             'latest_overall_date' => $latestOverallDate,
-            // NEW: Add ID columns information
+            // ID columns information with actual database reference info
             'id_columns' => $idColumns,
-            'grouped_id_columns' => $groupedIdColumns, // Grouped by referenced table
+            'grouped_id_columns' => $groupedIdColumns, // Grouped by referenced table (only actual FKs)
             'id_columns_summary' => [
                 'total_count' => count($idColumns),
+                'with_foreign_key_constraints' => count(array_filter($idColumns, function($col) {
+                    return $col['has_foreign_key_constraint'];
+                })),
+                'without_constraints' => count(array_filter($idColumns, function($col) {
+                    return !$col['has_foreign_key_constraint'];
+                })),
                 'by_referenced_table' => array_map(function($group) {
                     return count($group);
                 }, $groupedIdColumns)
@@ -511,29 +552,10 @@ public function getDatabase($dbname, $namedb)
     }
 }
 
-/**
- * Helper function to determine the referenced table name from an ID column
- */
-private function getReferencedTableName($columnName)
-{
-    // Remove '_id' from the end
-    $baseName = substr($columnName, 0, -3);
-    
-    // Handle common pluralization rules
-    if (str_ends_with($baseName, 'y')) {
-        // category -> categories, company -> companies
-        return substr($baseName, 0, -1) . 'ies';
-    } else if (str_ends_with($baseName, 's') || 
-               str_ends_with($baseName, 'x') || 
-               str_ends_with($baseName, 'ch') || 
-               str_ends_with($baseName, 'sh')) {
-        // class -> classes, box -> boxes, match -> matches
-        return $baseName . 'es';
-    } else {
-        // Default: add 's'
-        return $baseName . 's';
-    }
-}
+
+
+
+
 
 
 
