@@ -313,280 +313,342 @@ class GeneralController extends Controller
 
 
 
-    public function showEditCreate($dbname, $table, $itemId = null)
-    {
-        // Step 0: Get DB credentials
-        $credential = DBCredential::where('db_name', $dbname)->first();
+public function showEditCreate($dbname, $table, $itemId = null)
+{
+    // Step 0: Get DB credentials
+    $credential = DBCredential::where('db_name', $dbname)->first();
 
-        $dbHost = $credential->db_host ?? '192.185.41.219';
-        $dbName = $credential->db_name ?? 'automation';
-        $dbUser = $credential->db_username ?? 'root';
-        $dbPass = $credential->db_password ?? '';
+    $dbHost = $credential->db_host ?? '192.185.41.219';
+    $dbName = $credential->db_name ?? 'automation';
+    $dbUser = $credential->db_username ?? 'root';
+    $dbPass = $credential->db_password ?? '';
 
-        // Step 1: Configure dynamic connection
-        config([
-            'database.connections.dynamic' => [
-                'driver' => 'mysql',
-                'host' => $dbHost,
-                'database' => $dbName,
-                'username' => $dbUser,
-                'password' => $dbPass,
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-            ],
-        ]);
+    // Step 1: Configure dynamic connection
+    config([
+        'database.connections.dynamic' => [
+            'driver' => 'mysql',
+            'host' => $dbHost,
+            'database' => $dbName,
+            'username' => $dbUser,
+            'password' => $dbPass,
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+    ]);
 
-        DB::purge('dynamic');
-        DB::reconnect('dynamic');
-        DB::connection('dynamic')->statement('USE ' . $dbName);
+    DB::purge('dynamic');
+    DB::reconnect('dynamic');
+    DB::connection('dynamic')->statement('USE ' . $dbName);
 
-        // Step 2: Base table columns
-        $columns = DB::connection('dynamic')->select("
-            SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_COMMENT
-            FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-        ", [$dbName, $table]);
+    // Step 2: Base table columns
+    $columns = DB::connection('dynamic')->select("
+        SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_COMMENT
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+    ", [$dbName, $table]);
 
-        $columns = collect($columns)
-            ->map(fn($col) => [
-                'COLUMN_NAME' => $col->COLUMN_NAME,
-                'DATA_TYPE' => $col->DATA_TYPE,
-                'IS_NULLABLE' => $col->IS_NULLABLE === 'YES',
-                'HIDDEN' => strtolower(trim($col->COLUMN_COMMENT)) === 'hide', // 👈 Add this line
-            ])
-            ->values()
-            ->toArray();
+    $columns = collect($columns)
+        ->map(fn($col) => [
+            'COLUMN_NAME' => $col->COLUMN_NAME,
+            'DATA_TYPE' => $col->DATA_TYPE,
+            'IS_NULLABLE' => $col->IS_NULLABLE === 'YES',
+            'HIDDEN' => strtolower(trim($col->COLUMN_COMMENT)) === 'hide',
+        ])
+        ->values()
+        ->toArray();
 
-        // Step 3: Add virtual image fields
-        $columns[] = [
-            "COLUMN_NAME" => "image",
-            "DATA_TYPE" => "Image",
-            "IS_NULLABLE" => true,
+    // Step 3: Add virtual image fields
+    $columns[] = [
+        "COLUMN_NAME" => "image",
+        "DATA_TYPE" => "Image",
+        "IS_NULLABLE" => true,
+    ];
+    $columns[] = [
+        "COLUMN_NAME" => "images",
+        "DATA_TYPE" => "Multimages",
+        "IS_NULLABLE" => true,
+    ];
+
+    // Step 4: Get actual foreign key information from database
+    $foreignKeys = DB::connection('dynamic')->select("
+        SELECT 
+            k.COLUMN_NAME,
+            k.REFERENCED_TABLE_NAME,
+            k.REFERENCED_COLUMN_NAME
+        FROM information_schema.KEY_COLUMN_USAGE k
+        WHERE 
+            k.TABLE_SCHEMA = ? 
+            AND k.TABLE_NAME = ? 
+            AND k.REFERENCED_TABLE_NAME IS NOT NULL
+    ", [$dbName, $table]);
+
+    // Create lookup array for foreign keys
+    $fkLookup = [];
+    foreach ($foreignKeys as $fk) {
+        $fkLookup[$fk->COLUMN_NAME] = [
+            'referenced_table' => $fk->REFERENCED_TABLE_NAME,
+            'referenced_column' => $fk->REFERENCED_COLUMN_NAME,
         ];
-        $columns[] = [
-            "COLUMN_NAME" => "images",
-            "DATA_TYPE" => "Multimages",
-            "IS_NULLABLE" => true,
-        ];
+    }
 
-        // Step 4: Prepare related dropdown options for foreign keys
-        // Step 4: Prepare related dropdown options for foreign keys
-        $relatedOptions = [];
+    // Step 5: Prepare related dropdown options for foreign keys
+    $relatedOptions = [];
 
-        // Fetch all mappings that have attribute_id, table_name, and title_name
-        $mappingRows = DB::connection('dynamic')->table('mapping')
-            ->select('attribute_id', 'table_name', 'title_name', 'type')
-            ->whereNotNull('attribute_id')
-            ->whereNotNull('table_name')
-            ->whereNotNull('title_name')
-            // DO NOT filter by type — just accept it if present or null
-            ->get()
-            ->keyBy('attribute_id'); // So we can find mapping by the _id column name
+    // Fetch all mappings that have attribute_id, table_name, and title_name
+    $mappingRows = DB::connection('dynamic')->table('mapping')
+        ->select('attribute_id', 'table_name', 'title_name', 'type')
+        ->whereNotNull('attribute_id')
+        ->whereNotNull('table_name')
+        ->whereNotNull('title_name')
+        ->get()
+        ->keyBy('attribute_id');
 
-        foreach ($columns as $col) {
-            $colName = $col['COLUMN_NAME'];
+    foreach ($columns as $col) {
+        $colName = $col['COLUMN_NAME'];
 
-            // Check if this column is a foreign key (ends with _id)
-            if (Str::endsWith($colName, '_id')) {
-                // Check if mapping exists for this column
-                if ($mappingRows->has($colName)) {
-                    $map = $mappingRows->get($colName);
+        // Check if this column is a foreign key (based on database constraints)
+        if (isset($fkLookup[$colName])) {
+            $referencedTable = $fkLookup[$colName]['referenced_table'];
+            
+            // Check if mapping exists for this column
+            if ($mappingRows->has($colName)) {
+                $map = $mappingRows->get($colName);
+                
+                // Use mapped table if it exists, otherwise use referenced table from database
+                $mappedTable = $map->table_name;
+                $labelField = $map->title_name;
 
-                    $mappedTable = $map->table_name;
-                    $labelField = $map->title_name;
-
-                    // Skip if the mapped table doesn't exist
-                    if (!Schema::connection('dynamic')->hasTable($mappedTable)) {
-                        continue;
-                    }
-
-                    // Get the related dropdown data
+                // Verify the mapped table exists
+                if (Schema::connection('dynamic')->hasTable($mappedTable)) {
                     $relatedData = DB::connection('dynamic')->table($mappedTable)
-                        ->select('id', DB::raw("`$labelField` as label"))
+                        ->select($fkLookup[$colName]['referenced_column'] . ' as id', DB::raw("`$labelField` as label"))
                         ->get();
-
-                    // Use the original column name as the key
+                    
                     $relatedOptions[$colName] = $relatedData;
-                    continue; // Skip fallback logic if mapping was used
+                    continue;
                 }
+            }
+            
+            // Fallback to referenced table from database if mapping doesn't exist or mapped table doesn't exist
+            if (Schema::connection('dynamic')->hasTable($referencedTable)) {
+                $mainColumns = Schema::connection('dynamic')->getColumnListing($referencedTable);
+                
+                // Try to find a suitable label column (title, name, etc.)
+                $labelColumn = collect(['title', 'name', 'username', 'email', 'full_name'])
+                    ->first(fn($field) => in_array($field, $mainColumns));
+                
+                if ($labelColumn) {
+                    $relatedData = DB::connection('dynamic')->table($referencedTable)
+                        ->select($fkLookup[$colName]['referenced_column'] . ' as id', DB::raw("`$labelColumn` as label"))
+                        ->get();
+                } else {
+                    // If no suitable label column, use ID as label
+                    $relatedData = DB::connection('dynamic')->table($referencedTable)
+                        ->select($fkLookup[$colName]['referenced_column'] . ' as id', DB::raw("CONCAT('ID: ', " . $fkLookup[$colName]['referenced_column'] . ") as label"))
+                        ->get();
+                }
+                
+                $relatedOptions[$colName] = $relatedData;
+            }
+            
+            continue; // Skip fallback logic since we already handled the foreign key
+        }
+        
+        // Fallback logic for columns ending with _id but no foreign key constraint
+        if (Str::endsWith($colName, '_id')) {
+            // Check if mapping exists for this column
+            if ($mappingRows->has($colName)) {
+                $map = $mappingRows->get($colName);
 
-                // Fallback logic (guessing table and label field)
-                $baseTable = Str::plural(Str::beforeLast($colName, '_id'));
-                $singular = Str::singular($baseTable);
-                $translationTable = "{$singular}_translations";
+                $mappedTable = $map->table_name;
+                $labelField = $map->title_name;
 
-                if (!Schema::connection('dynamic')->hasTable($baseTable)) {
+                // Skip if the mapped table doesn't exist
+                if (!Schema::connection('dynamic')->hasTable($mappedTable)) {
                     continue;
                 }
 
-                $mainColumns = Schema::connection('dynamic')->getColumnListing($baseTable);
+                // Get the related dropdown data
+                $relatedData = DB::connection('dynamic')->table($mappedTable)
+                    ->select('id', DB::raw("`$labelField` as label"))
+                    ->get();
 
-                $labelColumn = collect(['title', 'name'])
-                    ->first(fn($field) => in_array($field, $mainColumns));
+                $relatedOptions[$colName] = $relatedData;
+                continue;
+            }
 
-                if ($labelColumn) {
+            // Fallback logic (guessing table and label field)
+            $baseTable = Str::plural(Str::beforeLast($colName, '_id'));
+            $singular = Str::singular($baseTable);
+            $translationTable = "{$singular}_translations";
+
+            if (!Schema::connection('dynamic')->hasTable($baseTable)) {
+                continue;
+            }
+
+            $mainColumns = Schema::connection('dynamic')->getColumnListing($baseTable);
+
+            $labelColumn = collect(['title', 'name'])
+                ->first(fn($field) => in_array($field, $mainColumns));
+
+            if ($labelColumn) {
+                $relatedData = DB::connection('dynamic')->table($baseTable)
+                    ->select('id', DB::raw("`$labelColumn` as label"))
+                    ->get();
+            } elseif (Schema::connection('dynamic')->hasTable($translationTable)) {
+                $translationColumns = Schema::connection('dynamic')->getColumnListing($translationTable);
+
+                $translationLabel = collect(['title', 'name'])->first(function ($field) use ($translationColumns) {
+                    return in_array($field, $translationColumns);
+                });
+
+                if ($translationLabel) {
                     $relatedData = DB::connection('dynamic')->table($baseTable)
-                        ->select('id', DB::raw("`$labelColumn` as label"))
+                        ->leftJoin($translationTable, "{$translationTable}.{$singular}_id", '=', "{$baseTable}.id")
+                        ->where("{$translationTable}.locale", 'en')
+                        ->select("{$baseTable}.id", "{$translationTable}.{$translationLabel} as label")
                         ->get();
-                } elseif (Schema::connection('dynamic')->hasTable($translationTable)) {
-                    $translationColumns = Schema::connection('dynamic')->getColumnListing($translationTable);
-
-                    $translationLabel = collect(['title', 'name'])->first(function ($field) use ($translationColumns) {
-                        return in_array($field, $translationColumns);
-                    });
-
-                    if ($translationLabel) {
-                        $relatedData = DB::connection('dynamic')->table($baseTable)
-                            ->leftJoin($translationTable, "{$translationTable}.{$singular}_id", '=', "{$baseTable}.id")
-                            ->where("{$translationTable}.locale", 'en')
-                            ->select("{$baseTable}.id", "{$translationTable}.{$translationLabel} as label")
-                            ->get();
-                    } else {
-                        $relatedData = DB::connection('dynamic')->table($baseTable)
-                            ->selectRaw("id, CONCAT('ID: ', id) as label")
-                            ->get();
-                    }
                 } else {
                     $relatedData = DB::connection('dynamic')->table($baseTable)
                         ->selectRaw("id, CONCAT('ID: ', id) as label")
                         ->get();
                 }
-
-                $relatedOptions[$colName] = $relatedData;
-            }
-        }
-
-
-        // Step 5: Handle translation columns - always add these for create & edit
-        $translationTable = Str::singular($table) . '_translations';
-
-        if (Schema::connection('dynamic')->hasTable($translationTable)) {
-            $transColumns = DB::connection('dynamic')->select("
-            SELECT COLUMN_NAME
-            FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-        ", [$dbName, $translationTable]);
-
-            $allTranslationCols = collect($transColumns)->pluck('COLUMN_NAME')->toArray();
-
-            // Dynamically find the foreign key in the translation table
-            $possibleForeignKeys = collect($allTranslationCols)->filter(fn($col) => Str::endsWith($col, '_id') && $col !== 'id');
-            $foreignKey = $possibleForeignKeys->first(fn($col) => Str::startsWith($col, Str::singular($table))) ?? $possibleForeignKeys->first();
-            if (!$foreignKey) {
-                $foreignKey = Str::singular($table) . '_id'; // fallback
+            } else {
+                $relatedData = DB::connection('dynamic')->table($baseTable)
+                    ->selectRaw("id, CONCAT('ID: ', id) as label")
+                    ->get();
             }
 
-            // Get only actual translatable columns
-            $transColumns = collect($allTranslationCols)
-                ->reject(fn($col) => in_array($col, ['id', 'locale', $foreignKey, 'created_at', 'updated_at', 'deleted_at']))
-                ->values()
-                ->toArray();
+            $relatedOptions[$colName] = $relatedData;
+        }
+    }
 
+    // Step 6: Handle translation columns - always add these for create & edit
+    $translationTable = Str::singular($table) . '_translations';
 
-            // Define supported locales
-            $locales = ['en', 'ar'];
+    if (Schema::connection('dynamic')->hasTable($translationTable)) {
+        $transColumns = DB::connection('dynamic')->select("
+        SELECT COLUMN_NAME
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
+    ", [$dbName, $translationTable]);
 
-            // Add translation fields for each locale to columns
-            foreach ($locales as $locale) {
-                foreach ($transColumns as $col) {
-                    $columns[] = [
-                        "COLUMN_NAME" => "{$locale}[$col]",
-                        "DATA_TYPE" => "text",
-                        "IS_NULLABLE" => true,
-                    ];
-                }
-            }
+        $allTranslationCols = collect($transColumns)->pluck('COLUMN_NAME')->toArray();
+
+        // Dynamically find the foreign key in the translation table
+        $possibleForeignKeys = collect($allTranslationCols)->filter(fn($col) => Str::endsWith($col, '_id') && $col !== 'id');
+        $foreignKey = $possibleForeignKeys->first(fn($col) => Str::startsWith($col, Str::singular($table))) ?? $possibleForeignKeys->first();
+        if (!$foreignKey) {
+            $foreignKey = Str::singular($table) . '_id'; // fallback
         }
 
-        // Step 6: If no valid $itemId, return columns and related options only
-        if (!$itemId || $itemId === "undefined" || !is_numeric($itemId)) {
-            return response()->json([
-                'success' => trans('general.sent_successfully'),
-                'columns' => $columns,
-                'related' => $relatedOptions,
-                'data' => [],
-            ]);
-        }
-
-        // Step 7: Fetch main record for edit
-        $data = DB::connection('dynamic')->table($table)->where('id', $itemId)->first();
-
-        if (!$data) {
-            return response()->json(['error' => 'Not found'], 404);
-        }
-
-        $data = (array) $data;
-
-        $sensitive = ['password', 'remember_token', 'api_token', 'access_token'];
-
-        foreach ($sensitive as $field) {
-            if (array_key_exists($field, $data)) {
-                $data[$field] = '';
-            }
-        }
-
-        $files = DB::connection('dynamic')->table('files')
-            ->where('fileable_type', 'App\\Models\\' . Str::studly(Str::singular($table)))
-            ->where('fileable_id', $itemId)
-            ->where('isMultiply', 1)
-            ->pluck('url')
-            ->map(function ($url) {
-                return asset($url);
-            })
+        // Get only actual translatable columns
+        $transColumns = collect($allTranslationCols)
+            ->reject(fn($col) => in_array($col, ['id', 'locale', $foreignKey, 'created_at', 'updated_at', 'deleted_at']))
+            ->values()
             ->toArray();
-        $file = DB::connection('dynamic')->table('files')
-            ->where('fileable_type', 'App\\Models\\' . Str::studly(Str::singular($table)))
-            ->where('fileable_id', $itemId)
-            ->where('isMultiply', 0)
-            ->pluck('url')
-            ->map(function ($url) {
-                return asset($url);
-            })
-            ->first();
 
-        $data['image'] = $file  ?? null;
-        $data['images'] = $files;
+        // Define supported locales
+        $locales = ['en', 'ar'];
 
-
-        // Optional: placeholder images (adjust or remove if you want)
-        $data["image"] = $data["image"] ?? settings()->logo;
-        $data["images"] = $data["images"] ?? [
-            settings()->logo,
-            settings()->logo
-        ];
-
-        // Step 8: Fetch translations data for this record
-        if (Schema::connection('dynamic')->hasTable($translationTable)) {
-            $transCols = Schema::connection('dynamic')->getColumnListing($translationTable);
-
-            $possibleForeignKeys = collect($transCols)->filter(fn($col) => Str::endsWith($col, '_id') && $col !== 'id');
-            $foreignKey = $possibleForeignKeys->first(fn($col) => Str::startsWith($col, Str::singular($table))) ?? $possibleForeignKeys->first();
-            if (!$foreignKey) {
-                $foreignKey = Str::singular($table) . '_id';
-            }
-
-            $translations = DB::connection('dynamic')->table($translationTable)
-                ->where($foreignKey, $itemId)
-                ->get();
-
-
-            foreach ($translations as $translation) {
-                foreach ($transColumns as $col) {
-                    $key = "{$translation->locale}[$col]";
-                    $data[$key] = $translation->$col;
-                }
+        // Add translation fields for each locale to columns
+        foreach ($locales as $locale) {
+            foreach ($transColumns as $col) {
+                $columns[] = [
+                    "COLUMN_NAME" => "{$locale}[$col]",
+                    "DATA_TYPE" => "text",
+                    "IS_NULLABLE" => true,
+                ];
             }
         }
+    }
 
-        // Step 9: Return data, columns, and related dropdown options
+    // Step 7: If no valid $itemId, return columns and related options only
+    if (!$itemId || $itemId === "undefined" || !is_numeric($itemId)) {
         return response()->json([
             'success' => trans('general.sent_successfully'),
             'columns' => $columns,
             'related' => $relatedOptions,
-            'data' => [$data],
+            'data' => [],
         ]);
     }
 
+    // Step 8: Fetch main record for edit
+    $data = DB::connection('dynamic')->table($table)->where('id', $itemId)->first();
+
+    if (!$data) {
+        return response()->json(['error' => 'Not found'], 404);
+    }
+
+    $data = (array) $data;
+
+    $sensitive = ['password', 'remember_token', 'api_token', 'access_token'];
+
+    foreach ($sensitive as $field) {
+        if (array_key_exists($field, $data)) {
+            $data[$field] = '';
+        }
+    }
+
+    $files = DB::connection('dynamic')->table('files')
+        ->where('fileable_type', 'App\\Models\\' . Str::studly(Str::singular($table)))
+        ->where('fileable_id', $itemId)
+        ->where('isMultiply', 1)
+        ->pluck('url')
+        ->map(function ($url) {
+            return asset($url);
+        })
+        ->toArray();
+    $file = DB::connection('dynamic')->table('files')
+        ->where('fileable_type', 'App\\Models\\' . Str::studly(Str::singular($table)))
+        ->where('fileable_id', $itemId)
+        ->where('isMultiply', 0)
+        ->pluck('url')
+        ->map(function ($url) {
+            return asset($url);
+        })
+        ->first();
+
+    $data['image'] = $file  ?? null;
+    $data['images'] = $files;
+
+    // Optional: placeholder images (adjust or remove if you want)
+    $data["image"] = $data["image"] ?? settings()->logo;
+    $data["images"] = $data["images"] ?? [
+        settings()->logo,
+        settings()->logo
+    ];
+
+    // Step 9: Fetch translations data for this record
+    if (Schema::connection('dynamic')->hasTable($translationTable)) {
+        $transCols = Schema::connection('dynamic')->getColumnListing($translationTable);
+
+        $possibleForeignKeys = collect($transCols)->filter(fn($col) => Str::endsWith($col, '_id') && $col !== 'id');
+        $foreignKey = $possibleForeignKeys->first(fn($col) => Str::startsWith($col, Str::singular($table))) ?? $possibleForeignKeys->first();
+        if (!$foreignKey) {
+            $foreignKey = Str::singular($table) . '_id';
+        }
+
+        $translations = DB::connection('dynamic')->table($translationTable)
+            ->where($foreignKey, $itemId)
+            ->get();
+
+        foreach ($translations as $translation) {
+            foreach ($transColumns as $col) {
+                $key = "{$translation->locale}[$col]";
+                $data[$key] = $translation->$col;
+            }
+        }
+    }
+
+    // Step 10: Return data, columns, and related dropdown options
+    return response()->json([
+        'success' => trans('general.sent_successfully'),
+        'columns' => $columns,
+        'related' => $relatedOptions,
+        'data' => [$data],
+    ]);
+}
 
 
     public function deleteItem($dbname, $table, $itemId)
