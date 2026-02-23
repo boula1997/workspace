@@ -141,7 +141,7 @@ private function extractTableFromSelect(string $sql): ?string
         // ✅ sort alphabetically
         sort($columns);
         // clean + quote columns (optional)
-        $suggestions = array_map(fn ($c) => '"' . $c . '"', $columns);
+        $suggestions = array_map(fn ($c) => '$' . $c . '$', $columns);
     }
 
     // 🔹 Empty result fallback
