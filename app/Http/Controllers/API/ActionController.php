@@ -60,7 +60,7 @@ public function getFunction(Request $request)
                     ->filter(fn($project) => $project->status == 1) ;
 
             $dealProjects = Project::whereHas('deals', function ($query) {
-                $query->where('isSettled', 0);
+                $query->where('isPaid', 0);
             })->get();
 
             $deals =Deal::get();

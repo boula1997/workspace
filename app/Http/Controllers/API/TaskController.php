@@ -816,7 +816,7 @@ public function toggleStatus($id)
     public function lock()
     {
         try {
-            // $deals = Deal::where("isSettled", 0)->latest()->get();
+            // $deals = Deal::latest()->get();
 
             // Get today's and tomorrow's dates
             $today = Carbon::today();
@@ -1024,7 +1024,7 @@ public function elements($id, Request $request)
                         $deal = Deal::find($deadline->deadlineable_id);
 
                         if ($deal) {
-                            $deal->delete();
+                            $deal->update(["isPaid"=>1]);
                         }
                     }
                 }
