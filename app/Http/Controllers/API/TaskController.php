@@ -862,10 +862,16 @@ public function elements($id, Request $request)
 
         $category = Category::withoutGlobalScopes()->findOrFail($id);
 
-        if (!$category->model || !class_exists($category->model)) {
-            return response()->json(['error' => 'Invalid model'], 400);
+        if (!$category->model) {
+            return response()->json(['error' => 'Model not defined'], 400);
         }
 
+        if (!class_exists($category->model)) {
+            return response()->json([
+                'error' => 'Model class not found',
+                'model' => $category->model
+            ], 400);
+        }
         $model = $category->model;
         $searchKeys = $category->search_keys ?? [];
         $titleField = 'id';
