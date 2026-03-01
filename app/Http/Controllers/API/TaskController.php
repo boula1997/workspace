@@ -665,17 +665,6 @@ if ($request->has('search') && $request->search != '') {
             if (isset($request->project_id)) {
                 $result = Project::find($request->project_id);
                 $data['codeLinks'] = $request->title;
-                $data['title'] = $request->name;
-                $data['cost'] = (int) $request->cost;
-                $data['githubDevModeLinkFront'] = $request->githubDevModeLinkFront;
-                $data['githubDevModeLinkBack'] = $request->githubDevModeLinkBack;
-                $data['deadline'] = $request->deadline;
-                $data['renewalDate'] = $request->renewalDate;
-                $data['deal'] = $request->deal ? 1 : 0;
-                $data['isHosted'] = $request->isHosted ? 1 : 0;
-                $data['isOverthinking'] = $request->isOverthinking ? 1 : 0;
-                $data['isYousab'] = $request->isYousab ? 1 : 0;
-                $data['fixed'] = $request->fixed ? 1 : 0;
                 $result->update($data);
             } else if (isset($request->refrence_id)) {
                 $result = Issue::find($request->refrence_id);
