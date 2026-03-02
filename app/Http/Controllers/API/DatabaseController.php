@@ -303,12 +303,12 @@ private function extractTableFromSelect(string $sql): ?string
             
             
             $query = Query::updateOrCreate(
-    ['title' => $request->title],
-    [
-        'd_b_credential_id' => $request->credential_id,
-        'updated_at' => now()
-    ]
-);
+                ['title' => $request->title],
+                [
+                    'd_b_credential_id' => $request->credential_id,
+                    'updated_at' => now()
+                ]
+            );
             $fixed = Query::where('isFixed', 1)->get();
 
             $all = Query::latest('updated_at')
@@ -324,6 +324,50 @@ private function extractTableFromSelect(string $sql): ?string
             return response()->json([
                 'success' => "Done Successfully",
                 'queries' => $queries,
+
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback if something goes wrong
+
+
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'data' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function saveSearch(Request $request)
+    {
+
+        DB::beginTransaction(); // Start transaction
+
+        try {
+            
+            
+            $search = Search::updateOrCreate(
+                ['title' => $request->title],
+                [
+                    'd_b_credential_id' => $request->credential_id,
+                    'updated_at' => now()
+                ]
+            );
+            $fixed = Search::where('isFixed', 1)->get();
+
+            $all = Search::latest('updated_at')
+                ->take(200)
+                ->get();
+
+            $searches = $all->merge($fixed);
+
+
+
+            DB::commit(); // Commit transaction if everything0 is fine
+
+            return response()->json([
+                'success' => "Done Successfully",
+                'searches' => $searches,
 
             ]);
         } catch (\Exception $e) {
@@ -575,6 +619,35 @@ public function getDatabase($dbname, $namedb)
             return response()->json([
                 'success' => "Done Successfully",
                 'queries' => $queries,
+                'credentials' => $credentials,
+
+            ]);
+        } catch (\Exception $e) {
+
+
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'data' => $e->getMessage(),
+            ]);
+        }
+    }
+    public function getSearches()
+    {
+        try {
+
+            $fixed = Search::where('isFixed', 1)->get();
+
+            $all = Search::latest('updated_at')
+                ->take(200)
+                ->get();
+
+            $queries = $all->merge($fixed);
+            $credentials = DBCredential::get();
+
+            return response()->json([
+                'success' => "Done Successfully",
+                'searches' => $queries,
                 'credentials' => $credentials,
 
             ]);
