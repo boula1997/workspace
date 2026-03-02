@@ -636,13 +636,13 @@ public function getDatabase($dbname, $namedb)
 
 
 
-    public function getQueries()
+    public function getQueries($id)
     {
         try {
 
-            $fixed = Query::where('isFixed', 1)->get();
+            $fixed = Query::where("d_b_credential_id",$id)->where('isFixed', 1)->get();
 
-            $all = Query::latest('updated_at')
+            $all = Query::where("d_b_credential_id",$id)->latest('updated_at')
                 ->take(200)
                 ->get();
 
@@ -665,13 +665,13 @@ public function getDatabase($dbname, $namedb)
             ]);
         }
     }
-    public function getSearches()
+    public function getSearches($id)
     {
         try {
 
-            $fixed = Search::where('isFixed', 1)->get();
+            $fixed = Search::where("d_b_credential_id",$id)->where('isFixed', 1)->get();
 
-            $all = Search::latest('updated_at')
+            $all = Search::where("d_b_credential_id",$id)->latest('updated_at')
                 ->take(200)
                 ->get();
 

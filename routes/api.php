@@ -74,8 +74,8 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
     Route::post('/execute/query', [DatabaseController::class, 'execQuery'])->name('query.exec');
     Route::post('/save/query', [DatabaseController::class, 'saveQuery'])->name('query.save');
-    Route::get('/get/queries', [DatabaseController::class, 'getQueries'])->name('queries.get');
-    Route::get('/get/searches', [DatabaseController::class, 'getSearches'])->name('searches.get');
+    Route::get('/get/queries/{id}', [DatabaseController::class, 'getQueries'])->name('queries.get');
+    Route::get('/get/searches/{id}', [DatabaseController::class, 'getSearches'])->name('searches.get');
     Route::post('/save/search', [DatabaseController::class, 'saveSearch'])->name('search.save');
     Route::delete('/delete/search/{id}', [DatabaseController::class, 'deleteSearch'])->name('search.delete');
     Route::get('/databases/info/{dbname}/{namedb}', [DatabaseController::class, 'getDatabase']);
@@ -83,9 +83,9 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
           Route::middleware('auth:admin-api','apiLocalization','cors')->group(function () {
                  Route::post('/execute/query', [DatabaseController::class, 'execQuery'])->name('query.exec');
     Route::post('/save/query', [DatabaseController::class, 'saveQuery'])->name('query.save');
-    Route::get('/get/queries', [DatabaseController::class, 'getQueries'])->name('queries.get');
+    Route::get('/get/queries/{id}', [DatabaseController::class, 'getQueries'])->name('queries.get');
     Route::post('/save/search', [DatabaseController::class, 'saveSearch'])->name('search.save');
-    Route::get('/get/searches', [DatabaseController::class, 'getSearches'])->name('searches.get');
+    Route::get('/get/searches/{id}', [DatabaseController::class, 'getSearches'])->name('searches.get');
     Route::delete('/delete/search/{id}', [DatabaseController::class, 'deleteSearch'])->name('search.delete');
     Route::get('/databases/info/{dbname}/{namedb}', [DatabaseController::class, 'getDatabase']);
           });
