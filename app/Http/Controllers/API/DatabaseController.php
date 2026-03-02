@@ -636,62 +636,63 @@ public function getDatabase($dbname, $namedb)
 
 
 
-    public function getQueries($id)
+    public function getQueries($id = null)
     {
         try {
 
-            $fixed = Query::where("d_b_credential_id",$id)->where('isFixed', 1)->get();
+            $fixed = Query::where("d_b_credential_id", $id)
+                ->where('isFixed', 1)
+                ->get();
 
-            $all = Query::where("d_b_credential_id",$id)->latest('updated_at')
+            $all = Query::where("d_b_credential_id", $id)
+                ->latest('updated_at')
                 ->take(200)
                 ->get();
 
-            $queries = $all->merge($fixed);
-            $credentials = DBCredential::get();
+            $queries = $all->merge($fixed)->unique('id')->values();
 
             return response()->json([
-                'success' => "Done Successfully",
+                'success' => true,
                 'queries' => $queries,
-                'credentials' => $credentials,
-
+                'credentials' => DBCredential::all(),
             ]);
-        } catch (\Exception $e) {
 
+        } catch (\Exception $e) {
 
             return response()->json([
                 'success' => false,
                 'error' => $e->getMessage(),
-                'data' => $e->getMessage(),
             ]);
         }
     }
-    public function getSearches($id)
+    public function getSearches($id = null)
     {
         try {
 
-            $fixed = Search::where("d_b_credential_id",$id)->where('isFixed', 1)->get();
+            $fixed = Search::where("d_b_credential_id", $id)
+                ->where('isFixed', 1)
+                ->get();
 
-            $all = Search::where("d_b_credential_id",$id)->latest('updated_at')
+            $all = Search::where("d_b_credential_id", $id)
+                ->latest('updated_at')
                 ->take(200)
                 ->get();
 
-            $queries = $all->merge($fixed);
-            $credentials = DBCredential::get();
+            $searches = $all->merge($fixed)->unique('id')->values();
 
             return response()->json([
-                'success' => "Done Successfully",
-                'searches' => $queries,
-                'credentials' => $credentials,
-
+                'success' => true,
+                'searches' => $searches,
+                'credentials' => DBCredential::all(),
             ]);
-        } catch (\Exception $e) {
 
+        } catch (\Exception $e) {
 
             return response()->json([
                 'success' => false,
                 'error' => $e->getMessage(),
-                'data' => $e->getMessage(),
             ]);
         }
     }
+
 }
