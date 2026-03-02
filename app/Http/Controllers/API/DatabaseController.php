@@ -16,6 +16,7 @@ use App\Models\Note;
 use App\Models\Admin;
 use App\Models\Deadline;
 use App\Models\Category;
+use App\Models\Search;
 use App\Models\Video;
 use App\Models\Navigation;
 use App\Models\Clienttrack;
