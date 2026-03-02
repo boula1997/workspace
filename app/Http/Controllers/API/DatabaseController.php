@@ -350,7 +350,7 @@ private function extractTableFromSelect(string $sql): ?string
             $search = Search::updateOrCreate(
                 ['title' => $request->search_term],
                 [
-                    'd_b_credential_id' => $request->credential_id,
+                    'd_b_credential_id' => $request->d_b_credential_id,
                     'updated_at' => now()
                 ]
             );
