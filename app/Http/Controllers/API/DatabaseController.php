@@ -383,6 +383,38 @@ private function extractTableFromSelect(string $sql): ?string
     }
 
 
+    public function deleteSearch($id)
+{
+    try {
+        $search = SearchHistory::find($id);
+        
+        if (!$search) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Search not found'
+            ], 404);
+        }
+        
+        // Optional: Check if the search belongs to the current user
+        // if ($search->user_id !== auth()->id()) {
+        //     return response()->json(['success' => false, 'error' => 'Unauthorized'], 403);
+        // }
+        
+        $search->delete();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Search deleted successfully'
+        ]);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
 public function getDatabase($dbname, $namedb)
 {
     try {
