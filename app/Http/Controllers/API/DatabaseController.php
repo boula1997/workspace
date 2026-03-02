@@ -387,7 +387,7 @@ private function extractTableFromSelect(string $sql): ?string
     public function deleteSearch($id)
 {
     try {
-        $search = SearchHistory::find($id);
+        $search = Search::find($id);
         
         if (!$search) {
             return response()->json([
