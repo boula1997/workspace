@@ -695,4 +695,30 @@ public function getDatabase($dbname, $namedb)
         }
     }
 
+        public function getCommands($id = null)
+    {
+        try {
+
+
+            $commands = Command::where("d_b_credential_id", $id)
+                ->latest('updated_at')
+                ->take(200)
+                ->get();
+
+
+            return response()->json([
+                'success' => true,
+                'commands' => $commands,
+                'credentials' => DBCredential::all(),
+            ]);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
 }
