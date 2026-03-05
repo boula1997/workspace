@@ -17,6 +17,7 @@ class Search extends Model
         'isFixed',
         'search_count',
         'last_searched_at',
+        'updated_at',
     ];
 
     protected $casts = [
