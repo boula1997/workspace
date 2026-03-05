@@ -355,13 +355,11 @@ private function extractTableFromSelect(string $sql): ?string
                     'updated_at' => now()
                 ]
             );
-            $fixed = Search::where('isFixed', 1)->get();
 
-            $all = Search::latest('updated_at')
+            $searches = Search::latest('updated_at')
                 ->take(200)
                 ->get();
 
-            $searches = $all->merge($fixed);
 
 
 
