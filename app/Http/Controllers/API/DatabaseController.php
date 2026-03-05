@@ -340,47 +340,45 @@ private function extractTableFromSelect(string $sql): ?string
         }
     }
 
-    public function saveSearch(Request $request)
-    {
+public function saveSearch(Request $request)
+{
+    DB::beginTransaction();
 
-        DB::beginTransaction(); // Start transaction
+    try {
+        
+        // Use updateOrCreate with the correct combination of unique fields
+        Search::updateOrCreate(
+            [
+                'title' => $request->search_term,
+                'd_b_credential_id' => $request->d_b_credential_id
+            ],
+            [
+                'updated_at' => now() // Explicitly set updated_at
+            ]
+        );
 
-        try {
-            
-            
-            $search = Search::updateOrCreate(
-                ['title' => $request->search_term],
-                [
-                    'd_b_credential_id' => $request->d_b_credential_id,
-                    'updated_at' => now()
-                ]
-            );
+        // Get searches for this credential, ordered by updated_at DESC (newest first)
+        $searches = Search::where('d_b_credential_id', $request->d_b_credential_id)
+            ->orderBy('updated_at', 'DESC')
+            ->take(200)
+            ->get();
 
-            $searches = Search::latest('updated_at')
-                ->take(200)
-                ->get();
+        DB::commit();
 
+        return response()->json([
+            'success' => "Done Successfully",
+            'searches' => $searches,
+        ]);
+        
+    } catch (\Exception $e) {
+        DB::rollBack();
 
-
-
-            DB::commit(); // Commit transaction if everything0 is fine
-
-            return response()->json([
-                'success' => "Done Successfully",
-                'searches' => $searches,
-
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack(); // Rollback if something goes wrong
-
-
-            return response()->json([
-                'success' => false,
-                'error' => $e->getMessage(),
-                'data' => $e->getMessage(),
-            ]);
-        }
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ]);
     }
+}
 
 
     public function deleteSearch($id)
