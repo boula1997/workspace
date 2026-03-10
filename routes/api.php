@@ -55,7 +55,13 @@ Route::group(['middleware' => ['apiLocalization','cors'],'prefix' => 'auth'], fu
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
-     Route::post('/track', [TaskController::class, 'track']);
+Route::post('/track', [TaskController::class, 'track']);
+
+Route::get('/deadlines/exceeded', function () {
+    return response()->json([
+        'exceeded' => hasExceededDeadlines()
+    ]);
+});
 
 
 
