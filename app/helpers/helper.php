@@ -390,6 +390,30 @@ function failedResponse($data = [], $message = "error", $status = 400)
     );
 }
 
+
+
+function hasExceededDeadlines()
+{
+    $today = Carbon::now();
+
+    // Check projects
+    $projects = Project::whereNotNull('deadline')
+        ->where('deadline', '<', $today)
+        ->get();
+
+        foreach($projects as $project){
+            if($project->status == 1 || $project->status == 2){
+                $expiredProjects=true;
+            }
+        }
+
+    // Check deadlines
+    $expiredDeadlines = Deadline::where('date', '<', $today)->where("status",0)
+        ->exists();
+
+    return $expiredProjects || $expiredDeadlines;
+}
+
 function itemsCount($model)
 {
     if (auth()->user()) {

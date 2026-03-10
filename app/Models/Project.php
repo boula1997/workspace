@@ -26,9 +26,7 @@ class Project extends \App\Models\BaseModel
 
     public function getDeadlineAttribute($value)
     {
-        return Carbon::parse($value)
-            ->timezone('Africa/Cairo')
-            ->format('Y-m-d H:i:s'); // or any format you prefer
+        return $value ? Carbon::parse($value)->timezone('Africa/Cairo') : null;
     }
 
     public function getPayedAttribute(){
