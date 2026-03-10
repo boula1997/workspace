@@ -400,7 +400,7 @@ function hasExceededDeadlines()
     $projects = Project::whereNotNull('deadline')
         ->where('deadline', '<', $today)
         ->get();
-
+        $expiredProjects=false;
         foreach($projects as $project){
             if($project->status == 1 || $project->status == 2){
                 $expiredProjects=true;
