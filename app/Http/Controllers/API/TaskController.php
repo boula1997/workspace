@@ -1138,7 +1138,7 @@ public function elements($id, Request $request)
         return successResponse(["boardProjects" => ProjectResource::collection(
             Project::orderBy("deadline", "asc")
                 ->get()
-                ->filter(fn($project) => $project->status == 1)
+                ->filter(fn($project) => $project->status == 1 || $project->status == 2)
         ),]);
     }
     public function info()
