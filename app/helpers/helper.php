@@ -393,16 +393,14 @@ function failedResponse($data = [], $message = "error", $status = 400)
 
 function hasExceededDeadlines()
 {
-    // Yesterday's date (ignoring time)
     $yesterday = Carbon::yesterday()->startOfDay();
 
-    // Check projects
-    $expiredProjects = Project::whereNotNull('deadline')
-        ->whereDate('deadline', '<', $yesterday) // compare only dates
-        ->whereIn('status', [1, 2])
-        ->exists(); // we only need existence, not all rows
+    $baseQuery = Project::whereNotNull('deadline')
+        ->whereDate('deadline', '<', $yesterday);
 
-    // Check deadlines
+    $expiredProjects = (clone $baseQuery)->filterByStatus(1)->exists()
+                    || (clone $baseQuery)->filterByStatus(2)->exists();
+
     $expiredDeadlines = Deadline::whereDate('date', '<', $yesterday)
         ->where('status', 0)
         ->exists();

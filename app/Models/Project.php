@@ -86,4 +86,23 @@ public function getDealAttribute()
 
     return $hasUnsettledDeal ? 0 : 1;
 }
+
+
+public function scopeFilterByStatus($query, $status)
+{
+    return $query->where(function ($q) use ($status) {
+        if ($status == 0) {
+            // rest == 0
+            $q->whereRaw('cost - (SELECT COALESCE(SUM(amount), 0) FROM fees WHERE fees.project_id = projects.id) <= 0');
+        } elseif ($status == 1) {
+            // rest > 0 AND has tasks with status 0
+            $q->whereRaw('cost - (SELECT COALESCE(SUM(amount), 0) FROM fees WHERE fees.project_id = projects.id) > 0')
+              ->whereHas('tasks', fn($t) => $t->where('status', 0));
+        } elseif ($status == 2) {
+            // no tasks with status 0 AND rest > 1
+            $q->whereRaw('cost - (SELECT COALESCE(SUM(amount), 0) FROM fees WHERE fees.project_id = projects.id) > 1')
+              ->whereDoesntHave('tasks', fn($t) => $t->where('status', 0));
+        }
+    });
+}
 }
