@@ -808,8 +808,8 @@ public function toggleStatus($id)
             // $deals = Deal::latest()->get();
 
             // Get today's and tomorrow's dates
-            $today = Carbon::today();
-            $tomorrow = Carbon::tomorrow();
+            $today = Carbon::today('Africa/Cairo');
+            $tomorrow = Carbon::tomorrow('Africa/Cairo');
 
             // Only deadlines with date today or tomorrow
             $deadlines = Deadline::where("status", 0)
