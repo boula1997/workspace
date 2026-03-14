@@ -1081,7 +1081,7 @@ public function bulkDelete(Request $request)
         'task_ids.*' => 'integer|exists:tasks,id',
     ]);
 
-    $adminId = Auth::id();
+    $adminId = auth("api")->user()->id;
 
     $tasks = Task::whereIn('id', $request->task_ids)->get();
 
