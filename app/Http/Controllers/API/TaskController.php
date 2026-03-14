@@ -1128,7 +1128,7 @@ public function bulkAssign(Request $request)
         $merged    = array_values(array_unique(array_merge($existing, $request->employee_ids)));
 
         $task->employees   = json_encode($merged);
-        $task->admin_id    = Auth::id();
+        $task->admin_id    = auth("api")->user()->id;
         $task->updated_at  = now();
         $task->save();
     }
@@ -1156,7 +1156,7 @@ public function bulkUpdateDate(Request $request)
     $updated = Task::whereIn('id', $request->task_ids)
         ->update([
             'date'       => $request->date,
-            'admin_id'   => Auth::id(),
+            'admin_id'   => auth("api")->user()->id,
             'updated_at' => now(),
         ]);
 
