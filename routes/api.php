@@ -150,5 +150,8 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/lock', [TaskController::class, 'lock'])->name('lock');
     Route::get('/lastRepeatTime', [TaskController::class, 'lastRepeatTime'])->name('lastRepeatTime');
     Route::post('/createLastRepeatTime', [TaskController::class, 'createLastRepeatTime'])->name('createLastRepeatTime');
+    Route::post('/apptask/bulk-delete', [TaskController::class, 'bulkDelete']);
+    Route::post('/apptask/bulk-assign', [TaskController::class, 'bulkAssign']);
+    Route::post('/apptask/bulk-update-date', [TaskController::class, 'bulkUpdateDate']);
     });
 });
