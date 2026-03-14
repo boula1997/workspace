@@ -1045,9 +1045,14 @@ public function toggleStatus($id)
     }
     public function info()
     {
-            $infoProjects = Project::orderBy("title", "asc")
-                ->get();
+        $infoProjects = Project::orderBy("title", "asc")->get();
+        
+        // If not boula, return empty collection for issues
+        if (!boula()) {
+            $issues = collect(); // Empty collection
+        } else {
             $issues = Issue::orderBy("title", "asc")->get();
+        }
 
         return successResponse([
             "infoProjects" => ProjectResource::collection($infoProjects),
