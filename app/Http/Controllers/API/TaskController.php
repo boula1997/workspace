@@ -238,10 +238,10 @@ public function tasks(Request $request)
 
     // --- Date range filter ---
     if ($request->filled('start_date')) {
-        $query->whereDate('date', '>=', $request->start_date);
+        $query->where('date', '>=', $request->start_date);  // Remove whereDate()
     }
     if ($request->filled('end_date')) {
-        $query->whereDate('date', '<=', $request->end_date);
+        $query->where('date', '<=', $request->end_date);    // Remove whereDate()
     }
 
     // --- Filter by employee IDs (JSON column) ---
