@@ -212,74 +212,112 @@ if ($request->has('search') && $request->search != '') {
     }
 
 
-    public function tasks(Request $request)
-    {
+/**
+ * Filter tasks with advanced filters
+ * GET /api/apptask/tasks  (same endpoint, handles both filtered and unfiltered)
+ * Params: page, search, status, start_date, end_date, employees, projects
+ */
+public function tasks(Request $request)
+{
+    $query = Task::query();
 
-        $status=$request->query("status");
-        $tasksQuery = Task::where("status", $status)
-            ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
-            ->latest('updated_at')            // Then by latest update
-            // Limit to 300 tasks
-        ;
-
-        // Apply search filter if present
-        if ($request->has('search') && $request->search != '') {
-            $searchTerms = explode(',', $request->search);
-
-            $tasksQuery->where(function ($q) use ($searchTerms) {
-                foreach ($searchTerms as $term) {
-                    $term = trim($term);
-                    if (!$term) continue;
-
-                    // Check for priority special cases first
-                    if (strtolower($term) === "priority") {
-                        $q->orWhere('piority', 1);
-                        continue;
-                    }
-                    if (strtolower($term) === "!priority") {
-                        $q->orWhere('piority', 0);
-                        continue;
-                    }
-
-                    // General search by title, project, or employee
-                    $q->orWhere('title', 'like', "%$term%")
-                    ->orWhereHas('project', function ($qp) use ($term) {
-                        $qp->where('title', 'like', "%$term%");
-                    })
-                    ->orWhere(function ($qe) use ($term) {
-                        $qe->whereRaw("EXISTS (
-                            SELECT 1
-                            FROM admins
-                            WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
-                            AND admins.name LIKE ?
-                        )", ["%$term%"]);
-                    });
-                }
-            });
-        }
-
-
-
-        // Paginate tasks 
-        $tasks = $tasksQuery->paginate(10);
-
-
-
-
-        $data = [
-
-            "tasks" => TaskResource::collection($tasks),
-            "tasks_meta" => [
-                "current_page" => $tasks->currentPage(),
-                "last_page" => $tasks->lastPage(),
-                "per_page" => $tasks->perPage(),
-                "total" => $tasks->total(),
-            ],
-
-        ];
-
-        return successResponse($data);
+    // --- Status filter (0 = live, 1 = finished) ---
+    if ($request->has('status')) {
+        $query->where('status', $request->status);
     }
+
+    // --- Text search (title) ---
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('title', 'LIKE', "%{$search}%")
+              ->orWhereHas('project', fn($p) => $p->where('title', 'LIKE', "%{$search}%"))
+              ->orWhereRaw("JSON_SEARCH(employees, 'one', ?) IS NOT NULL", ["%{$search}%"]);
+        });
+    }
+
+    // --- Date range filter ---
+    if ($request->filled('start_date')) {
+        $query->whereDate('date', '>=', $request->start_date);
+    }
+    if ($request->filled('end_date')) {
+        $query->whereDate('date', '<=', $request->end_date);
+    }
+
+    // --- Filter by employee IDs (JSON column) ---
+    // Frontend sends: employees=1,2,3
+    if ($request->filled('employees')) {
+        $employeeIds = explode(',', $request->employees);
+        $query->where(function ($q) use ($employeeIds) {
+            foreach ($employeeIds as $empId) {
+                $q->orWhereJsonContains('employees', (int) $empId);
+            }
+        });
+    }
+
+    // --- Filter by project IDs ---
+    // Frontend sends: projects=1,2,3
+    if ($request->filled('projects')) {
+        $projectIds = explode(',', $request->projects);
+        $query->whereIn('project_id', $projectIds);
+    }
+
+    // --- Only active (not soft-deleted) tasks ---
+    $query->where('isActive', 1);
+
+    // --- Order by date desc, then created_at desc ---
+    $query->orderByRaw('ISNULL(date), date ASC')
+          ->orderBy('created_at', 'desc');
+
+    // --- Paginate ---
+    $tasks = $query->with('project')->paginate(20);
+
+    // --- Format response to match your frontend shape ---
+    $formatted = $tasks->getCollection()->map(function ($task) {
+        return [
+            'id'         => $task->id,
+            'title'      => $task->title,
+            'project'    => $task->project?->title ?? '',
+            'project_id' => $task->project_id,
+            'employee'   => $this->resolveEmployeeNames($task->employees),
+            'employees'  => $task->employees,
+            'date'       => $task->date,
+            'created_at' => $task->created_at?->format('Y-m-d'),
+            'piority'    => $task->piority,
+            'status'     => $task->status,
+            'isDeleted'  => $task->isActive == 0,
+        ];
+    });
+
+    return response()->json([
+        'status' => 200,
+        'data'   => [
+            'tasks'      => $formatted,
+            'tasks_meta' => [
+                'current_page' => $tasks->currentPage(),
+                'last_page'    => $tasks->lastPage(),
+                'total'        => $tasks->total(),
+                'per_page'     => $tasks->perPage(),
+            ],
+        ],
+    ]);
+}
+
+/**
+ * Helper: resolve employee names from JSON column
+ * employees column stores array of IDs: [1, 2, 3]
+ */
+private function resolveEmployeeNames($employees): string
+{
+    if (!$employees) return '';
+
+    $ids = is_array($employees) ? $employees : json_decode($employees, true);
+    if (empty($ids)) return '';
+
+    return \App\Models\Employee::whereIn('id', $ids)
+        ->pluck('name')
+        ->implode(', ');
+}
 
 
     public function stats($date = null)
