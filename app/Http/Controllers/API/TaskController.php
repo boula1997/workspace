@@ -270,8 +270,7 @@ public function tasks(Request $request)
     $query->where('isActive', 1);
 
     // --- Order by date asc (nulls last), then created_at desc ---
-    $query->orderByRaw('ISNULL(date), date ASC')
-          ->orderBy('created_at', 'desc');
+    $query->orderByRaw('ISNULL(date), date DESC');
 
     // --- Paginate ---
     $tasks = $query->with('project')->paginate(20);

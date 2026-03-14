@@ -6,10 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\MessageRequest;
 use App\Models\Message;
 use App\Models\Project;
-use App\Models\Deadline;
+use App\Models\Task;
 use App\Models\Issue;
 use App\Models\Deal;
-use App\Models\Task;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -263,7 +262,7 @@ class GeneralController extends Controller
         }
 
 
-                // add deadline for deals if cost
+                // add task for deals if cost
         if ($table == "deals") {
             // Find the project
             $project = Project::find($request->project_id);
@@ -278,18 +277,19 @@ class GeneralController extends Controller
             }
 
 
-            // Create or update deadline linked to the deal
-            Deadline::updateOrCreate(
+            // Create or update task linked to the deal
+            Task::updateOrCreate(
                 [
-                    // Condition: same title + same deal
-                    'title' => "Get {$request->cost} from {$project->title} deal",
-                    'deadlineable_id' => $deal->id,
-                    'deadlineable_type' => Deal::class,
+                    'title'   => "Get {$request->cost} from {$project->title} deal",
+                    'deal_id' => $deal->id,
                 ],
                 [
-                    // Values to insert/update
-                    'date' => Carbon::now()->addDay()->toDateString(),
-                    'isActive' => 1, // optional
+                    'date'      => Carbon::now()->addDay()->toDateString(),
+                    'isActive'  => 1,
+                    'status'    => 0,
+                    'counter'   => 20,
+                    'level'     => '0',
+                    'employees' => json_encode([1]), // 👈 replace with your actual employee IDs
                 ]
             );
         }
