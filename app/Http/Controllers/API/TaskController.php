@@ -219,7 +219,7 @@ if ($request->has('search') && $request->search != '') {
  */
 public function tasks(Request $request)
 {
-    $query = Task::query();
+    $query = Task::orderByRaw('ISNULL(date), date ASC')->query();
 
     // --- Scope to logged-in employee unless isBoula() ---
     $user = auth()->user();
@@ -269,8 +269,7 @@ public function tasks(Request $request)
     // --- Only active (not soft-deleted) tasks ---
     $query->where('isActive', 1);
 
-    // --- Order by date asc (nulls last), then created_at desc ---
-    $query->orderByRaw('ISNULL(date), date ASC');
+
 
     // --- Paginate ---
     $tasks = $query->with('project')->paginate(20);
