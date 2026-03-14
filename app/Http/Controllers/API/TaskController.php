@@ -237,11 +237,7 @@ public function tasks(Request $request)
     // --- Text search (title) ---
     if ($request->filled('search')) {
         $search = $request->search;
-        $query->where(function ($q) use ($search) {
-            $q->where('title', 'LIKE', "%{$search}%")
-              ->orWhereHas('project', fn($p) => $p->where('title', 'LIKE', "%{$search}%"))
-              ->orWhereRaw("JSON_SEARCH(employees, 'one', ?) IS NOT NULL", ["%{$search}%"]);
-        });
+        $query->where('title', 'LIKE', "%{$search}%");
     }
 
     // --- Date range filter ---
