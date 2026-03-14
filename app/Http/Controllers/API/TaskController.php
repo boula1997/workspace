@@ -215,47 +215,48 @@ if ($request->has('search') && $request->search != '') {
     public function tasks(Request $request)
     {
 
-        $tasksQuery = Task::where("status", 0)
+        $status=$request->query("status")??0;
+        $tasksQuery = Task::where("status", $status)
             ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
             ->latest('updated_at')            // Then by latest update
             // Limit to 300 tasks
         ;
 
         // Apply search filter if present
-if ($request->has('search') && $request->search != '') {
-    $searchTerms = explode(',', $request->search);
+        if ($request->has('search') && $request->search != '') {
+            $searchTerms = explode(',', $request->search);
 
-    $tasksQuery->where(function ($q) use ($searchTerms) {
-        foreach ($searchTerms as $term) {
-            $term = trim($term);
-            if (!$term) continue;
+            $tasksQuery->where(function ($q) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    $term = trim($term);
+                    if (!$term) continue;
 
-            // Check for priority special cases first
-            if (strtolower($term) === "priority") {
-                $q->orWhere('piority', 1);
-                continue;
-            }
-            if (strtolower($term) === "!priority") {
-                $q->orWhere('piority', 0);
-                continue;
-            }
+                    // Check for priority special cases first
+                    if (strtolower($term) === "priority") {
+                        $q->orWhere('piority', 1);
+                        continue;
+                    }
+                    if (strtolower($term) === "!priority") {
+                        $q->orWhere('piority', 0);
+                        continue;
+                    }
 
-            // General search by title, project, or employee
-            $q->orWhere('title', 'like', "%$term%")
-              ->orWhereHas('project', function ($qp) use ($term) {
-                  $qp->where('title', 'like', "%$term%");
-              })
-              ->orWhere(function ($qe) use ($term) {
-                  $qe->whereRaw("EXISTS (
-                      SELECT 1
-                      FROM admins
-                      WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
-                      AND admins.name LIKE ?
-                  )", ["%$term%"]);
-              });
+                    // General search by title, project, or employee
+                    $q->orWhere('title', 'like', "%$term%")
+                    ->orWhereHas('project', function ($qp) use ($term) {
+                        $qp->where('title', 'like', "%$term%");
+                    })
+                    ->orWhere(function ($qe) use ($term) {
+                        $qe->whereRaw("EXISTS (
+                            SELECT 1
+                            FROM admins
+                            WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
+                            AND admins.name LIKE ?
+                        )", ["%$term%"]);
+                    });
+                }
+            });
         }
-    });
-}
 
 
 
@@ -1205,6 +1206,101 @@ public function lastRepeatTime(Request $request)
                 ->timezone('Africa/Cairo')
                 ->toDateString() // YYYY-MM-DD
             : null
+    ]);
+}
+
+
+
+public function bulkDelete(Request $request)
+{
+    $request->validate([
+        'task_ids'   => 'required|array|min:1',
+        'task_ids.*' => 'integer|exists:tasks,id',
+    ]);
+
+    $adminId = Auth::id();
+
+    $tasks = Task::whereIn('id', $request->task_ids)->get();
+
+    foreach ($tasks as $task) {
+        $task->status     = $task->status == 1 ? 0 : 1;
+        $task->admin_id   = $adminId;
+        $task->updated_at = now();
+        $task->save();
+    }
+
+    return response()->json([
+        'status'  => 200,
+        'message' => count($tasks) . " task(s) toggled successfully.",
+        'data'    => [
+            'affected' => count($tasks),
+            'tasks' => $tasks->map(fn($t) => [
+                'id'       => $t->id,
+                'status'   => $t->status,
+            ]),
+        ],
+    ]);
+}
+
+/**
+ * Bulk assign employees to tasks
+ * POST /api/apptask/bulk-assign
+ * Body: { "task_ids": [1, 2], "employee_ids": [5, 6] }
+ */
+public function bulkAssign(Request $request)
+{
+    $request->validate([
+        'task_ids'      => 'required|array|min:1',
+        'task_ids.*'    => 'integer|exists:tasks,id',
+        'employee_ids'  => 'required|array|min:1',
+        'employee_ids.*'=> 'integer',
+    ]);
+
+    // employees column is JSON — we set (or merge) the new employee list
+    $tasks = Task::whereIn('id', $request->task_ids)->get();
+
+    foreach ($tasks as $task) {
+        // Merge existing employees with new ones (unique)
+        $existing  = is_array($task->employees) ? $task->employees : json_decode($task->employees ?? '[]', true);
+        $merged    = array_values(array_unique(array_merge($existing, $request->employee_ids)));
+
+        $task->employees   = json_encode($merged);
+        $task->admin_id    = Auth::id();
+        $task->updated_at  = now();
+        $task->save();
+    }
+
+    return response()->json([
+        'status'  => 200,
+        'message' => count($tasks) . " task(s) assigned successfully.",
+        'data'    => ['affected' => count($tasks)],
+    ]);
+}
+
+/**
+ * Bulk update the date field on tasks
+ * POST /api/apptask/bulk-update-date
+ * Body: { "task_ids": [1, 2], "date": "2026-04-01" }
+ */
+public function bulkUpdateDate(Request $request)
+{
+    $request->validate([
+        'task_ids'   => 'required|array|min:1',
+        'task_ids.*' => 'integer|exists:tasks,id',
+        'date'       => 'required|date_format:Y-m-d',
+    ]);
+
+    $updated = Task::whereIn('id', $request->task_ids)
+        ->update([
+            'date'       => $request->date,
+            'admin_id'   => Auth::id(),
+            'updated_at' => now(),
+        ]);
+
+    return response()->json([
+        'status'  => 200,
+        'message' => "$updated task(s) date updated to {$request->date}.",
+        'data'    => ['affected' => $updated, 'date' => $request->date],
     ]);
 }
 
