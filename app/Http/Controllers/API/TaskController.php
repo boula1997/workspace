@@ -1176,6 +1176,15 @@ public function bulkAssign(Request $request)
     ]);
 }
 
+
+public function bulkAssignProject(Request $request)
+{
+    Task::whereIn('id', $request->task_ids)
+        ->update(['project_id' => $request->project_id]);
+
+    return response()->json(['status' => 200, 'message' => 'Project assigned']);
+}
+
 /**
  * Bulk update the date field on tasks
  * POST /api/apptask/bulk-update-date
