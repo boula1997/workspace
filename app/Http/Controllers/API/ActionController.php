@@ -51,7 +51,6 @@ public function getFunction(Request $request)
         if ($action == "getNotifications") {
             $notifications = []; // one single string
             $boardProjects = Project::get();
-            $deadlines = Deadline::where("status",0)->latest()->get();
             $moneyProjects = $boardProjects->filter(function ($project) {
                 return $project->status == 2 && $project->cost > 0;
             });
@@ -91,24 +90,12 @@ public function getFunction(Request $request)
                 $notifications[] = "Last time was " . $last->created_at;
             }
 
-            // if ($notes->isNotEmpty()  && boula()) {
-            //     foreach ($notes as $note) {
-            //         $notifications[] = $note->title;
-            //     }
-            // }
-
             if ($deals->isNotEmpty()  && boula()) {
                 foreach ($deals as $deal) {
                     $notifications[] = $deal->title ." with cost ".$deal->cost." in project ". $deal->project->title;
                 }
             }
             
-
-            // if ($tasks->isNotEmpty()) {
-            //     foreach ($tasks as $task) {
-            //         $notifications[] = $task->title;
-            //     }
-            // }
 
             if ($moneyProjects->isNotEmpty()) {
                 foreach ($moneyProjects as $project) {
@@ -134,11 +121,6 @@ public function getFunction(Request $request)
                 foreach ($deadlineProjects as $project) {
                     $deadline = Carbon::parse($project->deadline)->format('Y-m-d');
                     $notifications[] = $project->title . " due on " . $deadline;
-                }
-            }
-            if ($deadlines->isNotEmpty() && boula()) {
-                foreach ($deadlines as $deadline) {
-                    $notifications[] = $deadline->title . " due on " . $deadline->date;
                 }
             }
 
