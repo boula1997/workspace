@@ -280,8 +280,8 @@ class GeneralController extends Controller
             // Create or update task linked to the deal
             Task::updateOrCreate(
                 [
-                    'title'   => "Get {$request->cost} from {$project->title} deal",
-                    'deal_id' => $deal->id,
+                    'title'   => "Get {$request->cost} deal",
+                    'project_id' => $project->id,
                 ],
                 [
                     'date'      => Carbon::now()->addDay()->toDateString(),
