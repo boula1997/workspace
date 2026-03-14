@@ -221,6 +221,12 @@ public function tasks(Request $request)
 {
     $query = Task::query();
 
+    // --- Scope to logged-in employee unless isBoula() ---
+    $user = auth()->user();
+    if (!boula()) {
+        $query->whereJsonContains('employees', (int) $user->employee_id);
+    }
+
     // --- Status filter (0 = live, 1 = finished) ---
     if ($request->has('status')) {
         $query->where('status', $request->status);
@@ -238,14 +244,13 @@ public function tasks(Request $request)
 
     // --- Date range filter ---
     if ($request->filled('start_date')) {
-        $query->where('date', '>=', $request->start_date);  // Remove whereDate()
+        $query->where('date', '>=', $request->start_date);
     }
     if ($request->filled('end_date')) {
-        $query->where('date', '<=', $request->end_date);    // Remove whereDate()
+        $query->where('date', '<=', $request->end_date);
     }
 
     // --- Filter by employee IDs (JSON column) ---
-    // Frontend sends: employees=1,2,3
     if ($request->filled('employees')) {
         $employeeIds = explode(',', $request->employees);
         $query->where(function ($q) use ($employeeIds) {
@@ -256,7 +261,6 @@ public function tasks(Request $request)
     }
 
     // --- Filter by project IDs ---
-    // Frontend sends: projects=1,2,3
     if ($request->filled('projects')) {
         $projectIds = explode(',', $request->projects);
         $query->whereIn('project_id', $projectIds);
@@ -265,14 +269,14 @@ public function tasks(Request $request)
     // --- Only active (not soft-deleted) tasks ---
     $query->where('isActive', 1);
 
-    // --- Order by date desc, then created_at desc ---
+    // --- Order by date asc (nulls last), then created_at desc ---
     $query->orderByRaw('ISNULL(date), date ASC')
           ->orderBy('created_at', 'desc');
 
     // --- Paginate ---
     $tasks = $query->with('project')->paginate(20);
 
-    // --- Format response to match your frontend shape ---
+    // --- Format response ---
     $formatted = $tasks->getCollection()->map(function ($task) {
         return [
             'id'         => $task->id,
