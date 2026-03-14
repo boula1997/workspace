@@ -19,6 +19,7 @@ class TaskResource extends JsonResource
             'title'=>$this->title,
             'status'=>$this->status,
             'piority'=>$this->piority,
+            'date'=>$this->date,
             'employee'=>taskEmployees($this,"mobile"),
             'project'=>$this->project->title,
             "editlink"=>"https://reactdashboard.yousab-tech.com/tasks/".$this->id."/edit"
