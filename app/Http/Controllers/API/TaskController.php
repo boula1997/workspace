@@ -215,7 +215,7 @@ if ($request->has('search') && $request->search != '') {
     public function tasks(Request $request)
     {
 
-        $status=$request->query("status")??0;
+        $status=$request->query("status");
         $tasksQuery = Task::where("status", $status)
             ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
             ->latest('updated_at')            // Then by latest update
