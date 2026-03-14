@@ -747,134 +747,112 @@ public function toggleStatus($id)
 
 
 
-public function elements($id, Request $request)
-{
-    try {
-        
-        $category = Category::withoutGlobalScopes()->findOrFail($id);
+    public function elements($id, Request $request)
+    {
+        try {
+                
+                $category = Category::withoutGlobalScopes()->findOrFail($id);
 
-        if (!$category->model) {
-            return response()->json(['error' => 'Model not defined'], 400);
-        }
-
-        if (!class_exists($category->model)) {
-            return response()->json([
-                'error' => 'Model class not found',
-                'model' => $category->model
-            ], 400);
-        }
-        
-        $model = $category->model;
-        $searchKeys = $category->search_keys ?? [];
-        $titleField = 'id';
-        $configClass = $category->config_class ?? \App\CategoryConfigs\BaseCategoryConfig::class;
-
-        if (!class_exists($configClass)) {
-            return response()->json(['error' => 'Invalid config class'], 400);
-        }
-
-        // Ensure keys are arrays
-        if (is_string($searchKeys)) $searchKeys = array_map('trim', explode(',', $searchKeys));
-
-        // Eager load relations used in search/filter keys
-        $relations = [];
-        foreach ($searchKeys as $key) {
-            $parts = explode('.', $key);
-            if (count($parts) > 1) $relations[] = $parts[0];
-        }
-        $relations = array_unique($relations);
-
-        $query = $model::with($relations)->latest()->withoutGlobalScopes();
-
-        /*
-        |----------------------------------------------------------------------
-        | Filter by category type if user is not boula()
-        |----------------------------------------------------------------------
-        */
-        if (!boula()) {
-            // Only allow 'fees' and 'projects' categories
-            $allowedTypes = ['fees', 'projects'];
-            
-            // Check if the model has a type column/attribute
-            if (in_array('type', $model->getFillable()) || 
-                (method_exists($model, 'getAttributes') && array_key_exists('type', $model->getAttributes()))) {
-                $query->whereIn('type', $allowedTypes);
-            } else {
-                // If no type column, we need to filter by category relationship
-                // This assumes the model belongs to a category
-                $query->whereHas('category', function($q) use ($allowedTypes) {
-                    $q->whereIn('type', $allowedTypes);
-                });
-            }
-        }
-
-        /*
-        |----------------------------------------------------------------------
-        | Date Filter
-        |----------------------------------------------------------------------
-        */
-        if ($request->from) $query->whereDate('created_at', '>=', $request->from);
-        if ($request->to) $query->whereDate('created_at', '<=', $request->to);
-
-        /*
-        |----------------------------------------------------------------------
-        | Dynamic Exact Filters
-        |----------------------------------------------------------------------
-        */
-
-        /*
-        |----------------------------------------------------------------------
-        | Dynamic Search
-        |----------------------------------------------------------------------
-        */
-        if ($request->search) {
-            $values = array_filter(array_map('trim', explode(',', $request->search)));
-            $configClass::applySearch($query, $values, $searchKeys);
-        }
-
-        $items = $query->paginate($request->per_page ?? 20);
-
-        /*
-        |----------------------------------------------------------------------
-        | Dynamic Transform + extra field
-        |----------------------------------------------------------------------
-        */
-        $items->getCollection()->transform(function ($item) use ($configClass, $titleField, $searchKeys) {
-
-            $transformed = $configClass::transform($item, $titleField);
-
-            // Concatenate all search/filter key values into 'extra'
-            $extraValues = [];
-
-            foreach ($searchKeys as $key) {
-                $key = trim($key);
-                $value = data_get($item, $key);
-                if ($value !== null && $value !== '') {
-                    $extraValues[] = $value;
+                if (!$category->model) {
+                    return response()->json(['error' => 'Model not defined'], 400);
                 }
+
+                if (!class_exists($category->model)) {
+                    return response()->json([
+                        'error' => 'Model class not found',
+                        'model' => $category->model
+                    ], 400);
+                }
+                $model = $category->model;
+                $searchKeys = $category->search_keys ?? [];
+                $titleField = 'id';
+                $configClass = $category->config_class ?? \App\CategoryConfigs\BaseCategoryConfig::class;
+
+                if (!class_exists($configClass)) {
+                    return response()->json(['error' => 'Invalid config class'], 400);
+                }
+
+                // Ensure keys are arrays
+                if (is_string($searchKeys)) $searchKeys = array_map('trim', explode(',', $searchKeys));
+
+                // Eager load relations used in search/filter keys
+                $relations = [];
+                foreach ($searchKeys as $key) {
+                    $parts = explode('.', $key);
+                    if (count($parts) > 1) $relations[] = $parts[0];
+                }
+                $relations = array_unique($relations);
+
+                $query = $model::with($relations)->latest()->withoutGlobalScopes();
+
+                /*
+                |----------------------------------------------------------------------
+                | Date Filter
+                |----------------------------------------------------------------------
+                */
+                if ($request->from) $query->whereDate('created_at', '>=', $request->from);
+                if ($request->to) $query->whereDate('created_at', '<=', $request->to);
+
+                /*
+                |----------------------------------------------------------------------
+                | Dynamic Exact Filters
+                |----------------------------------------------------------------------
+                */
+
+
+                /*
+                |----------------------------------------------------------------------
+                | Dynamic Search
+                |----------------------------------------------------------------------
+                */
+                if ($request->search) {
+                    $values = array_filter(array_map('trim', explode(',', $request->search)));
+                    $configClass::applySearch($query, $values, $searchKeys);
+                }
+
+                $items = $query->paginate($request->per_page ?? 20);
+
+                /*
+                |----------------------------------------------------------------------
+                | Dynamic Transform + extra field
+                |----------------------------------------------------------------------
+                */
+                $items->getCollection()->transform(function ($item) use ($configClass, $titleField, $searchKeys) {
+
+                    $transformed = $configClass::transform($item, $titleField);
+
+                    // Concatenate all search/filter key values into 'extra'
+                    $extraValues = [];
+
+                    foreach ($searchKeys as $key) {
+                        $key = trim($key);
+                        $value = data_get($item, $key);
+                        if ($value !== null && $value !== '') {
+                            $extraValues[] = $value;
+                        }
+                    }
+
+                    $transformed['extra'] = implode(', ', $extraValues);
+
+                    return $transformed;
+                });
+
+                return response()->json([
+                    "status" => 200,
+                    "message" => "success",
+                    "data" => [
+                        "elements" => $items
+                    ]
+                ]);
+
+            } catch (\Exception $e) {
+
+                return response()->json([
+                    "status" => 500,
+                    "message" => $e->getMessage()
+                ]);
             }
-
-            $transformed['extra'] = implode(', ', $extraValues);
-
-            return $transformed;
-        });
-
-        return response()->json([
-            "status" => 200,
-            "message" => "success",
-            "data" => [
-                "elements" => $items
-            ]
-        ]);
-
-    } catch (\Exception $e) {
-
-        return response()->json([
-            "status" => 500,
-            "message" => $e->getMessage()
-        ]);
-    }
-}
+        }
 
 
     public function deadlines()
