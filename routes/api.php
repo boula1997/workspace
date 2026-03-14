@@ -63,6 +63,12 @@ Route::get('/deadlines/exceeded', function () {
     ]);
 });
 
+Route::get('/is/boula', function () {
+    return response()->json([
+        'isBoula' => boula()
+    ]);
+});
+
 
 
 
