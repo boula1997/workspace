@@ -750,7 +750,7 @@ public function toggleStatus($id)
 public function elements($id, Request $request)
 {
     try {
-
+        
         $category = Category::withoutGlobalScopes()->findOrFail($id);
 
         if (!$category->model) {
@@ -763,6 +763,7 @@ public function elements($id, Request $request)
                 'model' => $category->model
             ], 400);
         }
+        
         $model = $category->model;
         $searchKeys = $category->search_keys ?? [];
         $titleField = 'id';
@@ -787,6 +788,28 @@ public function elements($id, Request $request)
 
         /*
         |----------------------------------------------------------------------
+        | Filter by category type if user is not boula()
+        |----------------------------------------------------------------------
+        */
+        if (!boula()) {
+            // Only allow 'fees' and 'projects' categories
+            $allowedTypes = ['fees', 'projects'];
+            
+            // Check if the model has a type column/attribute
+            if (in_array('type', $model->getFillable()) || 
+                (method_exists($model, 'getAttributes') && array_key_exists('type', $model->getAttributes()))) {
+                $query->whereIn('type', $allowedTypes);
+            } else {
+                // If no type column, we need to filter by category relationship
+                // This assumes the model belongs to a category
+                $query->whereHas('category', function($q) use ($allowedTypes) {
+                    $q->whereIn('type', $allowedTypes);
+                });
+            }
+        }
+
+        /*
+        |----------------------------------------------------------------------
         | Date Filter
         |----------------------------------------------------------------------
         */
@@ -798,7 +821,6 @@ public function elements($id, Request $request)
         | Dynamic Exact Filters
         |----------------------------------------------------------------------
         */
-
 
         /*
         |----------------------------------------------------------------------
