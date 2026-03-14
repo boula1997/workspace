@@ -226,7 +226,7 @@ public function tasks(Request $request)
     // --- Scope to logged-in employee unless isBoula() ---
     $user = auth()->user();
     if (!boula()) {
-        $query->whereJsonContains('employees', (int) $user->employee_id);
+        $query->whereJsonContains('employees', (int) $user->id);
     }
 
     // --- Status filter (0 = live, 1 = finished) ---
