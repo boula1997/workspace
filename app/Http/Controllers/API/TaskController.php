@@ -219,7 +219,7 @@ if ($request->has('search') && $request->search != '') {
  */
 public function tasks(Request $request)
 {
-    $query = Task::orderByRaw('ISNULL(date), date ASC')->query();
+   $query = Task::query()->orderByRaw('ISNULL(date), date ASC');
 
     // --- Scope to logged-in employee unless isBoula() ---
     $user = auth()->user();
