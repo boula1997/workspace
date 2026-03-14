@@ -314,7 +314,7 @@ private function resolveEmployeeNames($employees): string
     $ids = is_array($employees) ? $employees : json_decode($employees, true);
     if (empty($ids)) return '';
 
-    return \App\Models\Employee::whereIn('id', $ids)
+    return \App\Models\Admin::whereIn('id', $ids)
         ->pluck('name')
         ->implode(', ');
 }
