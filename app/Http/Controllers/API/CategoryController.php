@@ -28,7 +28,7 @@ public function index()
         
         // If user is not Boula, only show fees and projects categories
         if (!boula()) {
-            $query->whereIn('type', ['fees', 'projects']);
+            $query->whereIn('title', ['fees', 'projects']);
         }
         
         $data['categories'] = CategoryResource::collection(
