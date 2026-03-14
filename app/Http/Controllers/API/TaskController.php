@@ -1123,11 +1123,9 @@ public function bulkAssign(Request $request)
     $tasks = Task::whereIn('id', $request->task_ids)->get();
 
     foreach ($tasks as $task) {
-        // Merge existing employees with new ones (unique)
-        $existing  = is_array($task->employees) ? $task->employees : json_decode($task->employees ?? '[]', true);
-        $merged    = array_values(array_unique(array_merge($existing, $request->employee_ids)));
+        $employees    = $request->employee_ids;
 
-        $task->employees   = json_encode($merged);
+        $task->employees   = json_encode($employees);
         $task->admin_id    = auth("api")->user()->id;
         $task->updated_at  = now();
         $task->save();
