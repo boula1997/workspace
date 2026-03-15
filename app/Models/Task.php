@@ -16,7 +16,9 @@ class Task extends \App\Models\BaseModel
     public $timestamps = true;
 
 
-
+protected $casts = [
+    'employees' => 'array',
+];
     /**
      * Define the project relationship.
      */
