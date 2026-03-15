@@ -542,6 +542,7 @@ private function resolveEmployeeNames($employees): string
                     'title' => $title,
                     'admin_id' => 1,
                     'project_id' => $request->project_id,
+                    'date' => $request->deadline,
                     'piority' => 0,
                     'employees' => json_encode($request->employees),
                 ]);
