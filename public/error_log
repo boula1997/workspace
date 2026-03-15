@@ -362,3 +362,29 @@ Stack trace:
 [14-Feb-2026 02:13:32 Africa/Cairo] PHP Fatal error:  Cannot use App\Models\Deadline as Deadline because the name is already in use in /home3/yousabte/public_html/workspace/app/Http/Controllers/API/GeneralController.php on line 11
 [14-Feb-2026 02:13:40 Africa/Cairo] PHP Fatal error:  Cannot use App\Models\Deadline as Deadline because the name is already in use in /home3/yousabte/public_html/workspace/app/Http/Controllers/API/GeneralController.php on line 11
 [14-Feb-2026 02:13:46 Africa/Cairo] PHP Fatal error:  Cannot use App\Models\Deadline as Deadline because the name is already in use in /home3/yousabte/public_html/workspace/app/Http/Controllers/API/GeneralController.php on line 11
+[14-Mar-2026 17:40:58 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:40:58 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:41:00 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:41:09 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:41:09 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:41:10 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:41:11 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:41:11 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:41:12 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:41:13 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:41:13 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:41:14 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:59:47 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:59:48 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:59:48 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:59:48 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:59:49 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:59:50 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:59:50 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:59:55 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:59:55 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:59:55 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 17:59:56 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 18:00:05 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 18:00:07 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23
+[14-Mar-2026 18:00:08 America/Chicago] PHP Parse error:  syntax error, unexpected token "use" in /home3/yousabte/public_html/workspace/app/helpers/helper.php on line 23

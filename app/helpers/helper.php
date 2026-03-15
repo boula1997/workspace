@@ -401,7 +401,7 @@ function hasExceededDeadlines()
     $expiredProjects = (clone $baseQuery)->filterByStatus(1)->exists()
                     || (clone $baseQuery)->filterByStatus(2)->exists();
 
-    $expiredDeadlines = Deadline::whereDate('date', '<=', $yesterday)
+    $expiredDeadlines = Task::whereDate('date', '<=', $yesterday)
         ->where('status', 0)
         ->exists();
 
@@ -1133,4 +1133,3 @@ function databases()
 
     return array_values($databases); // reindex array
 }
-
