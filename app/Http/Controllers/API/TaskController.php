@@ -231,13 +231,13 @@ public function tasks(Request $request)
 
     // --- Scope to logged-in employee unless isBoula() ---
     $user = auth()->user();
-if (!boula()) {
-    $query->where(function($q) use ($user) {
-        $q->whereJsonContains('employees', (int) $user->id)
-          ->orWhereJsonContains('employees', (string) $user->id)
-          ->orWhere('employees', 'LIKE', "%{$user->id}%");
-    });
-}
+    if (!boula()) {
+        $query->where(function($q) use ($user) {
+            $q->whereJsonContains('employees', (int) $user->id)
+            ->orWhereJsonContains('employees', (string) $user->id)
+            ->orWhere('employees', 'LIKE', "%{$user->id}%");
+        });
+    }
 
     // --- Status filter (0 = live, 1 = finished) ---
     if ($request->has('status')) {
@@ -258,18 +258,22 @@ if (!boula()) {
         $query->where('date', '<=', $request->end_date);
     }
 
+    if ($request->filled('is_fixed')) {
+        $query->where('isFixed', (int) $request->is_fixed);
+    }
+
     // --- Filter by employee IDs (JSON column) ---
-// --- Filter by employee IDs (JSON column) ---
-if ($request->filled('employees')) {
-    $employeeIds = explode(',', $request->employees);
-    $query->where(function ($q) use ($employeeIds) {
-        foreach ($employeeIds as $empId) {
-            $empId = trim($empId);
-            $q->orWhereRaw("JSON_CONTAINS(employees, ?)", [(string)(int)$empId])
-              ->orWhere('employees', 'LIKE', "%{$empId}%");
+    // --- Filter by employee IDs (JSON column) ---
+        if ($request->filled('employees')) {
+            $employeeIds = explode(',', $request->employees);
+            $query->where(function ($q) use ($employeeIds) {
+                foreach ($employeeIds as $empId) {
+                    $empId = trim($empId);
+                    $q->orWhereRaw("JSON_CONTAINS(employees, ?)", [(string)(int)$empId])
+                    ->orWhere('employees', 'LIKE', "%{$empId}%");
+                }
+            });
         }
-    });
-}
 
     // --- Filter by project IDs ---
     if ($request->filled('projects')) {
