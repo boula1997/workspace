@@ -1136,20 +1136,29 @@ public function bulkDelete(Request $request)
     $tasks = Task::whereIn('id', $request->task_ids)->get();
 
     foreach ($tasks as $task) {
+        // isFixed tasks are locked at status = 0
+        if ($task->isFixed) {
+            continue;
+        }
+
         $task->status     = $task->status == 1 ? 0 : 1;
         $task->admin_id   = $adminId;
         $task->updated_at = now();
         $task->save();
     }
 
+    $affected = $tasks->where('isFixed', 0)->count();
+
     return response()->json([
         'status'  => 200,
-        'message' => count($tasks) . " task(s) toggled successfully.",
+        'message' => "$affected task(s) toggled successfully.",
         'data'    => [
-            'affected' => count($tasks),
-            'tasks' => $tasks->map(fn($t) => [
-                'id'       => $t->id,
-                'status'   => $t->status,
+            'affected' => $affected,
+            'skipped'  => $tasks->where('isFixed', 1)->count(), // how many were locked
+            'tasks'    => $tasks->map(fn($t) => [
+                'id'      => $t->id,
+                'status'  => $t->status,
+                'isFixed' => $t->isFixed,
             ]),
         ],
     ]);
