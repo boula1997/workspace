@@ -731,33 +731,16 @@ public function toggleStatus($id)
     public function lock()
     {
         try {
-            // $deals = Deal::latest()->get();
 
-            // Get today's and tomorrow's dates
-            $today = Carbon::today('Africa/Cairo');
-            $tomorrow = Carbon::tomorrow('Africa/Cairo');
-
-            // Only deadlines with date today or tomorrow
-            $deadlines = Deadline::where("status", 0)
-                ->whereDate('date', '<', $tomorrow) // all deadlines before tomorrow
-                ->latest()
+            $tasks = Task::where("status", 0)
+                ->latest("date")
                 ->get();
-
-            // $tasks = Task::where("status", 0)->where("piority", 1)
-            //     ->latest()
-            //     ->get();
 
             $locks = [];
 
-            // foreach ($deals as $deal) {
-            //     $locks[] = "Get".$deal->cost." ".$deal->project->title;
-            // }
-            foreach ($deadlines as $deadline) {
-                $locks[] = $deadline->title;
+            foreach ($tasks as $task) {
+                $locks[] = $task->title." in ".$task->project->title;
             }
-            // foreach ($tasks as $task) {
-            //     $locks[] = $task->title." in ".$task->project->title;
-            // }
 
             $data["lock"] = $locks;
             $data["isExpired"] = isExpired()[0];
