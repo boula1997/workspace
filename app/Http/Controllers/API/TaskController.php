@@ -75,14 +75,18 @@ class TaskController extends Controller
     public function create(Request $request)
     {
         $employees = Admin::where("isActive", 1)
-            ->where("type", "!=", "client")->where("type", "!=", "prospective")
+            ->where("type", "!=", "client")
+            ->where("type", "!=", "prospective")
             ->select('admins.*')
             ->selectRaw("
                 (
                     SELECT COUNT(*)
                     FROM tasks
                     WHERE tasks.status = 0
-                    AND JSON_CONTAINS(tasks.employees, JSON_QUOTE(CAST(admins.id AS CHAR)))
+                    AND JSON_CONTAINS(
+                        tasks.employees,
+                        CAST(admins.id AS JSON)
+                    )
                 ) as active_tasks_count
             ")
             ->orderBy('name', 'ASC')
@@ -125,40 +129,40 @@ class TaskController extends Controller
         }
 
         // Apply search filter if present
-if ($request->has('search') && $request->search != '') {
-    $searchTerms = explode(',', $request->search);
+        if ($request->has('search') && $request->search != '') {
+            $searchTerms = explode(',', $request->search);
 
-    $tasksQuery->where(function ($q) use ($searchTerms) {
-        foreach ($searchTerms as $term) {
-            $term = trim($term);
-            if (!$term) continue;
+            $tasksQuery->where(function ($q) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    $term = trim($term);
+                    if (!$term) continue;
 
-            // Check for priority special cases first
-            if (strtolower($term) === "priority") {
-                $q->orWhere('piority', 1);
-                continue;
-            }
-            if (strtolower($term) === "!priority") {
-                $q->orWhere('piority', 0);
-                continue;
-            }
+                    // Check for priority special cases first
+                    if (strtolower($term) === "priority") {
+                        $q->orWhere('piority', 1);
+                        continue;
+                    }
+                    if (strtolower($term) === "!priority") {
+                        $q->orWhere('piority', 0);
+                        continue;
+                    }
 
-            // General search by title, project, or employee
-            $q->orWhere('title', 'like', "%$term%")
-              ->orWhereHas('project', function ($qp) use ($term) {
-                  $qp->where('title', 'like', "%$term%");
-              })
-              ->orWhere(function ($qe) use ($term) {
-                  $qe->whereRaw("EXISTS (
-                      SELECT 1
-                      FROM admins
-                      WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
-                      AND admins.name LIKE ?
-                  )", ["%$term%"]);
-              });
+                    // General search by title, project, or employee
+                    $q->orWhere('title', 'like', "%$term%")
+                    ->orWhereHas('project', function ($qp) use ($term) {
+                        $qp->where('title', 'like', "%$term%");
+                    })
+                    ->orWhere(function ($qe) use ($term) {
+                        $qe->whereRaw("EXISTS (
+                            SELECT 1
+                            FROM admins
+                            WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
+                            AND admins.name LIKE ?
+                        )", ["%$term%"]);
+                    });
+                }
+            });
         }
-    });
-}
 
 
         if (auth("api")->user()->email == "parcel@gmail.com")
