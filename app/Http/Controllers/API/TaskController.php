@@ -74,25 +74,25 @@ class TaskController extends Controller
 
     public function create(Request $request)
     {
-$employees = Admin::where("isActive", 1)
-    ->where("type", "!=", "client")
-    ->where("type", "!=", "prospective")
-    ->select('admins.*')
-    ->selectRaw("
-        (
-            SELECT COUNT(*)
-            FROM tasks
-            WHERE tasks.status = 0
-            AND tasks.employees IS NOT NULL
-            AND JSON_TYPE(tasks.employees) = 'ARRAY'
-            AND JSON_CONTAINS(
-                tasks.employees,
-                CAST(admins.id AS JSON)
-            )
-        ) as active_tasks_count
-    ")
-    ->orderBy('name', 'ASC')
-    ->get();
+        $employees = Admin::where("isActive", 1)
+            ->where("type", "!=", "client")
+            ->where("type", "!=", "prospective")
+            ->select('admins.*')
+            ->selectRaw("
+                (
+                    SELECT COUNT(*)
+                    FROM tasks
+                    WHERE tasks.status = 0
+                    AND tasks.employees IS NOT NULL
+                    AND JSON_TYPE(tasks.employees) = 'ARRAY'
+                    AND JSON_CONTAINS(
+                        tasks.employees,
+                        CAST(admins.id AS JSON)
+                    )
+                ) as active_tasks_count
+            ")
+            ->orderBy('name', 'ASC')
+            ->get();
 
         if (auth("api")->user()->email == "parcel@gmail.com")
         $employees = Admin::where("email", auth("api")->user()->email)->get();
