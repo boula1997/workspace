@@ -299,6 +299,7 @@ if ($request->filled('employees')) {
             'piority'    => $task->piority,
             'status'     => $task->status,
             'isDeleted'  => $task->isActive == 0,
+            'isFixed'    => $task->isFixed,
         ];
     });
 
