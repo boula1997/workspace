@@ -1178,28 +1178,21 @@ public function bulkDelete(Request $request)
 public function bulkAssign(Request $request)
 {
     $request->validate([
-        'task_ids'      => 'required|array|min:1',
-        'task_ids.*'    => 'integer|exists:tasks,id',
-        'employee_ids'  => 'required|array|min:1',
-        'employee_ids.*'=> 'integer',
+        'task_ids'       => 'required|array|min:1',
+        'task_ids.*'     => 'integer|exists:tasks,id',
+        'employee_ids'   => 'required|array|min:1',
+        'employee_ids.*' => 'integer|exists:admins,id',
     ]);
 
-    // employees column is JSON — we set (or merge) the new employee list
-    $tasks = Task::whereIn('id', $request->task_ids)->get();
-
-    foreach ($tasks as $task) {
-        $employees    = $request->employee_ids;
-
-        $task->employees   = json_encode($employees);
-        $task->admin_id    = auth("api")->user()->id;
-        $task->updated_at  = now();
-        $task->save();
-    }
+    $affected = Task::whereIn('id', $request->task_ids)->update([
+        'employees' => json_encode($request->employee_ids), // raw update needs manual encode
+        'admin_id'  => auth('api')->user()->id,
+    ]);
 
     return response()->json([
         'status'  => 200,
-        'message' => count($tasks) . " task(s) assigned successfully.",
-        'data'    => ['affected' => count($tasks)],
+        'message' => "$affected task(s) assigned successfully.",
+        'data'    => ['affected' => $affected],
     ]);
 }
 
