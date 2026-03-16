@@ -74,7 +74,7 @@ class TaskController extends Controller
 
     public function create(Request $request)
     {
-    $employees = Admin::where("isActive", 1)
+$employees = Admin::where("isActive", 1)
     ->where("type", "!=", "client")
     ->where("type", "!=", "prospective")
     ->select('admins.*')
@@ -83,6 +83,8 @@ class TaskController extends Controller
             SELECT COUNT(*)
             FROM tasks
             WHERE tasks.status = 0
+            AND tasks.employees IS NOT NULL
+            AND JSON_TYPE(tasks.employees) = 'ARRAY'
             AND JSON_CONTAINS(
                 tasks.employees,
                 CAST(admins.id AS JSON)
