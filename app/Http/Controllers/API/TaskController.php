@@ -74,23 +74,23 @@ class TaskController extends Controller
 
     public function create(Request $request)
     {
-        $employees = Admin::where("isActive", 1)
-            ->where("type", "!=", "client")
-            ->where("type", "!=", "prospective")
-            ->select('admins.*')
-            ->selectRaw("
-                (
-                    SELECT COUNT(*)
-                    FROM tasks
-                    WHERE tasks.status = 0
-                    AND JSON_CONTAINS(
-                        tasks.employees,
-                        CAST(admins.id AS JSON)
-                    )
-                ) as active_tasks_count
-            ")
-            ->orderBy('name', 'ASC')
-            ->get();
+    $employees = Admin::where("isActive", 1)
+    ->where("type", "!=", "client")
+    ->where("type", "!=", "prospective")
+    ->select('admins.*')
+    ->selectRaw("
+        (
+            SELECT COUNT(*)
+            FROM tasks
+            WHERE tasks.status = 0
+            AND JSON_CONTAINS(
+                tasks.employees,
+                CAST(admins.id AS JSON)
+            )
+        ) as active_tasks_count
+    ")
+    ->orderBy('name', 'ASC')
+    ->get();
 
         if (auth("api")->user()->email == "parcel@gmail.com")
         $employees = Admin::where("email", auth("api")->user()->email)->get();
@@ -320,12 +320,22 @@ if ($request->filled('employees')) {
  */
 private function resolveEmployeeNames($employees): string
 {
-    if (!$employees) return '';
+    if (empty($employees)) return '';
 
-    $ids = is_array($employees) ? $employees : json_decode($employees, true);
+    // Normalize to array
+    if (is_string($employees)) {
+        $employees = json_decode($employees, true);
+    }
+
+    if (empty($employees) || !is_array($employees)) return '';
+
+    // Filter out any null/invalid IDs before querying
+    $ids = array_filter($employees, fn($id) => is_numeric($id));
+
     if (empty($ids)) return '';
 
     return \App\Models\Admin::whereIn('id', $ids)
+        ->orderBy('name')               // consistent ordering
         ->pluck('name')
         ->implode(', ');
 }
