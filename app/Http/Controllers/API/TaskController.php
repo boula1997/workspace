@@ -729,28 +729,35 @@ public function toggleStatus($id)
         }
     }
 
-    public function lock()
-    {
-        try {
-
-            $tasks = Task::where("status", 0)
-                ->latest("date")
-                ->get();
-
-            $locks = [];
-
-            foreach ($tasks as $task) {
-                $locks[] = $task->title." in ".$task->project->title;
-            }
-
-            $data["lock"] = $locks;
-            $data["isExpired"] = isExpired()[0];
-
-            return successResponse($data);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
+public function lock()
+{
+    try {
+        if (!boula()) {
+            return successResponse([
+                "lock"      => [],
+                "isExpired" => isExpired()[0],
+            ]);
         }
+
+        $tasks = Task::where("status", 0)
+            ->latest("date")
+            ->get();
+
+        $locks = [];
+
+        foreach ($tasks as $task) {
+            $locks[] = $task->title . " in " . $task->project->title;
+        }
+
+        return successResponse([
+            "lock"      => $locks,
+            "isExpired" => isExpired()[0],
+        ]);
+
+    } catch (Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
     }
+}
 
 
 
