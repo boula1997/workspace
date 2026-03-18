@@ -117,15 +117,13 @@ class TaskController extends Controller
         if (!isWithinWorkingHours()) {
             $tasksQuery = Task::where("status", 0)
                 ->where("isOverthinking", 0)
-                ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
-                ->latest('updated_at')            // Then by latest update
+                ->orderBy('date', 'asc')    // Then by project_id (ascending)
                 // Limit to 300 tasks
             ;
 
         } else {
             $tasksQuery = Task::where("status", 0)
-                ->orderBy('project_id', 'asc')    // Then by project_id (ascending)
-                ->latest('updated_at')            // Then by latest update
+                ->orderBy('date', 'asc')        // Then by latest update
                 // Limit to 300 tasks
             ;
         }
