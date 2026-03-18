@@ -744,7 +744,7 @@ public function lock()
         }
 
         $tasks = Task::where("status", 0)
-            ->latest("date")
+            ->orderBy("date", "asc") // ✅ soonest first instead of latest
             ->get();
 
         $locks = [];
@@ -762,7 +762,6 @@ public function lock()
         return response()->json(['error' => $e->getMessage()]);
     }
 }
-
 
 
 
