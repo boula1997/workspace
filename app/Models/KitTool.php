@@ -19,8 +19,8 @@ class KitTool extends \App\Models\BaseModel
     ];
 
 
-        public function project()
-    {
-        return $this->belongsTo(Project::class, 'project_id');
-    }
+public function project()
+{
+    return $this->belongsTo(Project::class)->withoutGlobalScope('excludePersonal');
+}
 }

@@ -16,10 +16,10 @@ class Deal extends Model
         'isPaid',
     ];
 
-    public function project()
-    {
-        return $this->belongsTo(Project::class);
-    }
+public function project()
+{
+    return $this->belongsTo(Project::class)->withoutGlobalScope('excludePersonal');
+}
 
     public function deadlines()
     {
