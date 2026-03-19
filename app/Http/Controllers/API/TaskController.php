@@ -102,10 +102,10 @@ class TaskController extends Controller
 
 
         if (auth("api")->user()->email == "parcel@gmail.com")
-            $projects = Project::orderBy("title", "asc")->where("title", "Parcel Express")
+            $projects = Project::withoutGlobalScope('excludePersonal')->orderBy("title", "asc")->where("title", "Parcel Express")
                 ->get();
         else{
-            $allProjects = Project::orderBy("title", "asc")
+            $allProjects = Project::withoutGlobalScope('excludePersonal')->orderBy("title", "asc")
             ->get();
 
             $projects = $allProjects->filter(function ($project) {

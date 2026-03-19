@@ -24,6 +24,13 @@ class Project extends \App\Models\BaseModel
     
     protected $appends = ['deal'];
 
+    protected static function booted()
+{
+    static::addGlobalScope('excludePersonal', function ($query) {
+        $query->where('isPersonal', '!=', 1);
+    });
+}
+
     public function getDeadlineAttribute($value)
     {
         return $value ? Carbon::parse($value)->timezone('Africa/Cairo') : null;
