@@ -692,20 +692,12 @@ public function toggleStatus($id)
 
         $task = Task::findOrFail($id);
 
+        if ($task->isFixed)
+            return failedResponse([]);
+
         // Toggle task status
         $newStatus = !$task->status;
         $task->update(['status' => $newStatus]);
-
-        // ✅ If task has linked deadline → update its status too
-        $deadline = Deadline::where('deadlineable_type', Task::class)
-            ->where('deadlineable_id', $task->id)
-            ->first();
-
-        if ($deadline) {
-            $deadline->update([
-                'status' => $newStatus
-            ]);
-        }
 
         return successResponse($task);
 
@@ -713,7 +705,6 @@ public function toggleStatus($id)
         return response()->json(['error' => $e->getMessage()]);
     }
 }
-
 
     public function links($id)
     {
