@@ -22,10 +22,10 @@ protected $casts = [
     /**
      * Define the project relationship.
      */
-    public function project()
-    {
-        return $this->belongsTo(Project::class, 'project_id');
-    }
+public function project()
+{
+    return $this->belongsTo(Project::class)->withoutGlobalScope('excludePersonal');
+}
 
     /**
      * Define the employee relationship.
