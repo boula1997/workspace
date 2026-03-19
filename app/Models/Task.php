@@ -64,14 +64,4 @@ protected $casts = [
     }
 
 
-    // Task.php
-public function getEmployeesAttribute($value): array
-{
-    if (empty($value)) return [];
-    
-    $decoded = is_string($value) ? json_decode($value, true) : $value;
-    
-    return is_array($decoded) ? $decoded : [];
-}
-
 }
