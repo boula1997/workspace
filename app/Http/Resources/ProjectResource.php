@@ -26,7 +26,7 @@ class ProjectResource extends JsonResource
             'renewalDate' => $this->renewalDate,
             'payed' => $this->payed,
             'deadline' => $this->deadline,
-            'isYousab' => 1,
+            'isYousab' => $this->isYousab,
             'isPersonal' => $this->isPersonal,
             'days_to_deadline' => $this->deadline
                 ? now()->diffInDays(\Carbon\Carbon::parse($this->deadline), false)+1 // false => allow negative
