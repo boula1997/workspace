@@ -72,227 +72,67 @@ class TaskController extends Controller
     }
 
 
-    public function create(Request $request)
-    {
-        $employees = Admin::where("isActive", 1)
-            ->where("type", "!=", "client")
-            ->where("type", "!=", "prospective")
-            ->select('admins.*')
-            ->selectRaw("
-                (
-                    SELECT COUNT(*)
-                    FROM tasks
-                    WHERE tasks.status = 0
-                    AND tasks.employees IS NOT NULL
-                    AND JSON_TYPE(tasks.employees) = 'ARRAY'
-                    AND JSON_CONTAINS(
-                        tasks.employees,
-                        CAST(admins.id AS JSON)
-                    )
-                ) as active_tasks_count
-            ")
-            ->orderBy('name', 'ASC')
-            ->get();
 
-        if (auth("api")->user()->email == "parcel@gmail.com")
+public function create(Request $request)
+{
+    $employees = Admin::where("isActive", 1)
+        ->whereNotIn("type", ["client", "prospective"])
+        ->select('admins.*')
+        ->selectRaw("(
+            SELECT COUNT(*) FROM tasks
+            WHERE tasks.status = 0
+            AND JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
+        ) as active_tasks_count")
+        ->orderBy('name')
+        ->get();
+
+    if (auth("api")->user()->email == "parcel@gmail.com") {
         $employees = Admin::where("email", auth("api")->user()->email)->get();
-        $clients = Admin::where("isActive", 1)->where("type", "client")->orderBy('name', 'ASC')->get();
-        $prospectives = Admin::where("isActive", 1)->where("type", "prospective")->orderBy('name', 'ASC')->get();
-
-
-
-        if (auth("api")->user()->email == "parcel@gmail.com")
-            $projects = Project::withoutGlobalScope('excludePersonal')->orderBy("title", "asc")->where("title", "Parcel Express")
-                ->get();
-        else{
-            $allProjects = Project::withoutGlobalScope('excludePersonal')->orderBy("title", "asc")
-            ->get();
-
-            $projects = $allProjects->filter(function ($project) {
-                return rest($project) > 0;
-            });
-
-        }
-
-        if (!isWithinWorkingHours()) {
-            $tasksQuery = Task::where("status", $request->status ?? 0)
-                ->where("isOverthinking", 0)
-                ->orderBy('date', 'asc')    // Then by project_id (ascending)
-                // Limit to 300 tasks
-            ;
-
-        } else {
-            $tasksQuery = Task::where("status", $request->status ?? 0)
-                ->orderBy('date', 'asc')        // Then by latest update
-                // Limit to 300 tasks
-            ;
-        }
-
-        // Apply search filter if present
-        if ($request->has('search') && $request->search != '') {
-            $searchTerms = explode(',', $request->search);
-
-            $tasksQuery->where(function ($q) use ($searchTerms) {
-                foreach ($searchTerms as $term) {
-                    $term = trim($term);
-                    if (!$term) continue;
-
-                    // Check for priority special cases first
-                    if (strtolower($term) === "priority") {
-                        $q->orWhere('piority', 1);
-                        continue;
-                    }
-                    if (strtolower($term) === "!priority") {
-                        $q->orWhere('piority', 0);
-                        continue;
-                    }
-
-                    // General search by title, project, or employee
-                    $q->orWhere('title', 'like', "%$term%")
-                    ->orWhereHas('project', function ($qp) use ($term) {
-                        $qp->where('title', 'like', "%$term%");
-                    })
-                    ->orWhere(function ($qe) use ($term) {
-                        $qe->whereRaw("EXISTS (
-                            SELECT 1
-                            FROM admins
-                            WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
-                            AND admins.name LIKE ?
-                        )", ["%$term%"]);
-                    });
-                }
-            });
-        }
-
-
-        // isFixed filter — use has() not filled() because filled() treats "0" as empty
-        if ($request->has('is_fixed') && $request->is_fixed !== '' && $request->is_fixed !== null) {
-            $tasksQuery->where('isFixed', (int) $request->is_fixed);
-        }
-
-
-        if (auth("api")->user()->email == "parcel@gmail.com")
-            $tasksQuery = Task::where("status", $request->status ?? 0)->where("project_id", parcelProject()->id);
-
-        // Paginate tasks 
-        $tasks = $tasksQuery->paginate(10);
-
-
-        if (boula())
-            $data = [
-                "projects" => ProjectResource::collection($projects),
-                "employees" => $employees,
-                "clients" => $clients,
-                "prospectives" => $prospectives,
-                "tasks" => TaskResource::collection($tasks),
-                "tasks_meta" => [
-                    "current_page" => $tasks->currentPage(),
-                    "last_page" => $tasks->lastPage(),
-                    "per_page" => $tasks->perPage(),
-                    "total" => $tasks->total(),
-                ],
-                "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
-                "isExpired" => isExpired()[0],
-                "headings" => [
-                    "allowedIn" => date('Y-m-d', strtotime(setting()->last_time . ' + 3 days')),
-                    "deadlineAction" => activeDeadline()["action"],
-                    "deadlineDate" => activeDeadline()["deadline"],
-                ]
-
-            ];
-
-        else
-            $data = [
-                "projects" => ProjectResource::collection($projects),
-                "employees" => $employees,
-                "clients" => $clients,
-                "prospectives" => $prospectives,
-                "tasks" => TaskResource::collection($tasks),
-                "tasks_meta" => [
-                    "current_page" => $tasks->currentPage(),
-                    "last_page" => $tasks->lastPage(),
-                    "per_page" => $tasks->perPage(),
-                    "total" => $tasks->total(),
-                ],
-                "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
-
-            ];
-
-        return successResponse($data);
     }
 
+    $clients = Admin::where("isActive", 1)->where("type", "client")->orderBy('name')->get();
+    $prospectives = Admin::where("isActive", 1)->where("type", "prospective")->orderBy('name')->get();
 
-/**
- * Filter tasks with advanced filters
- * GET /api/apptask/tasks  (same endpoint, handles both filtered and unfiltered)
- * Params: page, search, status, start_date, end_date, employees, projects
- */
+    // --- Projects ---
+    if (auth("api")->user()->email == "parcel@gmail.com") {
+        $projects = Project::withoutGlobalScope('excludePersonal')
+            ->where("title", "Parcel Express")
+            ->orderBy("title")
+            ->get();
+    } else {
+        $projects = Project::withoutGlobalScope('excludePersonal')
+            ->orderBy("title")
+            ->get()
+            ->filter(fn($p) => rest($p) > 0);
+    }
+
+    // ✅ USE SHARED FILTER
+    $tasks = Task::filter($request, [
+        'ignore_user_scope' => true // create page shows all
+    ])->paginate(10);
+
+    return successResponse([
+        "projects" => ProjectResource::collection($projects),
+        "employees" => $employees,
+        "clients" => $clients,
+        "prospectives" => $prospectives,
+        "tasks" => TaskResource::collection($tasks),
+        "tasks_meta" => [
+            "current_page" => $tasks->currentPage(),
+            "last_page" => $tasks->lastPage(),
+            "per_page" => $tasks->perPage(),
+            "total" => $tasks->total(),
+        ],
+        "last_time" => setting()->last_time . ' ' . getTimeAgo(setting()->last_time),
+    ]);
+}
+
 public function tasks(Request $request)
 {
-   $query = Task::query()
-    ->orderByRaw('ISNULL(date), date ASC')
-    ->orderBy('id', 'ASC');
+    $tasks = Task::with('project')
+        ->filter($request)
+        ->paginate(20);
 
-    // --- Scope to logged-in employee unless isBoula() ---
-    $user = auth()->user();
-    if (!boula()) {
-        $query->where(function($q) use ($user) {
-            $q->whereJsonContains('employees', (int) $user->id)
-            ->orWhereJsonContains('employees', (string) $user->id)
-            ->orWhere('employees', 'LIKE', "%{$user->id}%");
-        });
-    }
-
-    // --- Status filter (0 = live, 1 = finished) ---
-    if ($request->has('status')) {
-        $query->where('status', $request->status);
-    }
-
-    // --- Text search (title) ---
-    if ($request->filled('search')) {
-        $search = $request->search;
-        $query->where('title', 'LIKE', "%{$search}%");
-    }
-
-    // --- Date range filter ---
-    if ($request->filled('start_date')) {
-        $query->where('date', '>=', $request->start_date);
-    }
-    if ($request->filled('end_date')) {
-        $query->where('date', '<=', $request->end_date);
-    }
-
-    if ($request->has('is_fixed') && $request->is_fixed !== null && $request->is_fixed !== '') {
-        $query->where('isFixed', (int) $request->is_fixed);
-    }
-
-    // --- Filter by employee IDs (JSON column) ---
-    if ($request->filled('employees')) {
-        $employeeIds = explode(',', $request->employees);
-        $query->where(function ($q) use ($employeeIds) {
-            foreach ($employeeIds as $empId) {
-                $empId = trim($empId);
-                $q->orWhereRaw("JSON_CONTAINS(employees, ?)", [(string)(int)$empId])
-                ->orWhere('employees', 'LIKE', "%{$empId}%");
-            }
-        });
-    }
-
-    // --- Filter by project IDs ---
-    if ($request->filled('projects')) {
-        $projectIds = explode(',', $request->projects);
-        $query->whereIn('project_id', $projectIds);
-    }
-
-    // --- Only active (not soft-deleted) tasks ---
-    $query->where('isActive', 1);
-
-
-
-    // --- Paginate ---
-    $tasks = $query->with('project')->paginate(20);
-
-    // --- Format response ---
     $formatted = $tasks->getCollection()->map(function ($task) {
         return [
             'id'         => $task->id,
@@ -323,7 +163,6 @@ public function tasks(Request $request)
         ],
     ]);
 }
-
 /**
  * Helper: resolve employee names from JSON column
  * employees column stores array of IDs: [1, 2, 3]

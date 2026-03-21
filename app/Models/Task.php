@@ -27,6 +27,106 @@ public function project()
     return $this->belongsTo(Project::class)->withoutGlobalScope('excludePersonal');
 }
 
+
+    public function scopeFilter($query, $request, $options = [])
+    {
+        $user = auth()->user();
+
+        // --- Status ---
+        $query->where('status', $request->status ?? 0);
+
+        // --- Working hours ---
+        if (!isWithinWorkingHours() && empty($options['ignore_working_hours'])) {
+            $query->where('isOverthinking', 0);
+        }
+
+        // --- Restrict to logged user (unless Boula) ---
+        if (!boula() && empty($options['ignore_user_scope'])) {
+            $query->where(function ($q) use ($user) {
+                $q->whereJsonContains('employees', (int) $user->id)
+                  ->orWhereJsonContains('employees', (string) $user->id)
+                  ->orWhere('employees', 'LIKE', "%{$user->id}%");
+            });
+        }
+
+        // --- Search ---
+        if ($request->filled('search')) {
+            $terms = explode(',', $request->search);
+
+            $query->where(function ($q) use ($terms) {
+                foreach ($terms as $term) {
+                    $term = trim($term);
+                    if (!$term) continue;
+
+                    if (strtolower($term) === 'priority') {
+                        $q->orWhere('piority', 1);
+                        continue;
+                    }
+
+                    if (strtolower($term) === '!priority') {
+                        $q->orWhere('piority', 0);
+                        continue;
+                    }
+
+                    $q->orWhere('title', 'like', "%$term%")
+                      ->orWhereHas('project', function ($qp) use ($term) {
+                          $qp->where('title', 'like', "%$term%");
+                      })
+                      ->orWhereRaw("EXISTS (
+                          SELECT 1 FROM admins
+                          WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
+                          AND admins.name LIKE ?
+                      )", ["%$term%"]);
+                }
+            });
+        }
+
+        // --- isFixed ---
+        if ($request->has('is_fixed') && $request->is_fixed !== '' && $request->is_fixed !== null) {
+            $query->where('isFixed', (int) $request->is_fixed);
+        }
+
+        // --- Date filters ---
+        if ($request->filled('start_date')) {
+            $query->where('date', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->where('date', '<=', $request->end_date);
+        }
+
+        // --- Employees filter ---
+        if ($request->filled('employees')) {
+            $ids = explode(',', $request->employees);
+            $query->where(function ($q) use ($ids) {
+                foreach ($ids as $id) {
+                    $id = trim($id);
+                    $q->orWhereRaw("JSON_CONTAINS(employees, ?)", [(string)(int)$id])
+                      ->orWhere('employees', 'LIKE', "%{$id}%");
+                }
+            });
+        }
+
+        // --- Projects filter ---
+        if ($request->filled('projects')) {
+            $query->whereIn('project_id', explode(',', $request->projects));
+        }
+
+        // --- Parcel special case ---
+        if (auth('api')->user()->email === 'parcel@gmail.com') {
+            $query->where('project_id', parcelProject()->id);
+        }
+
+        // --- Active only ---
+        $query->where('isActive', 1);
+
+        // --- Ordering ---
+        $query->orderByRaw('ISNULL(date), date ASC')
+              ->orderBy('id', 'ASC');
+
+        return $query;
+    }
+
     /**
      * Define the employee relationship.
      */
