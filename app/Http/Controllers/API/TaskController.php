@@ -257,20 +257,21 @@ public function tasks(Request $request)
     }
 
     if ($request->has('is_fixed') && $request->is_fixed !== null && $request->is_fixed !== '') {
+        dd($request->is_fixed);
         $query->where('isFixed', (int) $request->is_fixed);
     }
 
     // --- Filter by employee IDs (JSON column) ---
-        if ($request->filled('employees')) {
-            $employeeIds = explode(',', $request->employees);
-            $query->where(function ($q) use ($employeeIds) {
-                foreach ($employeeIds as $empId) {
-                    $empId = trim($empId);
-                    $q->orWhereRaw("JSON_CONTAINS(employees, ?)", [(string)(int)$empId])
-                    ->orWhere('employees', 'LIKE', "%{$empId}%");
-                }
-            });
-        }
+    if ($request->filled('employees')) {
+        $employeeIds = explode(',', $request->employees);
+        $query->where(function ($q) use ($employeeIds) {
+            foreach ($employeeIds as $empId) {
+                $empId = trim($empId);
+                $q->orWhereRaw("JSON_CONTAINS(employees, ?)", [(string)(int)$empId])
+                ->orWhere('employees', 'LIKE', "%{$empId}%");
+            }
+        });
+    }
 
     // --- Filter by project IDs ---
     if ($request->filled('projects')) {
