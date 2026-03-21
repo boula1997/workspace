@@ -165,6 +165,12 @@ class TaskController extends Controller
         }
 
 
+        // isFixed filter — use has() not filled() because filled() treats "0" as empty
+        if ($request->has('is_fixed') && $request->is_fixed !== '' && $request->is_fixed !== null) {
+            $tasksQuery->where('isFixed', (int) $request->is_fixed);
+        }
+
+
         if (auth("api")->user()->email == "parcel@gmail.com")
             $tasksQuery = Task::where("status", $request->status ?? 0)->where("project_id", parcelProject()->id);
 
@@ -257,7 +263,6 @@ public function tasks(Request $request)
     }
 
     if ($request->has('is_fixed') && $request->is_fixed !== null && $request->is_fixed !== '') {
-        dd($request->is_fixed);
         $query->where('isFixed', (int) $request->is_fixed);
     }
 
