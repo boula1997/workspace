@@ -261,7 +261,6 @@ public function tasks(Request $request)
     }
 
     // --- Filter by employee IDs (JSON column) ---
-    // --- Filter by employee IDs (JSON column) ---
         if ($request->filled('employees')) {
             $employeeIds = explode(',', $request->employees);
             $query->where(function ($q) use ($employeeIds) {
