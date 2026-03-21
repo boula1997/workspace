@@ -256,7 +256,7 @@ public function tasks(Request $request)
         $query->where('date', '<=', $request->end_date);
     }
 
-    if ($request->filled('is_fixed')) {
+    if ($request->has('is_fixed') && $request->is_fixed !== null && $request->is_fixed !== '') {
         $query->where('isFixed', (int) $request->is_fixed);
     }
 
