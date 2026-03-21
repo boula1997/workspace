@@ -115,14 +115,14 @@ class TaskController extends Controller
         }
 
         if (!isWithinWorkingHours()) {
-            $tasksQuery = Task::where("status", 0)
+            $tasksQuery = Task::where("status", $request->status ?? 0)
                 ->where("isOverthinking", 0)
                 ->orderBy('date', 'asc')    // Then by project_id (ascending)
                 // Limit to 300 tasks
             ;
 
         } else {
-            $tasksQuery = Task::where("status", 0)
+            $tasksQuery = Task::where("status", $request->status ?? 0)
                 ->orderBy('date', 'asc')        // Then by latest update
                 // Limit to 300 tasks
             ;
@@ -166,7 +166,7 @@ class TaskController extends Controller
 
 
         if (auth("api")->user()->email == "parcel@gmail.com")
-            $tasksQuery = Task::where("status", 0)->where("project_id", parcelProject()->id);
+            $tasksQuery = Task::where("status", $request->status ?? 0)->where("project_id", parcelProject()->id);
 
         // Paginate tasks 
         $tasks = $tasksQuery->paginate(10);
