@@ -32,8 +32,9 @@ public function project()
     {
         $user = auth()->user();
 
-        // --- Status ---
-        $query->where('status', $request->status ?? 0);
+        if ($request->filled('status') || $request->status === 0 || $request->status === '0') {
+            $query->where('status', $request->status);
+        }
 
         // --- Working hours ---
         if (!isWithinWorkingHours() && empty($options['ignore_working_hours'])) {
