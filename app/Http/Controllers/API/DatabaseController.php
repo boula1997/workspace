@@ -602,7 +602,7 @@ public function getDatabase($dbname, $namedb)
             'success' => true,
             'data' => $results,
             'latest_overall_date' => $latestOverallDate,
-            "ls_command" => 'git ls-files --exclude-standard | findstr /R "^app ^database ^resources ^routes ^config ^src ^screens ^components ^navigation App.tsx App.js package.json composer.json"',
+            "ls_command" => 'git lsboula-files --exclude-standard | findstr /R "^app ^database ^resources ^routes ^config ^src ^screens ^components ^navigation App.tsx App.js package.json composer.json"',
             // ID columns information with actual database reference info
             'id_columns' => $idColumns,
             'grouped_id_columns' => $groupedIdColumns, // Grouped by referenced table (only actual FKs)
