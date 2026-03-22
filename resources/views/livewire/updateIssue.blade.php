@@ -9,9 +9,9 @@
     </div>
     <div class="form-group">
         <label for="exampleFormControlInput27">Code Links (May Add current task links):</label>
-        <textarea name="codeLinks" id="exampleFormControlInput27" class="form-control noHide" cols="30" rows="2"
-            wire:model="codeLinks"></textarea>
-        @error('codeLinks')
+        <textarea name="ai_prompt" id="exampleFormControlInput27" class="form-control noHide" cols="30" rows="2"
+            wire:model="ai_prompt"></textarea>
+        @error('ai_prompt')
             <span class="text-danger">{{ $message }}</span>
         @enderror
     </div>

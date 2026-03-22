@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->longText('script')->nullable();
-            $table->longText('codeLinks')->nullable();
+            $table->longText('ai_prompt')->nullable();
             $table->timestamps();
         });
     }

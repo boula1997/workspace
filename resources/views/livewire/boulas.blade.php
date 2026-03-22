@@ -47,7 +47,7 @@
                                 <th>Deal</th>
                                 <th>Deadline </th>
                                 <th>Status </th>
-                            <th > <button type="button" content="{{ $combinedCodeLinks }}"
+                            <th > <button type="button" content="{{ $combinedai_prompt }}"
                                     class="w-100 btn btn-outline-danger btn-sm browse">
                                     Prepare All
                                 </button></th>
@@ -149,7 +149,7 @@
                                             </div>
                                         </div>
                                     </div> --}}
-                                    <button type="button" content="{{ $boula->codeLinks }}"
+                                    <button type="button" content="{{ $boula->ai_prompt }}"
                                         class="btn btn-outline-danger btn-sm browse">
                                         P
                                     </button>

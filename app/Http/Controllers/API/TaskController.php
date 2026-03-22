@@ -437,14 +437,14 @@ private function resolveEmployeeNames($employees): string
 
             if (isset($request->project_id)) {
                 $result = Project::find($request->project_id);
-                $data['codeLinks'] = $request->title;
+                $data['ai_prompt'] = $request->title;
                 $result->update($data);
             } else if (isset($request->refrence_id)) {
                 $result = Issue::find($request->refrence_id);
-                $result->update(["codeLinks" => $request->title]);
+                $result->update(["ai_prompt" => $request->title]);
             }
 
-            $data = ["result" => $result->codeLinks, "project" => $result];
+            $data = ["result" => $result->ai_prompt, "project" => $result];
 
             return successResponse($data);
         } catch (Exception $e) {
@@ -468,7 +468,7 @@ private function resolveEmployeeNames($employees): string
                 $result = Issue::find($request->refrence_id);
             }
 
-            $data = ["result" => $result->codeLinks, "project" => $result];
+            $data = ["result" => $result->ai_prompt, "project" => $result];
 
             return successResponse($data);
         } catch (Exception $e) {

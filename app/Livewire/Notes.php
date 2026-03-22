@@ -7,7 +7,7 @@ use App\Models\Note;
   
 class Notes extends Component
 {
-    public $notes, $title,$note_id,$script,$codeLinks;
+    public $notes, $title,$note_id,$script,$ai_prompt;
     public $updateMode = false;
    
     /**
@@ -35,7 +35,7 @@ class Notes extends Component
     private function resetInputFields(){
         $this->title = '';
         $this->script = '';
-        $this->codeLinks = '';
+        $this->ai_prompt = '';
     }
    
     /**
@@ -53,7 +53,7 @@ class Notes extends Component
         Note::create([         
         'title' => $this->title,
         'script' => $this->script,
-        'codeLinks' => $this->codeLinks,
+        'ai_prompt' => $this->ai_prompt,
     ]);
   
         session()->flash('message', 'Note Created Successfully.');
@@ -71,7 +71,7 @@ class Notes extends Component
         $note = Note::findOrFail($id);
         $this->note_id = $id;
         $this->title = $note->title;
-        $this->codeLinks = $note->codeLinks;
+        $this->ai_prompt = $note->ai_prompt;
 
   
         $this->updateMode = true;
@@ -103,7 +103,7 @@ class Notes extends Component
         $note = Note::find($this->note_id);
         $note->update([
             'title' => $this->title,
-            'codeLinks' => $this->codeLinks,
+            'ai_prompt' => $this->ai_prompt,
         ]);
   
         $this->updateMode = false;

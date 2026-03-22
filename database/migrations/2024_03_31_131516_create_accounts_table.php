@@ -25,7 +25,7 @@ return new class extends Migration
             $table->date('lastTransaction')->nullable();
             $table->integer('fees');
             $table->longText('tasks')->nullable();
-            $table->longText('codeLinks')->nullable();
+            $table->longText('ai_prompt')->nullable();
             $table->timestamps();
         });
     }

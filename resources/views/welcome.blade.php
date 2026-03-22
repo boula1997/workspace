@@ -157,7 +157,7 @@
                                     <div class="modal-body">
                                         <div>
                                             <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                            <textarea class="form-control  summernote" name="codeLinks" id="textareapost{{ $post->id }}" cols="30"
+                                            <textarea class="form-control  summernote" name="ai_prompt" id="textareapost{{ $post->id }}" cols="30"
                                                 rows="5" style="height:100vh !important"></textarea>
                                         </div>
                                     </div>
@@ -193,7 +193,7 @@
                                     <div class="modal-body">
                                         <div>
                                             <input type="hidden" name="issue_id" value="{{ $refrnce->id }}">
-                                            <textarea class="form-control  summernote" name="codeLinks" id="textarearef{{ $refrnce->id }}" cols="30"
+                                            <textarea class="form-control  summernote" name="ai_prompt" id="textarearef{{ $refrnce->id }}" cols="30"
                                                 rows="5" style="height:100vh !important"></textarea>
                                         </div>
                                     </div>
@@ -312,7 +312,7 @@
                                         class="{{ $website->deal ? ($website->status == 0 ? 'bg-secondary' : ($website->status == 1 ? 'bg-warning' : ($website->status == 2 ? 'bg-success' : 'bg-warning'))) : 'bg-danger' }}  hover-cursor mx-1 text-nowrap text-back">
                                         {{ $website->title }}</p>
 
-                                    <i style="cursor: pointer;" content="{{ $website->codeLinks }}"
+                                    <i style="cursor: pointer;" content="{{ $website->ai_prompt }}"
                                         websiteId="{{ $website->id }}" class="text-secondary fas fa-copy"></i>
                                 @endif
                             @endforeach
@@ -330,7 +330,7 @@
                                         class="{{ $website->deal ? ($website->status == 0 ? 'bg-secondary' : ($website->status == 1 ? 'bg-warning' : ($website->status == 2 ? 'bg-success' : 'bg-warning'))) : 'bg-danger' }}  hover-cursor mx-1 text-nowrap text-back">
                                         {{ $website->title }}</p>
 
-                                    <i style="cursor: pointer;" content="{{ $website->codeLinks }}"
+                                    <i style="cursor: pointer;" content="{{ $website->ai_prompt }}"
                                         websiteId="{{ $website->id }}" class="text-secondary fas fa-copy"></i>
                                 @endif
                             @endforeach
@@ -342,7 +342,7 @@
                         <div class="website-container d-flex flex-wrap">
                             @foreach (References() as $refrnce)
                                 @if ($website->status == 0)
-                                    <button type="button" content="{{ $refrnce->codeLinks }}"
+                                    <button type="button" content="{{ $refrnce->ai_prompt }}"
                                         id="{{ $refrnce->id }}" title="1click:yellow 2click:green 3click:red"
                                         class="reference btn {{ $refrnce->status == 0 ? 'btn-outline-warning' : ($refrnce->status == 1 ? 'btn-outline-warning' : 'btn-success') }}  hover-cursor mx-1 text-nowrap m-2">{{ $refrnce->title }}</button>
                                 @endif
@@ -355,7 +355,7 @@
                         <div class="website-container d-flex flex-wrap">
                             @foreach (websitesRoutes() as $website)
                                 <a href="{{ $website->routesLink }}">
-                                    <button type="button" content="{{ $website->codeLinks }}"
+                                    <button type="button" content="{{ $website->ai_prompt }}"
                                         id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
                                         class="btn {{ $website->status == 0 ? 'btn-outline-warning' : ($website->status == 1 ? 'btn-outline-warning' : 'btn-success') }}  hover-cursor mx-1 text-nowrap m-2">{{ $website->title }}</button>
                                 </a>

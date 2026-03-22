@@ -26,7 +26,7 @@
                                         <!-- form start -->
                                         <div class="card-body">
                                             {{-- Checkbox Input --}} <div class="col-md-6 ps-4"> <div class="form-group"> <div class="form-group"> <div class="form-check form-switch"> <input class="form-check-input" @checked(old('isNotification')) type="checkbox" id="isNotification" name="isNotification" value="1"> <label class="form-check-label" for="isNotification">{{ __('general.isNotification') }} <span class="text-danger"> * </span></label> </div> </div> </div> </div>
-<div class="col-md-12"> <div class="col-form-group"> <label>{{ __('general.codeLinks') }} <span class="text-danger"> * </span></label> <textarea rows="100" class=" summernote @error('codeLinks') is-invalid @enderror" name="{{ 'codeLinks' }}"> {!! old('codeLinks') !!} </textarea> </div> </div>
+<div class="col-md-12"> <div class="col-form-group"> <label>{{ __('general.ai_prompt') }} <span class="text-danger"> * </span></label> <textarea rows="100" class=" summernote @error('ai_prompt') is-invalid @enderror" name="{{ 'ai_prompt' }}"> {!! old('ai_prompt') !!} </textarea> </div> </div>
 
 {{-- Checkbox Input --}} <div class="col-md-6 ps-4"> <div class="form-group"> <div class="form-group"> <div class="form-check form-switch"> <input class="form-check-input" @checked(old('isOverthinking')) type="checkbox" id="isOverthinking" name="isOverthinking" value="1"> <label class="form-check-label" for="isOverthinking">{{ __('general.isOverthinking') }} <span class="text-danger"> * </span></label> </div> </div> </div> </div>
 

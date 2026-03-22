@@ -7,7 +7,7 @@ use App\Models\Project;
   
 class Posts extends Component
 {
-    public $posts, $title,$tasks,$fees,$cost,$payed,$debit,$deadline,$lastTransaction, $routesLink,$post_id,$codeLinks;
+    public $posts, $title,$tasks,$fees,$cost,$payed,$debit,$deadline,$lastTransaction, $routesLink,$post_id,$ai_prompt;
     public $updateMode = false;
     public $sortField = 'title'; 
     public $sortDirection = 'asc'; // Default sort direction
@@ -46,21 +46,21 @@ class Posts extends Component
             $this->posts = Project::where('isYousab',1)->orderBy('title', 'ASC')->get();
         }
     
-        // Combine all codeLinks values
-        $combinedCodeLinks = $this->posts->pluck('codeLinks')->implode(' ');
+        // Combine all ai_prompt values
+        $combinedai_prompt = $this->posts->pluck('ai_prompt')->implode(' ');
 
                 // List of words to replace
                 $wordsToReplace = ['ser', 'code', 'install', 'npm start', 'npx start', 'npx','npm', 'serve', 'dev','ssh'];
 
         // Iterate through each word and replace it with 'unknown'
         foreach ($wordsToReplace as $word) {
-            $combinedCodeLinks = preg_replace('/\b' . preg_quote($word, '/') . '\b/', 'unknown', $combinedCodeLinks);
+            $combinedai_prompt = preg_replace('/\b' . preg_quote($word, '/') . '\b/', 'unknown', $combinedai_prompt);
         }
         $this->posts = $query->where('isYousab',1)->get();
     
         return view('livewire.posts', [
             'posts' => $this->posts,
-            'combinedCodeLinks' => $combinedCodeLinks,
+            'combinedai_prompt' => $combinedai_prompt,
         ]);
     }
 
@@ -91,7 +91,7 @@ class Posts extends Component
         $this->deadline = '';
         $this->lastTransaction = '';
         $this->routesLink = '';
-        $this->codeLinks = '';
+        $this->ai_prompt = '';
     }
    
     /**
@@ -107,7 +107,7 @@ class Posts extends Component
             'cost' => 'numeric|required',
             'payed' => 'numeric|required',
             'deadline' => 'date|required',
-            'codeLinks' => 'nullable',
+            'ai_prompt' => 'nullable',
         ]);
 
   
@@ -119,7 +119,7 @@ class Posts extends Component
         'debit' => $this->cost-$this->payed,
         'deadline' => $this->deadline,
         'tasks' => $this->tasks,
-        'codeLinks' => $this->codeLinks,
+        'ai_prompt' => $this->ai_prompt,
         'lastTransaction' => $this->lastTransaction,
         'routesLink' => $this->routesLink,
         'isYousab' => 1,
@@ -146,7 +146,7 @@ class Posts extends Component
         $this->debit = $post->debit;
         $this->deadline = $post->deadline;
         $this->tasks = $post->tasks;
-        $this->codeLinks = $post->codeLinks;
+        $this->ai_prompt = $post->ai_prompt;
         $this->lastTransaction = $post->lastTransaction;
         $this->routesLink = $post->routesLink;
   
@@ -177,7 +177,7 @@ class Posts extends Component
             'payed' => 'numeric|required',
             'deadline' => 'date|required',
             'tasks' => 'nullable',
-            'codeLinks' => 'nullable',
+            'ai_prompt' => 'nullable',
             'routesLink' => 'nullable',
         ]);
   
@@ -199,7 +199,7 @@ class Posts extends Component
             'payed' => $this->payed,
             'debit' => $this->cost-$this->payed,
             'deadline' => $this->deadline,
-            'codeLinks' => $this->codeLinks,
+            'ai_prompt' => $this->ai_prompt,
             'routesLink' => $this->routesLink,
             'isYousab' => 1,
         ]);

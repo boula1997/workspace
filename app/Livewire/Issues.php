@@ -7,7 +7,7 @@ use App\Models\Issue;
   
 class Issues extends Component
 {
-    public $issues, $title,$issue_id,$script,$codeLinks;
+    public $issues, $title,$issue_id,$script,$ai_prompt;
     public $updateMode = false;
    
     /**
@@ -35,7 +35,7 @@ class Issues extends Component
     private function resetInputFields(){
         $this->title = '';
         $this->script = '';
-        $this->codeLinks = '';
+        $this->ai_prompt = '';
     }
    
     /**
@@ -53,7 +53,7 @@ class Issues extends Component
         Issue::create([         
         'title' => $this->title,
         'script' => $this->script,
-        'codeLinks' => $this->codeLinks,
+        'ai_prompt' => $this->ai_prompt,
     ]);
   
         session()->flash('message', 'Issue Created Successfully.');
@@ -71,7 +71,7 @@ class Issues extends Component
         $issue = Issue::findOrFail($id);
         $this->issue_id = $id;
         $this->title = $issue->title;
-        $this->codeLinks = $issue->codeLinks;
+        $this->ai_prompt = $issue->ai_prompt;
 
   
         $this->updateMode = true;
@@ -103,7 +103,7 @@ class Issues extends Component
         $issue = Issue::find($this->issue_id);
         $issue->update([
             'title' => $this->title,
-            'codeLinks' => $this->codeLinks,
+            'ai_prompt' => $this->ai_prompt,
         ]);
   
         $this->updateMode = false;

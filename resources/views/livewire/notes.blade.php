@@ -96,7 +96,7 @@
                                                 <div class="modal-body">
                                                     <div>
                                                         <input type="hidden" name="note_id" value="{{ $note->id }}">
-                                                        <textarea class="form-control" name="codeLinks" id="" cols="30" rows="5">{{ $note->codeLinks }}</textarea>
+                                                        <textarea class="form-control" name="ai_prompt" id="" cols="30" rows="5">{{ $note->ai_prompt }}</textarea>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">

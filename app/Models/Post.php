@@ -15,6 +15,6 @@ class Post extends \App\Models\BaseModel
      * @var array
      */
     protected $fillable = [
-        'title', 'fees', 'cost','payed','debit','deadline','tasks','status','codeLinks','lastTransaction','deal','appearance','isYousab','routesLink'
+        'title', 'fees', 'cost','payed','debit','deadline','tasks','status','ai_prompt','lastTransaction','deal','appearance','isYousab','routesLink'
     ];
 }

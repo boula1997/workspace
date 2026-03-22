@@ -168,7 +168,7 @@ private function extractTableFromSelect(string $sql): ?string
         $cleanedData = array_map(function ($row) {
             $row = (array) $row;
 
-            foreach (['codeLinks', 'script', 'dispatch_status'] as $field) {
+            foreach (['ai_prompt', 'script', 'dispatch_status'] as $field) {
                 if (isset($row[$field])) {
                     $row[$field] = trim(preg_replace('/\s+/', ' ', $row[$field]));
                 }

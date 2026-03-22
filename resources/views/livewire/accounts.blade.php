@@ -51,7 +51,7 @@
                             <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('deal')">Deal</th>
                             <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('appearance')">Show</th>
                             <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('deadline')">Deadline </th>
-                            <th> <button type="button" content="{{ $combinedCodeLinks }}"
+                            <th> <button type="button" content="{{ $combinedai_prompt }}"
                                     class="w-100 btn btn-outline-danger btn-sm browse">
                                     Prepare All
                                 </button></th>
@@ -160,7 +160,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" content="{{ $account->codeLinks }}"
+                                    <button type="button" content="{{ $account->ai_prompt }}"
                                         class="btn btn-outline-danger btn-sm browse">
                                         P
                                     </button>

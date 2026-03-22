@@ -15,6 +15,6 @@ class Account extends \App\Models\BaseModel
      * @var array
      */
     protected $fillable = [
-        'title', 'fees', 'cost','payed','debit','deadline','tasks','status','codeLinks','lastTransaction','deal','appearance'
+        'title', 'fees', 'cost','payed','debit','deadline','tasks','status','ai_prompt','lastTransaction','deal','appearance'
     ];
 }

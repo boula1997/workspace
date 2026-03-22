@@ -635,7 +635,7 @@
                 type: 'GET', // HTTP method
                 success: function(response) {
                     // Handle success response
-                    $('#textareapost' + id).val(response.data.codeLinks);
+                    $('#textareapost' + id).val(response.data.ai_prompt);
                     // You can update your HTML here with the product data
                 },
                 error: function(xhr, status, error) {
@@ -654,7 +654,7 @@
                 type: 'GET', // HTTP method
                 success: function(response) {
                     // Handle success response
-                    $('#textarearef' + id).val(response.data.codeLinks);
+                    $('#textarearef' + id).val(response.data.ai_prompt);
 
                     // You can update your HTML here with the product data
                 },

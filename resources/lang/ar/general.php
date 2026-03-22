@@ -175,7 +175,7 @@ return [
 
 "lastTransaction" => "آخر معاملة",
 
-"codeLinks" => "روابط الأكواد",
+"ai_prompt" => "روابط الأكواد",
 
 "home4g" => "المنزل 4G", // If it's a brand name, keep it as is.
 

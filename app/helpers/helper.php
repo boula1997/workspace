@@ -310,9 +310,9 @@ function yousabEmails()
             $body .= '</tbody></table><br>';
 
             // Flat Todo Reference
-            if (!empty($flat->codeLinks)) {
+            if (!empty($flat->ai_prompt)) {
                 $body .= '<h2>Flat Todo Reference</h2><ul>';
-                foreach (preg_split('/\r\n|\r|\n/', $flat->codeLinks) as $codeLink) {
+                foreach (preg_split('/\r\n|\r|\n/', $flat->ai_prompt) as $codeLink) {
                     if (trim($codeLink) !== '') {
                         $body .= '<li>' . htmlspecialchars($codeLink, ENT_QUOTES, 'UTF-8') . '</li>';
                     }
@@ -892,7 +892,7 @@ function activeWebsitesContent()
     $websites = Project::where('appearance', 1)
         ->where('status', '!=', 0)
         ->latest()
-        ->pluck('codeLinks'); // Retrieves the collection of 'codeLinks'
+        ->pluck('ai_prompt'); // Retrieves the collection of 'ai_prompt'
 
     // Merge all non-null values and concatenate into a single string
     $mergedWebsites = $websites->filter()->implode("\n");

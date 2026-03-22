@@ -530,17 +530,17 @@ if (true) {
     $sql = [];
 
     foreach ($array as $item) {
-        $sql[] = "codeLinks LIKE '%" . $item . "%'";
+        $sql[] = "ai_prompt LIKE '%" . $item . "%'";
     }
 
     $query = implode(" AND ", $sql);
 
-    // Issues and Projects already have `codeLinks` column
+    // Issues and Projects already have `ai_prompt` column
     $issues = DB::select("SELECT *, 'issue' as source FROM issues WHERE $query ORDER BY id DESC");
     $projects = DB::select("SELECT *, 'project' as source FROM projects WHERE $query ORDER BY id DESC");
 
-    // Scripts have 'script' column, alias it as 'codeLinks'
-    $scripts = DB::select("SELECT *, script as codeLinks, 'script' as source FROM scripts WHERE " . implode(" AND ", array_map(function($item) {
+    // Scripts have 'script' column, alias it as 'ai_prompt'
+    $scripts = DB::select("SELECT *, script as ai_prompt, 'script' as source FROM scripts WHERE " . implode(" AND ", array_map(function($item) {
         return "script LIKE '%$item%'";
     }, $array)) . " ORDER BY id DESC");
 
@@ -638,7 +638,7 @@ if (true) {
 
     // Fetch the issue data
     $issue = Issue::where('title', 'React post')->first();
-    $content = $issue->codeLinks;
+    $content = $issue->ai_prompt;
 
     // Replace the specific URL with $baseUrl
     $content = str_replace('https://yousab-tech.com/academy/public/api/', $baseUrl, $content);
@@ -696,7 +696,7 @@ if (true) {
 
     // Fetch the issue data
     $issue = Issue::where('title', 'ReactNative post')->first();
-    $content = $issue->codeLinks;
+    $content = $issue->ai_prompt;
 
     // Replace the specific URL with $baseUrl
     $content = str_replace('https://yousab-tech.com/academy/public/api/', $baseUrl, $content);
@@ -751,7 +751,7 @@ if ($request->action == '29') {
 
   // Fetch the issue data
   $issue = Issue::where('title', 'Ajax post')->first();
-  $content = $issue->codeLinks;
+  $content = $issue->ai_prompt;
 
   // Replace the specific URL with $baseUrl
   $content = str_replace('message.store', $routename, $content);
@@ -766,7 +766,7 @@ if ($request->action == '28') {
 
   // Fetch the issue data
   $issue = Issue::where('title', 'Ajax get')->first();
-  $content = $issue->codeLinks;
+  $content = $issue->ai_prompt;
 
   // Replace the specific URL with $baseUrl
   $content = str_replace('products', $url, $content);
@@ -784,7 +784,7 @@ if ($request->action == '28') {
 
     // Fetch the issue data
     $issue = Issue::where('title', 'React get')->first();
-    $content = $issue->codeLinks;
+    $content = $issue->ai_prompt;
 
     // Replace the specific URL with $baseUrl
     $content = str_replace('https://yousab-tech.com/academy/public/api', $baseUrl, $content);
@@ -803,7 +803,7 @@ if ($request->action == '28') {
 
     // Fetch the issue data
     $issue = Issue::where('title', 'ReactNative get')->first();
-    $content = $issue->codeLinks;
+    $content = $issue->ai_prompt;
 
     // Replace the specific URL with $baseUrl
     $content = str_replace('https://yousab-tech.com/academy/public/api', $baseUrl, $content);
@@ -936,12 +936,12 @@ public function execQuery(Request $request)
             DB::statement('use ' . $request->dbname);
             $data = DB::select($queryCommand);
 
-            // Clean the output to remove \r\n, \n, \t from codeLinks
+            // Clean the output to remove \r\n, \n, \t from ai_prompt
             $cleanedData = array_map(function ($row) {
                 $row = (array) $row;
-                if (isset($row['codeLinks'])) {
-                    $row['codeLinks'] = preg_replace('/\s+/', ' ', $row['codeLinks']);
-                    $row['codeLinks'] = trim($row['codeLinks']);
+                if (isset($row['ai_prompt'])) {
+                    $row['ai_prompt'] = preg_replace('/\s+/', ' ', $row['ai_prompt']);
+                    $row['ai_prompt'] = trim($row['ai_prompt']);
                 }
 
                 if (isset($row['script'])) {
@@ -1029,7 +1029,7 @@ public function execQuery(Request $request)
 
   public function updatePosts(Request $request){
     $post=Project::find($request->post_id);
-    $post->update(['codeLinks'=>$request->codeLinks]);
+    $post->update(['ai_prompt'=>$request->ai_prompt]);
 
     return response()->json(['success' => trans('general.created_successfully')]);
 
@@ -1086,7 +1086,7 @@ public function execQuery(Request $request)
 
   public function updateReferences(Request $request){
     $issue=Issue::find($request->issue_id);
-    $issue->update(['codeLinks'=>$request->codeLinks]);
+    $issue->update(['ai_prompt'=>$request->ai_prompt]);
 
     return response()->json(['success' => trans('general.created_successfully')]);
 
@@ -1109,7 +1109,7 @@ public function execQuery(Request $request)
   }
   public function issueUpdate(Request $request){
     $issue=Issue::find($request->issue_id);
-    $issue->update(['codeLinks'=>$request->codeLinks]);
+    $issue->update(['ai_prompt'=>$request->ai_prompt]);
 
     return response()->json(['success' => trans('general.created_successfully')]);
 

@@ -7,7 +7,7 @@ use App\Models\Boula;
   
 class Boulas extends Component
 {
-    public $boulas, $title,$tasks,$fees,$cost,$payed,$debit,$deadline,$lastTransaction, $boula_id,$codeLinks;
+    public $boulas, $title,$tasks,$fees,$cost,$payed,$debit,$deadline,$lastTransaction, $boula_id,$ai_prompt;
     public $updateMode = false;
    
     /**
@@ -23,18 +23,18 @@ class Boulas extends Component
         else
         $this->boulas = Boula::OrderBy('title','ASC')->get();
 
-                // Combine all codeLinks values
-                $combinedCodeLinks = $this->boulas->pluck('codeLinks')->implode(' ');
+                // Combine all ai_prompt values
+                $combinedai_prompt = $this->boulas->pluck('ai_prompt')->implode(' ');
 
                 // List of words to replace
                 $wordsToReplace = ['ser', 'code', 'install', 'npm start', 'npx start', 'npx','npm', 'serve', 'dev','ssh'];
         
                 // Iterate through each word and replace it with 'unknown'
                 foreach ($wordsToReplace as $word) {
-                    $combinedCodeLinks = preg_replace('/\b' . preg_quote($word, '/') . '\b/', 'unknown', $combinedCodeLinks);
+                    $combinedai_prompt = preg_replace('/\b' . preg_quote($word, '/') . '\b/', 'unknown', $combinedai_prompt);
                 }
             
-        return view('livewire.boulas',compact('combinedCodeLinks'));
+        return view('livewire.boulas',compact('combinedai_prompt'));
     }
   
     /**
@@ -51,7 +51,7 @@ class Boulas extends Component
         $this->debit = '';
         $this->deadline = '';
         $this->lastTransaction = '';
-        $this->codeLinks = '';
+        $this->ai_prompt = '';
     }
    
     /**
@@ -67,7 +67,7 @@ class Boulas extends Component
             'cost' => 'numeric|required',
             'payed' => 'numeric|required',
             'deadline' => 'date|required',
-            'codeLinks' => 'nullable',
+            'ai_prompt' => 'nullable',
         ]);
 
   
@@ -79,7 +79,7 @@ class Boulas extends Component
         'debit' => $this->cost-$this->payed,
         'deadline' => $this->deadline,
         'tasks' => $this->tasks,
-        'codeLinks' => $this->codeLinks,
+        'ai_prompt' => $this->ai_prompt,
         'lastTransaction' => $this->lastTransaction,
     ]);
   
@@ -104,7 +104,7 @@ class Boulas extends Component
         $this->debit = $boula->debit;
         $this->deadline = $boula->deadline;
         $this->tasks = $boula->tasks;
-        $this->codeLinks = $boula->codeLinks;
+        $this->ai_prompt = $boula->ai_prompt;
         $this->lastTransaction = $boula->lastTransaction;
   
         $this->updateMode = true;
@@ -134,7 +134,7 @@ class Boulas extends Component
             'payed' => 'numeric|required',
             'deadline' => 'date|required',
             'tasks' => 'nullable',
-            'codeLinks' => 'nullable',
+            'ai_prompt' => 'nullable',
         ]);
   
         $boula = Boula::find($this->boula_id);
@@ -155,7 +155,7 @@ class Boulas extends Component
             'payed' => $this->payed,
             'debit' => $this->cost-$this->payed,
             'deadline' => $this->deadline,
-            'codeLinks' => $this->codeLinks,
+            'ai_prompt' => $this->ai_prompt,
         ]);
 
 

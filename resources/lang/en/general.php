@@ -210,7 +210,7 @@ return [
 
 "lastTransaction" => "LastTransaction",
 
-"codeLinks" => "CodeLinks",
+"ai_prompt" => "ai_prompt",
 
 "home4g" => "Home4g",
 

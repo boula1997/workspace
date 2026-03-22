@@ -166,9 +166,9 @@
                         
 
                         <div class="col-md-6">
-                            <div class="col-form-group"> <label>{{ __('general.codeLinks') }} <span class="text-danger">
+                            <div class="col-form-group"> <label>{{ __('general.ai_prompt') }} <span class="text-danger">
                                         * </span></label>
-                                <textarea rows="5" class=" summernote @error('codeLinks') is-invalid @enderror" name="{{ 'codeLinks' }}"> {!! old('codeLinks') !!} </textarea>
+                                <textarea rows="5" class=" summernote @error('ai_prompt') is-invalid @enderror" name="{{ 'ai_prompt' }}"> {!! old('ai_prompt') !!} </textarea>
                             </div>
                         </div>
 
