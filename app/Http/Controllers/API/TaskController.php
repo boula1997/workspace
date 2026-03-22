@@ -108,7 +108,7 @@ public function create(Request $request)
 
     // ✅ USE SHARED FILTER
     $tasks = Task::filter($request, [
-        'ignore_user_scope' => true // create page shows all
+        'ignore_user_scope' => false 
     ])->paginate(10);
 
     return successResponse([
