@@ -278,20 +278,16 @@ class GeneralController extends Controller
 
 
             // Create or update task linked to the deal
-            Task::updateOrCreate(
-                [
-                    'title'   => "Get {$request->cost} deal",
-                    'project_id' => $project->id,
-                ],
-                [
-                    'date'      => Carbon::now()->addDay()->toDateString(),
-                    'isActive'  => 1,
-                    'status'    => 0,
-                    'counter'   => 20,
-                    'level'     => '0',
-                    'employees' => json_encode([1]), // 👈 replace with your actual employee IDs
-                ]
-            );
+            Task::create([
+                'title'      => "Get {$request->cost} deal - " . now()->format('Y-m-d H:i:s'),
+                'project_id' => $project->id,
+                'date'       => Carbon::now()->addDay()->toDateString(),
+                'isActive'   => 1,
+                'status'     => 0,
+                'counter'    => 20,
+                'level'      => '0',
+                'employees'  => json_encode([1]),
+            ]);
         }
 
         return response()->json([
