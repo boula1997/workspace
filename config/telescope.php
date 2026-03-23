@@ -12,7 +12,7 @@ return [
         ],
     ],
 
-    'path' => env('TELESCOPE_PATH', 'workspace/public/telescope'),
+    'path' => env('TELESCOPE_PATH', 'telescope'),
 
     'driver' => env('TELESCOPE_DRIVER', 'database'),
 
