@@ -302,7 +302,7 @@ class GeneralController extends Controller
             Task::where('project_id', $project->id)
                 ->where('title', 'LIKE', "Get%deal%")
                 ->update([
-                    'title' => "Get {$request->cost} deal - Updated " . now()->format('Y-m-d H:i:s'),
+                    'title' => "Get {$request->cost} deal" . now()->format('Y-m-d H:i:s'),
                     'date'  => Carbon::now()->addDay()->toDateString(),
                 ]);
             
