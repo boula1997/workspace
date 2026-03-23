@@ -27,11 +27,9 @@ class GeneralController extends Controller
 {
 
 
-    public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
-    {
-          try{
-
-
+   public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
+{
+    try {
         // Step 0: Get DB credentials
         $credential = DBCredential::where('db_name', $dbname)->first();
 
@@ -59,11 +57,11 @@ class GeneralController extends Controller
 
         // Step 2: Get main table columns
         $columns = DB::connection('dynamic')->select("
-        SELECT COLUMN_NAME
-        FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_SCHEMA = DATABASE()
-        AND TABLE_NAME = ?;
-    ", [$table]);
+            SELECT COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = DATABASE()
+            AND TABLE_NAME = ?;
+        ", [$table]);
 
         $columnNames = collect($columns)->pluck('COLUMN_NAME')->toArray();
         $exclude = ['id'];
@@ -89,9 +87,12 @@ class GeneralController extends Controller
 
         // 🕒 Step 3.1: Add timestamps manually
         $now = now(); // Carbon instance
+        
+        // 👇 Track if this is a create or update operation
+        $isCreating = !$itemId || $itemId === "undefined";
 
-        if ($itemId && $itemId !== "undefined") {
-
+        if (!$isCreating) {
+            // UPDATE OPERATION
             // Always update id
             $data['id'] = $itemId;
 
@@ -109,6 +110,7 @@ class GeneralController extends Controller
                 ->where('id', $itemId)
                 ->update($data);
         } else {
+            // CREATE OPERATION
             // 🟡 CREATE — set both created_at and updated_at
             if (in_array('created_at', $columnNames)) {
                 $data['created_at'] = $now;
@@ -122,9 +124,6 @@ class GeneralController extends Controller
 
         // Step 4: Handle image & images via files table (unchanged)
         $fileableType = 'App\\Models\\' . Str::studly(Str::singular($table));
-
-
-
 
         if ($request->hasFile('image')) {
             $currentImage = DB::connection('dynamic')->table('files')
@@ -246,38 +245,44 @@ class GeneralController extends Controller
 
         $image = $file->url ?? null;
         $images = $files->pluck('url')->map(fn($url) => asset('storage/' . $url))->toArray();
-          }catch (QueryException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Database error',
-                'error'   => $e->getMessage(), // 👈 frontend reads this
-            ], 500);
 
-        } catch (Throwable $e) {
+    } catch (QueryException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Database error',
+            'error'   => $e->getMessage(),
+        ], 500);
+
+    } catch (Throwable $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Server error',
+            'error'   => $e->getMessage(),
+        ], 500);
+    }
+
+    // 👇 Handle task creation/update for deals
+    if ($table == "deals") {
+        // Find the project
+        $project = Project::find($request->project_id);
+        if (!$project) {
             return response()->json([
                 'success' => false,
-                'message' => 'Server error',
-                'error'   => $e->getMessage(),
-            ], 500);
+                'message' => 'Project not found',
+            ], 404);
         }
 
+        // Find the deal
+        $deal = Deal::find($itemId);
+        if (!$deal) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Deal not found',
+            ], 404);
+        }
 
-                // add task for deals if cost
-        if ($table == "deals") {
-            // Find the project
-            $project = Project::find($request->project_id);
-            if (!$project) {
-                return failedResponse("Project not found");
-            }
-
-            // Find the deal (you probably meant to use $request->deal_id or similar)
-            $deal = Deal::find($itemId ); // or $itemId if passed
-            if (!$deal) {
-                return failedResponse("Deal not found");
-            }
-
-
-            // Create or update task linked to the deal
+        if ($isCreating) {
+            // 🟢 CREATE: Create a new task when creating a deal
             Task::create([
                 'title'      => "Get {$request->cost} deal - " . now()->format('Y-m-d H:i:s'),
                 'project_id' => $project->id,
@@ -288,18 +293,40 @@ class GeneralController extends Controller
                 'level'      => '0',
                 'employees'  => json_encode([1]),
             ]);
+        } else {
+            // 🟡 UPDATE: Update existing task linked to this deal
+            // Find the task that matches this deal's pattern
+            $taskTitle = "Get {$request->cost} deal";
+            
+            // Option 1: Update by finding task with similar title and same project
+            Task::where('project_id', $project->id)
+                ->where('title', 'LIKE', "Get%deal%")
+                ->update([
+                    'title' => "Get {$request->cost} deal - Updated " . now()->format('Y-m-d H:i:s'),
+                    'date'  => Carbon::now()->addDay()->toDateString(),
+                ]);
+            
+            // Option 2: If you want to update only the most recent task for this project
+            // Task::where('project_id', $project->id)
+            //     ->where('title', 'LIKE', "Get%deal%")
+            //     ->orderBy('created_at', 'desc')
+            //     ->first()
+            //     ?->update([
+            //         'title' => "Get {$request->cost} deal - Updated " . now()->format('Y-m-d H:i:s'),
+            //         'date'  => Carbon::now()->addDay()->toDateString(),
+            //     ]);
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => $itemId ? 'Record updated successfully.' : 'Record inserted successfully.',
-            'data' => $data,
-            'id' => $itemId,
-            'image' => $image ? asset('storage/' . $image) : null,
-            'images' => $images,
-        ]);
     }
 
+    return response()->json([
+        'success' => true,
+        'message' => $isCreating ? 'Record inserted successfully.' : 'Record updated successfully.',
+        'data' => $data,
+        'id' => $itemId,
+        'image' => $image ? asset('storage/' . $image) : null,
+        'images' => $images,
+    ]);
+}
 
 
 
