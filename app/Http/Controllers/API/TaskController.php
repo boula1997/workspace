@@ -100,10 +100,9 @@ public function create(Request $request)
             ->orderBy("title")
             ->get();
     } else {
-        $projects = Project::withoutGlobalScope('excludePersonal')
+        $projects = Project::withoutGlobalScope('excludePersonal')->where("appearance",1)
             ->orderBy("title")
-            ->get()
-            ->filter(fn($p) => rest($p) > 0);
+            ->get();
     }
 
     // ✅ USE SHARED FILTER
@@ -889,9 +888,7 @@ public function lock()
 
 
         return successResponse(["boardProjects" => ProjectResource::collection(
-            Project::orderBy("deadline", "asc")
-                ->get()
-                ->filter(fn($project) => $project->status == 1 || $project->status == 2)
+            Project::orderBy("deadline", "asc")->where("appearance",1)->get()
         ),]);
     }
     public function info()
