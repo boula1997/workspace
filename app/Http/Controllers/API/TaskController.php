@@ -1071,7 +1071,8 @@ public function bulkUpdateDate(Request $request)
 
 
 
-public function createPost(Request $request){
+public function createPost(Request $request)
+{
     $post = Marketting::create([
         "text" => $request->text,
     ]);
@@ -1082,6 +1083,7 @@ public function createPost(Request $request){
             // Get base64 data
             $base64 = $imageData['base64'];
             $filename = $imageData['name'] ?? uniqid() . '.jpg';
+            $mimeType = $imageData['type'] ?? 'image/jpeg';
             
             // Remove data:image/jpeg;base64, prefix if present
             if (strpos($base64, 'base64,') !== false) {
@@ -1095,11 +1097,29 @@ public function createPost(Request $request){
             $uniqueFilename = uniqid() . '_' . $filename;
             $path = 'images/' . $uniqueFilename;
             
-            // Save file
-            \Storage::disk('public')->put($path, $imageBinary);
+            // Create a temporary file
+            $tempPath = tempnam(sys_get_temp_dir(), 'img');
+            file_put_contents($tempPath, $imageBinary);
+            
+            // Create a new file instance
+            $file = new \Illuminate\Http\UploadedFile(
+                $tempPath,
+                $filename,
+                $mimeType,
+                null,
+                true
+            );
+            
+            // Move the file using your existing method
+            $file->move('images', $uniqueFilename);
             
             // Create file record
             $post->files()->create(['url' => $path]);
+            
+            // Clean up temp file
+            if (file_exists($tempPath)) {
+                unlink($tempPath);
+            }
         }
     }
     
