@@ -15,6 +15,7 @@ use App\Models\Project;
 use App\Models\Issue;
 use App\Models\Overtime;
 use App\Models\Fear;
+use App\Models\Marketting;
 use App\Models\Repeat;
 use App\Models\Fee;
 use App\Models\Note;
