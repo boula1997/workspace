@@ -1067,4 +1067,26 @@ public function bulkUpdateDate(Request $request)
     ]);
 }
 
+
+
+public function createPost(Request $request){
+    $post=Marketting::create([
+        "text"=>$request->text,
+    ]);
+    if($request->hasFile("images")){
+        $post->uploadFiles($request->file("images"));
+    }
+    return successResponse($post);
+}
+public function getPosts(){
+    $posts=Marketting::orderBy("created_at","desc")->get();
+    return successResponse($posts);
+}
+public function deletePost($id){
+    $post=Marketting::find($id);
+    $post->deleteFiles();
+    $post->delete();
+    return successResponse($post);
+}
+
 }
