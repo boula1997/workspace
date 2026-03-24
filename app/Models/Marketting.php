@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\MorphFiles;
+use App\Traits\MorphFile;
 
 class Marketting extends Model
 {
-    use HasFactory,MorphFiles;
+    use HasFactory,MorphFiles,MorphFile;
 
     protected $guarded = [];
 
