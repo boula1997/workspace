@@ -9,6 +9,7 @@ use App\Http\Resources\NavigationResource;
 use App\Http\Resources\IssueResource;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\DealResource;
+use App\Http\Resources\PostResource;
 use App\Models\KitTool;
 use App\Models\Query;
 use App\Models\Project;
@@ -1081,7 +1082,7 @@ public function createPost(Request $request){
 }
 public function getPosts(){
     $posts=Marketting::orderBy("created_at","desc")->get();
-    return successResponse($posts);
+    return successResponse(PostResource::collection($posts));
 }
 public function deletePost($id){
     $post=Marketting::find($id);
