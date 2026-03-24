@@ -1117,7 +1117,8 @@ public function getPosts(Request $request)
     // Paginate results (10 posts per page)
     $posts = $query->paginate(2);
     
-    return successResponse(PostResource::collection($posts));
+    // Return the paginator directly with resources
+    return successResponse(PostResource::collection($posts->items()), $posts);
 }
 public function deletePost($id){
     $post=Marketting::find($id);
