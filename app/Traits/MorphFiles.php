@@ -16,13 +16,16 @@ trait  MorphFiles
     public function uploadFiles()
     {
         if (request()->hasFile('images')) {
+            return response()->json("boula test true");
             $files = request()->file('images');
             foreach ($files as $file) {
                 $data['image'] = $file->store('images');
                 $file->move('images', $data['image']);
                 $this->files()->create(['url' => $data['image']]);
             }
-        }   
+        }
+            return response()->json("boula test out");
+
     }
     public function updateFiles()
     {  
