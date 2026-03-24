@@ -13,38 +13,20 @@ trait  MorphFiles
         return $this->morphMany(ModelsFile::class, 'fileable');
     }
 
-public function uploadFiles()
-{
-    // Check for both 'images' and 'images[]'
-    if (request()->hasFile('images') || request()->hasFile('images[]')) {
-        \Log::info('Files detected!');
-        
-        // Get files from either key
-        $files = request()->hasFile('images') 
-            ? request()->file('images') 
-            : request()->file('images[]');
-        
-        // Handle single file case
-        if (!is_array($files)) {
-            $files = [$files];
-        }
-        
-        foreach ($files as $file) {
-            if ($file) {
-                // Store the file
-                $path = $file->store('images', 'public');
-                
-                // Create file record
-                $this->files()->create(['url' => $path]);
+    public function uploadFiles()
+    {
+        if (request()->hasFile('images')) {
+            return response()->json("boula test true");
+            $files = request()->file('images');
+            foreach ($files as $file) {
+                $data['image'] = $file->store('images');
+                $file->move('images', $data['image']);
+                $this->files()->create(['url' => $data['image']]);
             }
         }
-        
-        return response()->json("Files uploaded: " . count($files));
+            return response()->json("boula test out");
+
     }
-    
-    \Log::info('No files detected');
-    return response()->json("No files found");
-}
     public function updateFiles()
     {  
         $this->deleteSpecificFiles();
