@@ -1072,11 +1072,37 @@ public function bulkUpdateDate(Request $request)
 
 
 public function createPost(Request $request){
-    return response()->json(request()->hasFile('images'));
-    $post=Marketting::create([
-        "text"=>$request->text,
+    $post = Marketting::create([
+        "text" => $request->text,
     ]);
-    $post->uploadFiles();
+    
+    // Handle base64 images
+    if ($request->has('images') && is_array($request->images)) {
+        foreach ($request->images as $imageData) {
+            // Get base64 data
+            $base64 = $imageData['base64'];
+            $filename = $imageData['name'] ?? uniqid() . '.jpg';
+            
+            // Remove data:image/jpeg;base64, prefix if present
+            if (strpos($base64, 'base64,') !== false) {
+                $base64 = explode('base64,', $base64)[1];
+            }
+            
+            // Decode base64
+            $imageBinary = base64_decode($base64);
+            
+            // Generate unique filename
+            $uniqueFilename = uniqid() . '_' . $filename;
+            $path = 'images/' . $uniqueFilename;
+            
+            // Save file
+            \Storage::disk('public')->put($path, $imageBinary);
+            
+            // Create file record
+            $post->files()->create(['url' => $path]);
+        }
+    }
+    
     return successResponse($post);
 }
 public function getPosts(){
