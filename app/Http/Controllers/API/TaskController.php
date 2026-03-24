@@ -1105,8 +1105,18 @@ public function createPost(Request $request){
     
     return successResponse($post);
 }
-public function getPosts(){
-    $posts=Marketting::orderBy("created_at","desc")->get();
+public function getPosts(Request $request)
+{
+    $query = Marketting::orderBy("created_at", "desc");
+    
+    // Filter by text if provided
+    if ($request->has('search') && !empty($request->search)) {
+        $query->where('text', 'like', '%' . $request->search . '%');
+    }
+    
+    // Paginate results (10 posts per page)
+    $posts = $query->paginate(10);
+    
     return successResponse(PostResource::collection($posts));
 }
 public function deletePost($id){
