@@ -1075,9 +1075,7 @@ public function createPost(Request $request){
     $post=Marketting::create([
         "text"=>$request->text,
     ]);
-    if($request->hasFile("images")){
-        $post->uploadFiles($request->file("images"));
-    }
+    $post->uploadFiles();
     return successResponse($post);
 }
 public function getPosts(){
