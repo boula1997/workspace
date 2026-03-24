@@ -1072,6 +1072,7 @@ public function bulkUpdateDate(Request $request)
 
 
 public function createPost(Request $request){
+    return response()->json(request()->hasFile('images'));
     $post=Marketting::create([
         "text"=>$request->text,
     ]);
