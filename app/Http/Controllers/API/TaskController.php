@@ -1115,7 +1115,7 @@ public function getPosts(Request $request)
     }
     
     // Paginate results (10 posts per page)
-    $posts = $query->paginate(10);
+    $posts = $query->paginate(2);
     
     return successResponse(PostResource::collection($posts));
 }
