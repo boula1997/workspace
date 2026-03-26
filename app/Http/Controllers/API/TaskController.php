@@ -1147,4 +1147,13 @@ public function deletePost($id){
     return successResponse($post);
 }
 
+
+public function offlineTasks(Request $request)
+{
+    $tasks = Task::orderBy("created_at", "desc")->where("status",0)->get();
+    
+    // Return the paginator directly with resources
+    return successResponse(TaskResource::collection($tasks));
+}
+
 }
