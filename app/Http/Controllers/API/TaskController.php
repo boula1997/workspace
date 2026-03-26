@@ -1150,9 +1150,14 @@ public function deletePost($id){
 
 public function offlineTasks(Request $request)
 {
-    $tasks = Task::orderBy("created_at", "desc")->where("status",0)->get();
+    // Apply the same filter logic as in create() function
+    $tasks = Task::filter($request, [
+        'ignore_user_scope' => false 
+    ])->orderBy("date", "asc")
+      ->where("status", 0)
+      ->get();
     
-    // Return the paginator directly with resources
+    // Return the tasks with success response
     return successResponse(TaskResource::collection($tasks));
 }
 
