@@ -1153,7 +1153,7 @@ public function offlineTasks(Request $request)
     // Apply the same filter logic as in create() function
     $tasks = Task::filter($request, [
         'ignore_user_scope' => false 
-    ])->orderBy("date", "asc")
+    ])->orderBy("date", "asc") 
       ->where("status", 0)
       ->get();
     

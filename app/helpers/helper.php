@@ -395,17 +395,11 @@ function hasExceededDeadlines()
 {
     $yesterday = Carbon::yesterday('Africa/Cairo')->startOfDay();
 
-    $baseQuery = Project::whereNotNull('deadline')
-        ->whereDate('deadline', '<=', $yesterday);
-
-    $expiredProjects = (clone $baseQuery)->filterByStatus(1)->exists()
-                    || (clone $baseQuery)->filterByStatus(2)->exists();
-
     $expiredDeadlines = Task::whereDate('date', '<=', $yesterday)
         ->where('status', 0)
         ->exists();
 
-    return $expiredProjects || $expiredDeadlines;
+    return  $expiredDeadlines;
 }
 
 function itemsCount($model)
