@@ -143,6 +143,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/data/info', [TaskController::class, 'info']);
     Route::get('/apptask/tasks', [TaskController::class, 'tasks']);
     Route::get('/offline/tasks', [TaskController::class, 'offlineTasks']);
+    Route::get('/offline/notes', [TaskController::class, 'offlineNotes']);
     Route::get('/apptask/finished/tasks', [TaskController::class, 'finishedTasks']);
     Route::get('/note', [TaskController::class, 'lifNote'])->name('life.note');
     Route::get('/apptask/create/finished', [TaskController::class, 'createFinished']);

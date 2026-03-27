@@ -1160,5 +1160,11 @@ public function offlineTasks(Request $request)
     // Return the tasks with success response
     return successResponse(TaskResource::collection($tasks));
 }
+public function offlineNotes(Request $request)
+{
+    $notes = Note::inRandomOrder()->take(100)->get();
+    
+    return successResponse($notes);
+}
 
 }
