@@ -1162,7 +1162,7 @@ public function offlineTasks(Request $request)
 }
 public function offlineNotes(Request $request)
 {
-    $notes = Note::inRandomOrder()->take(100)->get();
+    $notes = Note::inRandomOrder()->take(300)->get();
     
     return successResponse($notes);
 }
