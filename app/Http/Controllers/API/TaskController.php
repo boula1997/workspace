@@ -884,6 +884,26 @@ public function lock()
     }
 
 
+    public function facebookAds()
+    {
+
+        try {
+            if (boula()) {
+
+                $facebookAds = Issue::where("id", 67)->first();
+
+
+                return response()->json([
+                    'message' => 'User is Boula',
+                    'data' => $facebookAds
+                ], 201);
+            }
+        } catch (Ecxception $e) {
+            dd($e->getMessage());
+        }
+    }
+
+
     public function boardProjects()
     {
 
