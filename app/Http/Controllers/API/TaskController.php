@@ -890,7 +890,7 @@ public function lock()
         try {
             if (boula()) {
 
-                $facebookAds = Issue::where("id", 67)->first();
+                $facebookAds = Issue::where("id", 118)->first();
 
 
                 return response()->json([
