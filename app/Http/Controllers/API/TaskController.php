@@ -1189,4 +1189,9 @@ public function offlineNotes(Request $request)
     $notes = Note::inRandomOrder()->take(300)->get();
     return successResponse($notes);
 }
+public function settings(Request $request)
+{
+    $settings = setting();
+    return successResponse($settings);
+}
 }
