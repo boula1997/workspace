@@ -539,12 +539,12 @@ class ActionController extends Controller
         $results = DB::select("select * from projects where " . implode(" AND ", $sql) . "order by id asc;");
         return view('welcome', compact('results', 'action', 'array','flag'));
       } else {
-        $action = "get multible scripts";
+        $action = "get multiple scripts";
         $array = explode(',', $request->script);
-        $searchRefrences=false;
-        if (true) {
+        $searchReferences = false;
 
-            $searchRefrences = true;
+        if (true) {
+            $searchReferences = true;
             $sql = [];
 
             foreach ($array as $item) {
@@ -562,8 +562,13 @@ class ActionController extends Controller
                 return "script LIKE '%$item%'";
             }, $array)) . " ORDER BY id DESC");
 
+            // Tasks have 'title' column, alias it as 'ai_prompt'
+            $tasks = DB::select("SELECT *, title as ai_prompt, 'task' as source FROM tasks WHERE " . implode(" AND ", array_map(function($item) {
+                return "title LIKE '%$item%'";
+            }, $array)) . " ORDER BY id DESC");
+
             // Merge all
-            $results = array_merge($issues, $projects, $scripts);
+            $results = array_merge($issues, $projects, $scripts, $tasks);
         }
 
         return view('welcome', compact('results', 'action', 'array','searchRefrences'));
