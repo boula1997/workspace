@@ -571,7 +571,7 @@ class ActionController extends Controller
             $results = array_merge($issues, $projects, $scripts, $tasks);
         }
 
-        return view('welcome', compact('results', 'action', 'array','searchRefrences'));
+        return view('welcome', compact('results', 'action', 'array','searchReferences'));
       }
     }
 
