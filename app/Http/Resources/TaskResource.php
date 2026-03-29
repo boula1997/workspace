@@ -26,6 +26,8 @@ public function toArray($request)
         'employees'  => $this->employees ?? [],   // needed for bulk assign display
         'project'    => $this->project->title,
         'project_id' => $this->project_id,        // needed for project filter
+        'isYousab' => $this->project->isYousab,        // needed for project filter
+        'isPersonal' => $this->project->isPersonal,        // needed for project filter
         'isDeleted'  => (bool) !$this->isActive,  // if you use soft-delete via isActive
         'editlink'   => "https://reactdashboard.yousab-tech.com/tasks/" . $this->id . "/edit",
     ];
