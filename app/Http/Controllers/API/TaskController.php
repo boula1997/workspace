@@ -907,11 +907,11 @@ public function lock()
     public function boardProjects()
     {
 
-
+   $admins=Admin::all();
 
         return successResponse(["boardProjects" => ProjectResource::collection(
             Project::orderBy("deadline", "asc")->where("appearance",1)->get()
-        ),]);
+        ),"admins"=>$admins]);
     }
     public function info()
     {
