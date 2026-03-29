@@ -24,7 +24,7 @@ class ProjectResource extends JsonResource
             'projectFutureExpense' => $this->futureExpense,
             'renewalDate' => $this->renewalDate,
             'payed' => $this->payed,
-            'remaining_hours' => rest($this)/settings()->pricePerHour,
+            'remaining_hours' => rest($this)/(settings()->pricePerHour+(settings()->pricePerHour*20/100)),
             'worked_hours' => $this->hours,
             'deadline' => $this->deadline,
             'isYousab' => $this->isYousab,
