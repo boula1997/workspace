@@ -111,4 +111,21 @@ public function scopeFilterByStatus($query, $status)
         }
     });
 }
+
+
+public function projectHours()
+{
+    return $this->hasMany(Projecthour::class);
+}
+
+public function getHoursAttribute()
+{
+    return $this->projectHours()->sum('hours_count');
+}
+
+public function getHoursEmployeeAttribute()
+{
+    return $this->projectHours()->where('employee_id', auth('api')->user()->id)->sum('hours_count');
+}
+
 }
