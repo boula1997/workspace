@@ -110,7 +110,7 @@ public function create(Request $request)
     // ✅ USE SHARED FILTER
     $tasks = Task::filter($request, [
         'ignore_user_scope' => false 
-    ])->paginate(10);
+    ])->paginate(20);
 
     return successResponse([
         "projects" => ProjectResource::collection($projects),
