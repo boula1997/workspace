@@ -113,6 +113,22 @@ public function project()
             $query->whereIn('project_id', explode(',', $request->projects));
         }
 
+
+        // --- Type filter (personal / yousab / all) ---
+        if ($request->filled('type')) {
+            $type = $request->input('type');
+
+            if ($type === 'personal') {
+                $query->whereHas('project', fn($q) => $q->where('isPersonal', 1));
+            } elseif ($type === 'yousab') {
+                $query->whereHas('project', fn($q) => $q->where('isYousab', 1));
+            } elseif ($type === 'all') {
+                $query->whereHas('project', fn($q) =>
+                    $q->where('isPersonal', 1)->orWhere('isYousab', 1)
+                );
+            }
+        }
+
         // --- Parcel special case ---
         if (auth('api')->user()->email === 'parcel@gmail.com') {
             $query->where('project_id', parcelProject()->id);
