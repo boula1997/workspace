@@ -1194,4 +1194,9 @@ public function settings(Request $request)
     $settings = setting();
     return successResponse($settings);
 }
+public function competitors(Request $request)
+{
+    $competitors = Navigation::where('category_id', 25)->get();
+    return successResponse($competitors);
+}
 }
