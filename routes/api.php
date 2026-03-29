@@ -168,5 +168,6 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::post('/marketing/create-post', [TaskController::class, 'createPost']);
     Route::get('/marketing/get-posts', [TaskController::class, 'getPosts']);
     Route::delete('/marketing/delete-post/{id}', [TaskController::class, 'deletePost']);
-    });
+    Route::post('/add/project/hours', [TaskController::class, 'addProjectHours']);
+});
 }); 

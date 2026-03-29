@@ -1199,4 +1199,21 @@ public function competitors(Request $request)
     $competitors = Navigation::where('category_id', 25)->get();
     return successResponse($competitors);
 }
+
+public function addProjectHours(Request $request)
+{
+    $request->validate([
+        'project_id' => 'required|exists:projects,id',
+        'admin_id' => 'required|exists:admins,id',
+        'hours'      => 'required|numeric',
+    ]);
+
+    $projectHour = Projecthour::create([
+        'project_id' => $request->project_id,
+        'hours'      => $request->hours,
+        'admin_id'   => $request->admin_id,
+    ]);
+
+    return successResponse($projectHour);
+}
 }
