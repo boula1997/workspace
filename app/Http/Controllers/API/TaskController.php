@@ -1212,7 +1212,7 @@ public function addProjectHours(Request $request)
     $projectHour = Projecthour::create([
         'project_id' => $request->project_id,
         'hours_count'      => $request->hours,
-        'admin_id'   => $request->admin_id,
+        'employee_id'   => $request->admin_id,
     ]);
 
     return successResponse($projectHour);
