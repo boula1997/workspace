@@ -26,7 +26,7 @@ class ProjectResource extends JsonResource
             'payed' => $this->payed,
             'remaining_hours' => rest($this)/(settings()->pricePerHour+(settings()->pricePerHour*20/100)),
             'worked_hours' => $this->hours,
-            "last_worked_on" => $this->projectHours()->latest()->first()?->created_at?->diffForHumans() ?? 'N/A',
+            "last_worked_on" => $this->projectHours()->latest()->first()?->created_at?->locale('en')->diffForHumans() ?? 'N/A',
             'deadline' => $this->deadline,
             'isYousab' => $this->isYousab,
             'isPersonal' => $this->isPersonal,
