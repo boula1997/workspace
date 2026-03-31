@@ -10,4 +10,10 @@ class phoneGig extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+
+    public function callHistories()
+    {
+        return $this->hasMany(CallHistory::class);
+    }
 }
