@@ -18,7 +18,6 @@ class PhoneGigResource extends JsonResource
             'id' => $this->id,
             'phone' => $this->phone,
             "last_contact" => $this->callHistories()->latest()->first()->created_at ?? null,
-            "last_contact_ago" => $this->callHistories()->latest()->first()->created_at->diffForHumans() ?? null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
