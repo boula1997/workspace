@@ -1234,12 +1234,11 @@ public function addPhoneGig(Request $request)
 public function addCallHistory(Request $request)
 {
     $request->validate([
-        'phone' => 'required|string',
+        'phone_gig_id' => 'required|exists:phone_gigs,id',
     ]);
 
     $callHistory = CallHistory::create([
-        'phone'       => $request->phone,
-        'phone_gig_id' => $request->phone_gig_id,  // Add if it's required
+        'phone_gig_id' => $request->phone_gig_id,
     ]);
 
     return successResponse($callHistory);  // ✅ Return the correct variable
