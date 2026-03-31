@@ -1217,4 +1217,35 @@ public function addProjectHours(Request $request)
 
     return successResponse($projectHour);
 }
+public function addPhoneGig(Request $request)
+{
+    $request->validate([
+        'phone'      => 'required|string|unique:phone_gigs,phone',
+    ]);
+
+    $phoneGig = PhoneGig::create([
+        'phone' => $request->phone,
+    ]);
+
+    return successResponse($phoneGig);
+}
+public function addCallHistory(Request $request)
+{
+    $request->validate([
+        'phone' => 'required|string',
+    ]);
+
+    $callHistory = CallHistory::create([
+        'phone'       => $request->phone,
+        'phone_gig_id' => $request->phone_gig_id,  // Add if it's required
+    ]);
+
+    return successResponse($callHistory);  // ✅ Return the correct variable
+}
+
+public function getAllPhoneGigs()
+{
+    $phoneGigs = PhoneGig::latest()->get();
+    return successResponse($phoneGigs);
+}
 }
