@@ -13,7 +13,7 @@ use App\Http\Resources\PostResource;
 use App\Models\KitTool;
 use App\Models\Query;
 use App\Models\Project;
-use App\Models\PhoneGig;
+use App\Models\phoneGig;
 use App\Models\CallHistory;
 use App\Models\Issue;
 use App\Models\Overtime;
@@ -1225,7 +1225,7 @@ public function addPhoneGig(Request $request)
         'phone'      => 'required|string|unique:phone_gigs,phone',
     ]);
 
-    $phoneGig = PhoneGig::create([
+    $phoneGig = phoneGig::create([
         'phone' => $request->phone,
     ]);
 
@@ -1247,7 +1247,7 @@ public function addCallHistory(Request $request)
 
 public function getAllPhoneGigs()
 {
-    $phoneGigs = PhoneGig::latest()->get();
+    $phoneGigs = phoneGig::latest()->get();
     return successResponse($phoneGigs);
 }
 }
