@@ -13,7 +13,7 @@ use App\Http\Resources\PostResource;
 use App\Models\KitTool;
 use App\Models\Query;
 use App\Models\Project;
-use App\Models\PhonGig;
+use App\Models\PhoneGig;
 use App\Models\CallHistory;
 use App\Models\Issue;
 use App\Models\Overtime;
