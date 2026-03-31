@@ -8,6 +8,7 @@ use App\Http\Resources\ProjectResource;
 use App\Http\Resources\NavigationResource;
 use App\Http\Resources\IssueResource;
 use App\Http\Resources\TaskResource;
+use App\Http\Resources\PhoneGigResource;
 use App\Http\Resources\DealResource;
 use App\Http\Resources\PostResource;
 use App\Models\KitTool;
@@ -1247,6 +1248,6 @@ public function addCallHistory(Request $request)
 public function getAllPhoneGigs()
 {
     $phoneGigs = phoneGig::latest()->get();
-    return successResponse($phoneGigs);
+    return successResponse(PhoneGigResource::collection($phoneGigs));
 }
 }
