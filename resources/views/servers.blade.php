@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-3">
         <h6>Yousab Tech</h6>
-        <p class="clickable-text" content="ssh yousabte@192.185.41.219 -p2222">server SSH</p>
+        <p class="clickable-text" content="ssh yousabte@localhost -p2222">server SSH</p>
         <p class="clickable-text" content="2JCoIkhAyWRqrzdy">Password</p>
        <br>
         <a target="__blank" href="https://www.hostgator.com/my-account/login"> Go to server</a>

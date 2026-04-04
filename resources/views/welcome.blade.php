@@ -1458,7 +1458,7 @@ echo &quot;&lt;/table&gt;&quot;;
                             <p>2JCoIkhAyWRqrzdy</p>
                             <br>
                             <hr class="text-white">
-                            <p>ssh yousabte@192.185.41.219 -p2222</p>
+                            <p>ssh yousabte@localhost -p2222</p>
                             <br>
                             <hr class="text-white">
                             <p>request()->segment(count(request()->segments()))</p>
