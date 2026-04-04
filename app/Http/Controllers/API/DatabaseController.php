@@ -48,7 +48,7 @@ class DatabaseController extends Controller
         } else {
             if(isset($credentialId)){
                 $credential = DBCredential::find($credentialId);
-                $dbHost = $credential->db_host ?? 'localhost';
+                $dbHost = 'localhost';
                 $dbName = $credential->db_name ?? 'laravel';
                 $dbUser = $credential->db_username ?? 'root';
                 $dbPass = $credential->db_password ?? '';

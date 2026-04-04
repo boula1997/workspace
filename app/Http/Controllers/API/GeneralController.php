@@ -33,7 +33,7 @@ class GeneralController extends Controller
         // Step 0: Get DB credentials
         $credential = DBCredential::where('db_name', $dbname)->first();
 
-        $dbHost = $credential->db_host ?? 'localhost';
+        $dbHost = 'localhost';
         $dbName = $credential->db_name ?? 'automation';
         $dbUser = $credential->db_username ?? 'root';
         $dbPass = $credential->db_password ?? '';
@@ -341,7 +341,7 @@ public function showEditCreate($dbname, $table, $itemId = null)
     // Step 0: Get DB credentials
     $credential = DBCredential::where('db_name', $dbname)->first();
 
-    $dbHost = $credential->db_host ?? 'localhost';
+    $dbHost = 'localhost';
     $dbName = $credential->db_name ?? 'automation';
     $dbUser = $credential->db_username ?? 'root';
     $dbPass = $credential->db_password ?? '';
@@ -680,7 +680,7 @@ public function showEditCreate($dbname, $table, $itemId = null)
         // Step 0: Get DB credentials
         $credential = DBCredential::where('db_name', $dbname)->first();
 
-        $dbHost = $credential->db_host ?? 'localhost';
+        $dbHost = 'localhost';
         $dbName = $credential->db_name ?? 'automation';
         $dbUser = $credential->db_username ?? 'root';
         $dbPass = $credential->db_password ?? '';
@@ -745,7 +745,7 @@ public function showEditCreate($dbname, $table, $itemId = null)
     {
         // Step 0: Dynamic DB connection
         $credential = DBCredential::where('db_name', $dbname)->first();
-        $dbHost = $credential->db_host ?? 'localhost';
+        $dbHost = 'localhost';
         $dbName = $credential->db_name ?? 'automation';
         $dbUser = $credential->db_username ?? 'root';
         $dbPass = $credential->db_password ?? '';
@@ -989,7 +989,7 @@ public function showEditCreate($dbname, $table, $itemId = null)
         // Step 0: Get DB credentials
         $credential = DBCredential::where('db_name', $dbname)->first();
 
-        $dbHost = $credential->db_host ?? 'localhost';
+        $dbHost = 'localhost';
         $dbName = $credential->db_name ?? 'automation';
         $dbUser = $credential->db_username ?? 'root';
         $dbPass = $credential->db_password ?? '';
@@ -1054,7 +1054,7 @@ public function showEditCreate($dbname, $table, $itemId = null)
         // Step 0: Get DB credentials
         $credential = DBCredential::where('db_name', $dbname)->first();
 
-        $dbHost = $credential->db_host ?? 'localhost';
+        $dbHost = 'localhost';
         $dbName = $credential->db_name ?? 'automation';
         $dbUser = $credential->db_username ?? 'root';
         $dbPass = $credential->db_password ?? '';

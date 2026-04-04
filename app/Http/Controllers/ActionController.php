@@ -85,7 +85,7 @@ class ActionController extends Controller
 
 
       $credential=DBCredential::where('db_name',isset($request->dbname)?$request->dbname:'yousabte_automation')->first();
-      $dbHost = isset($credential->db_host)?$credential->db_host:'localhost';
+      $dbHost = 'localhost';
       $dbName = isset($credential->db_name)?$credential->db_name:'yousabte_automation';
       $dbUser = isset($credential->db_username)?$credential->db_username:'yousabte_automation';
       $dbPass = isset($credential->db_password)?$credential->db_password:'o$01Yqf{R;s6';
@@ -841,7 +841,7 @@ public function execQuery(Request $request)
 {
     try {
         $credential = DBCredential::where('db_name', $request->dbname ?? 'yousabte_automation')->first();
-        $dbHost = isset($credential->db_host)?$credential->db_host:'localhost';
+        $dbHost = 'localhost';
         $dbName = $credential->db_name ?? 'automation';
         $dbUser = $credential->db_username ?? 'root';
         $dbPass = $credential->db_password ?? '';
@@ -926,7 +926,7 @@ public function show($db, $table, $query)
 {
     $credential = DBCredential::where('db_name', $db)->first();
 
-    $dbHost = isset($credential->db_host)?$credential->db_host:'localhost';
+    $dbHost = 'localhost';
     $dbName = $credential->db_name ?? 'automation';
     $dbUser = $credential->db_username ?? 'root';
     $dbPass = $credential->db_password ?? '';
