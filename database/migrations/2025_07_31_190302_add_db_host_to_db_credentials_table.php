@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('d_b_credentials', function (Blueprint $table) {
-            $table->string("db_host")->default("localhost");
+            $table->string("db_host")->default("192.185.41.219");
         });
     }
 
