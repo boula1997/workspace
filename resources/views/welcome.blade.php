@@ -1341,39 +1341,16 @@ $(this).click(); // Trigger the click event
                             <p title="auto fill password">cls</p>
                             <br>
                             <hr class="text-white">
-                             <textarea name="" readonly id="" cols="100" rows="15">
-🚀 عايز موقع أو تطبيق موبايل احترافي ومبرمج خصيصًا لمشروعك؟
-احنا في Yousab Tech بنصمم ونبرمج مواقع وتطبيقات موبايل برمجة خاصة بالكامل باستخدام Laravel + React و React Native
-مش قوالب جاهزة – كل مشروع بيتبني من الصفر حسب نشاطك واحتياجاتك 💪
-
-بنوفرلك:
-✅ تصميم عصري ومتجاوب مع كل الأجهزة
-✅ سرعة وأداء قوي جدًا
-✅ أمان عالي ولوحة تحكم سهلة الاستخدام
-✅ استضافة + دومين + دعم فني مجاني لمدة سنة كاملة
-✅ تسليم الموقع جاهز بـ SEO قوي علشان يظهر في نتائج البحث الأولى
-✅ تسليم سريع وسعر يناسب ميزانيتك
-
-📂 شوف أعمالنا بنفسك:
-👉 https://portfolio.yousab-tech.com?src=main
-
-📞 تواصل معنا مباشرة على واتساب:
-👉 https://wa.me/+201126785910
-
-خلّي مشروعك أونلاين وابدأ تجذب عملاء من جوجل بنفسك 💻📱🚀
-                             </textarea>
-                            <br>
-                            <hr class="text-white">
-                             <textarea name="" readonly id="" cols="100" rows="10">
-معاك المهندس بولا نسيم من شركة Yousab Tech، عملنا أكتر من 70 موقع وتطبيق في مصر والسعودية، وده لينك البورتفوليو بتاعنا: 
-https://portfolio.yousab-tech.com?src=
-ممكن تبعتلي التفاصيل أشوفلك عرض مناسب في نفس اليوم
-https://wa.me/+201208050298
-                             </textarea>
+                            <p title="auto fill password">
+                                https://yousab-tech.com/workspace/public/cvs/BoulaNessimResume.docx</p>
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">
-                                https://yousab-tech.com/workspace/public/cvs/BoulaNessimResume.docx</p>
+                                git for-each-ref --sort=-committerdate refs/heads/ --format='%(refname:short)'</p>
+                            <br>
+                            <hr class="text-white">
+                            <p title="auto fill password">
+                                git revert -m 1 adbab67a8802039f4d8df3853d7c36d88c660559</p>
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">https://portfolio.yousab-tech.com?src=</p>
@@ -1386,70 +1363,6 @@ https://wa.me/+201208050298
                                 'data' => $console,
                             ]);
                             </p>
-
-                            <br>
-                            <hr class="text-white">
-
-                            <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
-if (App::environment('local')) {
-Route::get(&#39;routes&#39;, function () {
-$routeCollection = Route::getRoutes();
-
-echo &quot;&lt;table style=&#39;width:100%; border: 1px solid black; border-collapse:
-collapse;&#39;&gt;&quot;;
-echo &quot;&lt;tr&gt;&quot;;
-echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;HTTP
-Method&lt;/th&gt;&quot;;
-echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Route&lt;/th&gt;&quot;;
-echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Name&lt;/th&gt;&quot;;
-echo &quot;&lt;th style=&#39;border: 1px solid black;&#39;&gt;Corresponding
-Action&lt;/th&gt;&quot;;
-echo &quot;&lt;/tr&gt;&quot;;
-
-foreach ($routeCollection as $value) {
-echo &quot;&lt;tr&gt;&quot;;
-echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; .
-$value-&gt;methods()[0] . &quot;&lt;/td&gt;&quot;;
-echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; . $value-&gt;uri()
-. &quot;&lt;/td&gt;&quot;;
-echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; .
-($value-&gt;getName() ?? &#39;N/A&#39;) . &quot;&lt;/td&gt;&quot;;
-echo &quot;&lt;td style=&#39;border: 1px solid black;&#39;&gt;&quot; .
-$value-&gt;getActionName() . &quot;&lt;/td&gt;&quot;;
-echo &quot;&lt;/tr&gt;&quot;;
-}
-
-echo &quot;&lt;/table&gt;&quot;;
-});
-}
-
-                            </pre>
-                            <br>
-                            <hr class="text-white">
-
-                           <pre style="color: white; background-color: #1e1e1e; padding: 10px; border-radius: 6px; width:100% !important;">
-&#123;
-&quot;name&quot;: &quot;John Doe&quot;,
-&quot;phone&quot;: &quot;+201234567890&quot;,
-&quot;email&quot;: &quot;john.doe@example.com&quot;,
-&quot;address&quot;: &quot;1234 Main St, Cairo, Egypt&quot;,
-&quot;totalPrice&quot;: 150.00,
-&quot;items&quot;: [
-&#123;
-&quot;id&quot;: 1,
-&quot;qty&quot;: 2,
-&quot;totalPrice&quot;: 50.00,
-&quot;for_agency&quot;: 1
-&#125;,
-&#123;
-&quot;id&quot;: 2,
-&quot;qty&quot;: 1,
-&quot;totalPrice&quot;: 50.00,
-&quot;for_agency&quot;: 0
-&#125;
-]
-&#125;
-                            </pre>
                             <br>
                             <hr class="text-white">
                             <p>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</p>
@@ -1502,19 +1415,6 @@ echo &quot;&lt;/table&gt;&quot;;
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">Pa$$w0rd!</p>
-                            <br>
-                            <hr class="text-white">
-
-                            <p title="auto fill password">https://reactdashboard.yousab-tech.com/tracks/297</p>
-                            <br>
-                            <hr class="text-white">
-                            <p>mysqldump -u yousabte_workspace -p'kD[asKgc%ydC' --complete-insert yousabte_workspace >
-                                yousabte_workspace_export.sql</p>
-                            <p>mysqldump -u yousabte_lapmob -p'QL3LmB%F]^+V' --complete-insert yousabte_lapmob >
-                                yousabte_lapmob_export.sql</p>
-                            <p>mysqldump -u yousabte_db -p'k6lvnFGg0l0t' --complete-insert yousabte_db >
-                                yousabte_db_export.sql</p>
-                            <p>cls</p>
                             <br>
                             <hr class="text-white">
                             <p>cd public_html/workspace</p>
