@@ -1346,6 +1346,10 @@ $(this).click(); // Trigger the click event
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">
+                                eas update --branch preview --message "fix bug"</p>
+                            <br>
+                            <hr class="text-white">
+                            <p title="auto fill password">
                                 git for-each-ref --sort=-committerdate refs/heads/ --format='%(refname:short)'</p>
                             <br>
                             <hr class="text-white">
