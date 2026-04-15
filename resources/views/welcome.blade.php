@@ -1346,7 +1346,7 @@ $(this).click(); // Trigger the click event
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">
-                               $e->getMessage(), $e->getFile(), $e->getLine()</p>
+                               $e->getMessage()." ". $e->getFile()." ". $e->getLine()</p>
                             <br>
                             <hr class="text-white">
                             <p title="auto fill password">
