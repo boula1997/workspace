@@ -1,5 +1,6 @@
 /node_modules
 /public/hot
+/public/cvs
 /public/storage
 /public/images
 /storage/*.key
