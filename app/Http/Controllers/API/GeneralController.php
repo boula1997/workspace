@@ -75,11 +75,14 @@ class GeneralController extends Controller
             if ($request->has($column)) {
                 $value = $request->input($column);
 
-                if ($column === 'password' && !empty($value)) {
-                    $data[$column] = \Illuminate\Support\Facades\Hash::make($value);
-                } else {
-                    $data[$column] = $value;
+                if ($column === 'password') {
+                    if (!empty($value)) {
+                        $data[$column] = \Illuminate\Support\Facades\Hash::make($value);
+                    }
+                    continue;
                 }
+
+                $data[$column] = $value;
             }
         }
 
