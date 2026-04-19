@@ -445,8 +445,17 @@ public function getDatabase($dbname, $namedb)
                 $rowCount = DB::connection('dynamic')->table($tableName)->count();
             }
 
-            // Get columns
-            $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
+            // Get columns - wrap in try-catch to handle invalid views
+            try {
+                $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
+            } catch (\Exception $colException) {
+                // Skip invalid views that reference non-existent tables/columns or lack permissions
+                if ($tableType === 'VIEW') {
+                    continue; // Skip this view entirely
+                }
+                // For base tables, re-throw the exception
+                throw $colException;
+            }
 
             // Get actual foreign key information for this table
             $foreignKeys = DB::connection('dynamic')->select("
@@ -626,10 +635,6 @@ public function getDatabase($dbname, $namedb)
         ], 500);
     }
 }
-
-
-
-
 
 
 
