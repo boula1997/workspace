@@ -703,7 +703,7 @@ public function getDatabase($dbname, $namedb)
         try {
 
 
-            $commands = Command::where("d_b_credential_id", $id)
+            $commands = Command::where("d_b_credential_id", $id)->orWhere("isGeneral", 1)
                 ->latest('updated_at')
                 ->take(200)
                 ->get();
