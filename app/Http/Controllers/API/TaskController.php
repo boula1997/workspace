@@ -1250,4 +1250,13 @@ public function getAllPhoneGigs()
     $phoneGigs = phoneGig::latest()->get();
     return successResponse(PhoneGigResource::collection($phoneGigs));
 }
+
+
+public function updateTasksToToday()
+{
+    $tasks = Task::where('status', 0)->where('date', '<', today())
+        ->update(['date' => today()]);
+
+    return successResponse($tasks);
+}
 }

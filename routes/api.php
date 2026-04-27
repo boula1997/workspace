@@ -172,5 +172,6 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::post('/add/phone/gig', [TaskController::class, 'addPhoneGig']);
     Route::post('/add/call/history', [TaskController::class, 'addCallHistory']);
     Route::get('/get/all/phone/gigs', [TaskController::class, 'getAllPhoneGigs']);
+    Route::post('/update/tasks/to/today', [TaskController::class, 'updateTasksToToday']);
 });
 }); 
