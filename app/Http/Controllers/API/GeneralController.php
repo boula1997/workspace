@@ -1249,4 +1249,126 @@ public function showEditCreate($dbname, $table, $itemId = null)
             'databases' => databases(),
         ]);
     }
+
+    public function getInputAppearances($dbname)
+    {
+        try {
+            $credential = DBCredential::where('db_name', $dbname)->firstOrFail();
+
+            // Configure connection dynamically
+            config([
+                'database.connections.dynamic' => [
+                    'driver' => 'mysql',
+                    'host' => $credential->db_host,
+                    'database' => $credential->db_name,
+                    'username' => $credential->db_username,
+                    'password' => $credential->db_password,
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                ],
+            ]);
+
+            DB::purge('dynamic');
+            DB::reconnect('dynamic');
+
+            // Fetch all input appearances
+            $inputAppearances = DB::connection('dynamic')->table('input_appearances')
+                ->select('id', 'isCreate', 'isEdit', 'isIndex','isShow','table_name','column_name')
+                ->orderBy('id')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'input_appearances' => $inputAppearances,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load input appearances: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function updateInputAppearance(Request $request, $dbname, $id)
+    {
+        try {
+            $credential = DBCredential::where('db_name', $dbname)->firstOrFail();
+
+            // Configure connection dynamically
+            config([
+                'database.connections.dynamic' => [
+                    'driver' => 'mysql',
+                    'host' => $credential->db_host,
+                    'database' => $credential->db_name,
+                    'username' => $credential->db_username,
+                    'password' => $credential->db_password,
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                ],
+            ]);
+
+            DB::purge('dynamic');
+            DB::reconnect('dynamic');
+
+            // Update input appearance
+            $inputAppearance = DB::connection('dynamic')->table('input_appearances')
+                ->where('id', $id)
+                ->update([
+                    'label' => $request->label,
+                    'type' => $request->type,
+                    'is_visible' => $request->is_visible,
+                    'updated_at' => now(),
+                ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Input appearance updated successfully ✅',
+                'input_appearance' => $inputAppearance,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update input appearance: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function deleteInputAppearance($dbname, $id)
+    {
+        try {
+            $credential = DBCredential::where('db_name', $dbname)->firstOrFail();
+
+            // Configure connection dynamically
+            config([
+                'database.connections.dynamic' => [
+                    'driver' => 'mysql',
+                    'host' => $credential->db_host,
+                    'database' => $credential->db_name,
+                    'username' => $credential->db_username,
+                    'password' => $credential->db_password,
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                ],
+            ]);
+
+            DB::purge('dynamic');
+            DB::reconnect('dynamic');
+
+            // Delete input appearance
+            $inputAppearance = DB::connection('dynamic')->table('input_appearances')
+                ->where('id', $id)
+                ->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Input appearance deleted successfully ✅',
+                'input_appearance' => $inputAppearance,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete input appearance: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 }
