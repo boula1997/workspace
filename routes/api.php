@@ -125,7 +125,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/databases', [GeneralController::class, 'databases']);
     Route::get('/bases', [TaskController::class, 'bases']);
     Route::get('/admins/{dbname}', [GeneralController::class, 'getAdmins']);
-    Route::get('/input/appearances/{dbname}', [GeneralController::class, 'inputAppearances']);
+    Route::get('/input/appearances/{dbname}', [GeneralController::class, 'getInputAppearances']);
 
 
     Route::get('/categories', [CategoryController::class, 'index']);
