@@ -1224,10 +1224,12 @@ public function addPhoneGig(Request $request)
 {
     $request->validate([
         'phone'      => 'required|string|unique:phone_gigs,phone',
+        'description' => 'nullable|string',
     ]);
 
     $phoneGig = phoneGig::create([
         'phone' => $request->phone,
+        'description' => $request->description,
     ]);
 
     return successResponse($phoneGig);
