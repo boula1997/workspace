@@ -16,7 +16,7 @@ use App\Models\KitTool;
 use App\Models\Query;
 use App\Models\Project;
 use App\Models\phoneGig;
-use App\Models\PostGig;
+use App\Models\postGig;
 use App\Models\CallHistory;
 use App\Models\Issue;
 use App\Models\Overtime;
