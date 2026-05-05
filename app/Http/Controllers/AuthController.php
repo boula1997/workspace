@@ -10,6 +10,7 @@ use App\Http\Requests\API\PasswordRequest;
 use App\Http\Requests\API\ReviewRequest;
 use App\Http\Requests\API\UserRequest;
 use App\Http\Resources\AddressResource;
+use App\Http\Resources\AdminResource;
 use App\Http\Resources\ChallengeResource;
 use App\Http\Resources\ConfirmResource;
 use App\Http\Resources\EventResource;
@@ -23,6 +24,7 @@ use App\Http\Resources\VoucherResource;
 use App\Http\Resources\WishlistResource;
 use App\Models\AddFriend;
 use App\Models\Address;
+use App\Models\Admin;
 use App\Models\Challenge;
 use App\Models\ChallengeUser;
 use App\Models\ConfirmUser;
@@ -61,7 +63,7 @@ class AuthController extends Controller
      * @return void
      */
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login', 'register','checkToken','updateCharge']]);
+        $this->middleware('auth:admin-api', ['except' => ['login', 'register','checkToken','updateCharge']]);
     }
     
     /**
@@ -80,7 +82,6 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        // Use 'admin-api' guard for JWT
         if (!$token = auth('admin-api')->attempt($validator->validated())) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
@@ -89,7 +90,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Register a User.
+     * Register an Admin User.
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -98,52 +99,48 @@ class AuthController extends Controller
         try{
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|between:2,100',
-                'email' => 'required|string|email|max:100|unique:users',
-                'username' => 'required|string|max:100|unique:users',
-                'phone' => 'nullable|numeric|unique:users',
-                'instagramURL' => 'nullable|url',
-                'facebookURL' => 'nullable|url',
-                'linkedinURL' => 'nullable|url',
+                'email' => 'required|string|email|max:100|unique:admins',
+                'phone' => 'nullable|numeric|unique:admins',
+                'whatsapp' => 'nullable|numeric',
+                'messanger_id' => 'nullable|string',
                 'password' => 'required|string|confirmed|min:6',
             ]);
+            
             if($validator->fails()){
                 return response()->json($validator->errors()->toJson(), 400);
             }
-            $data = User::create(array_merge(
-                        $validator->validated(),
-                        ['password' => bcrypt($request->password),
-                        ]
-                    ));
-            $data->otp = generateUniqueOTP();
-            $data->save();                    
+            
+            $data = Admin::create(array_merge(
+                $validator->validated(),
+                ['password' => bcrypt($request->password)]
+            ));
       
             App::setLocale('en');
             $to = $data->email;
             $toName = $data->name;
-            $subject="Your Verification Code";
-            $body = view('mail.verification', compact('data'))->render();
-             
-            // Call the MailService to send the email
-            $result = MailService::sendMail($to, $toName, $subject, $body);
+            $subject="Admin Account Created";
+            // Uncomment if you have a mail template
+            // $body = view('mail.admin-verification', compact('data'))->render();
+            // MailService::sendMail($to, $toName, $subject, $body);
             App::setLocale(config('app.locale'));
             
             return response()->json([
-                'message' => 'User successfully registered',
-                'user' => $data
+                'message' => 'Admin successfully registered',
+                'admin' => new AdminResource($data)
             ], 201);
         }catch(Exception $e){
-            dd($e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
     /**
-     * Log the user out (Invalidate the token).
+     * Log the admin out (Invalidate the token).
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function logout() {
-        auth('api')->logout();
-        return response()->json(['message' => 'User successfully signed out']);
+        auth('admin-api')->logout();
+        return response()->json(['message' => 'Admin successfully signed out']);
     }
     
     /**
@@ -157,9 +154,7 @@ class AuthController extends Controller
 
     public function checkToken(Request $request)
     {
-        // Check if the token is still valid
-        if (auth('api')->user()) {
-            // Optional: Return new token or some response confirming validity
+        if (auth('admin-api')->user()) {
             return response()->json(['isValid' => true], 200);
         } else {
             return response()->json(['isValid' => false], 401);
@@ -167,13 +162,13 @@ class AuthController extends Controller
     }
     
     /**
-     * Get the authenticated User.
+     * Get the authenticated Admin with roles and permissions.
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function userProfile() {
-        $user = auth('api')->user();
-        return response()->json($this->formatUserWithRolesAndPermissions($user));
+        $admin = auth('admin-api')->user()->load(['roles.permissions', 'permissions']);
+        return response()->json(new AdminResource($admin));
     }
     
     /**
@@ -185,114 +180,86 @@ class AuthController extends Controller
      */
     protected function createNewToken($token)
     {
-        $user = auth('admin-api')->user();
+        $admin = auth('admin-api')->user()->load(['roles.permissions', 'permissions']);
+        
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('admin-api')->factory()->getTTL() * 60 * 60 * 60 * 60,
-            'user' => $this->formatUserWithRolesAndPermissions($user),
+            'expires_in' => auth('admin-api')->factory()->getTTL() * 60,
+            'admin' => new AdminResource($admin),
         ]);
     }
 
-    /**
-     * Format user response with roles and permissions.
-     *
-     * @param User $user
-     * @return array
-     */
-    private function formatUserWithRolesAndPermissions($user)
-    {
-        return [
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'username' => $user->username,
-            'phone' => $user->phone,
-            'instagramURL' => $user->instagramURL ?? null,
-            'facebookURL' => $user->facebookURL ?? null,
-            'linkedinURL' => $user->linkedinURL ?? null,
-            'roles' => $user->roles()->pluck('name')->toArray(),
-            'permissions' => $user->permissions()->pluck('name')->toArray(),
-            'all_permissions' => $this->getUserAllPermissions($user),
-        ];
-    }
-
-    /**
-     * Get all permissions for a user (direct + role-based).
-     *
-     * @param User $user
-     * @return array
-     */
-    private function getUserAllPermissions($user)
-    {
-        // Get direct permissions
-        $directPermissions = $user->permissions()->pluck('name')->toArray();
-        
-        // Get permissions through roles
-        $rolePermissions = [];
-        foreach ($user->roles as $role) {
-            $rolePermissions = array_merge($rolePermissions, $role->permissions()->pluck('name')->toArray());
-        }
-        
-        // Merge and remove duplicates
-        $allPermissions = array_unique(array_merge($directPermissions, $rolePermissions));
-        
-        return array_values($allPermissions);
-    }
-
-    public function updateUser(UserRequest $request){
+    public function updateUser(Request $request){
         try {
             $input = $request->all();
-            $user = User::find(auth()->id());
+            $admin = Admin::find(auth('admin-api')->id());
         
-            // Store old values before modification
-            $oldUser = $user->getOriginal();
+            $oldAdmin = $admin->getOriginal();
+            $admin->fill($input);
         
-            // Update values without saving
-            $user->fill($input);
-        
-            // Check if there are changes
-            if ($user->isDirty()) { 
-                // Get changed values
-                $changes = $user->getDirty();
+            if ($admin->isDirty()) { 
+                $changes = $admin->getDirty();
                 $changesFormatted = [];
         
                 foreach ($changes as $key => $newValue) {
                     $changesFormatted[$key] = [
-                        'old' => $oldUser[$key] ?? 'N/A',
+                        'old' => $oldAdmin[$key] ?? 'N/A',
                         'new' => $newValue
                     ];
                 }
         
-                // Save changes
-                $user->save();
-                $user->updateFile();
+                $admin->save();
         
-                // Send email only if there are actual changes
                 if (!empty($changesFormatted)) {
-               
                     App::setLocale('en');
-                    $to = $user->email;
-                    $toName = $user->name;
-                    $subject = "Account Update Confirmation";
-                    $body = view('mail.changesNotification', compact('user', 'changesFormatted'));
-        
-                    MailService::sendMail($to, $toName, $subject, $body);
+                    $to = $admin->email;
+                    $toName = $admin->name;
+                    $subject = "Admin Account Update Confirmation";
+                    // $body = view('mail.admin-changes', compact('admin', 'changesFormatted'));
+                    // MailService::sendMail($to, $toName, $subject, $body);
                     App::setLocale(config('app.locale'));
                 }
             }
         
-            $data['user'] = $this->formatUserWithRolesAndPermissions($user);
+            $admin = $admin->load(['roles.permissions', 'permissions']);
+            $data['admin'] = new AdminResource($admin);
             return successResponse($data);
         } catch (Exception $e) {
             return failedResponse($e->getMessage());
         }
     }
 
+    public function adminPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:6',
+            'confirm_password' => 'required|string|same:new_password',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $admin = auth('admin-api')->user();
+
+        if (!Hash::check($request->current_password, $admin->password)) {
+            return response()->json(['error' => 'Current password is incorrect'], 401);
+        }
+
+        $admin->password = bcrypt($request->new_password);
+        $admin->save();
+
+        $token = auth('admin-api')->login($admin);
+
+        return $this->createNewToken($token);
+    }
+
     public function insertAddress(AddressRequest $request){
         try {
             $input=$request->all();
-            $input['user_id']=auth()->user('web')->id;
+            $input['user_id']=auth('admin-api')->user()->id;
             $address = Address::create($input);
 
             $data['address'] = new AddressResource($address);
@@ -324,42 +291,9 @@ class AuthController extends Controller
         }
     }
 
-    public function userPassword(Request $request)
-    {
-        // Validation rules
-        $validator = Validator::make($request->all(), [
-            'current_password' => 'required|string',
-            'new_password' => 'required|string|min:6',
-            'confirm_password' => 'required|string|same:new_password',
-        ]);
-
-        // Check validation errors
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        // Get the authenticated user
-        $user = auth()->user();
-
-        // Check if the current password matches the user's password
-        if (!Hash::check($request->current_password, $user->password)) {
-            return response()->json(['error' => 'Current password is incorrect'], 401);
-        }
-
-        // Update the user's password
-        $user->password = bcrypt($request->new_password);
-        $user->save();
-
-        // Generate a new token
-        $token = auth('api')->login($user);
-
-        // Return the new token with roles and permissions
-        return $this->createNewToken($token);
-    }
-
     public function wishlist(){
         try{
-            $data['wishlists'] = WishlistResource::collection(auth()->user('web')->wishlists);
+            $data['wishlists'] = WishlistResource::collection(auth('admin-api')->user()->wishlists);
             return successResponse($data);
         } catch (Exception $e)
         {
@@ -369,7 +303,7 @@ class AuthController extends Controller
 
     public function UserGifts(){
         try{
-            $gifts= GiftResource::collection(auth()->user('web')->gifts()->wherePivot('status', 'pending')->latest()->get());
+            $gifts= GiftResource::collection(auth('admin-api')->user()->gifts()->wherePivot('status', 'pending')->latest()->get());
             return successResponse($gifts);
         } catch (Exception $e)
         {
@@ -379,7 +313,7 @@ class AuthController extends Controller
 
     public function UserChallenges(){
         try{
-            $challenges= ChallengeResource::collection(auth()->user('web')->challenges);
+            $challenges= ChallengeResource::collection(auth('admin-api')->user()->challenges);
             return successResponse($challenges);
         } catch (Exception $e)
         {
@@ -389,7 +323,7 @@ class AuthController extends Controller
 
     public function UserVouchers(){
         try{
-            $Vouchers= VoucherResource::collection(auth()->user('web')->vouchers);
+            $Vouchers= VoucherResource::collection(auth('admin-api')->user()->vouchers);
             return successResponse($Vouchers);
         } catch (Exception $e)
         {
@@ -399,7 +333,7 @@ class AuthController extends Controller
 
     public function UserConfirms(){
         try{
-            $Confirms= ConfirmResource::collection(auth()->user('web')->confirms);
+            $Confirms= ConfirmResource::collection(auth('admin-api')->user()->confirms);
             return successResponse($Confirms);
         } catch (Exception $e)
         {
@@ -409,7 +343,7 @@ class AuthController extends Controller
 
     public function AcceptChallenges($id){
         try{
-            $challenge= ChallengeUser::where('challenge_id',$id)->where('user_id',auth()->user('web')->id)->first();
+            $challenge= ChallengeUser::where('challenge_id',$id)->where('user_id',auth('admin-api')->user()->id)->first();
             if ($challenge) {
                 $challenge->update([
                     'status' => 'accepted',
@@ -427,7 +361,7 @@ class AuthController extends Controller
 
     public function reservations(){
         try{
-            $data['reservations'] = MakeReservationResource::collection(auth()->user('web')->makereservations);
+            $data['reservations'] = MakeReservationResource::collection(auth('admin-api')->user()->makereservations);
             return successResponse($data);
         } catch (Exception $e)
         {
@@ -448,7 +382,7 @@ class AuthController extends Controller
 
     public function reviews(){
         try{
-            $data['reviews'] = ReviewResource::collection(auth()->user('web')->reviews);
+            $data['reviews'] = ReviewResource::collection(auth('admin-api')->user()->reviews);
             return successResponse($data);
         } catch (Exception $e)
         {
@@ -480,17 +414,8 @@ class AuthController extends Controller
     {
         try {
             $data=$request->all();
-            $data['user_id']=auth()->user('web')->id;
+            $data['user_id']=auth('admin-api')->user()->id;
             $review = Review::create($data);
-            App::setLocale('en');
-            $user=auth()->user('web');
-            $to = $user->email;
-            $toName = $user->name;
-            $subject="Share Your Experience";
-            $body = view('mail.feedbackRequest', compact('user'))->render();
-             
-            $result = MailService::sendMail($to, $toName, $subject, $body);
-            App::setLocale(config('app.locale'));
             
             return successResponse($review);
         } catch (Exception $e) {
@@ -502,7 +427,7 @@ class AuthController extends Controller
     {
         try {
             $data=$request->all();
-            $data['user_id']=auth()->user('web')->id;
+            $data['user_id']=auth('admin-api')->user()->id;
             $confirmUser = ConfirmUser::create($data);
             return successResponse($confirmUser);
         } catch (Exception $e) {
@@ -514,7 +439,7 @@ class AuthController extends Controller
     {
         try {
             $data=$request->all();
-            $data['usersend_id']=auth()->user('web')->id;
+            $data['usersend_id']=auth('admin-api')->user()->id;
             $addFriend = AddFriend::create($data);
             return successResponse($addFriend);
         } catch (Exception $e) {
@@ -526,7 +451,7 @@ class AuthController extends Controller
     {
         try {
             $data['restaurant_id']=$id;
-            $data['newsletterEmail']=Auth::user()->email;
+            $data['newsletterEmail']=Auth::guard('admin-api')->user()->email;
             $newsletter = Newsletter::create($data);
             return successResponse($newsletter);
         } catch (Exception $e) {
@@ -538,7 +463,7 @@ class AuthController extends Controller
     {
         try {
             $restaurant_id = $id;
-            $email = Auth::user()->email;
+            $email = Auth::guard('admin-api')->user()->email;
 
             $deletedRows = Newsletter::where('restaurant_id', $restaurant_id)
                                       ->where('newsletterEmail', $email)
@@ -552,8 +477,7 @@ class AuthController extends Controller
     public function getNewsletters()
     {
         try {
-            $email = Auth::user()->email;
-
+            $email = Auth::guard('admin-api')->user()->email;
             $newsletters = Newsletter::where('newsletterEmail', $email)->latest()->get();
 
             if ($newsletters->isEmpty()) {
@@ -653,9 +577,8 @@ class AuthController extends Controller
     {
         DB::beginTransaction();
         try {
-            $userId = Auth::user()->id;
+            $userId = Auth::guard('admin-api')->user()->id;
     
-            // QR Code Reservation
             if ($request->isQrcode) {
                 $tableNumber = TablesNumber::findOrFail($request->tableNoId);
     

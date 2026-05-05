@@ -2,60 +2,96 @@
 
 namespace App\Models;
 
-use App\Traits\MorphFile;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Tymon\JWTAuth\Contracts\JWTSubject; // <-- ADD THIS
 
-class Admin extends Authenticatable implements JWTSubject // <-- IMPLEMENT INTERFACE
+class Admin extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, MorphFile;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'email',
-        'phone',
-        'type',
-        'messanger_id',
-        'whatsapp',
         'password',
+        'phone',
+        'whatsapp',
+        'messanger_id',
+        'type',
         'isActive',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
- protected $guard_name = 'admin'; // 🔥 Add this
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'isActive' => 'boolean',
     ];
 
-    public function getImageAttribute()
+    /**
+     * Get roles for this admin.
+     */
+    public function getRoles()
     {
-        return $this->file ? asset($this->file->url) : settings()->logo;
+        return $this->roles()->pluck('name')->toArray();
     }
 
-    public function tasks()
+    /**
+     * Get direct permissions for this admin.
+     */
+    public function getDirectPermissions()
     {
-        return $this->hasMany(Task::class, 'admin_id');
+        return $this->permissions()->pluck('name')->toArray();
     }
 
-    // ✅ ADD THESE METHODS REQUIRED BY JWTSubject
-
-    public function getJWTIdentifier()
+    /**
+     * Get all permissions (direct + role-based).
+     */
+    public function getAllPermissions()
     {
-        return $this->getKey(); // usually 'id'
+        // Get direct permissions
+        $directPermissions = $this->getDirectPermissions();
+        
+        // Get permissions through roles
+        $rolePermissions = [];
+        foreach ($this->roles as $role) {
+            $rolePermissions = array_merge(
+                $rolePermissions,
+                $role->permissions()->pluck('name')->toArray()
+            );
+        }
+        
+        // Merge and remove duplicates
+        $allPermissions = array_unique(array_merge($directPermissions, $rolePermissions));
+        
+        return array_values($allPermissions);
     }
 
-    public function getJWTCustomClaims()
+    /**
+     * Scope to include roles and permissions.
+     */
+    public function scopeWithRolesAndPermissions($query)
     {
-        return [];
+        return $query->with(['roles.permissions', 'permissions']);
     }
-
 }
