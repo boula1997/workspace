@@ -63,31 +63,30 @@ class AuthController extends Controller
     public function __construct() {
         $this->middleware('auth:api', ['except' => ['login', 'register','checkToken','updateCharge']]);
     }
+    
     /**
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
      */
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|string|min:6',
+        ]);
 
-public function login(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'email' => 'required|email',
-        'password' => 'required|string|min:6',
-    ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
 
-    if ($validator->fails()) {
-        return response()->json($validator->errors(), 422);
+        // Use 'admin-api' guard for JWT
+        if (!$token = auth('admin-api')->attempt($validator->validated())) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return $this->createNewToken($token);
     }
-
-    // Use 'admin-api' guard for JWT
-    if (!$token = auth('admin-api')->attempt($validator->validated())) {
-        return response()->json(['error' => 'Unauthorized'], 401);
-    }
-
-    return $this->createNewToken($token);
-}
-
 
     /**
      * Register a User.
@@ -132,7 +131,7 @@ public function login(Request $request)
                 'message' => 'User successfully registered',
                 'user' => $data
             ], 201);
-        }catch(Ecxception $e){
+        }catch(Exception $e){
             dd($e->getMessage());
         }
     }
@@ -146,6 +145,7 @@ public function login(Request $request)
         auth('api')->logout();
         return response()->json(['message' => 'User successfully signed out']);
     }
+    
     /**
      * Refresh a token.
      *
@@ -172,40 +172,88 @@ public function login(Request $request)
      * @return \Illuminate\Http\JsonResponse
      */
     public function userProfile() {
-        return response()->json(auth('api')->user());
+        $user = auth('api')->user();
+        return response()->json($this->formatUserWithRolesAndPermissions($user));
     }
+    
     /**
-     * Get the token array structure.
+     * Get the token array structure with roles and permissions.
      *
      * @param  string $token
      *
      * @return \Illuminate\Http\JsonResponse
      */
-protected function createNewToken($token)
-{
-    return response()->json([
-        'access_token' => $token,
-        'token_type' => 'bearer',
-        'expires_in' => auth('admin-api')->factory()->getTTL() *60*60* 60*60,
-        'user' => auth('admin-api')->user(),
-    ]);
-}
+    protected function createNewToken($token)
+    {
+        $user = auth('admin-api')->user();
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth('admin-api')->factory()->getTTL() * 60 * 60 * 60 * 60,
+            'user' => $this->formatUserWithRolesAndPermissions($user),
+        ]);
+    }
 
+    /**
+     * Format user response with roles and permissions.
+     *
+     * @param User $user
+     * @return array
+     */
+    private function formatUserWithRolesAndPermissions($user)
+    {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'username' => $user->username,
+            'phone' => $user->phone,
+            'instagramURL' => $user->instagramURL ?? null,
+            'facebookURL' => $user->facebookURL ?? null,
+            'linkedinURL' => $user->linkedinURL ?? null,
+            'roles' => $user->roles()->pluck('name')->toArray(),
+            'permissions' => $user->permissions()->pluck('name')->toArray(),
+            'all_permissions' => $this->getUserAllPermissions($user),
+        ];
+    }
+
+    /**
+     * Get all permissions for a user (direct + role-based).
+     *
+     * @param User $user
+     * @return array
+     */
+    private function getUserAllPermissions($user)
+    {
+        // Get direct permissions
+        $directPermissions = $user->permissions()->pluck('name')->toArray();
+        
+        // Get permissions through roles
+        $rolePermissions = [];
+        foreach ($user->roles as $role) {
+            $rolePermissions = array_merge($rolePermissions, $role->permissions()->pluck('name')->toArray());
+        }
+        
+        // Merge and remove duplicates
+        $allPermissions = array_unique(array_merge($directPermissions, $rolePermissions));
+        
+        return array_values($allPermissions);
+    }
 
     public function updateUser(UserRequest $request){
         try {
             $input = $request->all();
-            $user = User::find(auth()->id()); // مش لازم 'web' لأن `auth()->id()` تجيب الـ ID مباشرة
+            $user = User::find(auth()->id());
         
-            // تخزين القيم القديمة قبل التعديل
+            // Store old values before modification
             $oldUser = $user->getOriginal();
         
-            // تحديث القيم بدون حفظ
+            // Update values without saving
             $user->fill($input);
         
-            // التحقق من وجود تغييرات
+            // Check if there are changes
             if ($user->isDirty()) { 
-                // جلب القيم اللي اتغيرت
+                // Get changed values
                 $changes = $user->getDirty();
                 $changesFormatted = [];
         
@@ -216,11 +264,11 @@ protected function createNewToken($token)
                     ];
                 }
         
-                // حفظ التغييرات
+                // Save changes
                 $user->save();
-                $user->updateFile(); // تحديث الملفات لو فيه
+                $user->updateFile();
         
-                // إرسال الميل فقط لو فيه تغييرات فعلًا
+                // Send email only if there are actual changes
                 if (!empty($changesFormatted)) {
                
                     App::setLocale('en');
@@ -234,18 +282,15 @@ protected function createNewToken($token)
                 }
             }
         
-            $data['user'] = new UserResource($user);
+            $data['user'] = $this->formatUserWithRolesAndPermissions($user);
             return successResponse($data);
         } catch (Exception $e) {
             return failedResponse($e->getMessage());
         }
-        
-        
     }
+
     public function insertAddress(AddressRequest $request){
         try {
-
-
             $input=$request->all();
             $input['user_id']=auth()->user('web')->id;
             $address = Address::create($input);
@@ -256,7 +301,6 @@ protected function createNewToken($token)
             return failedResponse($e->getMessage());
         }
     }
-
 
     public function updateAddress(AddressRequest $request,$id){
         try {
@@ -269,6 +313,7 @@ protected function createNewToken($token)
             return failedResponse($e->getMessage());
         }
     }
+
     public function deleteAddress($id){
         try {
             $address = Address::find($id);
@@ -281,36 +326,35 @@ protected function createNewToken($token)
 
     public function userPassword(Request $request)
     {
-                // Validation rules
-            $validator = Validator::make($request->all(), [
-                'current_password' => 'required|string',
-                'new_password' => 'required|string|min:6',
-                'confirm_password' => 'required|string|same:new_password',
-            ]);
+        // Validation rules
+        $validator = Validator::make($request->all(), [
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:6',
+            'confirm_password' => 'required|string|same:new_password',
+        ]);
 
-            // Check validation errors
-            if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+        // Check validation errors
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
 
-            // Get the authenticated user
-            $user = auth()->user();
+        // Get the authenticated user
+        $user = auth()->user();
 
-            // Check if the current password matches the user's password
-            if (!Hash::check($request->current_password, $user->password)) {
-                return response()->json(['error' => 'Current password is incorrect'], 401);
-            }
+        // Check if the current password matches the user's password
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json(['error' => 'Current password is incorrect'], 401);
+        }
 
-            // Update the user's password
-            $user->password = bcrypt($request->new_password);
-            $user->save();
+        // Update the user's password
+        $user->password = bcrypt($request->new_password);
+        $user->save();
 
-            // Generate a new token
-            $token = auth('api')->login($user);
+        // Generate a new token
+        $token = auth('api')->login($user);
 
-            // Return the new token
-            return $this->createNewToken($token);
-
+        // Return the new token with roles and permissions
+        return $this->createNewToken($token);
     }
 
     public function wishlist(){
@@ -352,6 +396,7 @@ protected function createNewToken($token)
             return failedResponse($e->getMessage());
         }
     }
+
     public function UserConfirms(){
         try{
             $Confirms= ConfirmResource::collection(auth()->user('web')->confirms);
@@ -365,16 +410,11 @@ protected function createNewToken($token)
     public function AcceptChallenges($id){
         try{
             $challenge= ChallengeUser::where('challenge_id',$id)->where('user_id',auth()->user('web')->id)->first();
-            // dd($challenge);
             if ($challenge) {
                 $challenge->update([
                     'status' => 'accepted',
                 ]);
-
-                // Auth::user()->points += 1;
-                // Auth::user()->save();
             } else {
-                // Handle the case where the challenge-user record is not found
                 return response()->json(['message' => 'Challenge not found for user'], 404);
             }
 
@@ -387,7 +427,6 @@ protected function createNewToken($token)
 
     public function reservations(){
         try{
-            // dd(auth()->user('web')->makereservations[0]->tables);
             $data['reservations'] = MakeReservationResource::collection(auth()->user('web')->makereservations);
             return successResponse($data);
         } catch (Exception $e)
@@ -395,9 +434,9 @@ protected function createNewToken($token)
             return failedResponse($e->getMessage());
         }
     }
+
     public function reservationShow($id){
         try{
-            // dd(auth()->user('web')->makereservations[0]->tables);
             $reservation=MakeReservation::find($id);
             $data['reservations'] = new MakeReservationResource(MakeReservation::find($id));
             return successResponse($data);
@@ -409,7 +448,6 @@ protected function createNewToken($token)
 
     public function reviews(){
         try{
-            // dd(new ReviewResource());
             $data['reviews'] = ReviewResource::collection(auth()->user('web')->reviews);
             return successResponse($data);
         } catch (Exception $e)
@@ -437,9 +475,9 @@ protected function createNewToken($token)
             return failedResponse($e->getMessage());
         }
     }
+
     public function storereview(ReviewRequest $request)
     {
-
         try {
             $data=$request->all();
             $data['user_id']=auth()->user('web')->id;
@@ -451,74 +489,62 @@ protected function createNewToken($token)
             $subject="Share Your Experience";
             $body = view('mail.feedbackRequest', compact('user'))->render();
              
-            // Call the MailService to send the email
             $result = MailService::sendMail($to, $toName, $subject, $body);
             App::setLocale(config('app.locale'));
             
             return successResponse($review);
         } catch (Exception $e) {
-
             return failedResponse($e->getMessage());
         }
     }
+
     public function storeconfirms(ConfirmUserRequest $request)
     {
-
         try {
             $data=$request->all();
             $data['user_id']=auth()->user('web')->id;
             $confirmUser = ConfirmUser::create($data);
             return successResponse($confirmUser);
         } catch (Exception $e) {
-
             return failedResponse($e->getMessage());
         }
     }
 
     public function storeaddFriend(AddFriendRequest $request)
     {
-
         try {
             $data=$request->all();
             $data['usersend_id']=auth()->user('web')->id;
             $addFriend = AddFriend::create($data);
             return successResponse($addFriend);
         } catch (Exception $e) {
-
             return failedResponse($e->getMessage());
         }
     }
 
     public function newsletterstore($id)
     {
-
         try {
-
             $data['restaurant_id']=$id;
             $data['newsletterEmail']=Auth::user()->email;
             $newsletter = Newsletter::create($data);
             return successResponse($newsletter);
         } catch (Exception $e) {
-
             return failedResponse($e->getMessage());
         }
     }
 
     public function newsletterdelete($id)
     {
-
         try {
-
             $restaurant_id = $id;
             $email = Auth::user()->email;
 
-            // Find and delete the newsletter entry
             $deletedRows = Newsletter::where('restaurant_id', $restaurant_id)
                                       ->where('newsletterEmail', $email)
                                       ->delete();
             return successResponse(['message' => 'newsletter_entry_deleted_successfully']);
         } catch (Exception $e) {
-
             return failedResponse($e->getMessage());
         }
     }
@@ -528,7 +554,6 @@ protected function createNewToken($token)
         try {
             $email = Auth::user()->email;
 
-            // Retrieve the newsletters for the authenticated user
             $newsletters = Newsletter::where('newsletterEmail', $email)->latest()->get();
 
             if ($newsletters->isEmpty()) {
@@ -592,7 +617,6 @@ protected function createNewToken($token)
                 }
                 elseif(($paymentType === 'wallet'))
                 {
-
                     $userPoints = $reservation->user->points;
                     $pointCost = 1 / settings()->pointCost;
                     
@@ -600,18 +624,13 @@ protected function createNewToken($token)
                     
                     if ($pointsValue >= $amount)
                     {
-                
-                        // احسب عدد النقاط المطلوب خصمها
                         $pointsToDeduct = ceil($amount / $pointCost);
-                
-                        // خصم النقاط
                         $reservation->user->points -= $pointsToDeduct;
                         $reservation->user->save();
                 
                         $reservation->order_id = $orderId;
                         $reservation->payedCharge=1;
                         $reservation->save();
-                    
                     }
                     else 
                     {
@@ -622,7 +641,6 @@ protected function createNewToken($token)
                 {
                   return failedResponse('Invalid payment type');
                 }
-                
             }
             
             return successResponse($reservation);
@@ -630,7 +648,6 @@ protected function createNewToken($token)
             return failedResponse($e->getMessage());
         }
     }
-
 
     public function makeReservation(Request $request, $restaurant_id)
     {
@@ -642,24 +659,18 @@ protected function createNewToken($token)
             if ($request->isQrcode) {
                 $tableNumber = TablesNumber::findOrFail($request->tableNoId);
     
-                // Debugging: Check if tableNumber is found
                 if (!$tableNumber) {
                     return failedResponse('Table Number not found!');
-         
                 }
     
-                // Check if table and restaurant are present
                 if (!$tableNumber->table) {
                     return failedResponse('Table not found!');
-                    
-                    
                 }
+                
                 if (!$tableNumber->table->restaurant) {
                     return failedResponse('Restaurant not found for the table!');
-           
                 }
     
-                // Prepare reservation data
                 $data = [
                     'user_id' => $userId,
                     'restaurant_id' => $tableNumber->table->restaurant->id,
@@ -674,27 +685,18 @@ protected function createNewToken($token)
                     'status' => 'reserved',
                 ];
     
-                // Create the reservation
                 $makeReservation = MakeReservation::create($data);
     
-                // Check if reservation was created successfully
                 if (!$makeReservation) {
                     return failedResponse('Failed to create reservation!');
-
-           
                 }
     
-                // Find the nearest available slot
                 $slot = Slot::find($slot->id);
     
-                // Debugging: Check if slot is found
                 if (!$slot) {
                     return failedResponse('No available slot found!');
-
-                   
                 }
     
-                // Create reservation table entry
                 ReservationTable::create([
                     "make_reservation_id" => $makeReservation->id,
                     "date" => $data['date'],
@@ -703,54 +705,39 @@ protected function createNewToken($token)
                     "slot_id" => $slot->id ?? null,
                 ]);
     
-                // Update tableNumber to reserved
                 $tableNumber->update(['isReserved' => 0]);
             } else {
-                // General reservation data
                 $data = $request->only(['no_people', 'isIndoor', 'isSmoking', 'ispool_view', 'issea_view', 'isbar']);
                 $data['user_id'] = $userId;
                 $data['restaurant_id'] = $restaurant_id;
                 $data['date'] = $request->date ?? now()->format('Y-m-d');
                 $data['sittingTime'] = $request->sittingTime ?? 0;
     
-                // Create the reservation
                 $makeReservation = MakeReservation::create($data);
                 if (!$makeReservation) {
                     return failedResponse('Failed to create reservation!');
-                    
-      
                 }
     
-                // Attach services if provided
                 if ($makeReservation->services() && $request->has('service_ids')) {
                     $makeReservation->services()->attach($request->service_ids);
                 }
     
-                // Process table numbers if `tableNoId` is provided
                 if ($request->has('tableNoId')) {
                     $tableNumber = TablesNumber::findOrFail($request->tableNoId);
     
-                    // Debugging: Check if tableNumber is found
                     if (!$tableNumber) {
-                    return failedResponse('Table Number not found!');
-
-   
+                        return failedResponse('Table Number not found!');
                     }
     
-                    // Check for existing reservation for the same table number
                     $existingReservation = ReservationTable::where('tableNumber_id', $tableNumber->id)
                         ->where('date', $request->date)
                         ->where('slot_id', $request->slot_id)
                         ->exists();
     
-                    // Debugging: Check if reservation already exists
                     if ($existingReservation) {
-                    return failedResponse('This table is already reserved for the selected time slot!');
-
-              
+                        return failedResponse('This table is already reserved for the selected time slot!');
                     }
     
-                    // Update reservation status and create reservation table entry
                     $makeReservation->update(['status' => 'reserved']);
                     ReservationTable::create([
                         "make_reservation_id" => $makeReservation->id,
@@ -760,10 +747,8 @@ protected function createNewToken($token)
                         "slot_id" => $request->slot_id,
                     ]);
     
-                    // Update tableNumber to reserved
                     $tableNumber->update(['isReserved' => 0]);
                 } else {
-                    // Handle reservations for multiple capacities
                     foreach ($request->capacities as $capacity) {
                         $availableTable = Table::where('restaurant_id', $restaurant_id)
                             ->when(isset($data['isIndoor']), function ($query) use ($data) {
@@ -784,23 +769,16 @@ protected function createNewToken($token)
                             ->with('tableNumbers')
                             ->first();
     
-                        // Debugging: Check if availableTable is found
                         if (!$availableTable) {
-                            
                             return failedResponse('No available table found!');
-
                         }
     
-                        // Get available table number
                         $tableNumber = $availableTable->tableNumbers->first();
     
-                        // Debugging: Check if tableNumber is available
                         if (!$tableNumber) {
                             return failedResponse('No available table number found!');
-
                         }
     
-                        // Update reservation status and create reservation table entry
                         $makeReservation->update(['status' => 'reserved']);
                         ReservationTable::create([
                             "make_reservation_id" => $makeReservation->id,
@@ -810,31 +788,12 @@ protected function createNewToken($token)
                             "slot_id" => $request->slot_id,
                         ]);
 
-                        // Update tableNumber to reserved
                         $tableNumber->update(['isReserved' => 0]);
                     }
                 }
             }
     
-            // Add debit entry
-            // Debit::create([
-            //     'amount' => ($makeReservation->total * settings()->order_reservationPer) / 100,
-            //     'source' => 'order_reservation',
-            //     'credit_id' => 1,
-            //     'debit_id' => $userId,
-            // ]);
-    
-            // Generate QR Code
             $this->generateQrCode($makeReservation);
-            // Set the recipient, subject, and body
-            // $to = $makeReservation->user->email;
-            // $toName = $makeReservation->user->name;
-            // $subject="Welcome to Reservya";
-            // $data=$makeReservation->user;
-            // $body = view('mail.reservation', compact('data'))->render();
-                
-            // // Call the MailService to send the email
-            // $result = MailService::sendMail($to, $toName, $subject, $body);
     
             DB::commit();
             return successResponse(new ReservationResource($makeReservation));
@@ -843,9 +802,6 @@ protected function createNewToken($token)
             return failedResponse($e->getMessage());
         }
     }
-    
-    
-    
     
     /**
      * Generate and save QR code for the reservation.
@@ -881,6 +837,4 @@ protected function createNewToken($token)
         $makereservation->qrcode_path = "images/qrcodes/reservation_{$makereservation->id}.png";
         $makereservation->save();
     }
-    
-
 }
