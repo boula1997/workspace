@@ -9,12 +9,14 @@ use App\Http\Resources\NavigationResource;
 use App\Http\Resources\IssueResource;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\PhoneGigResource;
+use App\Http\Resources\PostGigResource;
 use App\Http\Resources\DealResource;
 use App\Http\Resources\PostResource;
 use App\Models\KitTool;
 use App\Models\Query;
 use App\Models\Project;
 use App\Models\phoneGig;
+use App\Models\PostGig;
 use App\Models\CallHistory;
 use App\Models\Issue;
 use App\Models\Overtime;
@@ -1234,6 +1236,20 @@ public function addPhoneGig(Request $request)
 
     return successResponse($phoneGig);
 }
+public function addPostGig(Request $request)
+{
+    $request->validate([
+        'post_link' => 'required|string',
+        'description' => 'nullable|string',
+    ]);
+
+    $postGig = postGig::create([
+        'post_link' => $request->post_link,
+        'description' => $request->description,
+    ]);
+
+    return successResponse($postGig);
+}
 public function addCallHistory(Request $request)
 {
     $request->validate([
@@ -1251,6 +1267,11 @@ public function getAllPhoneGigs()
 {
     $phoneGigs = phoneGig::latest()->get();
     return successResponse(PhoneGigResource::collection($phoneGigs));
+}
+public function getAllPostGigs()
+{
+    $postGigs = postGig::latest()->get();
+    return successResponse(PostGigResource::collection($postGigs));
 }
 
 
