@@ -32,7 +32,8 @@ class AdminResource extends JsonResource
             
             // Roles and Permissions
             "roles" => $this->getRolesArray(),
-            "permissions" => $this->getDirectPermissionsArray(),
+            "direct_permissions" => $this->getDirectPermissionsArray(),
+            "permissions" => $this->getAllPermissionsArray(),
             "all_permissions" => $this->getAllPermissionsArray(),
         ];
     }
