@@ -1374,7 +1374,7 @@ public function showEditCreate($dbname, $table, $itemId = null)
 
 
 
-        public function menuItems($dbname)
+        public function menuTables($dbname)
     {
         try {
             $credential = DBCredential::where('db_name', $dbname)->firstOrFail();
