@@ -1206,6 +1206,12 @@ public function competitors(Request $request)
     return successResponse($competitors);
 }
 
+public function marketingTools(Request $request)
+{
+    $tools = Navigation::where('category_id', 26)->get();
+    return successResponse($tools);
+}
+
 public function addProjectHours(Request $request)
 {
     $request->validate([

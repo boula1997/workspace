@@ -148,6 +148,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/offline/tasks', [TaskController::class, 'offlineTasks']);
     Route::get('/offline/notes', [TaskController::class, 'offlineNotes']);
     Route::get('/competitors', [TaskController::class, 'competitors']);
+    Route::get('/marketing-tools', [TaskController::class, 'marketingTools']);
     Route::get('/settings', [TaskController::class, 'settings']);
     Route::get('/apptask/finished/tasks', [TaskController::class, 'finishedTasks']);
     Route::get('/note', [TaskController::class, 'lifNote'])->name('life.note');
