@@ -1289,9 +1289,5 @@ public function updateTasksToToday()
     return successResponse($tasks);
 }
 
-public function menuItems(Request $request)
-{
-    $menuItems = MenuTable::get();
-    return successResponse($menuItems);
-}
+
 }
