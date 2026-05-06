@@ -1205,6 +1205,11 @@ public function competitors(Request $request)
     $competitors = Navigation::where('category_id', 25)->get();
     return successResponse($competitors);
 }
+public function jobs(Request $request)
+{
+    $jobs = Navigation::where('category_id', 5)->get();
+    return successResponse($jobs);
+}
 
 public function marketingTools(Request $request)
 {
@@ -1288,6 +1293,7 @@ public function updateTasksToToday()
 
     return successResponse($tasks);
 }
+
 
 
 }
