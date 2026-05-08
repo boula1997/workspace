@@ -84,7 +84,6 @@ class AdminController extends Controller
     {
         try {
             // dectatorBoula(); // Remove or implement as needed
-            
             $input = $request->except('image', 'profile_avatar_remove');
             $input["type"] = $request->input('roles');
             $input['password'] = Hash::make($input['password']);

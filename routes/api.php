@@ -181,11 +181,9 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/get/all/phone/gigs', [TaskController::class, 'getAllPhoneGigs']);
     Route::get('/get/all/post/gigs', [TaskController::class, 'getAllPostGigs']);
     Route::post('/update/tasks/to/today', [TaskController::class, 'updateTasksToToday']);
-    //admins
-    Route::get('/admins', [AdminController::class, 'index']);
-    Route::post('/admins/store', [AdminController::class, 'store']);
-    Route::delete('/admins/destroy/{id}', [AdminController::class, 'destroy']);
-    Route::get('/admins/show/{id}', [AdminController::class, 'show']);
-    Route::post('/admins/update/{id}', [AdminController::class, 'update']);
+
+    Route::resource('admins', AdminController::class);
+    Route::resource('roles', RoleController::class);
+    Route::resource('users', UserController::class);
 });
 }); 
