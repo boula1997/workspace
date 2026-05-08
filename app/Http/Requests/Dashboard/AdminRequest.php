@@ -29,7 +29,7 @@ class AdminRequest extends FormRequest
         return [
             'image' => $image,
             'name' => 'required',
-            'email' => ['nullable','email',Rule::unique('admins', 'email')->ignore($this->id)],
+            'email' => ['nullable','email',Rule::unique('admins', 'email')->ignore($this->admin)],
             'phone' => 'nullable',
             'messanger_id' => 'nullable',
 
