@@ -55,7 +55,7 @@ class RoleController extends Controller
             'permission' => 'required',
         ]);
     
-        $role = Role::create(['name' => $request->input('name')]);
+        $role = Role::create(['name' => $request->input('name'), 'guard_name' => 'admin']);
         $role->syncPermissions($request->input('permission'));
     
         return successResponse([], 'Operation successful');
@@ -99,6 +99,7 @@ class RoleController extends Controller
     
         $role = Role::find($id);
         $role->name = $request->input('name');
+        $role->guard_name = 'admin';
         $role->save();
     
         $role->syncPermissions($request->input('permission'));
@@ -115,5 +116,16 @@ class RoleController extends Controller
     {
         DB::table("roles")->where('id',$id)->delete();
         return successResponse([], 'Role deleted successfully');
+    }
+
+
+        public function all_permissions()
+    {
+        try {
+            $data = Permission::orderBy('id', 'DESC')->get();
+            return successResponse($data, 'Permissions fetched successfully');
+        } catch (Exception $e) {
+            return failedResponse(['error' => $e->getMessage()], 'Failed to process request', 500);
+        }
     }
 }

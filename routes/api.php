@@ -127,7 +127,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/all/tables/{dbname}/{admin_id?}', [GeneralController::class, 'allTableNames']);
     Route::get('/databases', [GeneralController::class, 'databases']);
     Route::get('/bases', [TaskController::class, 'bases']);
-    Route::get('/admins/{dbname}', [GeneralController::class, 'getAdmins']);
+    Route::get('/all/admins/{dbname}', [GeneralController::class, 'getAdmins']);
     Route::get('/input/appearances/{dbname}', [GeneralController::class, 'getInputAppearances']);
     Route::get('/menu/tables/{dbname}', [GeneralController::class, 'menuTables']);
 
@@ -187,5 +187,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::resource('admins', AdminController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
+
+    Route::get('all/permissions', [RoleController::class, 'all_permissions']);
 });
 }); 
