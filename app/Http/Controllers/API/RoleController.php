@@ -32,7 +32,7 @@ class RoleController extends Controller
     public function index(Request $request)
     {
         $roles = Role::orderBy('id','DESC')->paginate(5);
-        return response()->json($roles);
+        return successResponse($roles, 'Roles fetched successfully');
     }
     
     /**
@@ -40,11 +40,7 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        $permission = Permission::get();
-        return response()->json($permission);
-    }
+
     
     /**
      * Store a newly created resource in storage.
@@ -62,7 +58,7 @@ class RoleController extends Controller
         $role = Role::create(['name' => $request->input('name')]);
         $role->syncPermissions($request->input('permission'));
     
-        return response()->json(['success' => __('general.something_wrong')],200);
+        return successResponse([], 'Operation successful');
     }
     /**
      * Display the specified resource.
@@ -77,7 +73,7 @@ class RoleController extends Controller
             ->where("role_has_permissions.role_id",$id)
             ->get();
     
-        return response()->json($rolePermissions);
+        return successResponse($rolePermissions, 'Role permissions fetched successfully');
     }
     
     /**
@@ -86,17 +82,7 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        $role = Role::find($id);
-        $permission = Permission::get();
-        $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)
-            ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
-            ->all();
-    
-        return response()->json($rolePermissions);
-    }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -117,7 +103,7 @@ class RoleController extends Controller
     
         $role->syncPermissions($request->input('permission'));
     
-        return response()->json(['success' => __('general.something_wrong')],200);
+        return successResponse([], 'Operation successful');
     }
     /**
      * Remove the specified resource from storage.
@@ -128,6 +114,6 @@ class RoleController extends Controller
     public function destroy($id)
     {
         DB::table("roles")->where('id',$id)->delete();
-        return response()->json(['success' => __('general.something_wrong')],200);
+        return successResponse([], 'Role deleted successfully');
     }
 }

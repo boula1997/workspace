@@ -35,7 +35,7 @@ class UserController extends Controller
     {
         try {
             $data = User::orderBy('id', 'DESC')->paginate(5);
-            return response()->json($data);
+            return successResponse($data, 'Users fetched successfully');
         } catch (Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
@@ -47,10 +47,6 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        return response()->json(['success' => __('general.something_wrong')],200);
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -66,9 +62,9 @@ class UserController extends Controller
             $input['password'] = Hash::make($input['password']);
             $user = User::create($input);
             $user->uploadFile();
-            return response()->json(['success' => __('general.something_wrong')],200);
+            return successResponse([], __('general.created'));
         } catch (Exception $e) {
-            return response()->json(['error' => __('general.something_wrong')],500);
+            return failedResponse(['error' => $e->getMessage()], 'Failed to create user', 500);
         }
     }
 
@@ -81,7 +77,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        return response()->json($user,200);
+        return successResponse($user, 'User fetched successfully');
     }
 
     /**
@@ -90,12 +86,6 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        $user = User::find($id);
-
-        return response()->json($user,200);
-    }
 
     /**
      * Update the specified resource in storage.
@@ -116,9 +106,9 @@ class UserController extends Controller
             $user = User::find($id);
             $user->update($input);
             $user->updateFile();
-            return response()->json($user,200);
+            return successResponse($user, 'User updated successfully');
         } catch (Exception $e) {
-            return response()->json(['error' => __('general.something_wrong')],500);
+            return failedResponse(['error' => $e->getMessage()], 'Failed to process request', 500);
         }
     }
 
@@ -134,7 +124,7 @@ class UserController extends Controller
             $user = User::find($id);
             $user->delete();
             $user->deleteFile();
-            return response()->json(['success' => __('general.something_wrong')],200);
+            return successResponse([], 'User deleted successfully');
         } catch (Exception $e) {
             return response()->json(['error' => __('general.something_wrong')],500);
         }

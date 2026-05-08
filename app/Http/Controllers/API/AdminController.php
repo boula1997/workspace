@@ -30,9 +30,8 @@ class AdminController extends Controller
             $admins = Admin::orderBy('id', 'DESC')
                 ->paginate($perPage, ['*'], 'page', $page);
             
-            return response()->json([
-                'success' => true,
-                'data' => $admins->items(),
+            return successResponse([
+                'items' => $admins->items(),
                 'pagination' => [
                     'total' => $admins->total(),
                     'per_page' => $admins->perPage(),
@@ -41,13 +40,9 @@ class AdminController extends Controller
                     'from' => $admins->firstItem(),
                     'to' => $admins->lastItem(),
                 ]
-            ], 200);
+            ], 'Admins fetched successfully');
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch admins',
-                'error' => $e->getMessage()
-            ], 500);
+            return failedResponse(['error' => $e->getMessage()], 'Failed to fetch admins', 500);
         }
     }
 
@@ -61,16 +56,9 @@ class AdminController extends Controller
         try {
             $roles = Role::pluck('name', 'id');
             
-            return response()->json([
-                'success' => true,
-                'data' => $roles
-            ], 200);
+            return successResponse($roles, 'Roles fetched successfully');
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch roles',
-                'error' => $e->getMessage()
-            ], 500);
+            return failedResponse(['error' => $e->getMessage()], 'Failed to fetch roles', 500);
         }
     }
 
@@ -92,17 +80,9 @@ class AdminController extends Controller
             $admin->assignRole($request->input('roles'));
             $admin->uploadFile();
             
-            return response()->json([
-                'success' => true,
-                'message' => 'Admin created successfully',
-                'data' => $admin
-            ], 201);
+            return successResponse($admin, 'Admin created successfully', 201);
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create admin',
-                'error' => $e->getMessage()
-            ], 500);
+            return failedResponse(['error' => $e->getMessage()], 'Failed to create admin', 500);
         }
     }
 
@@ -118,22 +98,12 @@ class AdminController extends Controller
             $admin = Admin::with('roles')->find($id);
             
             if (!$admin) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Admin not found'
-                ], 404);
+                return failedResponse([], 'Admin not found', 404);
             }
             
-            return response()->json([
-                'success' => true,
-                'data' => $admin
-            ], 200);
+            return successResponse($admin, 'Admin fetched successfully');
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch admin',
-                'error' => $e->getMessage()
-            ], 500);
+            return failedResponse(['error' => $e->getMessage()], 'Failed to fetch admin', 500);
         }
     }
 
@@ -143,37 +113,7 @@ class AdminController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function edit($id)
-    {
-        try {
-            $admin = Admin::with('roles')->find($id);
-            
-            if (!$admin) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Admin not found'
-                ], 404);
-            }
-            
-            $roles = Role::pluck('name', 'id');
-            $adminRoles = $admin->roles->pluck('name', 'id');
-            
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'admin' => $admin,
-                    'roles' => $roles,
-                    'adminRoles' => $adminRoles
-                ]
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch admin',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
+
 
     /**
      * Update the specified admin in storage
@@ -190,10 +130,7 @@ class AdminController extends Controller
             $admin = Admin::find($id);
             
             if (!$admin) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Admin not found'
-                ], 404);
+                return failedResponse([], 'Admin not found', 404);
             }
             
             $input = $request->except('image', 'profile_avatar_remove');
@@ -215,17 +152,9 @@ class AdminController extends Controller
             // Handle file uploads
             $admin->updateFile();
             
-            return response()->json([
-                'success' => true,
-                'message' => 'Admin updated successfully',
-                'data' => $admin
-            ], 200);
+            return successResponse($admin, 'Admin updated successfully');
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update admin',
-                'error' => $e->getMessage()
-            ], 500);
+            return failedResponse(['error' => $e->getMessage()], 'Failed to update admin', 500);
         }
     }
 
@@ -243,10 +172,7 @@ class AdminController extends Controller
             $admin = Admin::find($id);
             
             if (!$admin) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Admin not found'
-                ], 404);
+                return failedResponse([], 'Admin not found', 404);
             }
             
             // Delete associated files
@@ -258,16 +184,9 @@ class AdminController extends Controller
             // Delete admin
             $admin->delete();
             
-            return response()->json([
-                'success' => true,
-                'message' => 'Admin deleted successfully'
-            ], 200);
+            return successResponse([], 'Admin deleted successfully');
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to delete admin',
-                'error' => $e->getMessage()
-            ], 500);
+            return failedResponse(['error' => $e->getMessage()], 'Failed to delete admin', 500);
         }
     }
 
@@ -283,10 +202,7 @@ class AdminController extends Controller
             $ids = $request->input('ids', []);
             
             if (empty($ids)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No IDs provided'
-                ], 400);
+                return failedResponse([], 'No IDs provided', 400);
             }
             
             $admins = Admin::whereIn('id', $ids)->get();
@@ -299,16 +215,9 @@ class AdminController extends Controller
                 $admin->delete();
             }
             
-            return response()->json([
-                'success' => true,
-                'message' => 'Admins deleted successfully'
-            ], 200);
+            return successResponse([], 'Admins deleted successfully');
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to delete admins',
-                'error' => $e->getMessage()
-            ], 500);
+            return failedResponse(['error' => $e->getMessage()], 'Failed to delete admins', 500);
         }
     }
 }

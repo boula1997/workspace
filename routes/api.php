@@ -5,6 +5,8 @@ use App\Http\Controllers\API\MessageController;
 use App\Http\Controllers\API\ActionController;
 use App\Http\Controllers\API\GeneralController;
 use App\Http\Controllers\API\AdminController;
+use App\Http\Controllers\API\RoleController;
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\CounterController;
 use App\Http\Controllers\API\NewsletterController;
 use App\Http\Controllers\API\ContactController;
