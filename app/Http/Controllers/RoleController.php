@@ -138,5 +138,13 @@ class RoleController extends Controller
     }
 
 
-
+    public function all_roles()
+    {
+        $roles = Role::where('guard_name', 'admin')->get();
+        return response()->json([
+            'success' => true,
+            'message' => 'All roles fetched successfully',
+            'data' => $roles
+        ]);
+    }
 }

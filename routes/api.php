@@ -186,6 +186,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
     Route::resource('admins', AdminController::class);
     Route::resource('roles', RoleController::class);
+    Route::get('all/roles', [RoleController::class, 'all_roles']);
     Route::resource('users', UserController::class);
 
     Route::get('all/permissions', [RoleController::class, 'all_permissions']);
