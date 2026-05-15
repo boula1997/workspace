@@ -29,11 +29,64 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    {
-        $roles = Role::orderBy('id','DESC')->paginate(5);
+public function index(Request $request)
+{
+    try {
+        $perPage = $request->input('per_page', 5);
+        $page = $request->input('page', 1);
+        
+        // Start building the query
+        $query = Role::query();
+        
+        // Filter by search term (role name)
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'LIKE', "%{$search}%");
+        }
+        
+        // Filter by guard name
+        if ($request->filled('guard')) {
+            $query->where('guard_name', $request->input('guard'));
+        }
+        
+        // Filter by status
+        if ($request->filled('status')) {
+            $status = $request->input('status');
+            $query->where('isActive', $status === 'active' ? 1 : 0);
+        }
+        
+        // Filter by date range
+        if ($request->filled('startDate') && $request->filled('endDate')) {
+            $query->whereBetween('created_at', [
+                $request->input('startDate') . ' 00:00:00',
+                $request->input('endDate') . ' 23:59:59'
+            ]);
+        }
+        
+        // Apply ordering
+        $sortBy = $request->input('sortBy', 'id');
+        $sortOrder = $request->input('sortOrder', 'DESC');
+        
+        // Map sortBy to actual column names if needed
+        $sortColumn = $sortBy;
+        if ($sortBy === 'guard_name') {
+            $sortColumn = 'guard_name';
+        } elseif ($sortBy === 'isActive') {
+            $sortColumn = 'isActive';
+        }
+        
+        $query->orderBy($sortColumn, $sortOrder);
+        
+        // Paginate results
+        $roles = $query->paginate($perPage, ['*'], 'page', $page);
+        
         return successResponse($roles, 'Roles fetched successfully');
+        
+    } catch (Exception $e) {
+        \Log::error('Roles fetch error: ' . $e->getMessage());
+        return failedResponse(['error' => $e->getMessage()], 'Failed to fetch roles', 500);
     }
+}
     
     /**
      * Show the form for creating a new resource.
