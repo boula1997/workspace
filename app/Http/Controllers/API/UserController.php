@@ -31,16 +31,58 @@ class UserController extends Controller
         $this->user = $user;
     }
 
-    public function index(Request $request)
-    {
-        try {
-            $data = User::orderBy('id', 'DESC')->paginate(5);
-            return successResponse($data, 'Users fetched successfully');
-        } catch (Exception $e) {
-            dd($e->getMessage());
-            return redirect()->back()->with(['error' => __('general.something_wrong')]);
+public function index(Request $request)
+{
+    try {
+        $perPage = $request->input('per_page', 10);
+        $page = $request->input('page', 1);
+        
+        // Start building the query
+        $query = User::query();
+        
+        // Filter by search term (name, email)
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('email', 'LIKE', "%{$search}%");
+            });
         }
+        
+        // Filter by status
+        if ($request->filled('status')) {
+            $status = $request->input('status');
+            $query->where('isActive', $status === 'active' ? 1 : 0);
+        }
+        
+        // Filter by role
+        if ($request->filled('role')) {
+            $query->where('role', $request->input('role'));
+        }
+        
+        // Filter by date range
+        if ($request->filled('startDate') && $request->filled('endDate')) {
+            $query->whereBetween('created_at', [
+                $request->input('startDate') . ' 00:00:00',
+                $request->input('endDate') . ' 23:59:59'
+            ]);
+        }
+        
+        // Apply ordering
+        $sortBy = $request->input('sortBy', 'id');
+        $sortOrder = $request->input('sortOrder', 'DESC');
+        $query->orderBy($sortBy, $sortOrder);
+        
+        // Paginate results
+        $users = $query->paginate($perPage, ['*'], 'page', $page);
+        
+        return successResponse($users, 'Users fetched successfully');
+        
+    } catch (Exception $e) {
+        \Log::error('Users fetch error: ' . $e->getMessage());
+        return failedResponse(['error' => $e->getMessage()], 'Failed to fetch users', 500);
     }
+}
 
     /**
      * Show the form for creating a new resource.

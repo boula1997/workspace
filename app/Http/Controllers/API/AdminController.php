@@ -27,8 +27,45 @@ class AdminController extends Controller
             $perPage = $request->input('per_page', 15);
             $page = $request->input('page', 1);
             
-            $admins = Admin::orderBy('id', 'DESC')
-                ->paginate($perPage, ['*'], 'page', $page);
+            // Start building the query
+            $query = Admin::query();
+            
+            // Filter by search term (name, email, phone)
+            if ($request->filled('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'LIKE', "%{$search}%")
+                      ->orWhere('email', 'LIKE', "%{$search}%")
+                      ->orWhere('phone', 'LIKE', "%{$search}%");
+                });
+            }
+            
+            // Filter by type
+            if ($request->filled('type')) {
+                $query->where('type', $request->input('type'));
+            }
+            
+            // Filter by status
+            if ($request->filled('status')) {
+                $status = $request->input('status');
+                $query->where('isActive', $status === 'active' ? 1 : 0);
+            }
+            
+            // Filter by date range
+            if ($request->filled('startDate') && $request->filled('endDate')) {
+                $query->whereBetween('created_at', [
+                    $request->input('startDate') . ' 00:00:00',
+                    $request->input('endDate') . ' 23:59:59'
+                ]);
+            }
+            
+            // Apply ordering
+            $sortBy = $request->input('sortBy', 'id');
+            $sortOrder = $request->input('sortOrder', 'DESC');
+            $query->orderBy($sortBy, $sortOrder);
+            
+            // Paginate results
+            $admins = $query->paginate($perPage, ['*'], 'page', $page);
             
             return successResponse([
                 'items' => $admins->items(),
