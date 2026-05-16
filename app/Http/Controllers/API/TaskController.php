@@ -1295,5 +1295,19 @@ public function updateTasksToToday()
 }
 
 
+public function surveies()
+{
+    $surveies = Survey::query()
+        ->where('isActive', 1)
+        ->get()
+        ->groupBy('parent')
+        ->map(function ($group) {
+            return $group->random(1)->first();
+        })
+        ->values();
+
+    return successResponse($surveies);
+}
+
 
 }
