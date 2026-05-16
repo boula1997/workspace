@@ -183,6 +183,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/get/all/phone/gigs', [TaskController::class, 'getAllPhoneGigs']);
     Route::get('/get/all/post/gigs', [TaskController::class, 'getAllPostGigs']);
     Route::post('/update/tasks/to/today', [TaskController::class, 'updateTasksToToday']);
+    Route::get('/surveies', [TaskController::class, 'surveies']);
 
     Route::resource('admins', AdminController::class);
     Route::resource('roles', RoleController::class);
