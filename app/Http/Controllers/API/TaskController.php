@@ -37,6 +37,7 @@ use App\Models\Task;
 use App\Models\DailyWork;
 use App\Models\DBCredential;
 use App\Models\Deal;
+use App\Models\Survey;
 use Spatie\Permission\Models\Role;
 
 use App\Models\Gallery;
