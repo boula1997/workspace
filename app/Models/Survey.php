@@ -9,6 +9,8 @@ class Survey extends Model
 {
     use HasFactory;
 
+    protected $table = 'surveies';
+
     protected $guarded = [];
 
 }
