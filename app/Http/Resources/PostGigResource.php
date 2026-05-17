@@ -18,6 +18,7 @@ class PostGigResource extends JsonResource
             'id' => $this->id,
             'post_link' => $this->post_link,
             'description' => $this->description,
+            "type" => $this->type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

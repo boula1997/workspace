@@ -1239,11 +1239,13 @@ public function addPhoneGig(Request $request)
     $request->validate([
         'phone'      => 'required|string|unique:phone_gigs,phone',
         'description' => 'nullable|string',
+        'type' => 'nullable|string',
     ]);
 
     $phoneGig = phoneGig::create([
         'phone' => $request->phone,
         'description' => $request->description,
+        "type" => $request->type,
     ]);
 
     return successResponse($phoneGig);
@@ -1253,11 +1255,13 @@ public function addPostGig(Request $request)
     $request->validate([
         'post_link' => 'required|string',
         'description' => 'nullable|string',
+        'type' => 'nullable|string',
     ]);
 
     $postGig = postGig::create([
         'post_link' => $request->post_link,
         'description' => $request->description,
+        "type" => $request->type,
     ]);
 
     return successResponse($postGig);
