@@ -1238,8 +1238,8 @@ public function addPhoneGig(Request $request)
 {
     $request->validate([
         'phone'      => 'required|string|unique:phone_gigs,phone',
-        'description' => 'nullable|string',
-        'type' => 'nullable|string',
+        'description' => 'required|string',
+        'type' => 'required|string',
     ]);
 
     $phoneGig = phoneGig::create([
@@ -1254,8 +1254,8 @@ public function addPostGig(Request $request)
 {
     $request->validate([
         'post_link' => 'required|string',
-        'description' => 'nullable|string',
-        'type' => 'nullable|string',
+        'description' => 'required|string',
+        'type' => 'required|string',
     ]);
 
     $postGig = postGig::create([
