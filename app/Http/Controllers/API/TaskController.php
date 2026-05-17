@@ -1311,4 +1311,14 @@ public function surveies()
 }
 
 
+public function getRepeatSurveyMinuits()
+{
+    $data = setting()->repeat_survey_minuits;
+
+    return successResponse([
+        "repeat_survey_minuits" => $data
+    ]);
+}
+
+
 }
