@@ -1309,6 +1309,8 @@ public function surveies()
         ->map(function ($group) {
             return $group->random(1)->first();
         })
+        ->shuffle() // randomize final result
+        ->take(5)   // take only 5
         ->values();
 
     return successResponse($surveies);
