@@ -1415,7 +1415,7 @@ public function showEditCreate($dbname, $table, $itemId = null)
     }
 
 
-    /**
+/**
  * Store a difference record
  */
 public function storeDifference(Request $request)
@@ -1423,12 +1423,50 @@ public function storeDifference(Request $request)
     try {
         $request->validate([
             'd_b_credential_id' => 'nullable|exists:d_b_credentials,id',
-            'diff_text' => 'required|string',
+            'diff_db' => 'required|string',
         ]);
 
+        // Get the credential to know which database to use
+        $credential = DBCredential::find($request->d_b_credential_id);
+        
+        if ($credential) {
+            // Configure dynamic connection for this credential's database
+            config([
+                'database.connections.dynamic' => [
+                    'driver' => 'mysql',
+                    'host' => $credential->db_host,
+                    'database' => $credential->db_name,
+                    'username' => $credential->db_username,
+                    'password' => $credential->db_password,
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                ],
+            ]);
+            
+            DB::purge('dynamic');
+            DB::reconnect('dynamic');
+            
+            // Insert using dynamic connection
+            $id = DB::connection('dynamic')->table('differences')->insertGetId([
+                'd_b_credential_id' => $request->d_b_credential_id,
+                'diff_db' => $request->diff_db,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            
+            $difference = DB::connection('dynamic')->table('differences')->where('id', $id)->first();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Difference stored successfully.',
+                'data' => $difference,
+            ], 201);
+        }
+        
+        // Fallback to default connection if no credential
         $difference = Difference::create([
             'd_b_credential_id' => $request->d_b_credential_id,
-            'diff_db' => $request->diff_text,
+            'diff_db' => $request->diff_db,
         ]);
 
         return response()->json([
@@ -1436,6 +1474,7 @@ public function storeDifference(Request $request)
             'message' => 'Difference stored successfully.',
             'data' => $difference,
         ], 201);
+        
     } catch (QueryException $e) {
         return response()->json([
             'success' => false,
@@ -1457,22 +1496,64 @@ public function storeDifference(Request $request)
 public function getDifferences(Request $request)
 {
     try {
+        // If filtering by credential, use that credential's database
+        if ($request->has('d_b_credential_id') && $request->d_b_credential_id) {
+            $credential = DBCredential::find($request->d_b_credential_id);
+            
+            if ($credential) {
+                // Configure dynamic connection
+                config([
+                    'database.connections.dynamic' => [
+                        'driver' => 'mysql',
+                        'host' => $credential->db_host,
+                        'database' => $credential->db_name,
+                        'username' => $credential->db_username,
+                        'password' => $credential->db_password,
+                        'charset' => 'utf8mb4',
+                        'collation' => 'utf8mb4_unicode_ci',
+                    ],
+                ]);
+                
+                DB::purge('dynamic');
+                DB::reconnect('dynamic');
+                
+                $query = DB::connection('dynamic')->table('differences');
+                
+                if ($request->has('search') && $request->search) {
+                    $query->where('diff_db', 'like', '%' . $request->search . '%');
+                }
+                
+                $perPage = $request->get('per_page', 15);
+                $differences = $query->orderBy('created_at', 'desc')->paginate($perPage);
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Differences retrieved successfully.',
+                    'data' => $differences->items(),
+                    'pagination' => [
+                        'current_page' => $differences->currentPage(),
+                        'last_page' => $differences->lastPage(),
+                        'per_page' => $differences->perPage(),
+                        'total' => $differences->total(),
+                    ],
+                ]);
+            }
+        }
+        
+        // Fallback to default connection
         $query = Difference::with('dbCredential');
-
-        // Filter by d_b_credential_id
+        
         if ($request->has('d_b_credential_id') && $request->d_b_credential_id) {
             $query->where('d_b_credential_id', $request->d_b_credential_id);
         }
-
-        // Search in diff_db content
+        
         if ($request->has('search') && $request->search) {
             $query->where('diff_db', 'like', '%' . $request->search . '%');
         }
-
-        // Pagination
+        
         $perPage = $request->get('per_page', 15);
         $differences = $query->orderBy('created_at', 'desc')->paginate($perPage);
-
+        
         return response()->json([
             'success' => true,
             'message' => 'Differences retrieved successfully.',
@@ -1484,6 +1565,7 @@ public function getDifferences(Request $request)
                 'total' => $differences->total(),
             ],
         ]);
+        
     } catch (Throwable $e) {
         return response()->json([
             'success' => false,
