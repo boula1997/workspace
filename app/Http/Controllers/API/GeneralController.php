@@ -1423,7 +1423,7 @@ public function storeDifference(Request $request)
     try {
         $request->validate([
             'd_b_credential_id' => 'nullable|exists:d_b_credentials,id',
-            'diff_db' => 'required|string',
+            'diff_text' => 'required|string',
         ]);
 
         // Get the credential to know which database to use
@@ -1449,7 +1449,7 @@ public function storeDifference(Request $request)
             // Insert using dynamic connection
             $id = DB::connection('dynamic')->table('differences')->insertGetId([
                 'd_b_credential_id' => $request->d_b_credential_id,
-                'diff_db' => $request->diff_db,
+                'diff_db' => $request->diff_text,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
