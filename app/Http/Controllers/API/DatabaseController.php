@@ -760,9 +760,10 @@ public function storeDifference(Request $request)
 /**
  * Get all differences for a credential
  */
-public function getDifferences($credential_id = null)
+public function getDifferences(Request $request)
 {
     try {
+        $credential_id=$request->query('credential_id');
         if ($credential_id) {
             $differences = Difference::where('d_b_credential_id', $credential_id)
                 ->orderBy('created_at', 'desc')
