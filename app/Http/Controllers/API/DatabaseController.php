@@ -23,7 +23,9 @@ use App\Models\Navigation;
 use App\Models\Clienttrack;
 use App\Models\Task;
 use App\Models\DBCredential;
+use App\Models\Difference;
 use Spatie\Permission\Models\Role;
+
 
 use App\Models\Gallery;
 use Exception;
@@ -723,5 +725,65 @@ public function getDatabase($dbname, $namedb)
             ]);
         }
     }
+
+
+/**
+ * Save a database difference record to the main database
+ */
+public function saveDifference(Request $request)
+{
+    DB::beginTransaction();
+
+    try {
+        $difference = Difference::create([
+            'd_b_credential_id' => $request->credential_id,
+            'diff_db' => $request->diff_text,
+        ]);
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Difference saved successfully',
+            'data' => $difference,
+        ]);
+    } catch (\Exception $e) {
+        DB::rollBack();
+
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ]);
+    }
+}
+
+/**
+ * Get all differences for a credential
+ */
+public function getDifferences($credential_id = null)
+{
+    try {
+        if ($credential_id) {
+            $differences = Difference::where('d_b_credential_id', $credential_id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            $differences = Difference::orderBy('created_at', 'desc')->get();
+        }
+
+        return response()->json([
+            'success' => true,
+            'differences' => $differences,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ]);
+    }
+}
+
+
+
 
 }
