@@ -131,6 +131,9 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/input/appearances/{dbname}', [GeneralController::class, 'getInputAppearances']);
     Route::get('/menu/tables/{dbname}', [GeneralController::class, 'menuTables']);
 
+    Route::post('/differences', [GeneralController::class, 'storeDifference']);
+    Route::get('/differences', [GeneralController::class, 'getDifferences']);
+
 
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('/updateDeadline',[TaskController::class,'updateDeadline']);

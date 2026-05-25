@@ -17,6 +17,7 @@ use App\Models\DBCredential;
 use Illuminate\Support\Facades\File;
 
 use App\Models\Admin;
+use App\Models\Difference;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -1412,4 +1413,83 @@ public function showEditCreate($dbname, $table, $itemId = null)
             ], 500);
         }
     }
+
+
+    /**
+ * Store a difference record
+ */
+public function storeDifference(Request $request)
+{
+    try {
+        $request->validate([
+            'd_b_credential_id' => 'nullable|exists:d_b_credentials,id',
+            'diff_db' => 'required|string',
+        ]);
+
+        $difference = Difference::create([
+            'd_b_credential_id' => $request->d_b_credential_id,
+            'diff_db' => $request->diff_db,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Difference stored successfully.',
+            'data' => $difference,
+        ], 201);
+    } catch (QueryException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Database error',
+            'error' => $e->getMessage(),
+        ], 500);
+    } catch (Throwable $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Server error',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+/**
+ * Get all differences with optional filters
+ */
+public function getDifferences(Request $request)
+{
+    try {
+        $query = Difference::with('dbCredential');
+
+        // Filter by d_b_credential_id
+        if ($request->has('d_b_credential_id') && $request->d_b_credential_id) {
+            $query->where('d_b_credential_id', $request->d_b_credential_id);
+        }
+
+        // Search in diff_db content
+        if ($request->has('search') && $request->search) {
+            $query->where('diff_db', 'like', '%' . $request->search . '%');
+        }
+
+        // Pagination
+        $perPage = $request->get('per_page', 15);
+        $differences = $query->orderBy('created_at', 'desc')->paginate($perPage);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Differences retrieved successfully.',
+            'data' => $differences->items(),
+            'pagination' => [
+                'current_page' => $differences->currentPage(),
+                'last_page' => $differences->lastPage(),
+                'per_page' => $differences->perPage(),
+                'total' => $differences->total(),
+            ],
+        ]);
+    } catch (Throwable $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to retrieve differences',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
 }
