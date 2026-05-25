@@ -740,6 +740,11 @@ public function storeDifference(Request $request)
             'diff_db' => $request->diff_text,
         ]);
 
+        
+        DBCredential::where('id', $request->credential_id)->update([
+            'last_snapshot' => $request->last_snapshot,
+        ]);
+
         DB::commit();
 
         return response()->json([
@@ -772,9 +777,12 @@ public function getDifferences(Request $request)
             $differences = Difference::orderBy('created_at', 'desc')->get();
         }
 
+        $last_snapshot=DBCredential::where('id', $credential_id)->value('last_snapshot');
+
         return response()->json([
             'success' => true,
             'differences' => $differences,
+            'last_snapshot' => $last_snapshot,
         ]);
     } catch (\Exception $e) {
         return response()->json([
