@@ -730,7 +730,7 @@ public function getDatabase($dbname, $namedb)
 /**
  * Save a database difference record to the main database
  */
-public function saveDifference(Request $request)
+public function storeDifference(Request $request)
 {
     DB::beginTransaction();
 
