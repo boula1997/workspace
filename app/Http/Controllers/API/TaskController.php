@@ -1415,7 +1415,6 @@ public function asyncCreate(Request $request)
         foreach ($request->notes ?? [] as $item) {
             $note = Note::create([
                 'title'    => trim($item['title']),
-                'admin_id' => auth('api')->id() ?? 1,
             ]);
 
             $created['notes'][] = [
