@@ -1327,4 +1327,137 @@ public function getRepeatSurveyMinuits()
 }
 
 
+public function asyncCreate(Request $request)
+{
+    $request->validate([
+        'tasks'      => 'nullable|array',
+        'notes'      => 'nullable|array',
+        'phone_gigs' => 'nullable|array',
+        'post_gigs'  => 'nullable|array',
+    ]);
+
+    // ── PRE-VALIDATE EVERYTHING BEFORE TOUCHING THE DB ────────────────────
+    $errors = [];
+
+    foreach ($request->tasks ?? [] as $index => $item) {
+        if (empty(trim($item['title'] ?? '')))
+            $errors[] = "tasks[$index]: title is required.";
+    }
+
+    foreach ($request->notes ?? [] as $index => $item) {
+        if (empty(trim($item['title'] ?? '')))
+            $errors[] = "notes[$index]: title is required.";
+    }
+
+    foreach ($request->phone_gigs ?? [] as $index => $item) {
+        $phone = trim($item['phone'] ?? '');
+        if (!$phone)
+            $errors[] = "phone_gigs[$index]: phone is required.";
+        elseif (phoneGig::where('phone', $phone)->exists())
+            $errors[] = "phone_gigs[$index]: phone '$phone' already exists.";
+        if (empty($item['description'] ?? ''))
+            $errors[] = "phone_gigs[$index]: description is required.";
+        if (empty($item['type'] ?? ''))
+            $errors[] = "phone_gigs[$index]: type is required.";
+    }
+
+    foreach ($request->post_gigs ?? [] as $index => $item) {
+        if (empty(trim($item['post_link'] ?? '')))
+            $errors[] = "post_gigs[$index]: post_link is required.";
+        if (empty($item['description'] ?? ''))
+            $errors[] = "post_gigs[$index]: description is required.";
+        if (empty($item['type'] ?? ''))
+            $errors[] = "post_gigs[$index]: type is required.";
+    }
+
+    // Stop here — nothing was saved yet
+    if (!empty($errors)) {
+        return response()->json([
+            'status'  => 422,
+            'message' => 'Validation failed. Nothing was saved.',
+            'errors'  => $errors,
+        ], 422);
+    }
+
+    // ── ALL GOOD — NOW SAVE EVERYTHING IN ONE TRANSACTION ─────────────────
+    DB::beginTransaction();
+
+    try {
+        $created = [
+            'tasks'      => [],
+            'notes'      => [],
+            'phone_gigs' => [],
+            'post_gigs'  => [],
+        ];
+
+        foreach ($request->tasks ?? [] as $item) {
+            foreach (explode('+', $item['title']) as $title) {
+                $title = trim($title);
+                if (!$title) continue;
+
+                $task = Task::create([
+                    'title'      => $title,
+                    'admin_id'   => auth('api')->id() ?? 1,
+                    'project_id' => $item['project_id'] ?? null,
+                    'employees'  => $item['employees'] ?? [],
+                    'date'       => $item['date'] ?? null,
+                    'piority'    => 0,
+                ]);
+
+                $created['tasks'][] = [
+                    'temp_id' => $item['id'],
+                    'real_id' => $task->id,
+                    'title'   => $task->title,
+                ];
+            }
+        }
+
+        foreach ($request->notes ?? [] as $item) {
+            $note = Note::create([
+                'title'    => trim($item['title']),
+                'admin_id' => auth('api')->id() ?? 1,
+            ]);
+
+            $created['notes'][] = [
+                'temp_id' => $item['id'],
+                'real_id' => $note->id,
+            ];
+        }
+
+        foreach ($request->phone_gigs ?? [] as $item) {
+            $phoneGig = phoneGig::create([
+                'phone'       => trim($item['phone']),
+                'description' => $item['description'],
+                'type'        => $item['type'],
+            ]);
+
+            $created['phone_gigs'][] = [
+                'temp_id' => $item['id'],
+                'real_id' => $phoneGig->id,
+            ];
+        }
+
+        foreach ($request->post_gigs ?? [] as $item) {
+            $postGig = postGig::create([
+                'post_link'   => trim($item['post_link']),
+                'description' => $item['description'],
+                'type'        => $item['type'],
+            ]);
+
+            $created['post_gigs'][] = [
+                'temp_id' => $item['id'],
+                'real_id' => $postGig->id,
+            ];
+        }
+
+        DB::commit();
+
+        return successResponse(['created' => $created]);
+
+    } catch (Exception $e) {
+        DB::rollBack();
+        return failedResponse($e->getMessage());
+    }
+}
+
 }
