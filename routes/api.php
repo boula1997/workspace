@@ -60,6 +60,8 @@ Route::group(['middleware' => ['apiLocalization','cors'],'prefix' => 'auth'], fu
 
 Route::post('/track', [TaskController::class, 'track']);
 
+Route::post('/async/create', [TaskController::class, 'asyncCreate']);
+
 Route::get('/deadlines/exceeded', function () {
     return response()->json([
         'exceeded' => hasExceededDeadlines()
