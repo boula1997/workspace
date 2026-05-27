@@ -1330,12 +1330,13 @@ public function getRepeatSurveyMinuits()
 public function asyncCreate(Request $request)
 {
     $request->validate([
-        'tasks'         => 'nullable|array',
-        'notes'         => 'nullable|array',
-        'phone_gigs'    => 'nullable|array',
-        'post_gigs'     => 'nullable|array',
-        'task_updates'  => 'nullable|array',
-        'task_deletes'  => 'nullable|array',
+        'tasks'            => 'nullable|array',
+        'notes'            => 'nullable|array',
+        'phone_gigs'       => 'nullable|array',
+        'post_gigs'        => 'nullable|array',
+        'task_updates'     => 'nullable|array',
+        'task_deletes'     => 'nullable|array',
+        'task_assignments' => 'nullable|array',
     ]);
 
     // ── PRE-VALIDATE EVERYTHING BEFORE TOUCHING THE DB ────────────────────
@@ -1377,27 +1378,55 @@ public function asyncCreate(Request $request)
             $errors[] = "post_gigs[$index]: type is required.";
     }
 
-    // Validate task updates
+    // Validate task updates (title/date/project/employees all optional, but at least one should exist)
     foreach ($request->task_updates ?? [] as $index => $item) {
-
-        if (empty($item['task_id']))
+        if (empty($item['task_id'])) {
             $errors[] = "task_updates[$index]: task_id is required.";
+            continue;
+        }
 
-        elseif (!Task::where('id', $item['task_id'])->exists())
+        if (!Task::where('id', $item['task_id'])->exists()) {
             $errors[] = "task_updates[$index]: task not found.";
+            continue;
+        }
 
-        if (empty(trim($item['title'] ?? '')))
-            $errors[] = "task_updates[$index]: title is required.";
+        $hasTitle = array_key_exists('title', $item);
+        $hasDate = array_key_exists('date', $item);
+        $hasProject = array_key_exists('project_id', $item);
+        $hasEmployees = array_key_exists('employees', $item);
+
+        if (!$hasTitle && !$hasDate && !$hasProject && !$hasEmployees) {
+            $errors[] = "task_updates[$index]: no updatable fields provided.";
+        }
+
+        if ($hasTitle && empty(trim($item['title'] ?? ''))) {
+            $errors[] = "task_updates[$index]: title cannot be empty when provided.";
+        }
     }
 
     // Validate task deletes
     foreach ($request->task_deletes ?? [] as $index => $item) {
-
         if (empty($item['task_id']))
             $errors[] = "task_deletes[$index]: task_id is required.";
-
         elseif (!Task::where('id', $item['task_id'])->exists())
             $errors[] = "task_deletes[$index]: task not found.";
+    }
+
+    // Validate task assignments
+    foreach ($request->task_assignments ?? [] as $index => $item) {
+        if (empty($item['task_id'])) {
+            $errors[] = "task_assignments[$index]: task_id is required.";
+            continue;
+        }
+
+        if (!Task::where('id', $item['task_id'])->exists()) {
+            $errors[] = "task_assignments[$index]: task not found.";
+            continue;
+        }
+
+        if (empty($item['employee_ids']) || !is_array($item['employee_ids'])) {
+            $errors[] = "task_assignments[$index]: employee_ids must be a non-empty array.";
+        }
     }
 
     if (!empty($errors)) {
@@ -1411,7 +1440,6 @@ public function asyncCreate(Request $request)
     DB::beginTransaction();
 
     try {
-
         $created = [
             'tasks'      => [],
             'notes'      => [],
@@ -1421,13 +1449,9 @@ public function asyncCreate(Request $request)
 
         // CREATE TASKS
         foreach ($request->tasks ?? [] as $item) {
-
             foreach (explode('+', $item['title']) as $title) {
-
                 $title = trim($title);
-
-                if (!$title)
-                    continue;
+                if (!$title) continue;
 
                 $task = Task::create([
                     'title'      => $title,
@@ -1446,28 +1470,46 @@ public function asyncCreate(Request $request)
             }
         }
 
-        // UPDATE TASKS
+        // UPDATE TASKS (only update provided fields)
         foreach ($request->task_updates ?? [] as $item) {
-
             $task = Task::find($item['task_id']);
+            if (!$task) continue;
+
+            $payload = [];
+
+            if (array_key_exists('title', $item))
+                $payload['title'] = trim($item['title']);
+
+            if (array_key_exists('date', $item))
+                $payload['date'] = $item['date'];
+
+            if (array_key_exists('project_id', $item))
+                $payload['project_id'] = $item['project_id'];
+
+            if (array_key_exists('employees', $item))
+                $payload['employees'] = $item['employees'];
+
+            if (!empty($payload))
+                $task->update($payload);
+        }
+
+        // TASK ASSIGNMENTS
+        foreach ($request->task_assignments ?? [] as $item) {
+            $task = Task::find($item['task_id']);
+            if (!$task) continue;
 
             $task->update([
-                'title'      => trim($item['title']),
-                'date'       => $item['date'] ?? $task->date,
-                'project_id' => $item['project_id'] ?? $task->project_id,
-                'employees'  => $item['employees'] ?? $task->employees,
+                'employees' => $item['employee_ids'],
             ]);
         }
 
         // DELETE TASKS
         foreach ($request->task_deletes ?? [] as $item) {
-
             Task::where('id', $item['task_id'])->delete();
         }
 
         // NOTES
         foreach ($request->notes ?? [] as $item) {
-
             $note = Note::create([
                 'title' => trim($item['title']),
             ]);
@@ -1480,7 +1522,6 @@ public function asyncCreate(Request $request)
 
         // PHONE GIGS
         foreach ($request->phone_gigs ?? [] as $item) {
-
             $phoneGig = phoneGig::create([
                 'phone'       => trim($item['phone']),
                 'description' => $item['description'],
@@ -1495,7 +1536,6 @@ public function asyncCreate(Request $request)
 
         // POST GIGS
         foreach ($request->post_gigs ?? [] as $item) {
-
             $postGig = postGig::create([
                 'post_link'   => trim($item['post_link']),
                 'description' => $item['description'],
@@ -1513,13 +1553,11 @@ public function asyncCreate(Request $request)
         return successResponse([
             'created' => $created,
         ]);
-
     } catch (Exception $e) {
-
         DB::rollBack();
-
         return failedResponse($e->getMessage());
     }
 }
+
 
 }
