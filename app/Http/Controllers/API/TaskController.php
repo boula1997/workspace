@@ -1385,10 +1385,10 @@ public function asyncCreate(Request $request)
             continue;
         }
 
-        if (!Task::where('id', $item['task_id'])->exists()) {
-            $errors[] = "task_updates[$index]: task not found.";
-            continue;
-        }
+        // if (!Task::where('id', $item['task_id'])->exists()) {
+        //     $errors[] = "task_updates[$index]: task not found.";
+        //     continue;
+        // }
 
         $hasTitle = array_key_exists('title', $item);
         $hasDate = array_key_exists('date', $item);
@@ -1408,8 +1408,8 @@ public function asyncCreate(Request $request)
     foreach ($request->task_deletes ?? [] as $index => $item) {
         if (empty($item['task_id']))
             $errors[] = "task_deletes[$index]: task_id is required.";
-        elseif (!Task::where('id', $item['task_id'])->exists())
-            $errors[] = "task_deletes[$index]: task not found.";
+        // elseif (!Task::where('id', $item['task_id'])->exists())
+        //     $errors[] = "task_deletes[$index]: task not found.";
     }
 
     // Validate task assignments
@@ -1419,10 +1419,10 @@ public function asyncCreate(Request $request)
             continue;
         }
 
-        if (!Task::where('id', $item['task_id'])->exists()) {
-            $errors[] = "task_assignments[$index]: task not found.";
-            continue;
-        }
+        // if (!Task::where('id', $item['task_id'])->exists()) {
+        //     $errors[] = "task_assignments[$index]: task not found.";
+        //     continue;
+        // }
 
         if (empty($item['employee_ids']) || !is_array($item['employee_ids'])) {
             $errors[] = "task_assignments[$index]: employee_ids must be a non-empty array.";
