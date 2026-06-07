@@ -1279,17 +1279,24 @@ public function addCallHistory(Request $request)
     return successResponse($callHistory);  // ✅ Return the correct variable
 }
 
-public function getAllPhoneGigs()
+public function getAllPhoneGigs(Request $request)
 {
-    $phoneGigs = phoneGig::latest()->get();
-    return successResponse(PhoneGigResource::collection($phoneGigs));
-}
-public function getAllPostGigs()
-{
-    $postGigs = postGig::latest()->get();
-    return successResponse(PostGigResource::collection($postGigs));
+    $perPage = $request->get('per_page', 15);
+
+    $phoneGigs = PhoneGig::latest()->paginate($perPage);
+
+    return successResponse($phoneGigs);
 }
 
+
+public function getAllPostGigs(Request $request)
+{
+    $perPage = $request->get('per_page', 15);
+
+    $postGigs = PostGig::latest()->paginate($perPage);
+
+    return successResponse($postGigs);
+}
 
 public function updateTasksToToday()
 {
