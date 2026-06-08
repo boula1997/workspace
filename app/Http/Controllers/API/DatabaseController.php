@@ -316,7 +316,7 @@ private function extractTableFromSelect(string $sql): ?string
             $fixed = Query::where('isFixed', 1)->get();
 
             $all = Query::latest('updated_at')
-                ->take(200)
+                ->take(50)
                 ->get();
 
             $queries = $all->merge($fixed);
@@ -362,7 +362,7 @@ public function saveSearch(Request $request)
         // Get searches for this credential, ordered by updated_at DESC (newest first)
         $searches = Search::where('d_b_credential_id', $request->d_b_credential_id)
             ->orderBy('updated_at', 'DESC')
-            ->take(200)
+            ->take(50)
             ->get();
 
         DB::commit();
@@ -651,7 +651,7 @@ public function getDatabase($dbname, $namedb)
 
             $all = Query::where("d_b_credential_id", $id)
                 ->latest('updated_at')
-                ->take(200)
+                ->take(50)
                 ->get();
 
             $queries = $all->merge($fixed)->unique('id')->values();
@@ -680,7 +680,7 @@ public function getDatabase($dbname, $namedb)
 
             $all = Search::where("d_b_credential_id", $id)
                 ->latest('updated_at')
-                ->take(200)
+                ->take(50)
                 ->get();
 
             $searches = $all->merge($fixed)->unique('id')->values();
@@ -707,7 +707,7 @@ public function getDatabase($dbname, $namedb)
 
             $commands = Command::where("d_b_credential_id", $id)->orWhere("isGeneral", 1)
                 ->latest('updated_at')
-                ->take(200)
+                ->take(50)
                 ->get();
 
 
