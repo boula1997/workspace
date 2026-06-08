@@ -19,6 +19,7 @@ class ProjectResource extends JsonResource
             'title' => $this->title,
             'deal' => $this->deal,
             'status' => $this->status,
+            'links' => $this->links ?? [],
             'cost' => $this->cost,
             'projectBudgetDays' => projectBudgetDays($this),
             'projectFutureExpense' => $this->futureExpense,

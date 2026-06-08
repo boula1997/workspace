@@ -20,6 +20,7 @@ class Project extends \App\Models\BaseModel
 
    protected $casts = [
         'deadline' => 'datetime',
+        'links' => 'array',
     ];
     
     protected $appends = ['deal'];
