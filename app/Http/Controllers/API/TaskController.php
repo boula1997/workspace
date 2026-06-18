@@ -1340,6 +1340,7 @@ public function asyncCreate(Request $request)
         'task_updates'     => 'nullable|array',
         'task_deletes'     => 'nullable|array',
         'task_assignments' => 'nullable|array',
+        'surveys' => 'nullable|array',
     ]);
 
     // ── PRE-VALIDATE EVERYTHING BEFORE TOUCHING THE DB ────────────────────
@@ -1379,6 +1380,12 @@ public function asyncCreate(Request $request)
 
         if (empty($item['type'] ?? ''))
             $errors[] = "post_gigs[$index]: type is required.";
+    }
+
+    // Add to pre-validation loop
+    foreach ($request->surveys ?? [] as $index => $item) {
+        if (empty(trim($item['question'] ?? '')))
+            $errors[] = "surveys[$index]: question is required.";
     }
 
     // Validate task updates (title/date/project/employees all optional, but at least one should exist)
@@ -1448,7 +1455,24 @@ public function asyncCreate(Request $request)
             'notes'      => [],
             'phone_gigs' => [],
             'post_gigs'  => [],
+            'surveys'    => [],
         ];
+
+        // SURVEYS
+        foreach ($request->surveys ?? [] as $item) {
+            $survey = \App\Models\Survey::create([
+                'question' => trim($item['question']),
+                'isActive' => $item['isActive'] ?? 1,
+                'link'     => $item['link'] ?? null,
+                'phone'    => $item['phone'] ?? null,
+                'whatsapp' => $item['whatsapp'] ?? null,
+            ]);
+
+            $created['surveys'][] = [
+                'temp_id' => $item['id'] ?? null,
+                'real_id' => $survey->id,
+            ];
+        }
 
         // CREATE TASKS
         foreach ($request->tasks ?? [] as $item) {
