@@ -120,6 +120,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::middleware('auth:admin-api','apiLocalization','cors')->group(function () {
 
     Route::resource('complains', ComplainController::class);
+    Route::apiResource('kit_tools', \App\Http\Controllers\API\KitToolController::class);
 
 
 
