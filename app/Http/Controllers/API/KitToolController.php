@@ -13,9 +13,17 @@ class KitToolController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $kitTools = KitTool::all();
+        // Start a query on the KitTool model
+        $query = KitTool::query();
+        
+        // Filter by d_b_credential_id if provided in the URL query string
+        if ($request->has('d_b_credential_id')) {
+            $query->where('d_b_credential_id', $request->query('d_b_credential_id'));
+        }
+        
+        $kitTools = $query->get();
         return response()->json($kitTools);
     }
 
