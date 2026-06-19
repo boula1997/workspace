@@ -26,7 +26,7 @@ public function index(Request $request)
     }
 
     return response()->json(
-        $query->orderByDesc('id')->paginate($request->integer('per_page', 10))
+        $query->orderByDesc('id')->paginate($request->integer('per_page', 7))
     );
 }
 
