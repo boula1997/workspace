@@ -1587,4 +1587,48 @@ public function asyncCreate(Request $request)
 }
 
 
+public function tasksByCredential(Request $request, $db_credential_id)
+{
+    try {
+        $tasks = Task::with('project')
+            ->whereHas('project', function ($q) use ($db_credential_id) {
+                $q->where('d_b_credential_id', $db_credential_id);
+            })
+            ->filter($request)
+            ->paginate($request->per_page ?? 20);
+
+        $formatted = $tasks->getCollection()->map(function ($task) {
+            return [
+                'id'          => $task->id,
+                'title'       => $task->title,
+                'project'     => $task->project?->title ?? '',
+                'project_id'  => $task->project_id,
+                'employee'    => $this->resolveEmployeeNames($task->employees),
+                'employees'   => $task->employees,
+                'date'        => $task->date,
+                'created_at'  => $task->created_at?->format('Y-m-d'),
+                'piority'     => $task->piority,
+                'status'      => $task->status,
+                'isFixed'     => $task->isFixed,
+            ];
+        });
+
+        return response()->json([
+            'status' => 200,
+            'data'   => [
+                'tasks'      => $formatted,
+                'tasks_meta' => [
+                    'current_page' => $tasks->currentPage(),
+                    'last_page'    => $tasks->lastPage(),
+                    'total'        => $tasks->total(),
+                    'per_page'     => $tasks->perPage(),
+                ],
+            ],
+        ]);
+
+    } catch (Exception $e) {
+        return failedResponse($e->getMessage());
+    }
+}
+
 }

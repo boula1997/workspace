@@ -192,6 +192,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/get/all/post/gigs', [TaskController::class, 'getAllPostGigs']);
     Route::post('/update/tasks/to/today', [TaskController::class, 'updateTasksToToday']);
     Route::get('/surveies', [TaskController::class, 'surveies']);
+    Route::get('apptask/by-credential/{db_credential_id}', [TaskController::class, 'tasksByCredential']);
     Route::get('/get/repeat/survey/minuits', [TaskController::class, 'getRepeatSurveyMinuits']);
 
     Route::resource('admins', AdminController::class);
