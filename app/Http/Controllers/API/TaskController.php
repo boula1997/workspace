@@ -1590,7 +1590,7 @@ public function asyncCreate(Request $request)
 public function tasksByCredential(Request $request, $db_credential_id)
 {
     try {
-        $tasks = Task::with('project')
+        $tasks = Task::with('project')->where('status',0)
             ->whereHas('project', function ($q) use ($db_credential_id) {
                 $q->where('d_b_credential_id', $db_credential_id);
             })
