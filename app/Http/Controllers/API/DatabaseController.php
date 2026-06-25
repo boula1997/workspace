@@ -656,7 +656,7 @@ public function getDatabase($dbname, $namedb)
             $queries = $all->merge($fixed)->unique('id')->values();
 
             $credentials = DBCredential::all()->map(function ($credential) {
-                $project = \App\Models\Project::where('dbcredential_id', $credential->id)->first();
+                $project = Project::where('dbcredential_id', $credential->id)->first();
                 $credential->project_id = $project?->id;
                 return $credential;
             });
