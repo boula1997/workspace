@@ -641,41 +641,37 @@ public function getDatabase($dbname, $namedb)
 
 
 
-    public function getQueries($id = null)
-    {
-        try {
-            $fixed = Query::where("d_b_credential_id", $id)
-                ->where('isFixed', 1)
-                ->get();
+public function getQueries($id = null)
+{
+    try {
 
-            $all = Query::where("d_b_credential_id", $id)
-                ->latest('updated_at')
-                ->take(50)
-                ->get();
+        $fixed = Query::where('d_b_credential_id', $id)
+            ->where('isFixed', 1)
+            ->get();
 
-            $queries = $all->merge($fixed)->unique('id')->values();
+        $all = Query::where('d_b_credential_id', $id)
+            ->latest('updated_at')
+            ->take(50)
+            ->get();
 
-            $credentials = DBCredential::all()->map(function ($credential) {
-                $project = Project::withoutGlobalScopes()
-                    ->where('d_b_credential_id', $credential->id)
-                    ->first();
-                $credential->project_id = $project?->id;
-                return $credential;
-            });
+        $queries = $all->merge($fixed)->unique('id')->values();
 
-            return response()->json([
-                'success' => true,
-                'queries' => $queries,
-                'credentials' => $credentials,
-            ]);
+        $credentials = DBCredential::with('project:id,d_b_credential_id')->get();
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => $e->getMessage(),
-            ]);
-        }
+        return response()->json([
+            'success' => true,
+            'queries' => $queries,
+            'credentials' => $credentials,
+        ]);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ]);
     }
+}
     public function getSearches($id = null)
     {
         try {
