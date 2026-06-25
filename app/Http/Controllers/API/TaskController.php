@@ -1613,9 +1613,21 @@ public function tasksByCredential(Request $request, $db_credential_id)
             ];
         });
 
+            $employees = Admin::where("isActive", 1)
+        ->whereNotIn("type", ["client", "prospective"])
+        ->select('admins.*')
+        ->selectRaw("(
+            SELECT COUNT(*) FROM tasks
+            WHERE tasks.status = 0
+            AND JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
+        ) as active_tasks_count")
+        ->orderBy('name')
+        ->get();
+
         return response()->json([
             'status' => 200,
             'data'   => [
+                'employees'=> $employees,
                 'tasks'      => $formatted,
                 'tasks_meta' => [
                     'current_page' => $tasks->currentPage(),
