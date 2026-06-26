@@ -1597,7 +1597,7 @@ public function tasksByCredential(Request $request, $db_credential_id)
             })
             ->filter($request)
             ->orderByDesc('date')
-            ->paginate($request->per_page ?? 20);
+            ->paginate($request->per_page ?? 7);
 
         $formatted = $tasks->getCollection()->map(function ($task) {
             return [
