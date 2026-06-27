@@ -416,23 +416,34 @@ private function resolveEmployeeNames($employees): string
 
             $titles = explode('+', $request->title);
             foreach ($titles as $title) {
+                $title = trim($title);
+
+                if (empty($title))
+                    continue;
+
+                $exists = Task::where('title', $title)
+                    ->where('project_id', $request->project_id)
+                    ->exists();
+
+                if ($exists)
+                    continue;
+
                 Task::create([
-                    'title' => $title,
-                    'admin_id' => 1,
+                    'title'      => $title,
+                    'admin_id'   => 1,
                     'project_id' => $request->project_id,
-                    'date' => $request->deadline,
-                    'piority' => 0,
-                    'employees' => $request->employees,
+                    'date'       => $request->deadline,
+                    'piority'    => 0,
+                    'employees'  => $request->employees,
                 ]);
-                
             }
 
-
-            $data = [];
-
-            return successResponse($data);
+            return successResponse([]);
         } catch (Exception $e) {
-            DB::table('tracks')->insert(['dispatch_status' => 'showing data of ' . json_encode($e->getMessage()), 'created_at' => now(),]);
+            DB::table('tracks')->insert([
+                'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()),
+                'created_at'      => now(),
+            ]);
             return redirect()->back()->with(['error' => __('general.something_wrong')]);
         }
     }
