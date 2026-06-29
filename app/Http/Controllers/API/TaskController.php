@@ -1294,7 +1294,14 @@ public function getAllPhoneGigs(Request $request)
 {
     $perPage = $request->get('per_page', 15);
 
-    $phoneGigs = PhoneGig::latest()->paginate($perPage);
+    $phoneGigs = PhoneGig::select('phone_gigs.*')
+        ->leftJoin(
+            DB::raw('(SELECT phone_gig_id, MAX(created_at) as last_called_at FROM call_histories GROUP BY phone_gig_id) as ch'),
+            'phone_gigs.id', '=', 'ch.phone_gig_id'
+        )
+        ->orderByRaw('ch.last_called_at IS NOT NULL ASC')
+        ->orderBy('ch.last_called_at', 'ASC')
+        ->paginate($perPage);
 
     return successResponse($phoneGigs);
 }
