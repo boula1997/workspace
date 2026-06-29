@@ -195,6 +195,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/surveies', [TaskController::class, 'surveies']);
     Route::get('apptask/by-credential/{db_credential_id}', [TaskController::class, 'tasksByCredential']);
     Route::get('/get/repeat/survey/minuits', [TaskController::class, 'getRepeatSurveyMinuits']);
+    Route::post('apptask/update-task/{id}', [TaskController::class, 'updateTaskTitleAndComments']);
 
     Route::resource('admins', AdminController::class);
     Route::resource('roles', RoleController::class);

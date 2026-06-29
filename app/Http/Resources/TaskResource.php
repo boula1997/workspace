@@ -30,6 +30,7 @@ public function toArray($request)
         'isPersonal' => $this->project->isPersonal,        // needed for project filter
         'isDeleted'  => (bool) !$this->isActive,  // if you use soft-delete via isActive
         'editlink'   => "https://reactdashboard.yousab-tech.com/tasks/" . $this->id . "/edit",
+        'comments' => $this->comments,
     ];
 }
 }

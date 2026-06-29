@@ -1686,4 +1686,35 @@ public function getAllPostGigs(Request $request)
     return successResponse($postGigs);
 }
 
+
+public function updateTaskTitleAndComments(Request $request, $id)
+{
+    $request->validate([
+        'title'    => 'sometimes|string|max:255',
+        'comments' => 'sometimes|nullable|string',
+    ]);
+
+    $task = Task::findOrFail($id);
+
+    $payload = [];
+
+    if ($request->has('title') && trim($request->title) !== '') {
+        $payload['title'] = trim($request->title);
+    }
+
+    if ($request->has('comments')) {
+        $payload['comments'] = $request->comments; // nullable, longText
+    }
+
+    if (empty($payload)) {
+        return response()->json([
+            'status'  => 422,
+            'message' => 'No updatable fields provided.',
+        ], 422);
+    }
+
+    $task->update($payload);
+
+    return successResponse($task);
+}
 }
