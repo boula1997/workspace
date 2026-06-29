@@ -203,5 +203,8 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::resource('users', UserController::class);
 
     Route::get('all/permissions', [RoleController::class, 'all_permissions']);
+
+    Route::delete('phone-gig/{id}', [TaskController::class, 'deletePhoneGig']);
+Route::delete('post-gig/{id}',  [TaskController::class, 'deletePostGig']);
 });
 }); 
