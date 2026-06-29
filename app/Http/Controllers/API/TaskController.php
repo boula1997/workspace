@@ -47,6 +47,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use App\Models\LinkHistory;
 
 
 class TaskController extends Controller
@@ -1307,15 +1308,6 @@ public function getAllPhoneGigs(Request $request)
 }
 
 
-public function getAllPostGigs(Request $request)
-{
-    $perPage = $request->get('per_page', 15);
-
-    $postGigs = PostGig::latest()->paginate($perPage);
-
-    return successResponse($postGigs);
-}
-
 public function updateTasksToToday()
 {
     $tasks = Task::where('status', 0)->where('date', '<', today())
@@ -1661,6 +1653,37 @@ public function tasksByCredential(Request $request, $db_credential_id)
     } catch (Exception $e) {
         return failedResponse($e->getMessage());
     }
+}
+
+
+
+public function addLinkHistory(Request $request)
+{
+    $request->validate([
+        'post_gig_id' => 'required|exists:post_gigs,id',
+    ]);
+
+    $linkHistory = LinkHistory::create([
+        'post_gig_id' => $request->post_gig_id,
+    ]);
+
+    return successResponse($linkHistory);
+}
+
+public function getAllPostGigs(Request $request)
+{
+    $perPage = $request->get('per_page', 15);
+
+    $postGigs = PostGig::select('post_gigs.*')
+        ->leftJoin(
+            DB::raw('(SELECT post_gig_id, MAX(created_at) as last_linked_at FROM link_histories GROUP BY post_gig_id) as lh'),
+            'post_gigs.id', '=', 'lh.post_gig_id'
+        )
+        ->orderByRaw('lh.last_linked_at IS NOT NULL ASC')  // never visited first
+        ->orderBy('lh.last_linked_at', 'ASC')              // oldest visit next, recent last
+        ->paginate($perPage);
+
+    return successResponse($postGigs);
 }
 
 }

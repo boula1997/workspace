@@ -10,4 +10,10 @@ class postGig extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+
+    public function linkHistories()
+{
+    return $this->hasMany(LinkHistory::class);
+}
 }

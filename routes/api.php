@@ -188,6 +188,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::post('/add/phone/gig', [TaskController::class, 'addPhoneGig']);
     Route::post('/add/post/gig', [TaskController::class, 'addPostGig']);
     Route::post('/add/call/history', [TaskController::class, 'addCallHistory']);
+    Route::post('add-link-history', [TaskController::class, 'addLinkHistory']);
     Route::get('/get/all/phone/gigs', [TaskController::class, 'getAllPhoneGigs']);
     Route::get('/get/all/post/gigs', [TaskController::class, 'getAllPostGigs']);
     Route::post('/update/tasks/to/today', [TaskController::class, 'updateTasksToToday']);
