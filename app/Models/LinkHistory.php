@@ -1,4 +1,3 @@
-// app/Models/LinkHistory.php
 <?php
 
 namespace App\Models;
