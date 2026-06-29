@@ -1717,4 +1717,21 @@ public function updateTaskTitleAndComments(Request $request, $id)
 
     return successResponse($task);
 }
+
+
+public function deletePhoneGig($id)
+{
+    $phoneGig = phoneGig::findOrFail($id);
+    $phoneGig->callHistories()->delete(); // remove related call histories first
+    $phoneGig->delete();
+    return successResponse($phoneGig);
+}
+
+public function deletePostGig($id)
+{
+    $postGig = postGig::findOrFail($id);
+    $postGig->linkHistories()->delete(); // remove related link histories first
+    $postGig->delete();
+    return successResponse($postGig);
+}
 }
