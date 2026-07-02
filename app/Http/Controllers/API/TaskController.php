@@ -1734,4 +1734,99 @@ public function deletePostGig($id)
     $postGig->delete();
     return successResponse($postGig);
 }
+
+
+    /**
+     * GET /client/tasks
+     * Returns the authenticated client's tasks, optionally scoped to a
+     * single project via ?project_id=23, paginated via ?page=1.
+     */
+    public function clientTasks(Request $request)
+    {
+        $request->validate([
+            'project_id' => 'nullable|integer|exists:projects,id',
+            'page'       => 'nullable|integer|min:1',
+        ]);
+
+        $client = $request->user(); // adjust guard/relation as needed
+
+        $query = Task::query()
+            ->where('isDeleted', false)
+            ->whereHas('project', function ($q) use ($client) {
+                $q->where('client_id', $client->id);
+            });
+
+        if ($request->filled('project_id')) {
+            $query->where('project_id', $request->project_id);
+        }
+
+        $tasks = $query->orderBy('created_at', 'desc')
+            ->paginate($request->input('per_page', 20));
+
+        return response()->json([
+            'status'  => 200,
+            'message' => 'success',
+            'data'    => [
+                'tasks'      => $tasks->items(),
+                'tasks_meta' => [
+                    'current_page' => $tasks->currentPage(),
+                    'last_page'    => $tasks->lastPage(),
+                    'per_page'     => $tasks->perPage(),
+                    'total'        => $tasks->total(),
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * POST /client/tasks/store
+     * Creates multiple tasks under one project in a single request.
+     *
+     * Expected payload:
+     * {
+     *   "project_id": 23,
+     *   "tasks": [
+     *     { "title": "Write the release notes" },
+     *     { "title": "Review PR #482" }
+     *   ]
+     * }
+     */
+    public function clientTaskStore(Request $request)
+    {
+        $validated = $request->validate([
+            'project_id'     => 'required|integer|exists:projects,id',
+            'tasks'          => 'required|array|min:1',
+            'tasks.*.title'  => 'required|string|max:255',
+        ]);
+
+        $client = $request->user();
+
+        $ownsProject = Project::where('id', $validated['project_id'])
+            ->where('client_id', $client->id)
+            ->exists();
+
+        if (! $ownsProject) {
+            return response()->json([
+                'status'  => 403,
+                'message' => 'You do not have access to this project.',
+            ], 403);
+        }
+
+        $created = collect($validated['tasks'])->map(
+            fn ($task) => Task::create([
+                'title'      => $task['title'],
+                'project_id' => $validated['project_id'],
+                'status'     => 0, // pending
+                'date'       => now()->toDateString(),
+                'isFixed'    => false,
+                'isDeleted'  => false,
+            ])
+        );
+
+        return response()->json([
+            'status'  => 201,
+            'message' => 'success',
+            'data'    => $created,
+        ], 201);
+    }
 }

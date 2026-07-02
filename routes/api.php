@@ -115,6 +115,9 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
       }
 
+    Route::get('/client/tasks', [TaskController::class, 'clientTasks']);
+    Route::post('/client/tasks/store', [TaskController::class, 'clientTaskStore']);
+
 
 
     Route::middleware('auth:admin-api','apiLocalization','cors')->group(function () {
