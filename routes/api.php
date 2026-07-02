@@ -115,6 +115,9 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
       }
 
+    Route::get('/apptask/create', [TaskController::class, 'create']);
+    Route::post('/apptask/store', [TaskController::class, 'store']);
+
 
 
     Route::middleware('auth:admin-api','apiLocalization','cors')->group(function () {
@@ -153,7 +156,6 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/issue/hollyMass', [TaskController::class, 'hollyMass'])->name('hollyMass.issue');
     Route::get('/issue/facebookAds', [TaskController::class, 'facebookAds'])->name('facebookAds.issue');
     Route::get('/deadlines', [TaskController::class, 'deadlines'])->name('deadlines');
-    Route::get('/apptask/create', [TaskController::class, 'create']);
     Route::get('/board/projects', [TaskController::class, 'boardProjects']);
     Route::get('/data/info', [TaskController::class, 'info']);
     Route::get('/apptask/tasks', [TaskController::class, 'tasks']);
@@ -170,7 +172,6 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/getFunction', [ActionController::class, 'getFunction']);
     Route::post('/apptask/refproPost', [TaskController::class, 'refproPost']);
     Route::post('/apptask/refproGet', [TaskController::class, 'refproGet']);
-    Route::post('/apptask/store', [TaskController::class, 'store']);
     Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
     Route::middleware('businessHours')->group(function () {
     Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
