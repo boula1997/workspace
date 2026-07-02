@@ -1748,17 +1748,9 @@ public function deletePostGig($id)
             'page'       => 'nullable|integer|min:1',
         ]);
 
-        $client = $request->user(); // adjust guard/relation as needed
 
         $query = Task::query()
-            ->where('isDeleted', false)
-            ->whereHas('project', function ($q) use ($client) {
-                $q->where('client_id', $client->id);
-            });
-
-        if ($request->filled('project_id')) {
-            $query->where('project_id', $request->project_id);
-        }
+            ->where('project_id', $request->project_id);
 
         $tasks = $query->orderBy('created_at', 'desc')
             ->paginate($request->input('per_page', 20));
