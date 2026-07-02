@@ -1791,10 +1791,8 @@ public function deletePostGig($id)
             'tasks.*.title'  => 'required|string|max:255',
         ]);
 
-        $client = $request->user();
 
         $ownsProject = Project::where('id', $validated['project_id'])
-            ->where('client_id', $client->id)
             ->exists();
 
         if (! $ownsProject) {
