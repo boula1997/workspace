@@ -1809,7 +1809,6 @@ public function deletePostGig($id)
                 'status'     => 0, // pending
                 'date'       => now()->toDateString(),
                 'isFixed'    => false,
-                'isDeleted'  => false,
             ])
         );
 
