@@ -1622,6 +1622,7 @@ public function tasksByCredential(Request $request, $db_credential_id)
                 'piority'     => $task->piority,
                 'status'      => $task->status,
                 'isFixed'     => $task->isFixed,
+                'images'     => $task->images,
             ];
         });
 
