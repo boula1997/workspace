@@ -118,7 +118,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/client/tasks', [TaskController::class, 'clientTasks']);
     Route::post('/client/tasks/store', [TaskController::class, 'clientTaskStore']);
 
-
+    Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
 
     Route::middleware('auth:admin-api','apiLocalization','cors')->group(function () {
 
@@ -174,7 +174,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::post('/apptask/refproPost', [TaskController::class, 'refproPost']);
     Route::post('/apptask/refproGet', [TaskController::class, 'refproGet']);
     Route::post('/apptask/store', [TaskController::class, 'store']);
-    Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
+
     Route::middleware('businessHours')->group(function () {
     Route::get('piority/toggle/{id}', [TaskController::class, 'togglePiority'])->name('piority.toggle');
     Route::get('/lock', [TaskController::class, 'lock'])->name('lock');
