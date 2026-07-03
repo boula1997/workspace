@@ -1806,15 +1806,14 @@ public function clientTasks(Request $request)
 public function clientTaskStore(Request $request)
 {
     $validated = $request->validate([
-        'project_id'            => 'required|integer|exists:projects,id',
-        'tasks'                 => 'required|array|min:1',
-        'tasks.*.title'         => 'required|string|max:255',
-        'tasks.*.images'        => 'nullable|array|max:6',
-        'tasks.*.images.*'      => 'nullable|image|max:5120', // 5MB, in KB
+        'project_id'       => 'required|integer|exists:projects,id',
+        'tasks'            => 'required|array|min:1',
+        'tasks.*.title'    => 'required|string|max:255',
+        'tasks.*.images'   => 'nullable|array|max:6',
+        'tasks.*.images.*' => 'nullable|image|max:5120', // 5MB
     ]);
 
-    $ownsProject = Project::where('id', $validated['project_id'])
-        ->exists();
+    $ownsProject = Project::where('id', $validated['project_id'])->exists();
 
     if (! $ownsProject) {
         return response()->json([
@@ -1823,7 +1822,14 @@ public function clientTaskStore(Request $request)
         ], 403);
     }
 
-    $created = collect($validated['tasks'])->map(function ($task, $index) use ($validated, $request) {
+    $destinationPath = public_path('uploads/tasks');
+
+    if (! file_exists($destinationPath)) {
+        mkdir($destinationPath, 0755, true);
+    }
+
+    $created = collect($validated['tasks'])->map(function ($task, $index) use ($validated, $request, $destinationPath) {
+
         $newTask = Task::create([
             'title'      => $task['title'],
             'project_id' => $validated['project_id'],
@@ -1839,20 +1845,22 @@ public function clientTaskStore(Request $request)
                 continue;
             }
 
-            // 'public' disk so the path resolves to a real, web-accessible
-            // URL via Storage::url(). Make sure `php artisan storage:link`
-            // has been run so storage/app/public is symlinked to public/storage.
-            $path = $file->store('images', 'public');
-            $newTask->files()->create(['url' => $path]);
+            $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+            $file->move($destinationPath, $fileName);
+
+            $newTask->files()->create([
+                'url' => 'uploads/tasks/' . $fileName,
+            ]);
         }
 
-        return $newTask->load('files');
-    });
+        $newTask->load('files');
 
-    // Append absolute image URLs so the frontend doesn't need to know
-    // about the storage disk/path convention.
-    $created->each(function ($task) {
-        $task->images = $task->files->map(fn ($f) => \Storage::disk('public')->url($f->url));
+        $newTask->images = $newTask->files->map(function ($file) {
+            return asset($file->url);
+        });
+
+        return $newTask;
     });
 
     return response()->json([
