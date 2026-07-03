@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Events\TaskChanged;
 use App\Scopes\DateFilterScope;
+use App\Traits\MorphFiles;
 
 class Task extends \App\Models\BaseModel
 {
-    use HasFactory;
+    use HasFactory, MorphFiles;
 
     protected $table = 'tasks';
     protected $guarded = [];

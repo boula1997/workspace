@@ -1783,39 +1783,57 @@ public function deletePostGig($id)
      *   ]
      * }
      */
-    public function clientTaskStore(Request $request)
-    {
-        $validated = $request->validate([
-            'project_id'     => 'required|integer|exists:projects,id',
-            'tasks'          => 'required|array|min:1',
-            'tasks.*.title'  => 'required|string|max:255',
+public function clientTaskStore(Request $request)
+{
+    $validated = $request->validate([
+        'project_id'            => 'required|integer|exists:projects,id',
+        'tasks'                 => 'required|array|min:1',
+        'tasks.*.title'         => 'required|string|max:255',
+        'tasks.*.images'        => 'nullable|array|max:6',
+        'tasks.*.images.*'      => 'nullable|image|max:5120', // 5MB, in KB
+    ]);
+
+    $ownsProject = Project::where('id', $validated['project_id'])
+        ->exists();
+
+    if (! $ownsProject) {
+        return response()->json([
+            'status'  => 403,
+            'message' => 'You do not have access to this project.',
+        ], 403);
+    }
+
+    $created = collect($validated['tasks'])->map(function ($task, $index) use ($validated, $request) {
+        $newTask = Task::create([
+            'title'      => $task['title'],
+            'project_id' => $validated['project_id'],
+            'status'     => 0, // pending
+            'date'       => now()->toDateString(),
+            'isFixed'    => false,
         ]);
 
+        // Task uses the MorphFiles trait, but uploadFiles() reads a single
+        // top-level request('images') field, which doesn't fit "N tasks,
+        // each with its own images". So we replicate what that trait does
+        // (store + create on the files() morph relation) per task instead.
+        $files = $request->file("tasks.$index.images", []);
 
-        $ownsProject = Project::where('id', $validated['project_id'])
-            ->exists();
+        foreach ($files as $file) {
+            if (! $file instanceof \Illuminate\Http\UploadedFile || ! $file->isValid()) {
+                continue;
+            }
 
-        if (! $ownsProject) {
-            return response()->json([
-                'status'  => 403,
-                'message' => 'You do not have access to this project.',
-            ], 403);
+            $path = $file->store('images');
+            $newTask->files()->create(['url' => $path]);
         }
 
-        $created = collect($validated['tasks'])->map(
-            fn ($task) => Task::create([
-                'title'      => $task['title'],
-                'project_id' => $validated['project_id'],
-                'status'     => 0, // pending
-                'date'       => now()->toDateString(),
-                'isFixed'    => false,
-            ])
-        );
+        return $newTask->load('files');
+    });
 
-        return response()->json([
-            'status'  => 201,
-            'message' => 'success',
-            'data'    => $created,
-        ], 201);
-    }
+    return response()->json([
+        'status'  => 201,
+        'message' => 'success',
+        'data'    => $created,
+    ], 201);
+}
 }
