@@ -48,6 +48,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use App\Models\LinkHistory;
+use Carbon\Carbon;
+
 
 
 class TaskController extends Controller
@@ -1741,23 +1743,35 @@ public function deletePostGig($id)
      * Returns the authenticated client's tasks, optionally scoped to a
      * single project via ?project_id=23, paginated via ?page=1.
      */
+
 public function clientTasks(Request $request)
 {
     $request->validate([
         'project_id' => 'nullable|integer|exists:projects,id',
+        'status'     => 'nullable|string',
+        'from'       => 'nullable|date',
+        'to'         => 'nullable|date|after_or_equal:from',
         'page'       => 'nullable|integer|min:1',
+        'per_page'   => 'nullable|integer|min:1|max:100',
     ]);
 
     $query = Task::query()
         ->with('files')
-        ->where('project_id', $request->project_id);
+        ->where('project_id', $request->project_id)
+        ->when($request->filled('status'), function ($q) use ($request) {
+            $q->where('status', $request->status);
+        })
+        ->when($request->filled('from'), function ($q) use ($request) {
+            $q->where('created_at', '>=', Carbon::parse($request->from)->startOfDay());
+        })
+        ->when($request->filled('to'), function ($q) use ($request) {
+            $q->where('created_at', '<=', Carbon::parse($request->to)->endOfDay());
+        });
 
-    $tasks = $query->orderBy('created_at', 'desc')
+    $tasks = $query
+        ->orderBy('created_at', 'desc')
         ->paginate($request->input('per_page', 20));
 
-    // Map each task's files() relation down to plain image URLs so the
-    // frontend can just read task.images without knowing about the
-    // underlying files/morph relation structure.
     $tasks->getCollection()->transform(function ($task) {
         $task->images = $task->files->map(fn ($f) => \Storage::disk('public')->url($f->url));
         return $task;
