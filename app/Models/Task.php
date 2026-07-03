@@ -192,4 +192,9 @@ public function getEmployeesAttribute($value): array
     return is_array($decoded) ? $decoded : [];
 }
 
+
+    public function getImagesAttribute()
+    {
+        return  count($this->files)>0?$this->files:["default.jpg"];
+    }
 }

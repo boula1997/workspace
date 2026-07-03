@@ -1741,34 +1741,42 @@ public function deletePostGig($id)
      * Returns the authenticated client's tasks, optionally scoped to a
      * single project via ?project_id=23, paginated via ?page=1.
      */
-    public function clientTasks(Request $request)
-    {
-        $request->validate([
-            'project_id' => 'nullable|integer|exists:projects,id',
-            'page'       => 'nullable|integer|min:1',
-        ]);
+public function clientTasks(Request $request)
+{
+    $request->validate([
+        'project_id' => 'nullable|integer|exists:projects,id',
+        'page'       => 'nullable|integer|min:1',
+    ]);
 
+    $query = Task::query()
+        ->with('files')
+        ->where('project_id', $request->project_id);
 
-        $query = Task::query()
-            ->where('project_id', $request->project_id);
+    $tasks = $query->orderBy('created_at', 'desc')
+        ->paginate($request->input('per_page', 20));
 
-        $tasks = $query->orderBy('created_at', 'desc')
-            ->paginate($request->input('per_page', 20));
+    // Map each task's files() relation down to plain image URLs so the
+    // frontend can just read task.images without knowing about the
+    // underlying files/morph relation structure.
+    $tasks->getCollection()->transform(function ($task) {
+        $task->images = $task->files->map(fn ($f) => \Storage::disk('public')->url($f->url));
+        return $task;
+    });
 
-        return response()->json([
-            'status'  => 200,
-            'message' => 'success',
-            'data'    => [
-                'tasks'      => $tasks->items(),
-                'tasks_meta' => [
-                    'current_page' => $tasks->currentPage(),
-                    'last_page'    => $tasks->lastPage(),
-                    'per_page'     => $tasks->perPage(),
-                    'total'        => $tasks->total(),
-                ],
+    return response()->json([
+        'status'  => 200,
+        'message' => 'success',
+        'data'    => [
+            'tasks'      => $tasks->items(),
+            'tasks_meta' => [
+                'current_page' => $tasks->currentPage(),
+                'last_page'    => $tasks->lastPage(),
+                'per_page'     => $tasks->perPage(),
+                'total'        => $tasks->total(),
             ],
-        ]);
-    }
+        ],
+    ]);
+}
 
     /**
      * POST /client/tasks/store
@@ -1812,10 +1820,6 @@ public function clientTaskStore(Request $request)
             'isFixed'    => false,
         ]);
 
-        // Task uses the MorphFiles trait, but uploadFiles() reads a single
-        // top-level request('images') field, which doesn't fit "N tasks,
-        // each with its own images". So we replicate what that trait does
-        // (store + create on the files() morph relation) per task instead.
         $files = $request->file("tasks.$index.images", []);
 
         foreach ($files as $file) {
@@ -1823,11 +1827,20 @@ public function clientTaskStore(Request $request)
                 continue;
             }
 
-            $path = $file->store('images');
+            // 'public' disk so the path resolves to a real, web-accessible
+            // URL via Storage::url(). Make sure `php artisan storage:link`
+            // has been run so storage/app/public is symlinked to public/storage.
+            $path = $file->store('images', 'public');
             $newTask->files()->create(['url' => $path]);
         }
 
         return $newTask->load('files');
+    });
+
+    // Append absolute image URLs so the frontend doesn't need to know
+    // about the storage disk/path convention.
+    $created->each(function ($task) {
+        $task->images = $task->files->map(fn ($f) => \Storage::disk('public')->url($f->url));
     });
 
     return response()->json([
