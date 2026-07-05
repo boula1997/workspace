@@ -1849,11 +1849,15 @@ public function clientTasks(Request $request)
 public function clientTaskStore(Request $request)
 {
     $validated = $request->validate([
-        'project_id'       => 'required|integer|exists:projects,id',
-        'tasks'            => 'required|array|min:1',
-        'tasks.*.title'    => 'required|string|max:255',
-        'tasks.*.images'   => 'nullable|array|max:6',
-        'tasks.*.images.*' => 'nullable|image|max:5120', // 5MB
+        'project_id'           => 'required|integer|exists:projects,id',
+        'tasks'                => 'required|array|min:1',
+        'tasks.*.title'        => 'required|string|max:255',
+        'tasks.*.employees'    => 'nullable|array',
+        'tasks.*.employees.*'  => 'integer',
+        'tasks.*.deadline'     => 'nullable|date',
+        'tasks.*.piority'      => 'nullable',
+        'tasks.*.images'       => 'nullable|array|max:6',
+        'tasks.*.images.*'     => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,heic,heif|max:5120', // 5MB
     ]);
 
     $ownsProject = Project::where('id', $validated['project_id'])->exists();
@@ -1877,8 +1881,10 @@ public function clientTaskStore(Request $request)
             'title'      => $task['title'],
             'project_id' => $validated['project_id'],
             'status'     => 0, // pending
-            'date'       => now()->toDateString(),
+            'date'       => $task['deadline'] ?? now()->toDateString(),
             'isFixed'    => false,
+            'piority'    => $task['piority'] ?? 0,
+            'employees'  => $task['employees'] ?? [],
         ]);
 
         $files = $request->file("tasks.$index.images", []);
