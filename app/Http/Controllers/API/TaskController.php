@@ -408,14 +408,23 @@ private function resolveEmployeeNames($employees): string
     public function store(TaskRequest $request)
     {
         try {
-
             $overthinkingTasks = Task::where("isOverthinking", 1)->get();
             $tasks = Task::get();
 
             if (count($tasks) == count($overthinkingTasks) && !isWithinWorkingHours())
                 return failedResponse([]);
 
+            // Store uploaded images once — shared across all sub-titles in this request
+            $imagePaths = [];
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $imagePaths[] = $image->store('tasks', 'public');
+                }
+            }
+
             $titles = explode('+', $request->title);
+            $createdTasks = [];
+
             foreach ($titles as $title) {
                 $title = trim($title);
 
@@ -429,17 +438,18 @@ private function resolveEmployeeNames($employees): string
                 if ($exists)
                     continue;
 
-                Task::create([
+                $createdTasks[] = Task::create([
                     'title'      => $title,
                     'admin_id'   => 1,
                     'project_id' => $request->project_id,
                     'date'       => $request->deadline,
-                    'piority'    => 0,
+                    'piority'    => $request->piority ?? 0, // ✅ now respects what the app sends
                     'employees'  => $request->employees,
+                    'images'     => $imagePaths,             // ✅ new
                 ]);
             }
 
-            return successResponse([]);
+            return successResponse($createdTasks);
         } catch (Exception $e) {
             DB::table('tracks')->insert([
                 'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()),
