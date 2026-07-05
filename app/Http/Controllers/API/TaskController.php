@@ -414,17 +414,19 @@ public function store(Request $request)
         if (count($allTasks) == count($overthinkingTasks) && !isWithinWorkingHours())
             return failedResponse([]);
 
-$validated = $request->validate([
-    'tasks'                => 'required|array|min:1',
-    'tasks.*.title'        => 'required|string',
-    'tasks.*.project_id'   => 'required|integer|exists:projects,id',
-    'tasks.*.employees'    => 'required|array|min:1',
-    'tasks.*.employees.*'  => 'integer',
-    'tasks.*.piority'      => 'nullable',
-    'tasks.*.deadline'     => 'nullable|date',
-    'tasks.*.images'       => 'nullable|array|max:6',
-    'tasks.*.images.*'     => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,heic,heif|max:5120',
-]);
+        $validated = $request->validate([
+            'tasks'                   => 'required|array|min:1',
+            'tasks.*.title'           => 'required|string',
+            'tasks.*.project_id'      => 'required|integer|exists:projects,id',
+            'tasks.*.employees'       => 'required|array|min:1',
+            'tasks.*.employees.*'     => 'integer',
+            'tasks.*.piority'         => 'nullable',
+            'tasks.*.deadline'        => 'nullable|date',
+            'tasks.*.images'          => 'nullable|array|max:6',
+            'tasks.*.images.*.base64' => 'required_with:tasks.*.images|string',
+            'tasks.*.images.*.name'   => 'nullable|string',
+            'tasks.*.images.*.type'   => 'nullable|string',
+        ]);
 
         $destinationPath = public_path('uploads/tasks');
         if (! file_exists($destinationPath)) {
@@ -455,20 +457,32 @@ $validated = $request->validate([
                     'employees'  => $taskData['employees'],
                 ]);
 
-                // Images for THIS specific form (indexed), attached to every
+                // Decode base64 images for THIS form, attach to every
                 // sub-task generated from its "+"-joined title.
-                $files = $request->file("tasks.$index.images", []);
-                foreach ($files as $file) {
-                    if (! $file instanceof \Illuminate\Http\UploadedFile || ! $file->isValid()) {
-                        continue;
+                if (!empty($taskData['images']) && is_array($taskData['images'])) {
+                    foreach ($taskData['images'] as $imageData) {
+                        $base64 = $imageData['base64'] ?? null;
+                        if (!$base64) continue;
+
+                        $filename = $imageData['name'] ?? (uniqid() . '.jpg');
+
+                        // Strip "data:image/jpeg;base64," prefix if present
+                        if (strpos($base64, 'base64,') !== false) {
+                            $base64 = explode('base64,', $base64)[1];
+                        }
+
+                        $imageBinary = base64_decode($base64);
+                        if ($imageBinary === false) continue;
+
+                        $extension = pathinfo($filename, PATHINFO_EXTENSION) ?: 'jpg';
+                        $uniqueFilename = time() . '_' . uniqid() . '.' . $extension;
+
+                        file_put_contents($destinationPath . '/' . $uniqueFilename, $imageBinary);
+
+                        $newTask->files()->create([
+                            'url' => 'uploads/tasks/' . $uniqueFilename,
+                        ]);
                     }
-
-                    $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                    $file->move($destinationPath, $fileName);
-
-                    $newTask->files()->create([
-                        'url' => 'uploads/tasks/' . $fileName,
-                    ]);
                 }
 
                 $newTask->load('files');
