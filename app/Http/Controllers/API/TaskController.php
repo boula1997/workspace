@@ -405,68 +405,75 @@ private function resolveEmployeeNames($employees): string
 
 
 
-public function store(TaskRequest $request)
+public function store(Request $request)
 {
     try {
         $overthinkingTasks = Task::where("isOverthinking", 1)->get();
-        $tasks = Task::get();
+        $allTasks = Task::get();
 
-        if (count($tasks) == count($overthinkingTasks) && !isWithinWorkingHours())
+        if (count($allTasks) == count($overthinkingTasks) && !isWithinWorkingHours())
             return failedResponse([]);
+
+        $validated = $request->validate([
+            'tasks'                => 'required|array|min:1',
+            'tasks.*.title'        => 'required|string',
+            'tasks.*.project_id'   => 'required|integer|exists:projects,id',
+            'tasks.*.employees'    => 'required|array|min:1',
+            'tasks.*.employees.*'  => 'integer',
+            'tasks.*.piority'      => 'nullable',
+            'tasks.*.deadline'     => 'nullable|date',
+            'tasks.*.images'       => 'nullable|array|max:6',
+            'tasks.*.images.*'     => 'nullable|image|max:5120',
+        ]);
 
         $destinationPath = public_path('uploads/tasks');
         if (! file_exists($destinationPath)) {
             mkdir($destinationPath, 0755, true);
         }
 
-        // Move uploaded files once; each created task gets its own `files` rows
-        // pointing at the same stored paths (mirrors clientTaskStore's approach).
-        $storedFilePaths = [];
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $file) {
-                if (! $file instanceof \Illuminate\Http\UploadedFile || ! $file->isValid()) {
-                    continue;
-                }
-
-                $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $file->move($destinationPath, $fileName);
-
-                $storedFilePaths[] = 'uploads/tasks/' . $fileName;
-            }
-        }
-
-        $titles = explode('+', $request->title);
         $createdTasks = [];
 
-        foreach ($titles as $title) {
-            $title = trim($title);
+        foreach ($validated['tasks'] as $index => $taskData) {
+            $titles = explode('+', $taskData['title']);
 
-            if (empty($title))
-                continue;
+            foreach ($titles as $title) {
+                $title = trim($title);
+                if (empty($title)) continue;
 
-            $exists = Task::where('title', $title)
-                ->where('project_id', $request->project_id)
-                ->exists();
+                $exists = Task::where('title', $title)
+                    ->where('project_id', $taskData['project_id'])
+                    ->exists();
 
-            if ($exists)
-                continue;
+                if ($exists) continue;
 
-            $newTask = Task::create([
-                'title'      => $title,
-                'admin_id'   => 1,
-                'project_id' => $request->project_id,
-                'date'       => $request->deadline,
-                'piority'    => $request->piority ?? 0,
-                'employees'  => $request->employees,
-            ]);
+                $newTask = Task::create([
+                    'title'      => $title,
+                    'admin_id'   => 1,
+                    'project_id' => $taskData['project_id'],
+                    'date'       => $taskData['deadline'] ?? null,
+                    'piority'    => $taskData['piority'] ?? 0,
+                    'employees'  => $taskData['employees'],
+                ]);
 
-            foreach ($storedFilePaths as $path) {
-                $newTask->files()->create(['url' => $path]); // uses MorphFiles::files()
+                // Images for THIS specific form (indexed), attached to every
+                // sub-task generated from its "+"-joined title.
+                $files = $request->file("tasks.$index.images", []);
+                foreach ($files as $file) {
+                    if (! $file instanceof \Illuminate\Http\UploadedFile || ! $file->isValid()) {
+                        continue;
+                    }
+
+                    $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->move($destinationPath, $fileName);
+
+                    $newTask->files()->create([
+                        'url' => 'uploads/tasks/' . $fileName,
+                    ]);
+                }
+
+                $newTask->load('files');
+                $createdTasks[] = $newTask;
             }
-
-            $newTask->load('files'); // refresh so getImagesAttribute sees them
-
-            $createdTasks[] = $newTask;
         }
 
         return successResponse($createdTasks);
