@@ -414,17 +414,17 @@ public function store(Request $request)
         if (count($allTasks) == count($overthinkingTasks) && !isWithinWorkingHours())
             return failedResponse([]);
 
-        $validated = $request->validate([
-            'tasks'                => 'required|array|min:1',
-            'tasks.*.title'        => 'required|string',
-            'tasks.*.project_id'   => 'required|integer|exists:projects,id',
-            'tasks.*.employees'    => 'required|array|min:1',
-            'tasks.*.employees.*'  => 'integer',
-            'tasks.*.piority'      => 'nullable',
-            'tasks.*.deadline'     => 'nullable|date',
-            'tasks.*.images'       => 'nullable|array|max:6',
-            'tasks.*.images.*'     => 'nullable|image|max:5120',
-        ]);
+$validated = $request->validate([
+    'tasks'                => 'required|array|min:1',
+    'tasks.*.title'        => 'required|string',
+    'tasks.*.project_id'   => 'required|integer|exists:projects,id',
+    'tasks.*.employees'    => 'required|array|min:1',
+    'tasks.*.employees.*'  => 'integer',
+    'tasks.*.piority'      => 'nullable',
+    'tasks.*.deadline'     => 'nullable|date',
+    'tasks.*.images'       => 'nullable|array|max:6',
+    'tasks.*.images.*'     => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,heic,heif|max:5120',
+]);
 
         $destinationPath = public_path('uploads/tasks');
         if (! file_exists($destinationPath)) {
