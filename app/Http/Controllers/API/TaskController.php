@@ -1863,15 +1863,17 @@ public function clientTasks(Request $request)
 public function clientTaskStore(Request $request)
 {
     $validated = $request->validate([
-        'project_id'           => 'required|integer|exists:projects,id',
-        'tasks'                => 'required|array|min:1',
-        'tasks.*.title'        => 'required|string|max:255',
-        'tasks.*.employees'    => 'nullable|array',
-        'tasks.*.employees.*'  => 'integer',
-        'tasks.*.deadline'     => 'nullable|date',
-        'tasks.*.piority'      => 'nullable',
-        'tasks.*.images'       => 'nullable|array|max:6',
-        'tasks.*.images.*'     => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,heic,heif|max:5120', // 5MB
+        'project_id'              => 'required|integer|exists:projects,id',
+        'tasks'                   => 'required|array|min:1',
+        'tasks.*.title'           => 'required|string|max:255',
+        'tasks.*.employees'       => 'nullable|array',
+        'tasks.*.employees.*'     => 'integer',
+        'tasks.*.deadline'        => 'nullable|date',
+        'tasks.*.piority'         => 'nullable',
+        'tasks.*.images'          => 'nullable|array|max:6',
+        'tasks.*.images.*.base64' => 'required_with:tasks.*.images|string',
+        'tasks.*.images.*.name'   => 'nullable|string',
+        'tasks.*.images.*.type'   => 'nullable|string',
     ]);
 
     $ownsProject = Project::where('id', $validated['project_id'])->exists();
@@ -1889,7 +1891,7 @@ public function clientTaskStore(Request $request)
         mkdir($destinationPath, 0755, true);
     }
 
-    $created = collect($validated['tasks'])->map(function ($task, $index) use ($validated, $request, $destinationPath) {
+    $created = collect($validated['tasks'])->map(function ($task) use ($validated, $destinationPath) {
 
         $newTask = Task::create([
             'title'      => $task['title'],
@@ -1901,20 +1903,30 @@ public function clientTaskStore(Request $request)
             'employees'  => $task['employees'] ?? [],
         ]);
 
-        $files = $request->file("tasks.$index.images", []);
+        if (!empty($task['images']) && is_array($task['images'])) {
+            foreach ($task['images'] as $imageData) {
+                $base64 = $imageData['base64'] ?? null;
+                if (!$base64) continue;
 
-        foreach ($files as $file) {
-            if (! $file instanceof \Illuminate\Http\UploadedFile || ! $file->isValid()) {
-                continue;
+                $filename = $imageData['name'] ?? (uniqid() . '.jpg');
+
+                // Strip "data:image/jpeg;base64," prefix if present
+                if (strpos($base64, 'base64,') !== false) {
+                    $base64 = explode('base64,', $base64)[1];
+                }
+
+                $imageBinary = base64_decode($base64);
+                if ($imageBinary === false) continue;
+
+                $extension = pathinfo($filename, PATHINFO_EXTENSION) ?: 'jpg';
+                $uniqueFilename = time() . '_' . uniqid() . '.' . $extension;
+
+                file_put_contents($destinationPath . '/' . $uniqueFilename, $imageBinary);
+
+                $newTask->files()->create([
+                    'url' => 'uploads/tasks/' . $uniqueFilename,
+                ]);
             }
-
-            $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-
-            $file->move($destinationPath, $fileName);
-
-            $newTask->files()->create([
-                'url' => 'uploads/tasks/' . $fileName,
-            ]);
         }
 
         $newTask->load('files');
