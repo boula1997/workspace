@@ -408,6 +408,7 @@ private function resolveEmployeeNames($employees): string
     public function store(TaskRequest $request)
     {
         try {
+
             $overthinkingTasks = Task::where("isOverthinking", 1)->get();
             $tasks = Task::get();
 
