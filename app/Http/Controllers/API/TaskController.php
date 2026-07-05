@@ -405,60 +405,90 @@ private function resolveEmployeeNames($employees): string
 
 
 
-    public function store(TaskRequest $request)
-    {
-        try {
+public function store(TaskRequest $request)
+{
+    try {
+        $overthinkingTasks = Task::where("isOverthinking", 1)->get();
+        $tasks = Task::get();
 
-            $overthinkingTasks = Task::where("isOverthinking", 1)->get();
-            $tasks = Task::get();
+        if (count($tasks) == count($overthinkingTasks) && !isWithinWorkingHours())
+            return failedResponse([]);
 
-            if (count($tasks) == count($overthinkingTasks) && !isWithinWorkingHours())
-                return failedResponse([]);
+        $destinationPath = public_path('uploads/tasks');
+        if (! file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
 
-            // Store uploaded images once — shared across all sub-titles in this request
-            $imagePaths = [];
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
-                    $imagePaths[] = $image->store('tasks', 'public');
+        // Move uploaded files once, collect their stored relative paths.
+        // (Same files get attached to every task created from this request,
+        // matching how the app groups images per task-form.)
+        $storedFilePaths = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                if (! $file instanceof \Illuminate\Http\UploadedFile || ! $file->isValid()) {
+                    continue;
                 }
+
+                $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move($destinationPath, $fileName);
+
+                $storedFilePaths[] = 'uploads/tasks/' . $fileName;
             }
+        }
 
-            $titles = explode('+', $request->title);
-            $createdTasks = [];
+        $titles = explode('+', $request->title);
+        $createdTasks = [];
 
-            foreach ($titles as $title) {
-                $title = trim($title);
+        foreach ($titles as $title) {
+            $title = trim($title);
 
-                if (empty($title))
-                    continue;
+            if (empty($title))
+                continue;
 
-                $exists = Task::where('title', $title)
-                    ->where('project_id', $request->project_id)
-                    ->exists();
+            $exists = Task::where('title', $title)
+                ->where('project_id', $request->project_id)
+                ->exists();
 
-                if ($exists)
-                    continue;
+            if ($exists)
+                continue;
 
-                $createdTasks[] = Task::create([
-                    'title'      => $title,
-                    'admin_id'   => 1,
-                    'project_id' => $request->project_id,
-                    'date'       => $request->deadline,
-                    'piority'    => $request->piority ?? 0, // ✅ now respects what the app sends
-                    'employees'  => $request->employees,
-                    'images'     => $imagePaths,             // ✅ new
+            $newTask = Task::create([
+                'title'      => $title,
+                'admin_id'   => 1,
+                'project_id' => $request->project_id,
+                'date'       => $request->deadline,
+                'piority'    => $request->piority ?? 0,
+                'employees'  => $request->employees,
+            ]);
+
+            foreach ($storedFilePaths as $path) {
+                $newTask->files()->create([
+                    'url' => $path,
                 ]);
             }
 
-            return successResponse($createdTasks);
-        } catch (Exception $e) {
-    return response()->json([
-        'status'  => 500,
-        'message' => 'error',
-        'error'   => $e->getMessage(), // remove/mask in production if sensitive
-    ], 500);
+            $newTask->load('files');
+            $newTask->images = $newTask->files->map(function ($file) {
+                return asset($file->url);
+            });
+
+            $createdTasks[] = $newTask;
         }
+
+        return successResponse($createdTasks);
+    } catch (Exception $e) {
+        DB::table('tracks')->insert([
+            'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()),
+            'created_at'      => now(),
+        ]);
+
+        return response()->json([
+            'status'  => 500,
+            'message' => 'error',
+            'error'   => $e->getMessage(),
+        ], 500);
     }
+}
     public function refproPost(Request $request)
     {
         try {
