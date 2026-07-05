@@ -419,9 +419,8 @@ public function store(TaskRequest $request)
             mkdir($destinationPath, 0755, true);
         }
 
-        // Move uploaded files once, collect their stored relative paths.
-        // (Same files get attached to every task created from this request,
-        // matching how the app groups images per task-form.)
+        // Move uploaded files once; each created task gets its own `files` rows
+        // pointing at the same stored paths (mirrors clientTaskStore's approach).
         $storedFilePaths = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
@@ -462,15 +461,10 @@ public function store(TaskRequest $request)
             ]);
 
             foreach ($storedFilePaths as $path) {
-                $newTask->files()->create([
-                    'url' => $path,
-                ]);
+                $newTask->files()->create(['url' => $path]); // uses MorphFiles::files()
             }
 
-            $newTask->load('files');
-            $newTask->images = $newTask->files->map(function ($file) {
-                return asset($file->url);
-            });
+            $newTask->load('files'); // refresh so getImagesAttribute sees them
 
             $createdTasks[] = $newTask;
         }
