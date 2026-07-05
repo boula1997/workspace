@@ -452,11 +452,11 @@ private function resolveEmployeeNames($employees): string
 
             return successResponse($createdTasks);
         } catch (Exception $e) {
-            DB::table('tracks')->insert([
-                'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()),
-                'created_at'      => now(),
-            ]);
-            return redirect()->back()->with(['error' => __('general.something_wrong')]);
+    return response()->json([
+        'status'  => 500,
+        'message' => 'error',
+        'error'   => $e->getMessage(), // remove/mask in production if sensitive
+    ], 500);
         }
     }
     public function refproPost(Request $request)
