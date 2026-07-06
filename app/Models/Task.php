@@ -74,11 +74,12 @@ public function project()
                       ->orWhereHas('project', function ($qp) use ($term) {
                           $qp->where('title', 'like', "%$term%");
                       })
-                      ->orWhereRaw("EXISTS (
-                          SELECT 1 FROM admins
-                          WHERE JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
-                          AND admins.name LIKE ?
-                      )", ["%$term%"]);
+->orWhereRaw("EXISTS (
+    SELECT 1
+    FROM admins
+    WHERE JSON_CONTAINS(tasks.employees, CONCAT('[', admins.id, ']'))
+    AND admins.name LIKE ?
+)", ["%$term%"]);
                 }
             });
         }
@@ -103,7 +104,8 @@ public function project()
             $query->where(function ($q) use ($ids) {
                 foreach ($ids as $id) {
                     $id = trim($id);
-                    $q->orWhereRaw("JSON_CONTAINS(employees, ?)", [(string)(int)$id])
+                    $q->orWhereJsonContains('employees', (int)$id)
+  ->orWhere('employees', 'LIKE', "%{$id}%")
                       ->orWhere('employees', 'LIKE', "%{$id}%");
                 }
             });
