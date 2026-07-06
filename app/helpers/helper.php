@@ -1094,9 +1094,9 @@ function databases()
         $databases = DB::select("SELECT schema_name FROM information_schema.schemata");
     } else {
         $dbHost = 'localhost';
-        $dbName = isset($credential->db_name) ? $credential->db_name : 'yousabte_workspace';
-        $dbUser = isset($credential->db_username) ? $credential->db_username : 'yousabte_workspace';
-        $dbPass = isset($credential->db_password) ? $credential->db_password : 'kD[asKgc%ydC';
+        $dbName = isset($credential->db_name) ? $credential->db_name : 'u112116784_workspace';
+        $dbUser = isset($credential->db_username) ? $credential->db_username : 'u112116784_workspace';
+        $dbPass = isset($credential->db_password) ? $credential->db_password : 'AM*Wo8owc^7';
 
         // Configure dynamic connection
         config([
@@ -1117,10 +1117,10 @@ function databases()
         // Get all databases
         $databases = DB::connection('dynamic')->select("SELECT db_name as schema_name FROM d_b_credentials");
 
-        // Exclude 'yousabte_workspace' only if boula() returns true
+        // Exclude 'u112116784_workspace' only if boula() returns true
         if (!boula()) {
             $databases = array_filter($databases, function ($db) {
-                return $db->schema_name !== 'yousabte_workspace';
+                return $db->schema_name !== 'u112116784_workspace';
             });
         }
     }
