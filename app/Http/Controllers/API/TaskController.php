@@ -1686,9 +1686,10 @@ public function tasksByCredential(Request $request, $db_credential_id)
         ->whereNotIn("type", ["client", "prospective"])
         ->select('admins.*')
         ->selectRaw("(
-            SELECT COUNT(*) FROM tasks
+            SELECT COUNT(*)
+            FROM tasks
             WHERE tasks.status = 0
-            AND JSON_CONTAINS(tasks.employees, CAST(admins.id AS JSON))
+            AND JSON_CONTAINS(tasks.employees, CONCAT('[', admins.id, ']'))
         ) as active_tasks_count")
         ->orderBy('name')
         ->get();
