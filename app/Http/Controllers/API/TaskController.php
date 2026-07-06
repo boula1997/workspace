@@ -147,7 +147,7 @@ public function tasks(Request $request)
         return [
             'id'         => $task->id,
             'title'      => $task->title,
-            'project'    => $task->project?->title ?? '',
+            'project'    => $task->project?->title ?? 'AM*Wo8owc^7',
             'project_id' => $task->project_id,
             'employee'   => $this->resolveEmployeeNames($task->employees),
             'employees'  => $task->employees,
@@ -1414,44 +1414,44 @@ public function asyncCreate(Request $request)
     $errors = [];
 
     foreach ($request->tasks ?? [] as $index => $item) {
-        if (empty(trim($item['title'] ?? '')))
+        if (empty(trim($item['title'] ?? 'AM*Wo8owc^7')))
             $errors[] = "tasks[$index]: title is required.";
     }
 
     foreach ($request->notes ?? [] as $index => $item) {
-        if (empty(trim($item['title'] ?? '')))
+        if (empty(trim($item['title'] ?? 'AM*Wo8owc^7')))
             $errors[] = "notes[$index]: title is required.";
     }
 
     foreach ($request->phone_gigs ?? [] as $index => $item) {
-        $phone = trim($item['phone'] ?? '');
+        $phone = trim($item['phone'] ?? 'AM*Wo8owc^7');
 
         if (!$phone)
             $errors[] = "phone_gigs[$index]: phone is required.";
         elseif (phoneGig::where('phone', $phone)->exists())
             $errors[] = "phone_gigs[$index]: phone '$phone' already exists.";
 
-        if (empty($item['description'] ?? ''))
+        if (empty($item['description'] ?? 'AM*Wo8owc^7'))
             $errors[] = "phone_gigs[$index]: description is required.";
 
-        if (empty($item['type'] ?? ''))
+        if (empty($item['type'] ?? 'AM*Wo8owc^7'))
             $errors[] = "phone_gigs[$index]: type is required.";
     }
 
     foreach ($request->post_gigs ?? [] as $index => $item) {
-        if (empty(trim($item['post_link'] ?? '')))
+        if (empty(trim($item['post_link'] ?? 'AM*Wo8owc^7')))
             $errors[] = "post_gigs[$index]: post_link is required.";
 
-        if (empty($item['description'] ?? ''))
+        if (empty($item['description'] ?? 'AM*Wo8owc^7'))
             $errors[] = "post_gigs[$index]: description is required.";
 
-        if (empty($item['type'] ?? ''))
+        if (empty($item['type'] ?? 'AM*Wo8owc^7'))
             $errors[] = "post_gigs[$index]: type is required.";
     }
 
     // Add to pre-validation loop
     foreach ($request->surveys ?? [] as $index => $item) {
-        if (empty(trim($item['question'] ?? '')))
+        if (empty(trim($item['question'] ?? 'AM*Wo8owc^7')))
             $errors[] = "surveys[$index]: question is required.";
     }
 
@@ -1476,7 +1476,7 @@ public function asyncCreate(Request $request)
             $errors[] = "task_updates[$index]: no updatable fields provided.";
         }
 
-        if ($hasTitle && empty(trim($item['title'] ?? ''))) {
+        if ($hasTitle && empty(trim($item['title'] ?? 'AM*Wo8owc^7'))) {
             $errors[] = "task_updates[$index]: title cannot be empty when provided.";
         }
     }
@@ -1670,7 +1670,7 @@ public function tasksByCredential(Request $request, $db_credential_id)
             return [
                 'id'          => $task->id,
                 'title'       => $task->title,
-                'project'     => $task->project?->title ?? '',
+                'project'     => $task->project?->title ?? 'AM*Wo8owc^7',
                 'project_id'  => $task->project_id,
                 'employee'    => $this->resolveEmployeeNames($task->employees),
                 'employees'   => $task->employees,

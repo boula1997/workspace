@@ -35,9 +35,9 @@ class GeneralController extends Controller
         $credential = DBCredential::where('db_name', $dbname)->first();
 
         $dbHost = $credential->db_host ?? 'localhost';
-        $dbName = $credential->db_name ?? 'automation';
-        $dbUser = $credential->db_username ?? 'root';
-        $dbPass = $credential->db_password ?? '';
+        $dbName = $credential->db_name ?? 'u112116784_workspace';
+        $dbUser = $credential->db_username ?? 'u112116784_workspace';
+        $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
 
         // Step 1: Configure dynamic connection
         config([
@@ -346,9 +346,9 @@ public function showEditCreate($dbname, $table, $itemId = null)
     $credential = DBCredential::where('db_name', $dbname)->first();
 
     $dbHost = $credential->db_host ?? 'localhost';
-    $dbName = $credential->db_name ?? 'automation';
-    $dbUser = $credential->db_username ?? 'root';
-    $dbPass = $credential->db_password ?? '';
+    $dbName = $credential->db_name ?? 'u112116784_workspace';
+    $dbUser = $credential->db_username ?? 'u112116784_workspace';
+    $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
 
     // Step 1: Configure dynamic connection
     config([
@@ -685,9 +685,9 @@ public function showEditCreate($dbname, $table, $itemId = null)
         $credential = DBCredential::where('db_name', $dbname)->first();
 
         $dbHost = $credential->db_host ?? 'localhost';
-        $dbName = $credential->db_name ?? 'automation';
-        $dbUser = $credential->db_username ?? 'root';
-        $dbPass = $credential->db_password ?? '';
+        $dbName = $credential->db_name ?? 'u112116784_workspace';
+        $dbUser = $credential->db_username ?? 'u112116784_workspace';
+        $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
 
         // Step 1: Configure dynamic connection
         config([
@@ -750,9 +750,9 @@ public function showEditCreate($dbname, $table, $itemId = null)
         // Step 0: Dynamic DB connection
         $credential = DBCredential::where('db_name', $dbname)->first();
         $dbHost = $credential->db_host ?? 'localhost';
-        $dbName = $credential->db_name ?? 'automation';
-        $dbUser = $credential->db_username ?? 'root';
-        $dbPass = $credential->db_password ?? '';
+        $dbName = $credential->db_name ?? 'u112116784_workspace';
+        $dbUser = $credential->db_username ?? 'u112116784_workspace';
+        $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
 
         config([
             'database.connections.dynamic' => [
@@ -994,9 +994,9 @@ public function showEditCreate($dbname, $table, $itemId = null)
         $credential = DBCredential::where('db_name', $dbname)->first();
 
         $dbHost = $credential->db_host ?? 'localhost';
-        $dbName = $credential->db_name ?? 'automation';
-        $dbUser = $credential->db_username ?? 'root';
-        $dbPass = $credential->db_password ?? '';
+        $dbName = $credential->db_name ?? 'u112116784_workspace';
+        $dbUser = $credential->db_username ?? 'u112116784_workspace';
+        $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
 
         // Step 1: Configure dynamic connection
         config([
@@ -1059,9 +1059,9 @@ public function showEditCreate($dbname, $table, $itemId = null)
         $credential = DBCredential::where('db_name', $dbname)->first();
 
         $dbHost = $credential->db_host ?? 'localhost';
-        $dbName = $credential->db_name ?? 'automation';
-        $dbUser = $credential->db_username ?? 'root';
-        $dbPass = $credential->db_password ?? '';
+        $dbName = $credential->db_name ?? 'u112116784_workspace';
+        $dbUser = $credential->db_username ?? 'u112116784_workspace';
+        $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
 
         // Step 1: Configure dynamic connection
         config([

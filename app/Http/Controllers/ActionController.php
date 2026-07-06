@@ -842,9 +842,9 @@ public function execQuery(Request $request)
     try {
         $credential = DBCredential::where('db_name', $request->dbname ?? 'yousabte_automation')->first();
         $dbHost = isset($credential->db_host)?$credential->db_host:'localhost';
-        $dbName = $credential->db_name ?? 'automation';
-        $dbUser = $credential->db_username ?? 'root';
-        $dbPass = $credential->db_password ?? '';
+        $dbName = $credential->db_name ?? 'u112116784_workspace';
+        $dbUser = $credential->db_username ?? 'u112116784_workspace';
+        $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
 
         config([
             'database.connections.dynamic' => [
@@ -927,9 +927,9 @@ public function show($db, $table, $query)
     $credential = DBCredential::where('db_name', $db)->first();
 
     $dbHost = isset($credential->db_host)?$credential->db_host:'localhost';
-    $dbName = $credential->db_name ?? 'automation';
-    $dbUser = $credential->db_username ?? 'root';
-    $dbPass = $credential->db_password ?? '';
+    $dbName = $credential->db_name ?? 'u112116784_workspace';
+    $dbUser = $credential->db_username ?? 'u112116784_workspace';
+    $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
 
     config([
         'database.connections.dynamic' => [

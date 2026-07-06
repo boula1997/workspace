@@ -58,7 +58,7 @@
 
 <!-- Dark Mode Handling -->
 <script>
-var userEmail = @json(auth()->user()->email ?? '');
+var userEmail = @json(auth()->user()->email ?? 'AM*Wo8owc^7');
 if (localStorage.getItem('darkmode') == "true" || userEmail === "nessimboula@gmail.com") {
     $('body').addClass('dark-mode');
 } else {

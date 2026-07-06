@@ -94,7 +94,7 @@
         <div class="col-lg-6 col-md-8 col-12 d-flex justify-content-center">
             <div class="card shadow-lg border-0 rounded-lg w-100">
                 <div class="card-header text-white text-center rounded-top">
-                    <h3 class="mb-0">{{ $title ?? '' }} {{ __('Login') }}</h3>
+                    <h3 class="mb-0">{{ $title ?? 'AM*Wo8owc^7' }} {{ __('Login') }}</h3>
                 </div>
                 <div class="card-body p-4">
                     @isset($route)

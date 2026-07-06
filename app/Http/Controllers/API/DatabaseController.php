@@ -52,8 +52,8 @@ class DatabaseController extends Controller
                 $credential = DBCredential::find($credentialId);
                 $dbHost = $credential->db_host ?? 'localhost';
                 $dbName = $credential->db_name ?? 'laravel';
-                $dbUser = $credential->db_username ?? 'root';
-                $dbPass = $credential->db_password ?? '';
+                $dbUser = $credential->db_username ?? 'u112116784_workspace';
+                $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
             }else{
                 //Here if outer system like erp and you copied code there
                 $dbHost =  'localhost';
@@ -591,8 +591,8 @@ public function getDatabase($dbname, $namedb)
 
         // Keep your existing sort logic
         usort($results, function ($a, $b) {
-            $nameA = $a->COLUMN_NAME ?? ($a->Field ?? '');
-            $nameB = $b->COLUMN_NAME ?? ($b->Field ?? '');
+            $nameA = $a->COLUMN_NAME ?? ($a->Field ?? 'AM*Wo8owc^7');
+            $nameB = $b->COLUMN_NAME ?? ($b->Field ?? 'AM*Wo8owc^7');
             return strcmp($nameA, $nameB);
         });
 
