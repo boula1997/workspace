@@ -44,14 +44,14 @@ class DatabaseController extends Controller
     {
         if (App::environment('local')) {
             $dbHost = 'localhost';
-            $dbName = $dbname ?? 'laravel';
-            $dbUser = 'root';
-            $dbPass = '';
+            $dbName = $dbname ?? 'u112116784_workspace';
+            $dbUser = 'u112116784_workspace';
+            $dbPass = 'AM*Wo8owc^7';
         } else {
             if(isset($credentialId)){
                 $credential = DBCredential::find($credentialId);
                 $dbHost = $credential->db_host ?? 'localhost';
-                $dbName = $credential->db_name ?? 'laravel';
+                $dbName = $credential->db_name ?? 'u112116784_workspace';
                 $dbUser = $credential->db_username ?? 'u112116784_workspace';
                 $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
             }else{
