@@ -44,9 +44,9 @@ class DatabaseController extends Controller
     {
         if (App::environment('local')) {
             $dbHost = 'localhost';
-            $dbName = $dbname ?? 'u112116784_workspace';
-            $dbUser = 'u112116784_workspace';
-            $dbPass = 'AM*Wo8owc^7';
+            $dbName = $dbname ?? 'webapp';
+            $dbUser = 'root';
+            $dbPass = '';
         } else {
             if(isset($credentialId)){
                 $credential = DBCredential::find($credentialId);
