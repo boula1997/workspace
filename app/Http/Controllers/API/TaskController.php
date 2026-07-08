@@ -1462,11 +1462,6 @@ public function asyncCreate(Request $request)
             continue;
         }
 
-        // if (!Task::where('id', $item['task_id'])->exists()) {
-        //     $errors[] = "task_updates[$index]: task not found.";
-        //     continue;
-        // }
-
         $hasTitle = array_key_exists('title', $item);
         $hasDate = array_key_exists('date', $item);
         $hasProject = array_key_exists('project_id', $item);
@@ -1485,8 +1480,6 @@ public function asyncCreate(Request $request)
     foreach ($request->task_deletes ?? [] as $index => $item) {
         if (empty($item['task_id']))
             $errors[] = "task_deletes[$index]: task_id is required.";
-        // elseif (!Task::where('id', $item['task_id'])->exists())
-        //     $errors[] = "task_deletes[$index]: task not found.";
     }
 
     // Validate task assignments
@@ -1495,11 +1488,6 @@ public function asyncCreate(Request $request)
             $errors[] = "task_assignments[$index]: task_id is required.";
             continue;
         }
-
-        // if (!Task::where('id', $item['task_id'])->exists()) {
-        //     $errors[] = "task_assignments[$index]: task not found.";
-        //     continue;
-        // }
 
         if (empty($item['employee_ids']) || !is_array($item['employee_ids'])) {
             $errors[] = "task_assignments[$index]: employee_ids must be a non-empty array.";
@@ -1524,6 +1512,12 @@ public function asyncCreate(Request $request)
             'post_gigs'  => [],
             'surveys'    => [],
         ];
+
+        // Ensure task uploads directory exists
+        $destinationPath = public_path('uploads/tasks');
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
 
         // SURVEYS
         foreach ($request->surveys ?? [] as $item) {
@@ -1555,6 +1549,34 @@ public function asyncCreate(Request $request)
                     'date'       => $item['date'] ?? null,
                     'piority'    => 0,
                 ]);
+
+                // Decode base64 images for THIS form, attach to every
+                // sub-task generated from its "+"-joined title.
+                if (!empty($item['images']) && is_array($item['images'])) {
+                    foreach ($item['images'] as $imageData) {
+                        $base64 = $imageData['base64'] ?? null;
+                        if (!$base64) continue;
+
+                        $filename = $imageData['name'] ?? (uniqid() . '.jpg');
+
+                        // Strip "data:image/jpeg;base64," prefix if present
+                        if (strpos($base64, 'base64,') !== false) {
+                            $base64 = explode('base64,', $base64)[1];
+                        }
+
+                        $imageBinary = base64_decode($base64);
+                        if ($imageBinary === false) continue;
+
+                        $extension = pathinfo($filename, PATHINFO_EXTENSION) ?: 'jpg';
+                        $uniqueFilename = time() . '_' . uniqid() . '.' . $extension;
+
+                        file_put_contents($destinationPath . '/' . $uniqueFilename, $imageBinary);
+
+                        $task->files()->create([
+                            'url' => 'uploads/tasks/' . $uniqueFilename,
+                        ]);
+                    }
+                }
 
                 $created['tasks'][] = [
                     'temp_id' => $item['id'] ?? null,
