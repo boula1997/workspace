@@ -19,6 +19,7 @@ use App\Http\Controllers\API\ClienttrackController;
 use App\Http\Controllers\API\DatabaseController;
 use App\Http\Controllers\API\HistoryController;
 use App\Http\Controllers\API\TaskController;
+use App\Http\Controllers\API\FileSearchController;
 use App\Http\Controllers\API\ProjectController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ServiceController;
@@ -117,6 +118,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
     Route::get('/client/tasks', [TaskController::class, 'clientTasks']);
     Route::post('/client/tasks/store', [TaskController::class, 'clientTaskStore']);
+    Route::post('/file/count-occurrences', [FileSearchController::class, 'countOccurrences']);
 
     Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
 
