@@ -406,7 +406,10 @@ function hasExceededDeadlines()
         ->whereDate('date', '<=', $yesterday)
         ->get()
         ->contains(function ($task) use ($boula) {
-            $employeeIds = json_decode($task->employees, true) ?? [];
+            $employeeIds = is_array($task->employees)
+                ? $task->employees
+                : (json_decode($task->employees, true) ?? []);
+
             return in_array($boula->id, $employeeIds);
         });
 
