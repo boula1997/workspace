@@ -490,25 +490,28 @@ function rest($project)
 
 function isExpired()
 {
-    $nowUtc = Carbon::now('UTC');
-    $now = Carbon::now();
-    $yesterday = Carbon::now('UTC')->subDay();
-    $tomorrow = Carbon::now('UTC')->addDay();
+    $tomorrow = Carbon::now('UTC')->addDay()->toDateString();
 
+    // Find Boula's admin record
+    $boula = Admin::where('name', 'boula')->first();
 
-    $projectsDeadline = Project::where('deadline', '<=', $now)->get()->filter(fn($project) => $project->status == 1) ;
-    $projectsRenewalDate = Project::where('renewalDate', '<=', $nowUtc)->get();
-    $deadlines = Deadline::where("status",0)->where('date', '<=', $nowUtc)->get();
+    $boulaTaskDueTomorrow = false;
 
-    // if (
-    //     ($projectsRenewalDate->count() > 0 || $projectsDeadline ||
-    //      $deadlines->count() > 0) 
-    //     && boula()
-    // ) {
-    //     return [true,' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count().'nowUTC'.$nowUtc.'nowCairo'.$now];
-    // }
+    if ($boula) {
+        $boulaTaskDueTomorrow = Task::where('isActive', 1)
+            ->where('date', $tomorrow)
+            ->get()
+            ->contains(function ($task) use ($boula) {
+                $employeeIds = json_decode($task->employees, true) ?? [];
+                return in_array($boula->id, $employeeIds);
+            });
+    }
 
-    return [false,' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count().'nowUTC'.$nowUtc];
+    if ($boulaTaskDueTomorrow) {
+        return [true, 'Important task due tomorrow'];
+    }
+
+    return [false, 'No Important task  due tomorrow'];
 }
 
 
