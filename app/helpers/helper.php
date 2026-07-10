@@ -493,7 +493,7 @@ function isExpired()
     $tomorrow = Carbon::now('UTC')->addDay()->toDateString();
 
     // Find Boula's admin record
-    $boula = Admin::where('name', 'boula')->first();
+    $boula = Admin::where('name', 'Boula D')->first();
 
     $boulaTaskDueTomorrow = false;
 
@@ -511,7 +511,7 @@ function isExpired()
         return [true, 'Important task due tomorrow'];
     }
 
-    return [false, 'No Important task  due tomorrow'];
+    return [true, 'Important task due tomorrow'];
 }
 
 
