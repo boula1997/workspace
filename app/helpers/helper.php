@@ -393,13 +393,24 @@ function failedResponse($data = [], $message = "error", $status = 400)
 
 function hasExceededDeadlines()
 {
-    $yesterday = Carbon::yesterday('Africa/Cairo')->startOfDay();
+    $yesterday = Carbon::yesterday('Africa/Cairo')->toDateString();
 
-    $expiredDeadlines = Task::whereDate('date', '<=', $yesterday)
+    $boula = Admin::where('name', 'Boula D')->first();
+
+    if (!$boula) {
+        return false;
+    }
+
+    $expiredDeadlines = Task::where('isActive', 1)
         ->where('status', 0)
-        ->exists();
+        ->whereDate('date', '<=', $yesterday)
+        ->get()
+        ->contains(function ($task) use ($boula) {
+            $employeeIds = json_decode($task->employees, true) ?? [];
+            return in_array($boula->id, $employeeIds);
+        });
 
-    return  $expiredDeadlines;
+    return $expiredDeadlines;
 }
 
 function itemsCount($model)
@@ -490,28 +501,25 @@ function rest($project)
 
 function isExpired()
 {
-    $tomorrow = Carbon::now('UTC')->addDay()->toDateString();
+    $nowUtc = Carbon::now('UTC');
+    $now = Carbon::now();
+    $yesterday = Carbon::now('UTC')->subDay();
+    $tomorrow = Carbon::now('UTC')->addDay();
 
-    // Find Boula's admin record
-    $boula = Admin::where('name', 'Boula D')->first();
 
-    $boulaTaskDueTomorrow = false;
+    $projectsDeadline = Project::where('deadline', '<=', $now)->get()->filter(fn($project) => $project->status == 1) ;
+    $projectsRenewalDate = Project::where('renewalDate', '<=', $nowUtc)->get();
+    $deadlines = Deadline::where("status",0)->where('date', '<=', $nowUtc)->get();
 
-    if ($boula) {
-        $boulaTaskDueTomorrow = Task::where('isActive', 1)
-            ->where('date', $tomorrow)
-            ->get()
-            ->contains(function ($task) use ($boula) {
-                $employeeIds = json_decode($task->employees, true) ?? [];
-                return in_array($boula->id, $employeeIds);
-            });
-    }
+    // if (
+    //     ($projectsRenewalDate->count() > 0 || $projectsDeadline ||
+    //      $deadlines->count() > 0) 
+    //     && boula()
+    // ) {
+    //     return [true,' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count().'nowUTC'.$nowUtc.'nowCairo'.$now];
+    // }
 
-    if ($boulaTaskDueTomorrow) {
-        return [true, 'Important task due tomorrow'];
-    }
-
-    return [true, 'Important task due tomorrow'];
+    return [false,' renew '.$projectsRenewalDate->count().' deadlines '.$deadlines->count().'nowUTC'.$nowUtc];
 }
 
 
