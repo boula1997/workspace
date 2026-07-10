@@ -413,7 +413,7 @@ function hasExceededDeadlines()
             return in_array($boula->id, $employeeIds);
         });
 
-    return true;
+    return $expiredDeadlines;
 }
 
 function itemsCount($model)
