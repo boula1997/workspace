@@ -191,6 +191,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::delete('/marketing/delete-post/{id}', [TaskController::class, 'deletePost']);
     Route::post('/add/project/hours', [TaskController::class, 'addProjectHours']);
     Route::get('/offline/info', [TaskController::class, 'offlineInfo']);
+    Route::post('async/offline/info', [TaskController::class, 'asyncOfflineInfo']);
     Route::post('/add/phone/gig', [TaskController::class, 'addPhoneGig']);
     Route::post('/add/post/gig', [TaskController::class, 'addPostGig']);
     Route::post('/add/call/history', [TaskController::class, 'addCallHistory']);
