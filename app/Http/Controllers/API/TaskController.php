@@ -2028,10 +2028,10 @@ public function asyncOfflineInfo(Request $request)
     ];
 
     // Only columns that actually exist on `issues`
-    $issueColumns = [
-        'ai_prompt'      => 'ai_prompt',
-        'isOverthinking' => 'isOverthinking',
-    ];
+$issueColumns = [
+    'ai_prompt'      => 'title',      // client sends this as 'title', maps to issues.ai_prompt
+    'isOverthinking' => 'isOverthinking',
+];
 
     DB::transaction(function () use ($validated, $projectColumns, $issueColumns) {
         foreach ($validated['updates'] as $update) {
