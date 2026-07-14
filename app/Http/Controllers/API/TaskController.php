@@ -1988,6 +1988,13 @@ public function clientTaskStore(Request $request)
 
 public function offlineInfo()
 {
+    $issues = Issue::where("isOffline", 1)->latest()->get();
+
+    return successResponse($issues);
+}
+
+public function asyncOfflineInfo()
+{
    $issues=Issue::latest()->get();
 
     return successResponse($issues);
