@@ -1357,7 +1357,11 @@ public function getAllPhoneGigs(Request $request)
             DB::raw('(SELECT phone_gig_id, MAX(created_at) as last_called_at FROM call_histories GROUP BY phone_gig_id) as ch'),
             'phone_gigs.id', '=', 'ch.phone_gig_id'
         )
+        // Group 1: never-called gigs first, called gigs second
         ->orderByRaw('ch.last_called_at IS NOT NULL ASC')
+        // Within the never-called group, newest created gigs first
+        ->orderByRaw('CASE WHEN ch.last_called_at IS NULL THEN phone_gigs.created_at END DESC')
+        // Within the called group, oldest last-called first, most recent last
         ->orderBy('ch.last_called_at', 'ASC')
         ->paginate($perPage);
 
