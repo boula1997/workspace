@@ -1305,16 +1305,25 @@ public function addProjectHours(Request $request)
 }
 public function addPhoneGig(Request $request)
 {
-    $request->validate([
-        'phone'      => 'required|string|unique:phone_gigs,phone',
-        'description' => 'required|string',
-        'type' => 'required|string',
+    $validator = validator($request->all(), [
+        'phone'       => 'required|string|unique:phone_gigs,phone',
+        'description' => 'nullable|string',
+        'type'        => 'required|string|in:job,freelance',
     ]);
 
-    $phoneGig = phoneGig::create([
-        'phone' => $request->phone,
-        'description' => $request->description,
-        "type" => $request->type,
+    if ($validator->fails()) {
+        return response()->json([
+            'status'  => 422,
+            'success' => false,
+            'message' => $validator->errors()->first(),
+            'errors'  => $validator->errors(),
+        ], 422);
+    }
+
+    $phoneGig = PhoneGig::create([
+        'phone'       => $request->phone,
+        'description' => $request->description ?? '',
+        'type'        => $request->type,
     ]);
 
     return successResponse($phoneGig);
