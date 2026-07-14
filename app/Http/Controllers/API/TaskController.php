@@ -1984,4 +1984,12 @@ public function clientTaskStore(Request $request)
         'data'    => $created,
     ], 201);
 }
+
+
+public function offlineInfo()
+{
+   $issues=Issue::latest()->get();
+
+    return successResponse($issues);
+}
 }

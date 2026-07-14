@@ -190,6 +190,7 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/marketing/get-posts', [TaskController::class, 'getPosts']);
     Route::delete('/marketing/delete-post/{id}', [TaskController::class, 'deletePost']);
     Route::post('/add/project/hours', [TaskController::class, 'addProjectHours']);
+    Route::get('/offline/info', [TaskController::class, 'offlineInfo']);
     Route::post('/add/phone/gig', [TaskController::class, 'addPhoneGig']);
     Route::post('/add/post/gig', [TaskController::class, 'addPostGig']);
     Route::post('/add/call/history', [TaskController::class, 'addCallHistory']);
