@@ -1760,13 +1760,16 @@ public function getAllPostGigs(Request $request)
             DB::raw('(SELECT post_gig_id, MAX(created_at) as last_linked_at FROM link_histories GROUP BY post_gig_id) as lh'),
             'post_gigs.id', '=', 'lh.post_gig_id'
         )
-        ->orderByRaw('lh.last_linked_at IS NOT NULL ASC')  // never visited first
-        ->orderBy('lh.last_linked_at', 'ASC')              // oldest visit next, recent last
+        // Group 1: never-linked gigs first, linked gigs second
+        ->orderByRaw('lh.last_linked_at IS NOT NULL ASC')
+        // Within the never-linked group, newest created gigs first
+        ->orderByRaw('CASE WHEN lh.last_linked_at IS NULL THEN post_gigs.created_at END DESC')
+        // Within the linked group, oldest last-linked first, most recent last
+        ->orderBy('lh.last_linked_at', 'ASC')
         ->paginate($perPage);
 
     return successResponse($postGigs);
 }
-
 
 public function updateTaskTitleAndComments(Request $request, $id)
 {
