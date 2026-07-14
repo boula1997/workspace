@@ -1993,10 +1993,72 @@ public function offlineInfo()
     return successResponse($issues);
 }
 
-public function asyncOfflineInfo()
+public function asyncOfflineInfo(Request $request)
 {
-   $issues=Issue::latest()->get();
+    $validated = $request->validate([
+        'updates'                          => 'required|array',
+        'updates.*.project_id'             => 'nullable|integer|exists:projects,id',
+        'updates.*.refrence_id'            => 'nullable|integer|exists:issues,id',
+        'updates.*.name'                   => 'nullable|string',
+        'updates.*.title'                  => 'nullable|string',
+        'updates.*.ai_prompt'              => 'nullable|string',
+        'updates.*.cost'                   => 'nullable',
+        'updates.*.payed'                  => 'nullable',
+        'updates.*.deal'                   => 'nullable',
+        'updates.*.fixed'                  => 'nullable',
+        'updates.*.isHosted'               => 'nullable',
+        'updates.*.isOverthinking'         => 'nullable',
+        'updates.*.deadline'               => 'nullable|date',
+        'updates.*.renewalDate'            => 'nullable|date',
+        'updates.*.githubDevModeLinkBack'  => 'nullable|string',
+        'updates.*.githubDevModeLinkFront' => 'nullable|string',
+    ]);
 
-    return successResponse($issues);
+    // Only columns that actually exist on `projects`
+    $projectColumns = [
+        'title'                  => 'name',       // client 'name' -> projects.title
+        'cost'                   => 'cost',
+        'deadline'               => 'deadline',
+        'fixed'                  => 'fixed',
+        'isHosted'               => 'isHosted',
+        'isOverthinking'         => 'isOverthinking',
+        'renewalDate'            => 'renewalDate',
+        'githubDevModeLinkBack'  => 'githubDevModeLinkBack',
+        'githubDevModeLinkFront' => 'githubDevModeLinkFront',
+    ];
+
+    // Only columns that actually exist on `issues`
+    $issueColumns = [
+        'ai_prompt'      => 'ai_prompt',
+        'isOverthinking' => 'isOverthinking',
+    ];
+
+    DB::transaction(function () use ($validated, $projectColumns, $issueColumns) {
+        foreach ($validated['updates'] as $update) {
+            if (!empty($update['project_id'])) {
+                $attrs = [];
+                foreach ($projectColumns as $dbCol => $payloadKey) {
+                    if (array_key_exists($payloadKey, $update)) {
+                        $attrs[$dbCol] = $update[$payloadKey];
+                    }
+                }
+                if (!empty($attrs)) {
+                    Project::whereKey($update['project_id'])->update($attrs);
+                }
+            } elseif (!empty($update['refrence_id'])) {
+                $attrs = [];
+                foreach ($issueColumns as $dbCol => $payloadKey) {
+                    if (array_key_exists($payloadKey, $update)) {
+                        $attrs[$dbCol] = $update[$payloadKey];
+                    }
+                }
+                if (!empty($attrs)) {
+                    Issue::whereKey($update['refrence_id'])->update($attrs);
+                }
+            }
+        }
+    });
+
+    return successResponse(Issue::latest()->get());
 }
 }
