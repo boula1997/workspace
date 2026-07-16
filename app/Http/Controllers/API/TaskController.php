@@ -653,13 +653,29 @@ public function lock()
             ]);
         }
 
-        $tasks = Task::where("status", 0)
-            ->orderBy("date", "asc") // ✅ soonest first instead of latest
-            ->get();
+        $boula = Admin::where('name', 'Boula D')->first();
+
+        if (!$boula) {
+            return successResponse([
+                "lock"      => [],
+                "isExpired" => isExpired()[0],
+            ]);
+        }
+
+        $expiredDeadlines = Task::where('isActive', 1)
+            ->where('status', 0)
+            ->get()
+            ->filter(function ($task) use ($boula) {
+                $employeeIds = is_array($task->employees)
+                    ? $task->employees
+                    : (json_decode($task->employees, true) ?? []);
+
+                return in_array($boula->id, $employeeIds);
+            });
 
         $locks = [];
 
-        foreach ($tasks as $task) {
+        foreach ($expiredDeadlines as $task) {
             $locks[] = $task->title . " in " . $task->project->title;
         }
 
@@ -672,7 +688,6 @@ public function lock()
         return response()->json(['error' => $e->getMessage()]);
     }
 }
-
 
 
     public function elements($id, Request $request)
