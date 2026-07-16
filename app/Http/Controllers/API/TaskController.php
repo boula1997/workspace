@@ -663,7 +663,7 @@ public function lock()
         }
 
         $expiredDeadlines = Task::where('isActive', 1)
-            ->where('status', 0)
+            ->where('status', 0)->latest('date')
             ->get()
             ->filter(function ($task) use ($boula) {
                 $employeeIds = is_array($task->employees)
