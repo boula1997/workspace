@@ -661,17 +661,17 @@ public function lock()
                 "isExpired" => isExpired()[0],
             ]);
         }
+$expiredDeadlines = Task::where('isActive', 1)
+    ->where('status', 0)
+    ->orderBy('date', 'asc') // Soonest first
+    ->get()
+    ->filter(function ($task) use ($boula) {
+        $employeeIds = is_array($task->employees)
+            ? $task->employees
+            : (json_decode($task->employees, true) ?? []);
 
-        $expiredDeadlines = Task::where('isActive', 1)
-            ->where('status', 0)->latest('date')
-            ->get()
-            ->filter(function ($task) use ($boula) {
-                $employeeIds = is_array($task->employees)
-                    ? $task->employees
-                    : (json_decode($task->employees, true) ?? []);
-
-                return in_array($boula->id, $employeeIds);
-            });
+        return in_array($boula->id, $employeeIds);
+    });
 
         $locks = [];
 
