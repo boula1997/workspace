@@ -17,6 +17,10 @@ public function index(Request $request)
 {
     $query = KitTool::query();
 
+    if ($request->has('is_public')) {
+    $query->where('isPublic', $request->boolean('is_public'));
+}
+
     if ($request->filled('d_b_credential_id')) {
         $query->where('d_b_credential_id', $request->query('d_b_credential_id'));
     }
@@ -36,18 +40,19 @@ public function index(Request $request)
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'd_b_credential_id' => 'required|integer',
-            'content' => 'nullable|string',
-        ]);
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'd_b_credential_id' => 'required|integer',
+        'content' => 'nullable|string',
+        'isPublic' => 'sometimes|boolean',
+    ]);
 
-        $kitTool = KitTool::create($request->all());
+    $kitTool = KitTool::create($validated);
 
-        return response()->json($kitTool, 201);
-    }
+    return response()->json($kitTool, 201);
+}
 
     /**
      * Display the specified resource.
@@ -68,20 +73,21 @@ public function index(Request $request)
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        $kitTool = KitTool::findOrFail($id);
+public function update(Request $request, $id)
+{
+    $kitTool = KitTool::findOrFail($id);
 
-        $request->validate([
-            'title' => 'sometimes|required|string|max:255',
-            'd_b_credential_id' => 'sometimes|required|integer',
-            'content' => 'nullable|string',
-        ]);
+    $validated = $request->validate([
+        'title' => 'sometimes|required|string|max:255',
+        'd_b_credential_id' => 'sometimes|required|integer',
+        'content' => 'nullable|string',
+        'isPublic' => 'sometimes|boolean',
+    ]);
 
-        $kitTool->update($request->all());
+    $kitTool->update($validated);
 
-        return response()->json($kitTool);
-    }
+    return response()->json($kitTool);
+}
 
     /**
      * Remove the specified resource from storage.
