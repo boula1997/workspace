@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class KitToolController extends Controller
 {
-    /**
+    /**ssh -p 65002 u112116784@147.93.93.175
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
