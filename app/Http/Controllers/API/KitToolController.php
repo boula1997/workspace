@@ -49,6 +49,8 @@ public function store(Request $request)
         'isPublic' => 'sometimes|boolean',
     ]);
 
+    $validated['isPublic'] = $request->isPublic ? 1 : 0;
+
     $kitTool = KitTool::create($validated);
 
     return response()->json($kitTool, 201);
@@ -83,6 +85,9 @@ public function update(Request $request, $id)
         'content' => 'nullable|string',
         'isPublic' => 'sometimes|boolean',
     ]);
+
+    $validated['isPublic'] = $request->isPublic ? 1 : 0;
+
 
     $kitTool->update($validated);
 
