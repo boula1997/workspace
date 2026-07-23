@@ -1494,8 +1494,9 @@ public function asyncCreate(Request $request)
         $hasDate = array_key_exists('date', $item);
         $hasProject = array_key_exists('project_id', $item);
         $hasEmployees = array_key_exists('employees', $item);
+        $hasComments = array_key_exists('comments', $item);
 
-        if (!$hasTitle && !$hasDate && !$hasProject && !$hasEmployees) {
+        if (!$hasTitle && !$hasDate && !$hasProject && !$hasEmployees && !$hasComments) {
             $errors[] = "task_updates[$index]: no updatable fields provided.";
         }
 
@@ -1632,6 +1633,9 @@ public function asyncCreate(Request $request)
 
             if (array_key_exists('employees', $item))
                 $payload['employees'] = $item['employees'];
+
+            if (array_key_exists('comments', $item))
+                $payload['comments'] = $item['comments'];
 
             if (!empty($payload))
                 $task->update($payload);
