@@ -18,11 +18,12 @@ public function index(Request $request)
     $query = KitTool::query();
 
     if ($request->has('is_public')) {
-    $query->where('isPublic', $request->boolean('is_public'));
-}
-
-    if ($request->filled('d_b_credential_id')) {
-        $query->where('d_b_credential_id', $request->query('d_b_credential_id'));
+        $query->where('isPublic', $request->boolean('is_public'));
+    } elseif ($request->filled('d_b_credential_id')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('isPublic', 1)
+              ->orWhere('d_b_credential_id', $request->query('d_b_credential_id'));
+        });
     }
 
     if ($request->filled('search')) {
