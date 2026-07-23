@@ -1930,13 +1930,12 @@ public function clientTaskStore(Request $request)
         'tasks.*.images.*.name'   => 'nullable|string',
         'tasks.*.images.*.type'   => 'nullable|string',
     ]);
-
-    $ownsProject = Project::where('id', $validated['project_id'])->exists();
-
-    if (! $ownsProject) {
+     
+    $ownsProject = Project::withoutGlobalScopes()->where('id', $validated['project_id'])->exists();
+    if (!$ownsProject) {
         return response()->json([
             'status'  => 403,
-            'message' => 'You do not have access to this project.'.$validated['project_id'],
+            'message' => 'You do not have access to this project.',
         ], 403);
     }
 
