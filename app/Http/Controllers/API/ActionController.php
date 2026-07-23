@@ -9,6 +9,7 @@ use App\Models\Project;
 use App\Models\Issue;
 use App\Models\Deadline;
 use App\Models\Deal;
+use App\Models\Admin;
 use App\Models\Fee;
 use App\Models\Note;
 use App\Models\Repeat;
