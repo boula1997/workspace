@@ -110,11 +110,11 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::delete('/delete/search/{id}', [DatabaseController::class, 'deleteSearch'])->name('search.delete');
     Route::get('/databases/info/{dbname}/{namedb}', [DatabaseController::class, 'getDatabase']);
 
-    Route::post('/differences', [DatabaseController::class, 'storeDifference']);
-    Route::get('/differences', [DatabaseController::class, 'getDifferences']);
-          });
+});
 
-      }
+}
+Route::post('/differences', [DatabaseController::class, 'storeDifference']);
+Route::get('/differences', [DatabaseController::class, 'getDifferences']);
 
     Route::get('/client/tasks', [TaskController::class, 'clientTasks']);
     Route::post('/client/tasks/store', [TaskController::class, 'clientTaskStore']);
