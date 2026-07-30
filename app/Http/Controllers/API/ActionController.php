@@ -51,6 +51,8 @@ public function getFunction(Request $request)
         $countAllowed = floor(1440 / $periodMinutes);
         if ($action == "getNotifications") {
             $notifications = []; // one single string
+
+            /*
             $boardProjects = Project::get();
             $moneyProjects = $boardProjects->filter(function ($project) {
                 return $project->status == 2 && $project->cost > 0;
@@ -84,6 +86,7 @@ public function getFunction(Request $request)
             $startOfMonth = $date->copy()->startOfMonth();
             $endOfMonth = $date->copy()->endOfMonth();
             $incomeFees = Fee::where('amount', '>', 0)->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
+            */
 
             $boula = Admin::where('name', 'Boula D')->first();
 
@@ -105,80 +108,81 @@ public function getFunction(Request $request)
                     return in_array($boula->id, $employeeIds);
                 });
 
-                   
-                            
-                        if(boula()){
 
-                            $notifications[] = "Your income fees this month is " . $incomeFees;
-                            $notifications[] = "Last time was " . $last->created_at;
-                        }
+            /*
+            if(boula()){
+                $notifications[] = "Your income fees this month is " . $incomeFees;
+                $notifications[] = "Last time was " . $last->created_at;
+            }
 
-                        if ($deals->isNotEmpty()  && boula()) {
-                            foreach ($deals as $deal) {
-                                $notifications[] = $deal->title ." with cost ".$deal->cost." in project ". $deal->project->title;
-                            }
-                        }
-                        
-
-                        if ($moneyProjects->isNotEmpty()) {
-                            foreach ($moneyProjects as $project) {
-                                $notifications[] = $project->title . " with " . rest($project);
-                            }
-                        }
-                        if ($dangerousTasks->isNotEmpty()) {
-                            foreach ($dangerousTasks as $task) {
-                                $notifications[] = $task->title . " is due in " . $task->date;
-                            }
-                        }
-
-
-                        if ($dealProjects->isNotEmpty() && boula()) {
-                            foreach ($dealProjects as $project) {
-                                $notifications[] = $project->title . " deal not closed yet";
-                            }
-                        }
-
-                        if ($renewProjects->isNotEmpty() && boula()) {
-                            foreach ($renewProjects as $project) {
-                                $renewalDate = Carbon::parse($project->renewalDate)->format('Y-m-d');
-                                $notifications[] = $project->title . " renewal on " . $renewalDate;
-                            }
-                        }
-
-                        if ($deadlineProjects->isNotEmpty() && boula()) {
-                            foreach ($deadlineProjects as $project) {
-                                $deadline = Carbon::parse($project->deadline)->format('Y-m-d');
-                                $notifications[] = $project->title . " due on " . $deadline;
-                            }
-                        }
-
-
-                        // Final output: ONE notification string
-                        if(boula()){
-                            $notifications[] = "Yousab Tech + LapMob Ecommerce + Fixed Salary Programming Job";
-                            $notifications[]="Your role is Marketting + Project Mangement";
-                        }
-
-                        // Shuffle notifications to randomize order
-                        shuffle($notifications);
-
-                        // Limit notifications to allowed count
-                        $notifications = array_slice($notifications, 0, $countAllowed);
-                        
-                        $data["notifications"] = $notifications;
-                        $data["period"] = settings()->period;
-                    }
-
-                    return successResponse($data);
-
-                } catch (Exception $e) {
-                    DB::table('tracks')->insert([
-                        'dispatch_status' => 'showing data of ' . json_encode([$e->getMessage()]),
-                        'created_at' => now(),
-                    ]);
-                    return failedResponse($e->getMessage());
+            if ($deals->isNotEmpty()  && boula()) {
+                foreach ($deals as $deal) {
+                    $notifications[] = $deal->title ." with cost ".$deal->cost." in project ". $deal->project->title;
                 }
             }
+
+            if ($moneyProjects->isNotEmpty()) {
+                foreach ($moneyProjects as $project) {
+                    $notifications[] = $project->title . " with " . rest($project);
+                }
+            }
+            */
+
+            // Only Boula D's own tasks appear in notifications
+            if ($dangerousTasks->isNotEmpty()) {
+                foreach ($dangerousTasks as $task) {
+                    $notifications[] = $task->title . " is due in " . $task->date;
+                }
+            }
+
+            /*
+            if ($dealProjects->isNotEmpty() && boula()) {
+                foreach ($dealProjects as $project) {
+                    $notifications[] = $project->title . " deal not closed yet";
+                }
+            }
+
+            if ($renewProjects->isNotEmpty() && boula()) {
+                foreach ($renewProjects as $project) {
+                    $renewalDate = Carbon::parse($project->renewalDate)->format('Y-m-d');
+                    $notifications[] = $project->title . " renewal on " . $renewalDate;
+                }
+            }
+
+            if ($deadlineProjects->isNotEmpty() && boula()) {
+                foreach ($deadlineProjects as $project) {
+                    $deadline = Carbon::parse($project->deadline)->format('Y-m-d');
+                    $notifications[] = $project->title . " due on " . $deadline;
+                }
+            }
+
+            // Final output: ONE notification string
+            if(boula()){
+                $notifications[] = "Yousab Tech + LapMob Ecommerce + Fixed Salary Programming Job";
+                $notifications[]="Your role is Marketting + Project Mangement";
+            }
+            */
+
+            // Shuffle notifications to randomize order
+            shuffle($notifications);
+
+            // Limit notifications to allowed count
+            $notifications = array_slice($notifications, 0, $countAllowed);
+
+            $data["notifications"] = $notifications;
+            $data["period"] = settings()->period;
+        }
+
+        return successResponse($data);
+
+    } catch (Exception $e) {
+        DB::table('tracks')->insert([
+            'dispatch_status' => 'showing data of ' . json_encode([$e->getMessage()]),
+            'created_at' => now(),
+        ]);
+        return failedResponse($e->getMessage());
+    }
+}
 
 
 public function show($table, $itemId)
