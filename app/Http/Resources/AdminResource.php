@@ -35,6 +35,16 @@ class AdminResource extends JsonResource
             "direct_permissions" => $this->getDirectPermissionsArray(),
             "permissions" => $this->getAllPermissionsArray(),
             "all_permissions" => $this->getAllPermissionsArray(),
+            "table" => $this->table?true:false,
+            "projects" => $this->projects?true:false,
+            "tasks" => $this->tasks?true:false,
+            "marketting" => $this->marketting?true:false,
+            "offline_center" => $this->offline_center?true:false,
+            "locks" => $this->locks?true:false,
+            "stats" => $this->stats?true:false,
+            "info" => $this->info?true:false,
+            "workspace" => $this->workspace?true:false,
+            "sql" => $this->sql?true:false,
         ];
     }
 
