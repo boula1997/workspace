@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('link_histories', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('post_gig_id')->constrained('post_gigs')->onDelete('cascade');
-        $table->timestamps();
-        });
+        // Schema::create('link_histories', function (Blueprint $table) {
+        // $table->id();
+        // $table->foreignId('post_gig_id')->constrained('post_gigs')->onDelete('cascade');
+        // $table->timestamps();
+        // });
     }
 
     /**
