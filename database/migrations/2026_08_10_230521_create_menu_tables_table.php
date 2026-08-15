@@ -8,12 +8,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('menu_tables', function (Blueprint $table) {
-            $table->id();
-            $table->string('child_table_name');
-            $table->string('menu_name');
-            $table->timestamps();
-        });
+        // Schema::create('menu_tables', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('child_table_name');
+        //     $table->string('menu_name');
+        //     $table->timestamps();
+        // });
     }
 
     public function down(): void
