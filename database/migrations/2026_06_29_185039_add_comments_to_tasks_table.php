@@ -11,9 +11,9 @@ return new class extends Migration
      */
 public function up()
 {
-    // Schema::table('tasks', function (Blueprint $table) {
-    //     $table->longText('comments')->nullable()->after('title');
-    // });
+    Schema::table('tasks', function (Blueprint $table) {
+        $table->longText('comments')->nullable()->after('title');
+    });
 }
 
 public function down()
