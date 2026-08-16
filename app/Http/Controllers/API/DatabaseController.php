@@ -785,8 +785,7 @@ public function getDifferences(Request $request)
 
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
-                $q->where('diff_db', 'like', "%{$search}%")
-                  ->orWhere('diff_text', 'like', "%{$search}%");
+                $q->where('diff_db', 'like', "%{$search}%");
             });
         }
 
