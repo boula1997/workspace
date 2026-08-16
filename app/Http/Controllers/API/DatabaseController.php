@@ -770,27 +770,49 @@ public function storeDifference(Request $request)
 public function getDifferences(Request $request)
 {
     try {
-        $credential_id=$request->query('credential_id');
-        if ($credential_id) {
-            $differences = Difference::where('d_b_credential_id', $credential_id)
-                ->orderBy('created_at', 'desc')
-                ->get();
-        } else {
-            $differences = Difference::orderBy('created_at', 'desc')->get();
+        $credential_id = $request->query('credential_id');
+        $search = trim((string) $request->query('search', ''));
+        $perPage = (int) $request->query('per_page', 10);
+        if ($perPage <= 0) {
+            $perPage = 10;
         }
 
-        $last_snapshot=DBCredential::where('id', $credential_id)->value('last_snapshot');
+        $query = Difference::query()->orderBy('created_at', 'desc');
+
+        if ($credential_id) {
+            $query->where('d_b_credential_id', $credential_id);
+        }
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('diff_db', 'like', "%{$search}%")
+                  ->orWhere('diff_text', 'like', "%{$search}%");
+            });
+        }
+
+        // Laravel reads the "page" query param automatically
+        $paginator = $query->paginate($perPage);
+
+        $last_snapshot = $credential_id
+            ? DBCredential::where('id', $credential_id)->value('last_snapshot')
+            : null;
 
         return response()->json([
             'success' => true,
-            'differences' => $differences,
+            'differences' => $paginator->items(),
+            'pagination' => [
+                'current_page' => $paginator->currentPage(),
+                'last_page'    => $paginator->lastPage(),
+                'total'        => $paginator->total(),
+                'per_page'     => $paginator->perPage(),
+            ],
             'last_snapshot' => $last_snapshot,
         ]);
     } catch (\Exception $e) {
         return response()->json([
             'success' => false,
             'error' => $e->getMessage(),
-        ]);
+        ], 500);
     }
 }
 
