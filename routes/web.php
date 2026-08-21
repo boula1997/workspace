@@ -40,7 +40,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
     
             Route::get('/', [HomeController::class, 'index'])->name('action');
             Route::get('/videos', [HomeController::class, 'videos'])->name('videos');
-            Route::get('/faq-page', 'App/Http/Controllers/FaqController@index')->name('front.faq');
+            // Route::get('/faq-page', 'App/Http/Controllers/API/FaqController@index')->name('front.faq');
             // Route::get('/message', 'App/Http/Controllers/MessageController@index')->name('front.message');
             Route::get('/message', [MessageController::class,'index'])->name('front.message');
             // Route::get('/service', 'App/Http/Controllers/ServiceController@index')->name('front.service');
@@ -54,15 +54,15 @@ Route::group(['middleware' => ['auth:admin']], function () {
             Route::get('/single-service/{id}', [ServiceController::class,'show'])->name('front.show.service');
            
            
-            Route::get('/testimonial', 'App/Http/Controllers/TestimonialController@index')->name('front.testimonial');
-            Route::get('/single-testimonial', 'App/Http/Controllers/TestimonialController@show')->name('front.show.testimonial');
-            Route::get('/process', 'App/Http/Controllers/ProcessController@index')->name('front.process');
-            Route::get('/single-process', 'App/Http/Controllers/ProcessController@show')->name('front.show.process');
-            Route::get('/single-faq', 'App/Http/Controllers/FaqController@show')->name('front.show.faq');
+            // Route::get('/testimonial', 'App/Http/Controllers/TestimonialController@index')->name('front.testimonial');
+            // Route::get('/single-testimonial', 'App/Http/Controllers/TestimonialController@show')->name('front.show.testimonial');
+            // Route::get('/process', 'App/Http/Controllers/ProcessController@index')->name('front.process');
+            // Route::get('/single-process', 'App/Http/Controllers/ProcessController@show')->name('front.show.process');
+            // Route::get('/single-faq', 'App/Http/Controllers/API/FaqController@show')->name('front.show.faq');
     
             Route::get('/portfolios', [PortfolioController::class,'index'])->name('front.portfolios');
             Route::get('/portfolio/{id}', [PortfolioController::class,'show'])->name('front.show.portfolio');
-            Route::get('/video', 'App/Http/Controllers/VideoController@index')->name('front.video');
+            // Route::get('/video', 'App/Http/Controllers/VideoController@index')->name('front.video');
             // Route::get('/about', 'App/Http/Controllers/AboutController@index')->name('front.about');
             Route::get('/about', [AboutController::class,'index'])->name('front.about');
             // Route::post('/message', 'App/Http/Controllers/MessageController@store')->name('front.message.post');
