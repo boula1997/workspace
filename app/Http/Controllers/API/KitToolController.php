@@ -27,9 +27,12 @@ public function index(Request $request)
     }
 
     if ($request->filled('search')) {
-        $query->where('title', 'like', '%' . $request->query('search') . '%');
+        $search = $request->query('search');
+        $query->where(function ($q) use ($search) {
+            $q->where('title', 'like', '%' . $search . '%')
+            ->orWhere('content', 'like', '%' . $search . '%');
+        });
     }
-
     return response()->json(
         $query->orderByDesc('id')->paginate($request->integer('per_page', 7))
     );
