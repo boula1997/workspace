@@ -118,8 +118,11 @@ Route::get('/differences', [DatabaseController::class, 'getDifferences']);
 
     Route::get('/client/tasks', [TaskController::class, 'clientTasks']);
     Route::post('/client/tasks/store', [TaskController::class, 'clientTaskStore']);
-    Route::post('/file/count-occurrences', [FileSearchController::class, 'countOccurrences']);
 
+Route::prefix('file')->group(function () {
+    Route::post('/read-content', [FileSearchController::class, 'readContent']);
+    Route::post('/count-occurrences', [FileSearchController::class, 'countOccurrences']);
+});
     Route::get('deleteTask/{id}', [TaskController::class, 'toggleStatus'])->name('status.toggle');
 
     Route::middleware('auth:admin-api','apiLocalization','cors')->group(function () {
