@@ -8,6 +8,38 @@ use Illuminate\Support\Facades\File;
 
 class FileSearchController extends Controller
 {
+    /**
+     * Read full text content directly from a local file path (e.g., parcel.sql or routes.json)
+     */
+    public function readContent(Request $request)
+    {
+        $validated = $request->validate([
+            'path' => 'required|string',
+        ]);
+
+        $path = $validated['path'];
+
+        if (!File::exists($path)) {
+            return response()->json(['error' => 'File not found: ' . $path], 404);
+        }
+
+        if (!File::isReadable($path)) {
+            return response()->json(['error' => 'File is not readable'], 403);
+        }
+
+        $content = File::get($path);
+        // Clean UTF-8 encoding
+        $content = mb_convert_encoding($content, 'UTF-8', 'UTF-8');
+
+        return response()->json([
+            'path'    => $path,
+            'content' => $content,
+        ]);
+    }
+
+    /**
+     * Count word occurrences in local file (e.g. C:\Users\User\Downloads\parcel.sql)
+     */
     public function countOccurrences(Request $request)
     {
         $validated = $request->validate([
