@@ -37,9 +37,6 @@ class FileSearchController extends Controller
         ]);
     }
 
-    /**
-     * Count word occurrences in local file and return matched lines (max 10 per term).
-     */
 public function countOccurrences(Request $request)
 {
     $validated = $request->validate([
@@ -67,7 +64,6 @@ public function countOccurrences(Request $request)
     $lines      = preg_split('/\r\n|\r|\n/', $content);
     $results    = [];
     $totalCount = 0;
-    $maxLines   = 1000;
 
     foreach ($validated['terms'] as $term) {
         $search        = $term['text'];
@@ -86,18 +82,24 @@ public function countOccurrences(Request $request)
             ], 422);
         }
 
-        // Collect unique truncated matches, limited to $maxLines total
+        // Collect every entry unique by (table clause, matched token) — no cap
         $matchedLines = [];
         $seen         = [];
         foreach ($lines as $lineIndex => $lineText) {
-            if (preg_match_all($pattern, $lineText, $m, PREG_OFFSET_CAPTURE)) {
-                $truncated   = $this->truncateToTableName($lineText);
-                $offset      = $m[0][0][1];
-                $matchLength = strlen($m[0][0][0]);
-                $matchedText = $this->expandToFullToken($lineText, $offset, $matchLength);
-                $display     = $truncated . '  ' . $matchedText;
+            if (!preg_match_all($pattern, $lineText, $m, PREG_OFFSET_CAPTURE)) {
+                continue;
+            }
 
-                $key = $caseSensitive ? $display : mb_strtolower($display);
+            $truncated = $this->truncateToTableName($lineText);
+
+            foreach ($m[0] as $match) {
+                $offset      = $match[1];
+                $matchLength = strlen($match[0]);
+                $matchedText = $this->expandToFullToken($lineText, $offset, $matchLength);
+
+                $tableKey = $caseSensitive ? $truncated : mb_strtolower($truncated);
+                $tokenKey = $caseSensitive ? $matchedText : mb_strtolower($matchedText);
+                $key      = $tableKey . '|' . $tokenKey;
 
                 if (isset($seen[$key])) {
                     continue;
@@ -106,12 +108,8 @@ public function countOccurrences(Request $request)
 
                 $matchedLines[] = [
                     'line'    => $lineIndex + 1,
-                    'content' => $display,
+                    'content' => $truncated . '  ' . $matchedText,
                 ];
-
-                if (count($matchedLines) >= $maxLines) {
-                    break;
-                }
             }
         }
 
