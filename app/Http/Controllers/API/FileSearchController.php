@@ -67,7 +67,7 @@ public function countOccurrences(Request $request)
     $lines      = preg_split('/\r\n|\r|\n/', $content);
     $results    = [];
     $totalCount = 0;
-    $maxLines   = 100;
+    $maxLines   = 1000;
 
     foreach ($validated['terms'] as $term) {
         $search        = $term['text'];
