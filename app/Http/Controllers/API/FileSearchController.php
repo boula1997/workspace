@@ -93,7 +93,7 @@ public function countOccurrences(Request $request)
                 foreach ($m[0] as $match) {
                     $matchedLines[] = [
                         'line'    => $lineIndex + 1,
-                        'content' => trim($lineText),
+                        'content' => $this->truncateToTableName($lineText),
                     ];
                     if (count($matchedLines) >= $maxLines) {
                         break 2;
@@ -117,5 +117,23 @@ public function countOccurrences(Request $request)
         'results'     => $results,
         'total_count' => $totalCount,
     ]);
+}
+
+/**
+ * Truncates a SQL line to end right after the table name for
+ * INSERT INTO / FROM statements. Falls back to the full trimmed
+ * line if no such clause is found.
+ */
+private function truncateToTableName(string $lineText): string
+{
+    $line = trim($lineText);
+
+    // Matches: INSERT INTO `table`, INSERT INTO table, FROM `table`, FROM table
+    // Table name may be backticked, quoted, or bare; optionally schema-qualified (db.table).
+    if (preg_match('/^(.*?\b(?:INSERT\s+INTO|FROM)\s+`?"?[\w.]+`?"?)/i', $line, $m)) {
+        return trim($m[1]);
+    }
+
+    return $line;
 }
 }
