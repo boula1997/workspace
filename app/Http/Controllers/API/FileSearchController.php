@@ -67,7 +67,7 @@ public function countOccurrences(Request $request)
     $lines      = preg_split('/\r\n|\r|\n/', $content);
     $results    = [];
     $totalCount = 0;
-    $maxLines   = 10;
+    $maxLines   = 100;
 
     foreach ($validated['terms'] as $term) {
         $search        = $term['text'];
@@ -86,18 +86,26 @@ public function countOccurrences(Request $request)
             ], 422);
         }
 
-        // Collect one entry per match occurrence, limited to $maxLines total
+        // Collect unique truncated matches, limited to $maxLines total
         $matchedLines = [];
+        $seen         = [];
         foreach ($lines as $lineIndex => $lineText) {
             if (preg_match_all($pattern, $lineText, $m, PREG_OFFSET_CAPTURE)) {
-                foreach ($m[0] as $match) {
-                    $matchedLines[] = [
-                        'line'    => $lineIndex + 1,
-                        'content' => $this->truncateToTableName($lineText),
-                    ];
-                    if (count($matchedLines) >= $maxLines) {
-                        break 2;
-                    }
+                $truncated = $this->truncateToTableName($lineText);
+                $key       = $caseSensitive ? $truncated : mb_strtolower($truncated);
+
+                if (isset($seen[$key])) {
+                    continue;
+                }
+                $seen[$key] = true;
+
+                $matchedLines[] = [
+                    'line'    => $lineIndex + 1,
+                    'content' => $truncated,
+                ];
+
+                if (count($matchedLines) >= $maxLines) {
+                    break;
                 }
             }
         }
@@ -120,17 +128,36 @@ public function countOccurrences(Request $request)
 }
 
 /**
- * Truncates a SQL line to end right after the table name for
- * INSERT INTO / FROM statements. Falls back to the full trimmed
- * line if no such clause is found.
+ * Truncates a SQL line to end right after the table name, covering the
+ * common statement types: INSERT INTO, REPLACE INTO, UPDATE, DELETE FROM,
+ * SELECT ... FROM, ALTER TABLE, CREATE TABLE [IF NOT EXISTS], DROP TABLE
+ * [IF EXISTS], TRUNCATE [TABLE]. Falls back to the full trimmed line if
+ * none of these clauses is found.
  */
 private function truncateToTableName(string $lineText): string
 {
     $line = trim($lineText);
 
-    // Matches: INSERT INTO `table`, INSERT INTO table, FROM `table`, FROM table
-    // Table name may be backticked, quoted, or bare; optionally schema-qualified (db.table).
-    if (preg_match('/^(.*?\b(?:INSERT\s+INTO|FROM)\s+`?"?[\w.]+`?"?)/i', $line, $m)) {
+    // Keyword clause that precedes a table name, longest/most-specific first.
+    $clause = '(?:'
+        . 'INSERT\s+INTO'
+        . '|REPLACE\s+INTO'
+        . '|DELETE\s+FROM'
+        . '|UPDATE'
+        . '|ALTER\s+TABLE'
+        . '|CREATE\s+TABLE\s+IF\s+NOT\s+EXISTS'
+        . '|CREATE\s+TABLE'
+        . '|DROP\s+TABLE\s+IF\s+EXISTS'
+        . '|DROP\s+TABLE'
+        . '|TRUNCATE\s+TABLE'
+        . '|TRUNCATE'
+        . '|FROM'
+        . ')';
+
+    // Table name: optionally schema-qualified, optionally backticked/quoted.
+    $tableName = '`?"?[\w]+`?"?(?:\.`?"?[\w]+`?"?)?';
+
+    if (preg_match('/^(.*?\b' . $clause . '\s+' . $tableName . ')/i', $line, $m)) {
         return trim($m[1]);
     }
 
