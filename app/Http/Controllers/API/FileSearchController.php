@@ -92,7 +92,9 @@ public function countOccurrences(Request $request)
         foreach ($lines as $lineIndex => $lineText) {
             if (preg_match_all($pattern, $lineText, $m, PREG_OFFSET_CAPTURE)) {
                 $truncated   = $this->truncateToTableName($lineText);
-                $matchedText = $m[0][0][0]; // exact substring that matched on this line
+                $offset      = $m[0][0][1];
+                $matchLength = strlen($m[0][0][0]);
+                $matchedText = $this->expandToFullToken($lineText, $offset, $matchLength);
                 $display     = $truncated . '  ' . $matchedText;
 
                 $key = $caseSensitive ? $display : mb_strtolower($display);
@@ -165,5 +167,29 @@ private function truncateToTableName(string $lineText): string
     }
 
     return $line;
+}
+
+/**
+ * Expands a match at [offset, offset+length) outward to the full
+ * contiguous "token" it sits inside (letters, digits, underscore,
+ * hyphen, dot) so e.g. matching "ibrahim" inside "ibrahim-merchant-dev"
+ * returns the whole "ibrahim-merchant-dev" token.
+ */
+private function expandToFullToken(string $lineText, int $offset, int $length): string
+{
+    $tokenChars = '/[\w\-.]/';
+
+    $start = $offset;
+    while ($start > 0 && preg_match($tokenChars, $lineText[$start - 1])) {
+        $start--;
+    }
+
+    $end = $offset + $length;
+    $len = strlen($lineText);
+    while ($end < $len && preg_match($tokenChars, $lineText[$end])) {
+        $end++;
+    }
+
+    return substr($lineText, $start, $end - $start);
 }
 }
