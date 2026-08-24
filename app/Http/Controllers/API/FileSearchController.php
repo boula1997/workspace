@@ -91,8 +91,11 @@ public function countOccurrences(Request $request)
         $seen         = [];
         foreach ($lines as $lineIndex => $lineText) {
             if (preg_match_all($pattern, $lineText, $m, PREG_OFFSET_CAPTURE)) {
-                $truncated = $this->truncateToTableName($lineText);
-                $key       = $caseSensitive ? $truncated : mb_strtolower($truncated);
+                $truncated   = $this->truncateToTableName($lineText);
+                $matchedText = $m[0][0][0]; // exact substring that matched on this line
+                $display     = $truncated . '  ' . $matchedText;
+
+                $key = $caseSensitive ? $display : mb_strtolower($display);
 
                 if (isset($seen[$key])) {
                     continue;
@@ -101,7 +104,7 @@ public function countOccurrences(Request $request)
 
                 $matchedLines[] = [
                     'line'    => $lineIndex + 1,
-                    'content' => $truncated,
+                    'content' => $display,
                 ];
 
                 if (count($matchedLines) >= $maxLines) {
