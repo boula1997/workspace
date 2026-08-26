@@ -645,12 +645,12 @@ public function getQueries($id = null)
 {
     try {
 
-        $fixed = Query::where('d_b_credential_id', $id)
+        $fixed = Query::where('d_b_credential_id', $id)->select('id','title')
             ->where('isFixed', 1)
             ->get();
 
         $all = Query::where('d_b_credential_id', $id)
-            ->select('title')
+            ->select('id','title')
             ->latest('updated_at')
             ->take(1000)
             ->get();
