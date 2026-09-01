@@ -1654,7 +1654,7 @@ public function asyncCreate(Request $request)
 
         // DELETE TASKS
         foreach ($request->task_deletes ?? [] as $item) {
-            Task::where('id', $item['task_id'])->delete();
+            Task::where('id', $item['task_id'])->update(['status'=>1]);
         }
 
         // NOTES
