@@ -85,6 +85,7 @@ class TaskController extends Controller
 
 public function create(Request $request)
 {
+    $employeesContainsSql = jsonArrayContainsIntSql('tasks.employees', 'admins.id');
     $employees = Admin::where("isActive", 1)
         ->whereNotIn("type", ["client", "prospective"])
         ->select('admins.*')
@@ -92,7 +93,7 @@ public function create(Request $request)
             SELECT COUNT(*)
             FROM tasks
             WHERE tasks.status = 0
-            AND JSON_CONTAINS(tasks.employees, CONCAT('[', admins.id, ']'))
+            AND $employeesContainsSql
         ) as active_tasks_count")
         ->orderBy('name')
         ->get();
@@ -1737,6 +1738,7 @@ public function tasksByCredential(Request $request, $db_credential_id)
             ];
         });
 
+            $employeesContainsSql = jsonArrayContainsIntSql('tasks.employees', 'admins.id');
             $employees = Admin::where("isActive", 1)
         ->whereNotIn("type", ["client", "prospective"])
         ->select('admins.*')
@@ -1744,7 +1746,7 @@ public function tasksByCredential(Request $request, $db_credential_id)
             SELECT COUNT(*)
             FROM tasks
             WHERE tasks.status = 0
-            AND JSON_CONTAINS(tasks.employees, CONCAT('[', admins.id, ']'))
+            AND $employeesContainsSql
         ) as active_tasks_count")
         ->orderBy('name')
         ->get();

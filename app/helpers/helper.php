@@ -55,6 +55,183 @@ use App\Scopes\DateFilterScope;
 
 
 const Newsletter_Mail = "app@gmail.com";
+
+/**
+ * Raw SQL fragment that checks whether a JSON array column contains the given
+ * integer expression, portable across the MySQL and PostgreSQL connections
+ * this app runs on (driver picked up from DB_CONNECTION at request time).
+ */
+function jsonArrayContainsIntSql(string $jsonColumn, string $intExpr): string
+{
+    if (DB::connection()->getDriverName() === 'pgsql') {
+        return "({$jsonColumn})::jsonb @> jsonb_build_array({$intExpr})";
+    }
+
+    return "JSON_CONTAINS({$jsonColumn}, CONCAT('[', {$intExpr}, ']'))";
+}
+
+/**
+ * Builds the Laravel connection config array for the 'dynamic' connection
+ * used to browse/manage external client databases (see DBCredential),
+ * reusing that driver's own defaults (charset, collation, etc.) and
+ * overriding host/database/username/password.
+ *
+ * Note on port: config/database.php's per-driver blocks all read the same
+ * DB_HOST/DB_PORT/... env vars, which only ever describe the app's own
+ * *current* default connection. When building a 'dynamic' connection for a
+ * driver that differs from config('database.default') (e.g. browsing a
+ * MySQL client database while the app itself runs on Postgres), that
+ * inherited port is meaningless - so it's always overridden with the
+ * driver's standard port instead of trusting whatever leaked through.
+ */
+function buildDynamicConnectionConfig(string $driver, string $host, string $database, string $username, string $password): array
+{
+    $base = config("database.connections.$driver") ?? config('database.connections.mysql');
+
+    $standardPorts = ['mysql' => 3306, 'pgsql' => 5432, 'sqlsrv' => 1433];
+
+    return array_merge($base, [
+        'url' => null,
+        'host' => $host,
+        'port' => $standardPorts[$driver] ?? $base['port'],
+        'database' => $database,
+        'username' => $username,
+        'password' => $password,
+    ]);
+}
+
+/**
+ * The value to bind as table_schema when querying information_schema
+ * against the 'dynamic' connection: the database name itself on MySQL,
+ * or the connection's configured schema (public by default) on Postgres.
+ */
+function dynamicSchemaName(string $driver, string $databaseName): string
+{
+    return $driver === 'pgsql'
+        ? (config('database.connections.dynamic.schema') ?? 'public')
+        : $databaseName;
+}
+
+/**
+ * Quotes a table/column identifier for raw SQL against the 'dynamic'
+ * connection, using the correct quote character for the given driver.
+ */
+function quoteDynamicIdentifier(string $driver, string $identifier): string
+{
+    return $driver === 'pgsql' ? '"' . $identifier . '"' : '`' . $identifier . '`';
+}
+
+/**
+ * Portable equivalent of MySQL's INFORMATION_SCHEMA.COLUMNS lookup (incl.
+ * column comment) for the 'dynamic' connection. Returns stdClass rows with
+ * COLUMN_NAME/DATA_TYPE/IS_NULLABLE/COLUMN_COMMENT so existing MySQL-shaped
+ * consumers don't need to change.
+ */
+function dynamicTableColumns(string $driver, string $schemaName, string $tableName): array
+{
+    if ($driver === 'pgsql') {
+        return DB::connection('dynamic')->select("
+            SELECT
+                c.column_name AS \"COLUMN_NAME\",
+                c.data_type AS \"DATA_TYPE\",
+                c.is_nullable AS \"IS_NULLABLE\",
+                COALESCE(pgd.description, '') AS \"COLUMN_COMMENT\"
+            FROM information_schema.columns c
+            LEFT JOIN pg_catalog.pg_statio_all_tables st
+                ON st.schemaname = c.table_schema AND st.relname = c.table_name
+            LEFT JOIN pg_catalog.pg_description pgd
+                ON pgd.objoid = st.relid AND pgd.objsubid = c.ordinal_position
+            WHERE c.table_schema = ? AND c.table_name = ?
+            ORDER BY c.ordinal_position
+        ", [$schemaName, $tableName]);
+    }
+
+    return DB::connection('dynamic')->select("
+        SELECT
+            COLUMN_NAME AS `COLUMN_NAME`,
+            DATA_TYPE AS `DATA_TYPE`,
+            IS_NULLABLE AS `IS_NULLABLE`,
+            COLUMN_COMMENT AS `COLUMN_COMMENT`
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
+        ORDER BY ORDINAL_POSITION
+    ", [$schemaName, $tableName]);
+}
+
+/**
+ * Portable equivalent of MySQL's KEY_COLUMN_USAGE foreign-key lookup for
+ * the 'dynamic' connection (Postgres' key_column_usage doesn't carry the
+ * referenced table/column - that's a MySQL-only extension - so it's joined
+ * through constraint_column_usage instead).
+ */
+function dynamicForeignKeys(string $driver, string $schemaName, string $tableName): array
+{
+    if ($driver === 'pgsql') {
+        return DB::connection('dynamic')->select("
+            SELECT
+                kcu.column_name AS \"COLUMN_NAME\",
+                ccu.table_name AS \"REFERENCED_TABLE_NAME\",
+                ccu.column_name AS \"REFERENCED_COLUMN_NAME\"
+            FROM information_schema.table_constraints tc
+            JOIN information_schema.key_column_usage kcu
+                ON tc.constraint_name = kcu.constraint_name AND tc.table_schema = kcu.table_schema
+            JOIN information_schema.constraint_column_usage ccu
+                ON tc.constraint_name = ccu.constraint_name AND tc.table_schema = ccu.table_schema
+            WHERE tc.constraint_type = 'FOREIGN KEY'
+                AND tc.table_schema = ?
+                AND tc.table_name = ?
+        ", [$schemaName, $tableName]);
+    }
+
+    return DB::connection('dynamic')->select("
+        SELECT
+            COLUMN_NAME,
+            REFERENCED_TABLE_NAME,
+            REFERENCED_COLUMN_NAME
+        FROM information_schema.KEY_COLUMN_USAGE
+        WHERE
+            TABLE_SCHEMA = ?
+            AND TABLE_NAME = ?
+            AND REFERENCED_TABLE_NAME IS NOT NULL
+    ", [$schemaName, $tableName]);
+}
+
+/**
+ * Portable equivalent of MySQL's schema-wide INFORMATION_SCHEMA.COLUMNS
+ * listing (TABLE_NAME/COLUMN_NAME/DATA_TYPE across every table) for the
+ * 'dynamic' connection.
+ */
+function dynamicSchemaColumns(string $driver, string $schemaName): array
+{
+    $quotedSchema = $driver === 'pgsql' ? '"' : '`';
+
+    return DB::connection('dynamic')->select("
+        SELECT DISTINCT
+            TABLE_NAME AS {$quotedSchema}TABLE_NAME{$quotedSchema},
+            COLUMN_NAME AS {$quotedSchema}COLUMN_NAME{$quotedSchema},
+            DATA_TYPE AS {$quotedSchema}DATA_TYPE{$quotedSchema}
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = ?
+        ORDER BY TABLE_NAME
+    ", [$schemaName]);
+}
+
+/**
+ * Portable equivalent of MySQL's schema-wide distinct TABLE_NAME listing
+ * for the 'dynamic' connection.
+ */
+function dynamicSchemaTables(string $driver, string $schemaName): array
+{
+    $quotedSchema = $driver === 'pgsql' ? '"' : '`';
+
+    return DB::connection('dynamic')->select("
+        SELECT DISTINCT TABLE_NAME AS {$quotedSchema}TABLE_NAME{$quotedSchema}
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = ?
+        ORDER BY TABLE_NAME
+    ", [$schemaName]);
+}
+
 function settings()
 {
     return Setting::first();
@@ -1114,15 +1291,13 @@ function databases()
 
         // Configure dynamic connection
         config([
-            'database.connections.dynamic' => [
-                'driver' => 'mysql',
-                'host' => $dbHost,
-                'database' => $dbName,
-                'username' => $dbUser,
-                'password' => $dbPass,
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-            ],
+            'database.connections.dynamic' => buildDynamicConnectionConfig(
+                isset($credential->db_driver) ? $credential->db_driver : 'mysql',
+                $dbHost,
+                $dbName,
+                $dbUser,
+                $dbPass
+            ),
         ]);
 
         DB::purge('dynamic');

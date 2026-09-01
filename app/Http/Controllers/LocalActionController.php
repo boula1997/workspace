@@ -171,15 +171,19 @@ class LocalActionController extends Controller
       $data = $request->all();
       $rmodule = $request->has('rname') ? $request->rname : null;
 
+      \App\Http\Controllers\API\DatabaseController::setDynamicConnection($request->dbname);
+      $dbDriver = DB::connection('dynamic')->getDriverName();
+      $keyIdent = quoteDynamicIdentifier($dbDriver, 'key');
+
       if (isset($plural)) {
         $results = DB::select("Select concat(path ,'*',replace(replace(replace(replace(path,'" . $request->name . 's' . "','" . $request->plural . "'),'" . ucfirst($request->name) . 's' . "','" . ucfirst($request->plural) . "'),'" . $request->name . "','" . $request->rname . "'),'" . ucfirst($request->name) . "','" . ucfirst($request->rname) . "')) as path from paths where flag='" . $request->selectFlag . "' and path like '%" . $request->name . "%" . $request->extension ."' or path like '%" . $request->name . "%" . $request->extension ."x". "';");
-        $resultsTranslation = DB::select("select db, id, value,`key` from (select '" . $request->dbname . "' as db, ltm_translations.* from " . $request->dbname . ".ltm_translations where value IS NULL) as q;");
+        $resultsTranslation = DB::connection('dynamic')->select("select db, id, value,$keyIdent from (select '" . $request->dbname . "' as db, ltm_translations.* from ltm_translations where value IS NULL) as q;");
         $dbname = $request->dbname;
         return view('welcome', compact('results', 'action', 'data', 'replaced', 'module', 'plural', 'rmodule','selectFlag','resultsTranslation','dbname'));
       } else {
         $results = DB::select("Select concat(path ,'*',replace(replace(path,'" . $request->name . "','" . $request->rname . "'),'" . ucfirst($request->name) . "','" . ucfirst($request->rname) . "')) as path from paths where flag='" . $request->selectFlag . "' and path like '%" . $request->name . "%" . $request->extension ."' or path like '%" . $request->name . "%" . $request->extension ."x". "';");
 
-        $resultsTranslation = DB::select("select db, id, value,`key` from (select '" . $request->dbname . "' as db, ltm_translations.* from " . $request->dbname . ".ltm_translations where value IS NULL) as q;");
+        $resultsTranslation = DB::connection('dynamic')->select("select db, id, value,$keyIdent from (select '" . $request->dbname . "' as db, ltm_translations.* from ltm_translations where value IS NULL) as q;");
         $dbname = $request->dbname;
         return view('welcome', compact('results', 'action', 'data', 'replaced', 'module', 'rmodule','resultsauto','selectFlag','resultsTranslation','dbname'));
       }
@@ -249,8 +253,11 @@ class LocalActionController extends Controller
 
       $word = $request->word;
       $replaceWord = $request->replaceWord;
-      if($request->action!=6)
-      $resultsTranslation = DB::select("select db, id, value,`key` from (select '" . $request->dbname . "' as db, ltm_translations.* from " . $request->dbname . ".ltm_translations where value IS NULL) as q;");
+      if($request->action!=6) {
+      \App\Http\Controllers\API\DatabaseController::setDynamicConnection($request->dbname);
+      $keyIdent = quoteDynamicIdentifier(DB::connection('dynamic')->getDriverName(), 'key');
+      $resultsTranslation = DB::connection('dynamic')->select("select db, id, value,$keyIdent from (select '" . $request->dbname . "' as db, ltm_translations.* from ltm_translations where value IS NULL) as q;");
+      }
        else
        $resultsTranslation=[];
       $dbname = $request->dbname;
@@ -268,7 +275,8 @@ class LocalActionController extends Controller
     if ($request->action == '5') {
       $action = "Show or Delete project images";
       // select database and add query
-      $usedFiles = DB::select("select db, id, url from (select '" . $request->dbname . "' as db, files.* from " . $request->dbname . ".files) as q;");
+      \App\Http\Controllers\API\DatabaseController::setDynamicConnection($request->dbname);
+      $usedFiles = DB::connection('dynamic')->select("select db, id, url from (select '" . $request->dbname . "' as db, files.* from files) as q;");
       $dbname = $request->dbname;
 
 
@@ -277,21 +285,26 @@ class LocalActionController extends Controller
     if ($request->action == '7') {
       $action = "translate all attributes";
       //show database attributes
-      $results = DB::select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
+      \App\Http\Controllers\API\DatabaseController::setDynamicConnection($request->dbname);
+      $dbDriver = DB::connection('dynamic')->getDriverName();
+      $results = dynamicSchemaColumns($dbDriver, dynamicSchemaName($dbDriver, $request->dbname));
 
       $dbname = $request->dbname;
 
 
 
-    
+
 
       return view('welcome', compact('results', 'action', 'replaced', 'module', 'dbname','flag'));
     }
 
     if ($request->action == '8' || $request->action == '10') {
       $action = $request->action == '8' ? "Search all attributes at once" : "search project modules";
-      $results = DB::select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
-      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' order by TABLE_NAME;");
+      \App\Http\Controllers\API\DatabaseController::setDynamicConnection($request->dbname);
+      $dbDriver = DB::connection('dynamic')->getDriverName();
+      $schemaName = dynamicSchemaName($dbDriver, $request->dbname);
+      $results = dynamicSchemaColumns($dbDriver, $schemaName);
+      $modules = dynamicSchemaTables($dbDriver, $schemaName);
       $dbname = $request->dbname;
       $string = '';
       $string2 = '';
@@ -315,7 +328,7 @@ class LocalActionController extends Controller
       $string = str_replace(' ', '', $string);
       $string2 = str_replace(' ', '', $string2);;
       $string3 = '';
-      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' order by TABLE_NAME;");
+      $modules = dynamicSchemaTables($dbDriver, $schemaName);
       foreach ($modules as $key => $value) {
         if (!str_contains($value->TABLE_NAME, 'translations')) {
 
@@ -350,7 +363,9 @@ class LocalActionController extends Controller
 
 
       $results = DB::select("select * from paths where flag='" . $request->selectFlag . "' and (" . implode(" OR ", $sql) . ");");
-      $results2 = DB::select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
+      \App\Http\Controllers\API\DatabaseController::setDynamicConnection($request->dbname);
+      $dbDriver = DB::connection('dynamic')->getDriverName();
+      $results2 = dynamicSchemaColumns($dbDriver, dynamicSchemaName($dbDriver, $request->dbname));
 
       $dbname = $request->dbname;
 
@@ -386,8 +401,10 @@ class LocalActionController extends Controller
 
     if ($request->action == '11') {
       $action = "Open Shared Module Files";
+      \App\Http\Controllers\API\DatabaseController::setDynamicConnection($request->dbname);
+      $dbDriver = DB::connection('dynamic')->getDriverName();
       $string3 = '';
-      $modules = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' order by TABLE_NAME;");
+      $modules = dynamicSchemaTables($dbDriver, dynamicSchemaName($dbDriver, $request->dbname));
       foreach ($modules as $key => $value) {
         if (!str_contains($value->TABLE_NAME, 'translations')) {
 
@@ -406,8 +423,11 @@ class LocalActionController extends Controller
       
 
       $queries=Query::latest()->get()->unique('title');
-      $results = DB::select("select distinct  TABLE_NAME,COLUMN_NAME,DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "'  order by TABLE_NAME;");
-      $tables = DB::select("select distinct  TABLE_NAME from INFORMATION_SCHEMA. COLUMNS where table_schema = '" . $request->dbname . "' order by TABLE_NAME;");
+      \App\Http\Controllers\API\DatabaseController::setDynamicConnection($request->dbname);
+      $dbDriver = DB::connection('dynamic')->getDriverName();
+      $schemaName = dynamicSchemaName($dbDriver, $request->dbname);
+      $results = dynamicSchemaColumns($dbDriver, $schemaName);
+      $tables = dynamicSchemaTables($dbDriver, $schemaName);
       $array = [];
       $array2 = [];
       $letters = [];
@@ -417,8 +437,9 @@ class LocalActionController extends Controller
         $string = '';
         $string2 = '';
         $datatype = '';
-        DB::select('use '.$request->dbname.';');
-        $count=DB::select('SELECT COUNT(*) AS count FROM '.$table->TABLE_NAME.';');
+        // The dynamic connection is already scoped to $request->dbname;
+        // no per-table "use" needed (and it's MySQL-only syntax anyway).
+        $count=DB::connection('dynamic')->select('SELECT COUNT(*) AS count FROM '.$table->TABLE_NAME.';');
         // Access the count as an integer
         $rowCount = $count[0]->count;
         foreach ($results as $result) {
@@ -437,9 +458,6 @@ class LocalActionController extends Controller
         array_push($counts, $rowCount);
       }
 
-
-      DB::select('use '.env('DB_DATABASE').';');
-
       $dbname = $request->dbname;
 
 
@@ -456,7 +474,9 @@ class LocalActionController extends Controller
 
     if ($request->action == '13') {
       $action = "translate untranslated words";
-      $results = DB::select("select db, id, value,`key` from (select '" . $request->dbname . "' as db, ltm_translations.* from " . $request->dbname . ".ltm_translations where value IS NULL) as q;");
+      \App\Http\Controllers\API\DatabaseController::setDynamicConnection($request->dbname);
+      $keyIdent = quoteDynamicIdentifier(DB::connection('dynamic')->getDriverName(), 'key');
+      $results = DB::connection('dynamic')->select("select db, id, value,$keyIdent from (select '" . $request->dbname . "' as db, ltm_translations.* from ltm_translations where value IS NULL) as q;");
       $dbname = $request->dbname;
       return view('welcome', compact('results', 'action', 'dbname'));
     }
@@ -564,7 +584,7 @@ if (true) {
 
     if ($request->action == '19') {
       $action = "flags manager";
-      $flags = DB::select("SELECT distinct flag as 'flag' from paths");
+      $flags = DB::select("SELECT distinct flag from paths");
 
       return view('welcome', compact('action', 'flags','flag'));
     }
@@ -572,9 +592,9 @@ if (true) {
     if ($request->action == '21') {
       $action = "Get Stats";
       $currentMonth = Carbon::now()->month;
-      $data = Setting::whereRaw('MONTH(last_time) = ?', [$currentMonth])->latest()->get();
+      $data = Setting::whereMonth('last_time', $currentMonth)->latest()->get();
       $last = Setting::latest()->first();
-      $timeClicks = Time::whereRaw('MONTH(clickTime) = ?', [$currentMonth])->latest()->get();
+      $timeClicks = Time::whereMonth('clickTime', $currentMonth)->latest()->get();
       // Group clicks by day
       $clicksByDay = $timeClicks->groupBy(function ($click) {
         // Parse the clickTime string to DateTime object before formatting
@@ -824,11 +844,13 @@ if ($request->action == '28') {
 public function show($db, $table, $query)
 {
     // Retrieve table columns and their data types
-    $columns = DB::select("
-        SELECT COLUMN_NAME, DATA_TYPE
+    \App\Http\Controllers\API\DatabaseController::setDynamicConnection("webapp");
+    $dbDriver = DB::connection('dynamic')->getDriverName();
+    $columns = DB::connection('dynamic')->select("
+        SELECT COLUMN_NAME AS \"COLUMN_NAME\", DATA_TYPE AS \"DATA_TYPE\"
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-    ", ["webapp", "admins"]);
+    ", [dynamicSchemaName($dbDriver, "webapp"), "admins"]);
 
 
     return response()->json([
@@ -902,7 +924,7 @@ public function show($db, $table, $query)
   public function destroy($id)
   {
     if (request()->routeIs('actions.destroy'))
-      DB::statement('delete from paths where flag="' . $id . '"');
+      DB::statement("delete from paths where flag='" . $id . "'");
     else if(request()->routeIs('delete.scripts')) {
       $script = Script::find($id);
       $script->delete();
@@ -917,7 +939,12 @@ public function show($db, $table, $query)
 public function execQuery(Request $request)
 {
     try {
-        DB::statement('use webapp');
+        // Reuses the app's own default connection driver (MySQL locally
+        // supported the "use dbname" trick to hop between databases on one
+        // connection; Postgres can't do that at all), targeting the
+        // requested database directly instead.
+        \App\Http\Controllers\API\DatabaseController::setDynamicConnection($request->dbname ?? 'webapp');
+
         $queryCommands = explode('++', $request->queryCommand);
         $finalResult = [];
         $query = Query::firstOrCreate(['title' => $request->queryCommand]);
@@ -932,9 +959,7 @@ public function execQuery(Request $request)
               ]);
             }
 
-
-            DB::statement('use ' . $request->dbname);
-            $data = DB::select($queryCommand);
+            $data = DB::connection('dynamic')->select($queryCommand);
 
             // Clean the output to remove \r\n, \n, \t from ai_prompt
             $cleanedData = array_map(function ($row) {
@@ -1054,14 +1079,18 @@ public function execQuery(Request $request)
       }
   
       try {
+          \App\Http\Controllers\API\DatabaseController::setDynamicConnection($dbname);
+          $dbDriver = DB::connection('dynamic')->getDriverName();
+          $schemaName = dynamicSchemaName($dbDriver, $dbname);
+
           $tableNames = explode(',', $tablename); // Split the comma-separated table names
           $uniqueColumns = [];
-  
+
           foreach ($tableNames as $table) {
-              $columns = DB::select("SELECT COLUMN_NAME, DATA_TYPE 
-                                     FROM INFORMATION_SCHEMA.COLUMNS 
-                                     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?", [$dbname, trim($table)]);
-  
+              $columns = DB::connection('dynamic')->select("SELECT COLUMN_NAME AS \"COLUMN_NAME\", DATA_TYPE AS \"DATA_TYPE\"
+                                     FROM INFORMATION_SCHEMA.COLUMNS
+                                     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?", [$schemaName, trim($table)]);
+
               foreach ($columns as $column) {
                   // Add column name and data type if it's not already present
                   $uniqueColumns[$column->COLUMN_NAME] = $column->DATA_TYPE;

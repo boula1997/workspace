@@ -70,6 +70,8 @@ public function project()
                         continue;
                     }
 
+                    $employeesContainsSql = jsonArrayContainsIntSql('tasks.employees', 'admins.id');
+
                     $q->orWhere('title', 'like', "%$term%")
                       ->orWhereHas('project', function ($qp) use ($term) {
                           $qp->where('title', 'like', "%$term%");
@@ -77,7 +79,7 @@ public function project()
 ->orWhereRaw("EXISTS (
     SELECT 1
     FROM admins
-    WHERE JSON_CONTAINS(tasks.employees, CONCAT('[', admins.id, ']'))
+    WHERE $employeesContainsSql
     AND admins.name LIKE ?
 )", ["%$term%"]);
                 }
@@ -141,7 +143,7 @@ public function project()
         $query->where('isActive', 1);
 
         // --- Ordering ---
-        $query->orderByRaw('ISNULL(date), date ASC')
+        $query->orderByRaw('(date IS NULL), date ASC')
               ->orderBy('id', 'ASC');
 
         return $query;

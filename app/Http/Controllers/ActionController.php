@@ -85,23 +85,16 @@ class ActionController extends Controller
 
 
       $credential=DBCredential::where('db_name',isset($request->dbname)?$request->dbname:'yousabte_automation')->first();
+      $dbDriver = $credential->db_driver ?? 'mysql';
       $dbHost = isset($credential->db_host)?$credential->db_host:'localhost';
       $dbName = isset($credential->db_name)?$credential->db_name:'yousabte_automation';
       $dbUser = isset($credential->db_username)?$credential->db_username:'yousabte_automation';
       $dbPass = isset($credential->db_password)?$credential->db_password:'o$01Yqf{R;s6';
           // Temporarily configure the database connection
           config([
-            'database.connections.dynamic' => [
-                'driver' => 'mysql',
-                'host' => $dbHost,
-                'database' => $dbName,
-                'username' => $dbUser,
-                'password' => $dbPass,
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-            ],
+            'database.connections.dynamic' => buildDynamicConnectionConfig($dbDriver, $dbHost, $dbName, $dbUser, $dbPass),
         ]);
-  
+
             // Use the dynamic connection
       DB::purge('dynamic');
       DB::reconnect('dynamic');
@@ -198,14 +191,16 @@ class ActionController extends Controller
 
       if (isset($plural)) {
         $results = DB::connection('dynamic')->select("Select concat(path ,'*',replace(replace(replace(replace(path,'" . $request->name . 's' . "','" . $request->plural . "'),'" . ucfirst($request->name) . 's' . "','" . ucfirst($request->plural) . "'),'" . $request->name . "','" . $request->rname . "'),'" . ucfirst($request->name) . "','" . ucfirst($request->rname) . "')) as path from paths where flag='" . $request->selectFlag . "' and path like '%" . $request->name . "%" . $request->extension ."' or path like '%" . $request->name . "%" . $request->extension ."x". "';");
-        $resultsTranslation = DB::connection('dynamic')->select("select db, id, value,`key` from (select '" . $request->dbname . "' as db, ltm_translations.* from " . $request->dbname . ".ltm_translations where value IS NULL) as q;");
+        $keyIdent = quoteDynamicIdentifier($dbDriver, 'key');
+        $resultsTranslation = DB::connection('dynamic')->select("select db, id, value,$keyIdent from (select '" . $request->dbname . "' as db, ltm_translations.* from ltm_translations where value IS NULL) as q;");
         $dbname = $request->dbname;
         return view('welcome', compact('results', 'action', 'data', 'replaced', 'module', 'plural', 'rmodule','selectFlag','resultsTranslation','dbname'));
       } else {
         $results = DB::connection('dynamic')->select("Select concat(path ,'*',replace(replace(path,'" . $request->name . "','" . $request->rname . "'),'" . ucfirst($request->name) . "','" . ucfirst($request->rname) . "')) as path from paths where flag='" . $request->selectFlag . "' and path like '%" . $request->name . "%" . $request->extension ."' or path like '%" . $request->name . "%" . $request->extension ."x". "';");
 
 
-        $resultsTranslation = DB::connection('dynamic')->select("select db, id, value,`key` from (select '" . $request->dbname . "' as db, ltm_translations.* from " . $request->dbname . ".ltm_translations where value IS NULL) as q;");
+        $keyIdent = quoteDynamicIdentifier($dbDriver, 'key');
+        $resultsTranslation = DB::connection('dynamic')->select("select db, id, value,$keyIdent from (select '" . $request->dbname . "' as db, ltm_translations.* from ltm_translations where value IS NULL) as q;");
         $dbname = $request->dbname;
 
 
@@ -583,7 +578,7 @@ class ActionController extends Controller
 
     if ($request->action == '19') {
       $action = "flags manager";
-      $flags = DB::select("SELECT distinct flag as 'flag' from paths");
+      $flags = DB::select("SELECT distinct flag from paths");
 
       return view('welcome', compact('action', 'flags','flag'));
     }
@@ -591,9 +586,9 @@ class ActionController extends Controller
     if ($request->action == '21') {
       $action = "Get Stats";
       $currentMonth = Carbon::now()->month;
-      $data = Setting::whereRaw('MONTH(last_time) = ?', [$currentMonth])->latest()->get();
+      $data = Setting::whereMonth('last_time', $currentMonth)->latest()->get();
       $last = Setting::latest()->first();
-      $timeClicks = Time::whereRaw('MONTH(clickTime) = ?', [$currentMonth])->latest()->get();
+      $timeClicks = Time::whereMonth('clickTime', $currentMonth)->latest()->get();
       // Group clicks by day
       $clicksByDay = $timeClicks->groupBy(function ($click) {
         // Parse the clickTime string to DateTime object before formatting
@@ -841,21 +836,14 @@ public function execQuery(Request $request)
 {
     try {
         $credential = DBCredential::where('db_name', $request->dbname ?? 'yousabte_automation')->first();
+        $dbDriver = $credential->db_driver ?? 'mysql';
         $dbHost = isset($credential->db_host)?$credential->db_host:'localhost';
         $dbName = $credential->db_name ?? 'u112116784_workspace';
         $dbUser = $credential->db_username ?? 'u112116784_workspace';
         $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
 
         config([
-            'database.connections.dynamic' => [
-                'driver' => 'mysql',
-                'host' => $dbHost,
-                'database' => $dbName,
-                'username' => $dbUser,
-                'password' => $dbPass,
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-            ],
+            'database.connections.dynamic' => buildDynamicConnectionConfig($dbDriver, $dbHost, $dbName, $dbUser, $dbPass),
         ]);
 
         DB::purge('dynamic');
@@ -876,7 +864,11 @@ public function execQuery(Request $request)
             }
 
 
-            DB::connection('dynamic')->statement('use ' . $dbName);
+            // The connection is already scoped to $dbName; USE is MySQL-only
+            // syntax and invalid on Postgres.
+            if ($dbDriver === 'mysql') {
+                DB::connection('dynamic')->statement('use ' . $dbName);
+            }
             $data = DB::connection('dynamic')->select($queryCommand);
 
             $data = array_map(function ($row) {
@@ -926,34 +918,33 @@ public function show($db, $table, $query)
 {
     $credential = DBCredential::where('db_name', $db)->first();
 
+    $dbDriver = $credential->db_driver ?? 'mysql';
     $dbHost = isset($credential->db_host)?$credential->db_host:'localhost';
     $dbName = $credential->db_name ?? 'u112116784_workspace';
     $dbUser = $credential->db_username ?? 'u112116784_workspace';
     $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
 
     config([
-        'database.connections.dynamic' => [
-            'driver' => 'mysql',
-            'host' => $dbHost,
-            'database' => $dbName,
-            'username' => $dbUser,
-            'password' => $dbPass,
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-        ],
+        'database.connections.dynamic' => buildDynamicConnectionConfig($dbDriver, $dbHost, $dbName, $dbUser, $dbPass),
     ]);
 
     DB::purge('dynamic');
     DB::reconnect('dynamic');
-    DB::connection('dynamic')->statement('USE ' . $db);
+    // The connection is already scoped to $db; USE is MySQL-only syntax
+    // and invalid on Postgres.
+    if ($dbDriver === 'mysql') {
+        DB::connection('dynamic')->statement('USE ' . $db);
+    }
 
     $queryData = ($query !== "null" && $query !== "") ? DB::connection('dynamic')->select($query) : null;
 
+    $schemaName = dynamicSchemaName($dbDriver, $db);
+
     $columns = DB::connection('dynamic')->select("
-        SELECT COLUMN_NAME, DATA_TYPE
+        SELECT COLUMN_NAME AS \"COLUMN_NAME\", DATA_TYPE AS \"DATA_TYPE\"
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?;
-    ", [$db, $table]);
+    ", [$schemaName, $table]);
 
     $excludedColumns = ['created_at', 'updated_at', 'id'];
     $filteredColumns = collect($columns)->filter(function ($column) use ($excludedColumns) {
@@ -967,13 +958,16 @@ public function show($db, $table, $query)
 
     // Sort columns alphabetically
     $allColumnNames = collect($columns)->pluck('COLUMN_NAME')->sort()->values();
-    $orderedColumnList = $allColumnNames->map(fn($col) => "`$col`")->implode(', ');
+    $orderedColumnList = $allColumnNames->map(fn($col) => quoteDynamicIdentifier($dbDriver, $col))->implode(', ');
 
+    // The dynamic connection is already scoped to database $db, so the
+    // table doesn't need (and, on Postgres, can't have) a cross-database
+    // "$db.$table" qualifier.
     $data = DB::connection('dynamic')->select("
-        SELECT * 
+        SELECT *
         FROM (
-            SELECT '" . $db . "' AS db, $orderedColumnList 
-            FROM " . $db . "." . $table . "
+            SELECT '" . $db . "' AS db, $orderedColumnList
+            FROM " . $table . "
             ORDER BY updated_at DESC
             LIMIT 1000
         ) AS q;
@@ -1010,10 +1004,10 @@ public function show($db, $table, $query)
         }
 
         $singleRow = DB::connection('dynamic')->select("
-            SELECT * 
+            SELECT *
             FROM (
-                SELECT '" . $db . "' AS db, $orderedColumnList 
-                FROM " . $db . "." . $table . "
+                SELECT '" . $db . "' AS db, $orderedColumnList
+                FROM " . $table . "
                 WHERE id = " . $id . "
             ) AS q;
         ");
@@ -1024,12 +1018,12 @@ public function show($db, $table, $query)
             $updateParts = [];
             foreach ($row as $column => $value) {
                 if ($column !== 'db') {
-                    $updateParts[] = "`$column` = " . DB::getPdo()->quote($value);
+                    $updateParts[] = quoteDynamicIdentifier($dbDriver, $column) . " = " . DB::connection('dynamic')->getPdo()->quote($value);
                 }
             }
 
             $updateQuery = "
-                UPDATE " . $db . "." . $table . "
+                UPDATE " . $table . "
                 SET " . implode(', ', $updateParts) . "
                 WHERE id = " . $id . ";
             ";
@@ -1037,15 +1031,15 @@ public function show($db, $table, $query)
     }
 
     $totalCount = DB::connection('dynamic')->select("
-        SELECT COUNT(*) as count 
-        FROM " . $db . "." . $table . ";
+        SELECT COUNT(*) as count
+        FROM " . $table . ";
     ");
-    
+
     $count = $totalCount[0]->count;
 
     $latestUpdatedAt = DB::connection('dynamic')->select("
-        SELECT MAX(updated_at) as latest_updated_at 
-        FROM " . $db . "." . $table . ";
+        SELECT MAX(updated_at) as latest_updated_at
+        FROM " . $table . ";
     ");
     $latestUpdatedAt = $latestUpdatedAt[0]->latest_updated_at ?? null;
 

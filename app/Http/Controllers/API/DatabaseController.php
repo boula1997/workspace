@@ -43,37 +43,39 @@ class DatabaseController extends Controller
     public static function setDynamicConnection($dbname,$credentialId=null)
     {
         if (App::environment('local')) {
-            $dbHost = 'localhost';
-            $dbName = $dbname ?? 'webapp';
-            $dbUser = 'root';
-            $dbPass = '';
+            // Locally we don't have per-client credentials, so just reuse
+            // the app's own default connection (whichever driver DB_CONNECTION
+            // in .env points to) and swap only the database name.
+            $driver = config('database.default');
+            $base = config("database.connections.$driver");
+
+            config([
+                'database.connections.dynamic' => array_merge($base, [
+                    'url' => null,
+                    'database' => $dbname ?? 'webapp',
+                ]),
+            ]);
         } else {
             if(isset($credentialId)){
                 $credential = DBCredential::find($credentialId);
+                $dbDriver = $credential->db_driver ?? 'mysql';
                 $dbHost = $credential->db_host ?? 'localhost';
                 $dbName = $credential->db_name ?? 'u112116784_workspace';
                 $dbUser = $credential->db_username ?? 'u112116784_workspace';
                 $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
             }else{
                 //Here if outer system like erp and you copied code there
+                $dbDriver = 'mysql';
                 $dbHost =  'localhost';
                 $dbName =  'laravel';
                 $dbUser =  'root';
                 $dbPass =  '';
             }
-        }
 
-        config([
-            'database.connections.dynamic' => [
-                'driver' => 'mysql',
-                'host' => $dbHost,
-                'database' => $dbName,
-                'username' => $dbUser,
-                'password' => $dbPass,
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-            ],
-        ]);
+            config([
+                'database.connections.dynamic' => buildDynamicConnectionConfig($dbDriver, $dbHost, $dbName, $dbUser, $dbPass),
+            ]);
+        }
 
         DB::purge('dynamic');
         DB::reconnect('dynamic');
@@ -97,6 +99,7 @@ private function extractTableFromSelect(string $sql): ?string
             
             // Call the static method
             self::setDynamicConnection($request->database_name,$request->credential_id);
+            $dbDriver = DB::connection('dynamic')->getDriverName();
 
             $queryCommands = explode('++', $request->title);
             $finalResult = [];
@@ -116,7 +119,11 @@ private function extractTableFromSelect(string $sql): ?string
 
         foreach ($queryCommands as $queryCommand) {
 
-        DB::connection('dynamic')->statement('use ' . $request->database_name);
+        // The connection is already scoped to $request->database_name;
+        // USE is MySQL-only syntax and invalid on Postgres.
+        if ($dbDriver === 'mysql') {
+            DB::connection('dynamic')->statement('use ' . $request->database_name);
+        }
 
         $normalizedQuery = preg_replace(
             '/\s+/',
@@ -421,24 +428,27 @@ public function getDatabase($dbname, $namedb)
         // Call the static method
         self::setDynamicConnection($namedb, $dbname);
 
-        $tables = DB::connection('dynamic')->select("SHOW TABLES");
+        // This runs against whichever driver the 'dynamic' connection was
+        // configured with (see setDynamicConnection()) - MySQL for real
+        // client credentials, or the app's own default driver locally.
+        $driver = DB::connection('dynamic')->getDriverName();
+        $schemaName = $driver === 'pgsql'
+            ? (config('database.connections.dynamic.schema') ?? 'public')
+            : $namedb;
+
+        $tables = DB::connection('dynamic')->select(
+            'SELECT table_name AS "TABLE_NAME", table_type AS "TABLE_TYPE" FROM information_schema.tables WHERE table_schema = ? ORDER BY table_name',
+            [$schemaName]
+        );
         $results = [];
         $latestOverallDate = null;
-        
+
         // Array to store all ID columns and their tables
         $idColumns = [];
 
         foreach ($tables as $t) {
-            $tableName = array_values((array)$t)[0];
-
-            // Detect VIEW or BASE TABLE
-            $isView = DB::connection('dynamic')->selectOne("
-                    SELECT TABLE_TYPE 
-                    FROM information_schema.tables 
-                    WHERE table_schema = ? AND table_name = ?
-                ", [$namedb, $tableName]);
-
-            $tableType = $isView->TABLE_TYPE ?? 'BASE TABLE';
+            $tableName = $t->TABLE_NAME;
+            $tableType = $t->TABLE_TYPE ?? 'BASE TABLE';
 
             // Row count (skip views)
             if ($tableType === 'VIEW') {
@@ -449,7 +459,37 @@ public function getDatabase($dbname, $namedb)
 
             // Get columns - wrap in try-catch to handle invalid views
             try {
-                $columns = DB::connection('dynamic')->select("SHOW COLUMNS FROM `$tableName`");
+                if ($driver === 'pgsql') {
+                    $columns = DB::connection('dynamic')->select("
+                        SELECT
+                            column_name AS \"Field\",
+                            data_type || CASE
+                                WHEN character_maximum_length IS NOT NULL THEN '(' || character_maximum_length || ')'
+                                WHEN numeric_precision IS NOT NULL AND numeric_scale IS NOT NULL THEN '(' || numeric_precision || ',' || numeric_scale || ')'
+                                ELSE ''
+                            END AS \"Type\",
+                            is_nullable AS \"Null\",
+                            '' AS \"Key\",
+                            column_default AS \"Default\",
+                            '' AS \"Extra\"
+                        FROM information_schema.columns
+                        WHERE table_schema = ? AND table_name = ?
+                        ORDER BY ordinal_position
+                    ", [$schemaName, $tableName]);
+                } else {
+                    $columns = DB::connection('dynamic')->select("
+                        SELECT
+                            column_name AS `Field`,
+                            column_type AS `Type`,
+                            is_nullable AS `Null`,
+                            column_key AS `Key`,
+                            column_default AS `Default`,
+                            extra AS `Extra`
+                        FROM information_schema.columns
+                        WHERE table_schema = ? AND table_name = ?
+                        ORDER BY ordinal_position
+                    ", [$schemaName, $tableName]);
+                }
             } catch (\Exception $colException) {
                 // Skip invalid views that reference non-existent tables/columns or lack permissions
                 if ($tableType === 'VIEW') {
@@ -460,17 +500,37 @@ public function getDatabase($dbname, $namedb)
             }
 
             // Get actual foreign key information for this table
-            $foreignKeys = DB::connection('dynamic')->select("
-                SELECT 
-                    COLUMN_NAME,
-                    REFERENCED_TABLE_NAME,
-                    REFERENCED_COLUMN_NAME
-                FROM information_schema.KEY_COLUMN_USAGE 
-                WHERE 
-                    TABLE_SCHEMA = ? 
-                    AND TABLE_NAME = ? 
-                    AND REFERENCED_TABLE_NAME IS NOT NULL
-            ", [$namedb, $tableName]);
+            if ($driver === 'pgsql') {
+                // Postgres' key_column_usage doesn't carry the referenced
+                // table/column (that's a MySQL-only extension), so join
+                // through constraint_column_usage to get it.
+                $foreignKeys = DB::connection('dynamic')->select("
+                    SELECT
+                        kcu.column_name AS \"COLUMN_NAME\",
+                        ccu.table_name AS \"REFERENCED_TABLE_NAME\",
+                        ccu.column_name AS \"REFERENCED_COLUMN_NAME\"
+                    FROM information_schema.table_constraints tc
+                    JOIN information_schema.key_column_usage kcu
+                        ON tc.constraint_name = kcu.constraint_name AND tc.table_schema = kcu.table_schema
+                    JOIN information_schema.constraint_column_usage ccu
+                        ON tc.constraint_name = ccu.constraint_name AND tc.table_schema = ccu.table_schema
+                    WHERE tc.constraint_type = 'FOREIGN KEY'
+                        AND tc.table_schema = ?
+                        AND tc.table_name = ?
+                ", [$schemaName, $tableName]);
+            } else {
+                $foreignKeys = DB::connection('dynamic')->select("
+                    SELECT
+                        COLUMN_NAME,
+                        REFERENCED_TABLE_NAME,
+                        REFERENCED_COLUMN_NAME
+                    FROM information_schema.KEY_COLUMN_USAGE
+                    WHERE
+                        TABLE_SCHEMA = ?
+                        AND TABLE_NAME = ?
+                        AND REFERENCED_TABLE_NAME IS NOT NULL
+                ", [$schemaName, $tableName]);
+            }
 
             // Create a lookup array for quick access
             $fkLookup = [];
@@ -495,13 +555,18 @@ public function getDatabase($dbname, $namedb)
                 }
             }
 
-            // Detect timestamp columns
+            // Detect timestamp columns - must actually be a date/time typed
+            // column, since some tables (e.g. Laravel's queue `jobs` table)
+            // name an integer Unix-timestamp column `created_at`, which
+            // can't be fed into whereBetween() alongside Carbon dates.
             $hasCreatedAt = false;
             $hasUpdatedAt = false;
 
+            $isTemporalType = fn ($type) => stripos($type, 'time') !== false || stripos($type, 'date') !== false;
+
             foreach ($columns as $c) {
-                if ($c->Field === 'created_at') $hasCreatedAt = true;
-                if ($c->Field === 'updated_at') $hasUpdatedAt = true;
+                if ($c->Field === 'created_at' && $isTemporalType($c->Type)) $hasCreatedAt = true;
+                if ($c->Field === 'updated_at' && $isTemporalType($c->Type)) $hasUpdatedAt = true;
             }
 
             // Defaults
