@@ -65,31 +65,6 @@ public function countOccurrences(Request $request)
     $results    = [];
     $totalCount = 0;
 
-    // --- Single forward pass over the file to figure out, for every line,
-    //     which table it "belongs to". This is what lets us later answer
-    //     "which tables was this keyword found in, and how many times".
-    //     It understands both mysqldump/phpMyAdmin exports and pg_dump exports. ---
-    $lineTableMap = [];
-    $currentTable = null;
-    $dbType       = null;
-
-    foreach ($lines as $idx => $lineText) {
-        if ($dbType === null && $idx < 40) {
-            if (stripos($lineText, 'MySQL dump') !== false || stripos($lineText, 'phpMyAdmin SQL Dump') !== false) {
-                $dbType = 'mysql';
-            } elseif (stripos($lineText, 'PostgreSQL database dump') !== false || stripos($lineText, 'pg_dump') !== false) {
-                $dbType = 'postgres';
-            }
-        }
-
-        $detected = $this->detectTableName($lineText);
-        if ($detected !== null) {
-            $currentTable = $detected;
-        }
-
-        $lineTableMap[$idx] = $currentTable;
-    }
-
     foreach ($validated['terms'] as $term) {
         $search        = $term['text'];
         $mode          = $term['mode'];
@@ -110,26 +85,17 @@ public function countOccurrences(Request $request)
         // Collect every entry unique by (table clause, matched token) — no cap
         $matchedLines = [];
         $seen         = [];
-
-        // Tally of occurrences per table for THIS term (every match counts,
-        // independent of the dedup applied to matchedLines below).
-        $tableCounts = [];
-
         foreach ($lines as $lineIndex => $lineText) {
             if (!preg_match_all($pattern, $lineText, $m, PREG_OFFSET_CAPTURE)) {
                 continue;
             }
 
-            $truncated    = $this->truncateToTableName($lineText);
-            $tableForLine = $lineTableMap[$lineIndex]; // null if outside any recognized table section
+            $truncated = $this->truncateToTableName($lineText);
 
             foreach ($m[0] as $match) {
                 $offset      = $match[1];
                 $matchLength = strlen($match[0]);
                 $matchedText = $this->expandToFullToken($lineText, $offset, $matchLength);
-
-                $tableBucket = $tableForLine ?? '(outside table section)';
-                $tableCounts[$tableBucket] = ($tableCounts[$tableBucket] ?? 0) + 1;
 
                 $tableKey = $caseSensitive ? $truncated : mb_strtolower($truncated);
                 $tokenKey = $caseSensitive ? $matchedText : mb_strtolower($matchedText);
@@ -143,16 +109,8 @@ public function countOccurrences(Request $request)
                 $matchedLines[] = [
                     'line'    => $lineIndex + 1,
                     'content' => $truncated . '  ' . $matchedText,
-                    'table'   => $tableForLine,
                 ];
             }
-        }
-
-        // Sort tables by occurrence count, descending
-        arsort($tableCounts);
-        $tablesOut = [];
-        foreach ($tableCounts as $table => $tableCount) {
-            $tablesOut[] = ['table' => $table, 'count' => $tableCount];
         }
 
         $results[] = [
@@ -161,15 +119,12 @@ public function countOccurrences(Request $request)
             'case_sensitive' => $caseSensitive,
             'count'          => $count,
             'matched_lines'  => $matchedLines,
-            'tables'         => $tablesOut,
-            'table_count'    => count($tablesOut),
         ];
         $totalCount += $count;
     }
 
     return response()->json([
         'path'        => $path,
-        'db_type'     => $dbType ?? 'unknown',
         'results'     => $results,
         'total_count' => $totalCount,
     ]);
@@ -210,58 +165,6 @@ private function truncateToTableName(string $lineText): string
     }
 
     return $line;
-}
-
-/**
- * Extracts just the bare table name from a line, if the line is one of the
- * SQL statement types that names a table (works for both mysqldump/phpMyAdmin
- * style exports and pg_dump style exports). Returns null if no table name is
- * found on this line.
- *
- * This is used two ways:
- *  1. As the "current section" tracker — CREATE TABLE / DROP TABLE /
- *     INSERT INTO / COPY ... FROM stdin / etc. mark the start of a table's
- *     section, so subsequent lines (e.g. raw COPY data rows, which don't
- *     repeat the table name) are still correctly attributed to that table.
- *  2. As a direct, same-line table name whenever a line itself contains one
- *     of these clauses (most precise case).
- */
-private function detectTableName(string $lineText): ?string
-{
-    $line = trim($lineText);
-
-    // Table name: optional schema prefix (Postgres), optional backticks/quotes.
-    $schemaAndTable = '(?:[A-Za-z0-9_]+\.)?`?"?([A-Za-z0-9_]+)`?"?';
-
-    $patterns = [
-        // --- MySQL / phpMyAdmin dump section markers ---
-        '/^--\s*Table structure for table\s+`?"?([A-Za-z0-9_]+)`?"?/i',
-        '/^--\s*Dumping data for table\s+`?"?([A-Za-z0-9_]+)`?"?/i',
-
-        // --- PostgreSQL / pg_dump section markers ---
-        '/^--\s*Name:\s*([A-Za-z0-9_]+);\s*Type:\s*TABLE/i',
-        '/^COPY\s+' . $schemaAndTable . '\s*\(/i',
-
-        // --- Statement-level table references (either dialect) ---
-        '/^(?:CREATE\s+TABLE\s+IF\s+NOT\s+EXISTS|CREATE\s+TABLE)\s+' . $schemaAndTable . '/i',
-        '/^DROP\s+TABLE(?:\s+IF\s+EXISTS)?\s+' . $schemaAndTable . '/i',
-        '/^(?:INSERT\s+INTO|REPLACE\s+INTO)\s+' . $schemaAndTable . '/i',
-        '/^ALTER\s+TABLE(?:\s+ONLY)?\s+' . $schemaAndTable . '/i',
-        '/^(?:TRUNCATE\s+TABLE|TRUNCATE)\s+' . $schemaAndTable . '/i',
-        '/^DELETE\s+FROM\s+' . $schemaAndTable . '/i',
-        '/^UPDATE\s+' . $schemaAndTable . '/i',
-
-        // --- Generic fallback: any "FROM x" (e.g. SELECT ... FROM) ---
-        '/\bFROM\s+' . $schemaAndTable . '/i',
-    ];
-
-    foreach ($patterns as $pattern) {
-        if (preg_match($pattern, $line, $m)) {
-            return $m[1];
-        }
-    }
-
-    return null;
 }
 
 /**
