@@ -148,10 +148,16 @@ public function countOccurrences(Request $request)
                 }
                 $seen[$key] = true;
 
+                // Display label: bare table name when we know it (e.g. "cities"),
+                // otherwise fall back to the same-line clause text so it still
+                // shows something meaningful (e.g. "SELECT ... FROM x").
+                $tableLabel = $tableForLine ?? ($truncated !== '' ? $truncated : '(unknown)');
+
                 $matchedLines[] = [
                     'line'    => $lineIndex + 1,
-                    'content' => $truncated . '  ' . $matchedText,
+                    'content' => $tableLabel . '->' . $matchedText,
                     'table'   => $tableForLine,
+                    'matched_word' => $matchedText,
                 ];
             }
         }
