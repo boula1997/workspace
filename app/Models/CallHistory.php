@@ -13,6 +13,6 @@ class CallHistory extends Model
 
     public function phoneGig()
     {
-        return $this->belongsTo(PhoneGig::class);
+        return $this->belongsTo(phoneGig::class);
     }
 }
