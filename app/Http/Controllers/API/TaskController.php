@@ -1336,7 +1336,7 @@ public function addPhoneGig(Request $request)
         ], 422);
     }
 
-    $phoneGig = PhoneGig::create([
+    $phoneGig = phoneGig::create([
         'phone'       => $request->phone,
         'description' => $request->description ?? '',
         'type'        => $request->type,
@@ -1377,7 +1377,7 @@ public function getAllPhoneGigs(Request $request)
 {
     $perPage = $request->get('per_page', 15);
 
-    $phoneGigs = PhoneGig::select('phone_gigs.*')
+    $phoneGigs = phoneGig::select('phone_gigs.*')
         ->leftJoin(
             DB::raw('(SELECT phone_gig_id, MAX(created_at) as last_called_at FROM call_histories GROUP BY phone_gig_id) as ch'),
             'phone_gigs.id', '=', 'ch.phone_gig_id'
