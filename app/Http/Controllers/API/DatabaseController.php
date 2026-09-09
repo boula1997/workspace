@@ -800,33 +800,43 @@ public function getQueries($id = null)
  */
 public function storeDifference(Request $request)
 {
-    DB::beginTransaction();
+    $validated = $request->validate([
+        'credential_id'  => 'required|exists:d_b_credentials,id',
+        'diff_text'      => 'required|string',
+        'last_snapshot'  => 'required',
+    ]);
 
     try {
-        $difference = Difference::create([
-            'd_b_credential_id' => $request->credential_id,
-            'diff_db' => $request->diff_text,
-        ]);
+        $difference = DB::transaction(function () use ($validated) {
+            $difference = Difference::create([
+                'd_b_credential_id' => $validated['credential_id'],
+                'diff_db'           => $validated['diff_text'],
+            ]);
 
-        
-        DBCredential::where('id', $request->credential_id)->update([
-            'last_snapshot' => $request->last_snapshot,
-        ]);
+            if (!$difference || !$difference->exists) {
+                throw new \RuntimeException('Failed to create difference record.');
+            }
 
-        DB::commit();
+            $updated = DBCredential::where('id', $validated['credential_id'])
+                ->update(['last_snapshot' => $validated['last_snapshot']]);
+
+            if (!$updated) {
+                throw new \RuntimeException('Failed to update last_snapshot.');
+            }
+
+            return $difference;
+        });
 
         return response()->json([
             'success' => true,
             'message' => 'Difference saved successfully',
-            'data' => $difference,
+            'data'    => $difference,
         ]);
-    } catch (\Exception $e) {
-        DB::rollBack();
-
+    } catch (\Throwable $e) {
         return response()->json([
             'success' => false,
-            'error' => $e->getMessage(),
-        ]);
+            'error'   => $e->getMessage(),
+        ], 500);
     }
 }
 
