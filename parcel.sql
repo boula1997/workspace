@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict RpqMXEMQeaVlVSfydeRxXijPyvpqW4urAB4avi6lUWtAnHrrLaWqF8eoTVSrVMc
+\restrict g2Yh7VVxv84psXDsgQ0KIPzqZcpADHaNL7pfy9LdDUlPKp0W4TgPX4nVTDQhNXf
 
 -- Dumped from database version 18.6
 -- Dumped by pg_dump version 18.6
@@ -1268,6 +1268,8 @@ ALTER TABLE IF EXISTS ONLY sandbox.shipment_finances DROP CONSTRAINT IF EXISTS s
 ALTER TABLE IF EXISTS ONLY sandbox.shipment_fee_allocations DROP CONSTRAINT IF EXISTS shipment_fee_allocations_shipment_tracking_no_unique;
 ALTER TABLE IF EXISTS ONLY sandbox.shipment_fee_allocations DROP CONSTRAINT IF EXISTS shipment_fee_allocations_pkey;
 ALTER TABLE IF EXISTS ONLY sandbox.shipment_fee_allocation_others DROP CONSTRAINT IF EXISTS shipment_fee_allocation_others_pkey;
+ALTER TABLE IF EXISTS ONLY sandbox.shipment_exception_submissions DROP CONSTRAINT IF EXISTS shipment_exception_submissions_pkey;
+ALTER TABLE IF EXISTS ONLY sandbox.shipment_exception_submissions DROP CONSTRAINT IF EXISTS shipment_exception_submissions_key_unique;
 ALTER TABLE IF EXISTS ONLY sandbox.shipment_delivery_partner_assignments DROP CONSTRAINT IF EXISTS shipment_delivery_partner_assignments_shipment_id_unique;
 ALTER TABLE IF EXISTS ONLY sandbox.shipment_delivery_partner_assignments DROP CONSTRAINT IF EXISTS shipment_delivery_partner_assignments_pkey;
 ALTER TABLE IF EXISTS ONLY sandbox.shipment_deliveries DROP CONSTRAINT IF EXISTS shipment_deliveries_pkey;
@@ -1603,6 +1605,8 @@ ALTER TABLE IF EXISTS ONLY public.shipment_finances DROP CONSTRAINT IF EXISTS sh
 ALTER TABLE IF EXISTS ONLY public.shipment_fee_allocations DROP CONSTRAINT IF EXISTS shipment_fee_allocations_shipment_tracking_no_unique;
 ALTER TABLE IF EXISTS ONLY public.shipment_fee_allocations DROP CONSTRAINT IF EXISTS shipment_fee_allocations_pkey;
 ALTER TABLE IF EXISTS ONLY public.shipment_fee_allocation_others DROP CONSTRAINT IF EXISTS shipment_fee_allocation_others_pkey;
+ALTER TABLE IF EXISTS ONLY public.shipment_exception_submissions DROP CONSTRAINT IF EXISTS shipment_exception_submissions_pkey;
+ALTER TABLE IF EXISTS ONLY public.shipment_exception_submissions DROP CONSTRAINT IF EXISTS shipment_exception_submissions_key_unique;
 ALTER TABLE IF EXISTS ONLY public.shipment_delivery_partner_assignments DROP CONSTRAINT IF EXISTS shipment_delivery_partner_assignments_shipment_id_unique;
 ALTER TABLE IF EXISTS ONLY public.shipment_delivery_partner_assignments DROP CONSTRAINT IF EXISTS shipment_delivery_partner_assignments_pkey;
 ALTER TABLE IF EXISTS ONLY public.shipment_deliveries DROP CONSTRAINT IF EXISTS shipment_deliveries_pkey;
@@ -1992,6 +1996,7 @@ ALTER TABLE IF EXISTS sandbox.shipment_fines ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS sandbox.shipment_finances ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS sandbox.shipment_fee_allocations ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS sandbox.shipment_fee_allocation_others ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS sandbox.shipment_exception_submissions ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS sandbox.shipment_delivery_partner_assignments ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS sandbox.shipment_deliveries ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS sandbox.shipment_amounts ALTER COLUMN id DROP DEFAULT;
@@ -2220,6 +2225,7 @@ ALTER TABLE IF EXISTS public.shipment_fines ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.shipment_finances ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.shipment_fee_allocations ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.shipment_fee_allocation_others ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.shipment_exception_submissions ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.shipment_delivery_partner_assignments ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.shipment_deliveries ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.shipment_cs_timeline ALTER COLUMN id DROP DEFAULT;
@@ -2566,6 +2572,8 @@ DROP SEQUENCE IF EXISTS sandbox.shipment_fee_allocations_id_seq;
 DROP TABLE IF EXISTS sandbox.shipment_fee_allocations;
 DROP SEQUENCE IF EXISTS sandbox.shipment_fee_allocation_others_id_seq;
 DROP TABLE IF EXISTS sandbox.shipment_fee_allocation_others;
+DROP SEQUENCE IF EXISTS sandbox.shipment_exception_submissions_id_seq;
+DROP TABLE IF EXISTS sandbox.shipment_exception_submissions;
 DROP SEQUENCE IF EXISTS sandbox.shipment_delivery_partner_assignments_id_seq;
 DROP TABLE IF EXISTS sandbox.shipment_delivery_partner_assignments;
 DROP SEQUENCE IF EXISTS sandbox.shipment_deliveries_id_seq;
@@ -3111,6 +3119,8 @@ DROP SEQUENCE IF EXISTS public.shipment_fee_allocations_id_seq;
 DROP TABLE IF EXISTS public.shipment_fee_allocations;
 DROP SEQUENCE IF EXISTS public.shipment_fee_allocation_others_id_seq;
 DROP TABLE IF EXISTS public.shipment_fee_allocation_others;
+DROP SEQUENCE IF EXISTS public.shipment_exception_submissions_id_seq;
+DROP TABLE IF EXISTS public.shipment_exception_submissions;
 DROP SEQUENCE IF EXISTS public.shipment_delivery_partner_assignments_id_seq;
 DROP TABLE IF EXISTS public.shipment_delivery_partner_assignments;
 DROP SEQUENCE IF EXISTS public.shipment_deliveries_id_seq;
@@ -14339,6 +14349,7 @@ CREATE TABLE public.shipment_deliveries (
     updated_at timestamp(0) without time zone,
     delivery_confirm_token_hash character varying(64),
     delivery_confirm_token_expires_at timestamp(0) without time zone,
+    idempotency_key character varying(64),
     CONSTRAINT shipment_deliveries_deliver_later_reason_check CHECK (((deliver_later_reason)::text = 'DELIVER_LATER_TODAY'::text))
 );
 
@@ -14410,6 +14421,43 @@ ALTER SEQUENCE public.shipment_delivery_partner_assignments_id_seq OWNER TO post
 --
 
 ALTER SEQUENCE public.shipment_delivery_partner_assignments_id_seq OWNED BY public.shipment_delivery_partner_assignments.id;
+
+
+--
+-- Name: shipment_exception_submissions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.shipment_exception_submissions (
+    id bigint NOT NULL,
+    shipment_id bigint NOT NULL,
+    idempotency_key character varying(64) NOT NULL,
+    delivery_exception character varying(50) NOT NULL,
+    user_id bigint,
+    created_at timestamp(0) without time zone
+);
+
+
+ALTER TABLE public.shipment_exception_submissions OWNER TO postgres;
+
+--
+-- Name: shipment_exception_submissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.shipment_exception_submissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.shipment_exception_submissions_id_seq OWNER TO postgres;
+
+--
+-- Name: shipment_exception_submissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.shipment_exception_submissions_id_seq OWNED BY public.shipment_exception_submissions.id;
 
 
 --
@@ -26499,6 +26547,7 @@ CREATE TABLE sandbox.shipment_deliveries (
     updated_at timestamp(0) without time zone,
     delivery_confirm_token_hash character varying(64),
     delivery_confirm_token_expires_at timestamp(0) without time zone,
+    idempotency_key character varying(64),
     CONSTRAINT shipment_deliveries_deliver_later_reason_check CHECK (((deliver_later_reason)::text = 'DELIVER_LATER_TODAY'::text))
 );
 
@@ -26570,6 +26619,43 @@ ALTER SEQUENCE sandbox.shipment_delivery_partner_assignments_id_seq OWNER TO pos
 --
 
 ALTER SEQUENCE sandbox.shipment_delivery_partner_assignments_id_seq OWNED BY sandbox.shipment_delivery_partner_assignments.id;
+
+
+--
+-- Name: shipment_exception_submissions; Type: TABLE; Schema: sandbox; Owner: postgres
+--
+
+CREATE TABLE sandbox.shipment_exception_submissions (
+    id bigint NOT NULL,
+    shipment_id bigint NOT NULL,
+    idempotency_key character varying(64) NOT NULL,
+    delivery_exception character varying(50) NOT NULL,
+    user_id bigint,
+    created_at timestamp(0) without time zone
+);
+
+
+ALTER TABLE sandbox.shipment_exception_submissions OWNER TO postgres;
+
+--
+-- Name: shipment_exception_submissions_id_seq; Type: SEQUENCE; Schema: sandbox; Owner: postgres
+--
+
+CREATE SEQUENCE sandbox.shipment_exception_submissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE sandbox.shipment_exception_submissions_id_seq OWNER TO postgres;
+
+--
+-- Name: shipment_exception_submissions_id_seq; Type: SEQUENCE OWNED BY; Schema: sandbox; Owner: postgres
+--
+
+ALTER SEQUENCE sandbox.shipment_exception_submissions_id_seq OWNED BY sandbox.shipment_exception_submissions.id;
 
 
 --
@@ -30806,6 +30892,13 @@ ALTER TABLE ONLY public.shipment_delivery_partner_assignments ALTER COLUMN id SE
 
 
 --
+-- Name: shipment_exception_submissions id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.shipment_exception_submissions ALTER COLUMN id SET DEFAULT nextval('public.shipment_exception_submissions_id_seq'::regclass);
+
+
+--
 -- Name: shipment_fee_allocation_others id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -32402,6 +32495,13 @@ ALTER TABLE ONLY sandbox.shipment_delivery_partner_assignments ALTER COLUMN id S
 
 
 --
+-- Name: shipment_exception_submissions id; Type: DEFAULT; Schema: sandbox; Owner: postgres
+--
+
+ALTER TABLE ONLY sandbox.shipment_exception_submissions ALTER COLUMN id SET DEFAULT nextval('sandbox.shipment_exception_submissions_id_seq'::regclass);
+
+
+--
 -- Name: shipment_fee_allocation_others id; Type: DEFAULT; Schema: sandbox; Owner: postgres
 --
 
@@ -32765,8 +32865,9 @@ COPY public.accounts (id, accountable_type, accountable_id, parcel_value, cash_b
 6	App\\Models\\User	4	10.00	0.00	0.00	2026-09-05 06:55:35	2026-09-05 07:35:35
 7	App\\Models\\User	6	50.00	10.00	0.00	2026-09-09 14:09:54	2026-09-10 09:30:20
 5	App\\Models\\User	2	108.00	0.00	0.00	2026-09-05 06:45:12	2026-09-10 14:50:05
-1	App\\Models\\Hub	1	-110.00	0.00	0.00	2026-09-04 17:20:20	2026-09-10 16:05:23
-8	App\\Models\\User	7	30.00	10.00	0.00	2026-09-10 14:44:01	2026-09-10 16:05:23
+8	App\\Models\\User	7	39.00	10.00	0.00	2026-09-10 14:44:01	2026-09-12 09:46:03
+1	App\\Models\\Hub	1	-120.00	0.00	0.00	2026-09-04 17:20:20	2026-09-12 09:50:05
+9	App\\Models\\User	8	10.00	0.00	0.00	2026-09-12 09:49:19	2026-09-12 09:50:05
 \.
 
 
@@ -32794,6 +32895,7 @@ COPY public.address_update_links (id, shipment_id, consignee_id, token, token_ex
 9	24	1	$2y$12$NSbMSKCPaLeVq1c9NcBNx.sy2pZh.9tsocegLkMJbT4MP9Hf3vo8e	2026-09-11 14:47:20	$2y$12$WSQHJexP0rjnY5cPorIGnuYOKqGgRxLp9ljVPHtGGzqtNhE54g4jC	2026-09-10 15:02:20	\N	http://localhost/update-address/PE100926841162/MeyrVavyD4xcnwdavFj1UwNXLTqGQgA5ICwIHMcb	2026-09-10 14:47:21	2026-09-10 14:47:21
 10	25	1	$2y$12$Tg/gSw/XshpacPvDHUpB6eFk.oq1nPbUG9RBbZtwBW2ChqQW1rNiC	2026-09-11 14:52:54	$2y$12$hBh7if810lqBZ9Cz0aOVQ.zqZs/ELZd1oCzpwloVA0pIM4bSHRwl6	2026-09-10 15:07:53	\N	http://localhost/update-address/PE100926006565/H7lzkKTh6EvsEeEriZAk7oZ6LlhrqD9hRtPSQsK0	2026-09-10 14:52:54	2026-09-10 14:52:54
 11	27	2	$2y$12$lg2pFMrb/CHzWdyMU7rRq.ILsRnv3/jzAQNUXhZJVCe99S.GH/dTm	2026-09-11 16:05:45	$2y$12$MY7fVknzLvHVyOTcg9RY1.bDSyXR46p.DhJ9OgTyXsxPevDrgxHBy	2026-09-10 16:20:45	\N	http://localhost/update-address/PE100926238825/Ux9sNbNpdiL10ki9qQCghbQj9djRczKecRN7V8dq	2026-09-10 15:28:35	2026-09-10 16:05:46
+12	28	1	$2y$12$CIhFFyaEd6zgIDQBxfLine7T/G74jPpuPLxICnPWUVuR6cRoJeox2	2026-09-13 09:51:46	$2y$12$Nqsc23cSwcEFnCFSppl.mel55ZQxCEAsDuLxDP/oixXjBCY81HF.K	2026-09-12 10:06:45	\N	http://localhost/update-address/PE120926111802/L29QmYmwET8Kz42T7W0qDZVal7tRPKuQejMzNNgK	2026-09-12 09:51:46	2026-09-12 09:51:46
 \.
 
 
@@ -33143,6 +33245,18 @@ COPY public.audit_events (id, trace_id, batch_id, idempotency_key, actor_type, u
 260	1643f6de-47bb-448f-9f2f-910304095677	\N	2598c75270f785162a3ef18582be332f6e9088bf	user	7	Driver	driver5 (Driver)	api.api.v1.shipments.confirm_assign_shipment	shipment	1	POST api/v1/shipments/confirm-assign-shipment → 200	\N	\N	\N	\N	\N	{"method":"POST","route":"api\\/v1\\/shipments\\/confirm-assign-shipment","route_name":"unknown","controller":"ShipmentController@confirmAssignShipment","status":200,"body_keys":["tracking_no"]}	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-10 16:05:50	\N	completed	\N
 263	a08c2e26-f1b0-4973-ad4e-1f4d484a6492	\N	cf4827c5d7fc3005628152682365db245daa0586	user	3	Sorter	Boula Nessim (Sorter)	api.api.v1.sorter.login	warehouse	1	POST api/v1/sorter/login → 200	\N	\N	\N	\N	\N	{"method":"POST","route":"api\\/v1\\/sorter\\/login","route_name":"unknown","controller":"Closure","status":200,"body_keys":["email","workspace","tz","login"]}	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-10 16:17:54	\N	completed	\N
 264	9265362f-5a27-4181-a57e-27b069c14a9b	\N	d911474bbf008cf4c59b0a59c3488d49dc06c56c	user	3	Sorter	Boula Nessim (Sorter)	api.api.v1.sorter.sort_ofd	warehouse	1	POST api/v1/sorter/sort_ofd → 200	\N	\N	\N	\N	\N	{"method":"POST","route":"api\\/v1\\/sorter\\/sort_ofd","route_name":"sort_ofd","controller":"SorterController@sort_ofd","status":200,"body_keys":["tracking_no"]}	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-10 16:18:09	\N	completed	\N
+265	f4cf112a-a6e6-4fa7-b47b-c3d7b421001c	\N	7552bd0b7ff0782d6c4837952b881c13bbbacdac	user	1	Super Admin	admin (Super Admin)	auth.login	auth	2	admin logged in	user	1	admin	\N	\N	{"workspace":"Muscat Hub"}	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-12 09:44:25	\N	completed	\N
+266	4b08f42a-232f-4f8b-8f2f-a86fca479b14	\N	81793d405ba24284374e6ae75a078f93c077fd12	user	1	Super Admin	admin (Super Admin)	api.api.v1.shipments.store	shipment	1	POST api/v1/shipments/store → 200	\N	\N	\N	\N	\N	{"method":"POST","route":"api\\/v1\\/shipments\\/store","route_name":"unknown","controller":"ShipmentController@store","status":200,"body_keys":["name","email","cellphone","alternatePhone","district","country_id","governorate_id","state_id","place_id","city_id","zipcode","streetAddress","identify","taxNumber","longitude","latitude","shipper_id","notes","payment_type","value","delivery_fee","merchant_id","shipper_partner_id","pre_id"]}	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-12 09:46:05	\N	completed	\N
+267	41c9c8ba-d686-4938-adff-e97ac31fed5f	\N	6f9ead5cd94b8f1dcac4bf68df2d59f61bbea168	user	3	Sorter	Boula Nessim (Sorter)	api.api.v1.sorter.login	warehouse	1	POST api/v1/sorter/login → 200	\N	\N	\N	\N	\N	{"method":"POST","route":"api\\/v1\\/sorter\\/login","route_name":"unknown","controller":"Closure","status":200,"body_keys":["email","workspace","tz","login"]}	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-12 09:47:04	\N	completed	\N
+268	cecb6874-45c4-4cfa-b0ff-f3c01e5064d8	\N	265cbb277dcbf991d5fe03e3764519af4c4b5cf8	user	3	Sorter	Boula Nessim (Sorter)	warehouse.inbound_sorted	warehouse	2	Inbound sort: PE120926111802 → MOVE_TO_DISPATCH (Musact Zone)	shipment	28	PE120926111802	\N	{"status":"SORT"}	\N	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-12 09:47:20	\N	completed	\N
+269	cecb6874-45c4-4cfa-b0ff-f3c01e5064d8	\N	194a0f98650a7bb5576c38a9c15788bd314a0f97	user	3	Sorter	Boula Nessim (Sorter)	api.api.v1.sorter.inbound_sort	warehouse	1	POST api/v1/sorter/inbound_sort → 200	\N	\N	\N	\N	\N	{"method":"POST","route":"api\\/v1\\/sorter\\/inbound_sort","route_name":"inbound_sort","controller":"SorterController@inbound_sort","status":200,"body_keys":["tracking_no"]}	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-12 09:47:20	\N	completed	\N
+270	a77f5ce2-7ced-4903-8c00-471eb7d6b56f	\N	34be0d8f910e6062286d13f2d3849194bee771bf	user	1	Super Admin	admin (Super Admin)	auth.login	auth	2	admin logged in	user	1	admin	\N	\N	{"workspace":"Muscat Hub"}	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-12 09:48:36	\N	completed	\N
+271	03003492-d73b-485b-801c-8bd651a8b0d7	\N	315fe0ad30a4804d9b0604d70369b338edc4abf9	user	1	Super Admin	admin (Super Admin)	api.api.v1.users.store_driver	user_management	1	POST api/v1/users/store_driver → 200	\N	\N	\N	\N	{"name":"driver1","username":"driver7796","company_id":"1","phone":"+201205034446","license":"***REDACTED***","facility_id":"1","facility_type":"App\\\\Models\\\\Hub","id_card_number":"2210654"}	{"method":"POST","route":"api\\/v1\\/users\\/store_driver","route_name":"unknown","controller":"UserController@store_driver","status":200,"body_keys":["name","username","company_id","phone","license","facility_id","facility_type","id_card_number"]}	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-12 09:49:20	\N	completed	\N
+272	28d4b7de-d6b5-4874-b05b-2ee12f6ce2c9	\N	aeeadc12d153d17a65ab46fd6a4584d6b4222c8b	user	3	Sorter	Boula Nessim (Sorter)	api.api.v1.sorter.login	warehouse	1	POST api/v1/sorter/login → 200	\N	\N	\N	\N	\N	{"method":"POST","route":"api\\/v1\\/sorter\\/login","route_name":"unknown","controller":"Closure","status":200,"body_keys":["email","workspace","tz","login"]}	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-12 09:49:38	\N	completed	\N
+273	59c2ef71-ae8c-48f6-b601-e8fb6f535057	\N	7a8e3280e218603467b63feca57fb8e99ec94c17	user	3	Sorter	Boula Nessim (Sorter)	shipment.assigned	shipment	2	Shipment assigned to driver #8	shipment	28	PE120926111802	\N	{"driver_id":"8"}	\N	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-12 09:50:13	\N	completed	\N
+274	59c2ef71-ae8c-48f6-b601-e8fb6f535057	\N	98920cc0b0eece5ecdeb21bd6111aac8e2ad92ed	user	3	Sorter	Boula Nessim (Sorter)	api.api.v1.shipments.assign_shipment	shipment	1	POST api/v1/shipments/assign-shipment → 200	\N	\N	\N	\N	{"driver_id":"8"}	{"method":"POST","route":"api\\/v1\\/shipments\\/assign-shipment","route_name":"unknown","controller":"ShipmentController@assignShipment","status":200,"body_keys":["tracking_no","driver_id"]}	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-12 09:50:13	\N	completed	\N
+275	6e2d5fb5-e066-4db1-84cf-009f1f1ae4eb	\N	8e75abc0cc5395db043a565e5277cef46a7381d6	user	8	Driver	driver1 (Driver)	api.v1.driver.login	auth	1	POST api/v1/driver/login → 200	App\\Models\\User	8	\N	\N	\N	{"method":"POST","route":"api\\/v1\\/driver\\/login","controller":"AuthController@login","status":200}	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-12 09:51:18	\N	completed	\N
+276	20956943-31a1-46e2-b40a-d3419cc7c46e	\N	52a010b6cdeb01f010b42e3402d4cc4a598be6ec	user	8	Driver	driver1 (Driver)	api.api.v1.shipments.confirm_assign_shipment	shipment	1	POST api/v1/shipments/confirm-assign-shipment → 200	\N	\N	\N	\N	\N	{"method":"POST","route":"api\\/v1\\/shipments\\/confirm-assign-shipment","route_name":"unknown","controller":"ShipmentController@confirmAssignShipment","status":200,"body_keys":["tracking_no"]}	partner_api	\N	127.0.0.1	1	App\\Models\\Hub	2026-09-12 09:51:48	\N	completed	\N
 \.
 
 
@@ -81834,7 +81948,7 @@ COPY public.compliance_checklists (id, name, category, last_completed, status, c
 COPY public.consignees (id, name, email, country_key_cellphone, cellphone, "country_key_alternatePhone", "alternatePhone", district, identify, "taxNumber", location, address_update_url, update_token, token_expires_at, address_confirmed, is_guest, owner_type, owner_id, address_update_otp, address_update_otp_expires_at, address_update_verified_at, created_at, updated_at, current_address_id, cellphone_hash) FROM stdin;
 2	eyJpdiI6IjQrTndWZ1Z6MllYZCsvalgwK3dsZUE9PSIsInZhbHVlIjoidkJJQ0ZodWhXSlQ5VUJtVDRiK0k0QT09IiwibWFjIjoiMGU5NTc3MDIwMTBhNTNlMGI5ZGI3MTEwMzYyNjFhNmFkMjA4YjkyYjRjMmIzNzRhOWNjNGQwZjBkMDY2MTFjOCIsInRhZyI6IiJ9	\N	968	eyJpdiI6InZVcEN6WkJycFpCd3QrYTlaZ1BWR2c9PSIsInZhbHVlIjoiYUpCRXNLN1ovaGtSVjdoTnBSa2xwQT09IiwibWFjIjoiYTlmZTI2Njg2MzA5OTc4MjBlOTBiZThjYzg0MGZiMzUxNDcwODE4MTc2MjVkYjA4ODlhMmJlNmM5MGIxY2UzMiIsInRhZyI6IiJ9	\N	\N	\N	\N	\N	\N	http://localhost/update-address/PE100926238825/Ux9sNbNpdiL10ki9qQCghbQj9djRczKecRN7V8dq	$2y$12$sO3LdXA.m6N1Hl3FQ7unKeXpkonTqlWsv1ocw1grZvp0a5F4yOR7K	2026-09-11 16:05:48	f	f	\N	\N	$2y$12$P05vHgBUxCxslXEAY8znHe0.1UFf0pv/lvnPMOwutBxU7bqN8JuGO	2026-09-10 16:20:45	\N	2026-09-10 07:54:41	2026-09-10 16:05:50	3	3f08d8fadb4b67fb056623565edbbc2c788091d78fd24cbc473fce3043ce3473
 12	eyJpdiI6ImFWNHN3WWZBYjVNSVlJVy9mUG84cGc9PSIsInZhbHVlIjoiV2lRN0w0S2EvbUxCTUlCa3ZnbXdtQT09IiwibWFjIjoiZDgxMDdjZTdiYzY1MjAyZDE2OThmYjc3OTM1Yzk0NjJjZDE4OTNiMjMyZWU3YmFkNzJiNzI1YmY0NDkwOGNiZSIsInRhZyI6IiJ9	\N	968	eyJpdiI6IlhUamtZZEw1M2JGbWY2bEJsTFR4c1E9PSIsInZhbHVlIjoiUzFuTHVDNXp2RHV1eDNPUzZubGxxZz09IiwibWFjIjoiZjc2ZTQwY2UzMDRhMGViNTQ0OGIwOTJjYjhmZGNiZjY2ZTk3ZGVhMjI4NDQxYTJiZmI0NzNjYjM1NTg5NWYyYiIsInRhZyI6IiJ9	\N	\N	\N	\N	\N	\N	\N	\N	\N	f	f	\N	\N	\N	\N	\N	2026-09-10 13:24:01	2026-09-10 13:24:01	\N	d20dbf13e7bb81813f4d4b788237013cc939569768ed0ee5872e280ccbfe0234
-1	eyJpdiI6Ild5UGMrUkR1RDVZeE1rR2hma2NVbFE9PSIsInZhbHVlIjoicmtmTUFmdHJ1ZkJVMEhRYUJTSGJkUT09IiwibWFjIjoiOTU4ODY1OGQ3NTllNjI1ZmFhNjgyZGEwMGY3M2YxNzE1Y2M1NTk4ZWJiZDE3NDFhODkwYjI2MzY5ZmYyNjRmOSIsInRhZyI6IiJ9	eyJpdiI6IlZRQXVlSnNaei9CaTlJMmhwN0RNMEE9PSIsInZhbHVlIjoieU1KWDlsTlZXM0M4aUNOVVJrbzc4dz09IiwibWFjIjoiOWQ1NjM1ZGZjNTgxMGI1OGFhNDA2YzE5MTU5MWIyMDgwMGE3Mjc1NzU4ZDAxMjZjZGQ5ODg1MGUwY2FkNjllOCIsInRhZyI6IiJ9	968	eyJpdiI6InVOUFR6Y05oVmNOSDJTSnhTM2ZRZXc9PSIsInZhbHVlIjoiTmVXNGRQaHNUUWZBZFBuWVVPaWJ2dz09IiwibWFjIjoiN2I0NTNlZjEzZDJkMWIwNzg1NTdhMTExNWJkNWIxOGM5MDIzMTI0OWNlMzZiMWNiNWUzOWRlOGQ1OTk0M2IxNiIsInRhZyI6IiJ9	968	eyJpdiI6IjdBd0svc3liYWVVeVB0ZUJTSzJyN3c9PSIsInZhbHVlIjoiaUZHY0p0S2VxZVgvOTlQSmRhaVdiQT09IiwibWFjIjoiYzdlZjgxZjA5NDM1YzQxMzRkNjk3MmQzYWJkMzcwMDFjODAzNzRjOTk3MDQzODBhMDM0ODBhMDYyYjAzMDIyOCIsInRhZyI6IiJ9	\N	\N	\N	\N	http://localhost/update-address/PE100926006565/H7lzkKTh6EvsEeEriZAk7oZ6LlhrqD9hRtPSQsK0	$2y$12$7xxVBmU7ndQIhWR6knu6ruQVVw8B8LcALtTGjdQT7TBytsMr58L/O	2026-09-11 14:52:55	f	f	\N	\N	$2y$12$4qYPz6AUap7u9/QyqBlLzu6AYgE2Z2pXzj8gAg8iaFmyX5ICjCYiS	2026-09-10 15:07:53	\N	2026-09-05 07:33:27	2026-09-10 14:52:55	1	06dc30c518d5c7ed4ed44ad653de60972eb502463809f733073354103444a281
+1	eyJpdiI6Ild5UGMrUkR1RDVZeE1rR2hma2NVbFE9PSIsInZhbHVlIjoicmtmTUFmdHJ1ZkJVMEhRYUJTSGJkUT09IiwibWFjIjoiOTU4ODY1OGQ3NTllNjI1ZmFhNjgyZGEwMGY3M2YxNzE1Y2M1NTk4ZWJiZDE3NDFhODkwYjI2MzY5ZmYyNjRmOSIsInRhZyI6IiJ9	eyJpdiI6IlZRQXVlSnNaei9CaTlJMmhwN0RNMEE9PSIsInZhbHVlIjoieU1KWDlsTlZXM0M4aUNOVVJrbzc4dz09IiwibWFjIjoiOWQ1NjM1ZGZjNTgxMGI1OGFhNDA2YzE5MTU5MWIyMDgwMGE3Mjc1NzU4ZDAxMjZjZGQ5ODg1MGUwY2FkNjllOCIsInRhZyI6IiJ9	968	eyJpdiI6InVOUFR6Y05oVmNOSDJTSnhTM2ZRZXc9PSIsInZhbHVlIjoiTmVXNGRQaHNUUWZBZFBuWVVPaWJ2dz09IiwibWFjIjoiN2I0NTNlZjEzZDJkMWIwNzg1NTdhMTExNWJkNWIxOGM5MDIzMTI0OWNlMzZiMWNiNWUzOWRlOGQ1OTk0M2IxNiIsInRhZyI6IiJ9	968	eyJpdiI6IjdBd0svc3liYWVVeVB0ZUJTSzJyN3c9PSIsInZhbHVlIjoiaUZHY0p0S2VxZVgvOTlQSmRhaVdiQT09IiwibWFjIjoiYzdlZjgxZjA5NDM1YzQxMzRkNjk3MmQzYWJkMzcwMDFjODAzNzRjOTk3MDQzODBhMDM0ODBhMDYyYjAzMDIyOCIsInRhZyI6IiJ9	\N	\N	\N	\N	http://localhost/update-address/PE120926111802/L29QmYmwET8Kz42T7W0qDZVal7tRPKuQejMzNNgK	$2y$12$DFD07k9BK3y3tdco09Z4pOhx3zU6pcXsz.VEZV4XaT6PR99MhSMSS	2026-09-13 09:51:47	f	f	\N	\N	$2y$12$f.Gt02/wMS7Km6A9rwMVKuAlGWFU5CFDo/i2F6G6mEFGFx/BUjj86	2026-09-12 10:06:45	\N	2026-09-05 07:33:27	2026-09-12 09:51:47	4	06dc30c518d5c7ed4ed44ad653de60972eb502463809f733073354103444a281
 \.
 
 
@@ -85432,6 +85546,69 @@ COPY public.driver_bonuses (id, owner_type, owner_id, driver_id, state_id, deliv
 250	\N	\N	4	62	0.60	0.60	2026-09-05 06:55:35	2026-09-05 06:55:35	0.000	0.000
 251	\N	\N	4	63	0.60	0.60	2026-09-05 06:55:35	2026-09-05 06:55:35	0.000	0.000
 252	\N	\N	4	64	0.60	0.60	2026-09-05 06:55:35	2026-09-05 06:55:35	0.000	0.000
+253	\N	\N	8	1	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+254	\N	\N	8	4	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+255	\N	\N	8	5	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+256	\N	\N	8	24	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+257	\N	\N	8	29	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+258	\N	\N	8	30	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+259	\N	\N	8	36	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+260	\N	\N	8	37	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+261	\N	\N	8	46	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+262	\N	\N	8	47	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+263	\N	\N	8	63	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+264	\N	\N	8	64	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+265	\N	\N	8	2	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+266	\N	\N	8	3	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+267	\N	\N	8	6	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+268	\N	\N	8	60	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+269	\N	\N	8	7	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+270	\N	\N	8	8	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+271	\N	\N	8	9	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+272	\N	\N	8	10	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+273	\N	\N	8	11	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+274	\N	\N	8	12	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+275	\N	\N	8	13	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+276	\N	\N	8	14	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+277	\N	\N	8	15	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+278	\N	\N	8	16	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+279	\N	\N	8	17	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+280	\N	\N	8	18	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+281	\N	\N	8	19	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+282	\N	\N	8	21	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+283	\N	\N	8	61	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+284	\N	\N	8	22	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+285	\N	\N	8	62	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+286	\N	\N	8	23	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+287	\N	\N	8	25	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+288	\N	\N	8	26	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+289	\N	\N	8	27	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+290	\N	\N	8	28	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+291	\N	\N	8	31	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+292	\N	\N	8	32	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+293	\N	\N	8	33	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+294	\N	\N	8	34	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+295	\N	\N	8	35	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+296	\N	\N	8	38	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+297	\N	\N	8	39	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+298	\N	\N	8	40	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+299	\N	\N	8	41	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+300	\N	\N	8	42	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+301	\N	\N	8	43	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+302	\N	\N	8	44	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+303	\N	\N	8	45	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+304	\N	\N	8	48	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+305	\N	\N	8	49	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+306	\N	\N	8	50	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+307	\N	\N	8	51	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+308	\N	\N	8	52	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+309	\N	\N	8	53	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+310	\N	\N	8	54	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+311	\N	\N	8	55	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+312	\N	\N	8	56	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+313	\N	\N	8	57	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+314	\N	\N	8	59	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
+315	\N	\N	8	58	0.60	0.60	2026-09-12 09:49:19	2026-09-12 09:49:19	0.000	0.000
 \.
 
 
@@ -85558,6 +85735,7 @@ COPY public.driver_runsheet_shipments (id, shipment_tracking_no, runsheet_id, dr
 10	PE100926841162	3	7	returned	2026-09-10 14:46:30	2026-09-10 14:49:27	1
 11	PE100926006565	4	7	delivered	2026-09-10 14:52:34	2026-09-10 14:53:53	1
 12	PE100926238825	4	7	returned	2026-09-10 16:05:23	2026-09-10 16:18:09	2
+13	PE120926111802	5	8	confirmed	2026-09-12 09:50:05	2026-09-12 09:51:45	1
 \.
 
 
@@ -85578,6 +85756,7 @@ COPY public.driver_runsheets (id, driver_id, status, confirmed_at, notes, create
 2	6	pending	\N	\N	2026-09-09 14:10:58	2026-09-10 09:30:42	\N	App\\Models\\Hub	1	2026-09-09	2026-09-10 14:10:58	\N	\N	\N	\N	\N	\N	6
 3	7	settled	\N	\N	2026-09-10 14:46:30	2026-09-10 14:49:27	\N	App\\Models\\Hub	1	2026-09-10	2026-09-11 14:46:30	\N	\N	\N	\N	\N	\N	1
 4	7	pending	\N	\N	2026-09-10 14:52:34	2026-09-10 16:05:45	\N	App\\Models\\Hub	1	2026-09-10	2026-09-11 14:52:34	\N	\N	\N	\N	\N	\N	2
+5	8	pending	\N	\N	2026-09-12 09:50:05	2026-09-12 09:51:45	\N	App\\Models\\Hub	1	2026-09-11	2026-09-13 09:50:05	\N	\N	\N	\N	\N	\N	1
 \.
 
 
@@ -85590,6 +85769,7 @@ COPY public.driver_settings (id, driver_id, edit_proof, delivery_confirmation_me
 2	2	t	otp_proof	2026-09-07 07:27:33	2026-09-07 07:27:33
 3	3	t	otp_proof	2026-09-09 14:09:54	2026-09-09 14:09:54
 4	4	t	otp_proof	2026-09-10 14:44:01	2026-09-10 14:44:01
+5	5	t	otp_proof	2026-09-12 09:49:19	2026-09-12 09:49:19
 \.
 
 
@@ -85614,6 +85794,7 @@ COPY public.driver_shipment_assignments (id, shipment_tracking_no, shipment_id, 
 6	PE100926152019	8	6	3	2026-09-10 09:52:36	2026-09-10 06:53:42	\N	\N	\N	\N	pending	f	\N	2026-09-10 06:52:36	2026-09-10 06:53:42
 7	PE100926886225	10	6	3	2026-09-10 12:30:20	\N	\N	\N	\N	\N	pending	f	\N	2026-09-10 09:30:20	2026-09-10 09:32:03
 9	PE100926006565	25	7	3	2026-09-10 17:52:34	2026-09-10 14:52:53	2026-09-10 14:53:53	\N	\N	\N	DELIVERED	f	\N	2026-09-10 14:52:34	2026-09-10 14:53:53
+11	PE120926111802	28	8	3	2026-09-12 12:50:05	2026-09-12 09:51:45	\N	\N	\N	\N	pending	f	\N	2026-09-12 09:50:05	2026-09-12 09:51:45
 \.
 
 
@@ -85674,6 +85855,7 @@ COPY public.drivers (id, user_id, company_id, status, rejection_reason, id_card,
 2	5	\N	rejected	no reason	\N	\N	\N	t	\N	\N	2026-09-07 07:27:33	2026-09-07 07:52:50	f	\N	\N	\N	\N	\N	\N	\N	DRV-DBH9SNGX
 3	6	1	pending	\N				f	\N	\N	2026-09-09 14:09:54	2026-09-09 14:09:54	f	\N	\N	\N	\N	29710333298	\N	\N	DRV-X3NTNJFH
 4	7	1	pending	\N				f	\N	\N	2026-09-10 14:44:01	2026-09-10 14:44:01	f	\N	\N	\N	\N	298222100297	\N	\N	DRV-6VB9K394
+5	8	1	pending	\N				f	\N	\N	2026-09-12 09:49:19	2026-09-12 09:49:19	f	\N	\N	\N	\N	2210654	\N	\N	DRV-YY8P9JCN
 \.
 
 
@@ -86180,6 +86362,13 @@ COPY public.login_histories (id, user_id, email, status, ip_address, user_agent,
 71	7	4445driver7795	t	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	2026-09-10 16:05:32	2026-09-10 16:05:32
 72	7	4445driver7795	t	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	2026-09-10 16:16:39	2026-09-10 16:16:39
 73	3	5911boula-sort-dev	t	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	2026-09-10 16:17:54	2026-09-10 16:17:54
+74	1	superadmin	t	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	2026-09-12 09:44:25	2026-09-12 09:44:25
+75	3	5911boula-sort-dev	t	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	2026-09-12 09:47:04	2026-09-12 09:47:04
+76	1	superadmin	t	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	2026-09-12 09:48:36	2026-09-12 09:48:36
+77	3	5911boula-sort-dev	t	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	2026-09-12 09:49:38	2026-09-12 09:49:38
+78	8	4446driver7796	f	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	2026-09-12 09:50:53	2026-09-12 09:50:53
+79	8	4446driver7796	t	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	2026-09-12 09:51:04	2026-09-12 09:51:04
+80	8	4446driver7796	t	127.0.0.1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	2026-09-12 09:51:18	2026-09-12 09:51:18
 \.
 
 
@@ -86271,6 +86460,10 @@ COPY public.logins (id, authenticatable_type, authenticatable_id, user_agent, ip
 81	App\\Models\\User	1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	127.0.0.1	desktop	\N	Windows	Chrome	\N	WAyzKKwRohiMDCgYPavUlNPEuUanpX2C6nE0FYQu	\N	\N	2026-09-10 15:22:27	2026-09-10 15:22:27	2026-09-10 15:22:27	2026-09-10 17:22:27	\N
 82	App\\Models\\User	3	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	127.0.0.1	desktop	\N	Windows	Chrome	\N	S9IVIHIiWLvjEbr9mFrtQsNleERZ3PhGFgPb5wEl	\N	\N	2026-09-10 16:04:36	2026-09-10 16:04:36	2026-09-10 16:04:36	2026-09-10 18:04:36	\N
 83	App\\Models\\User	3	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	127.0.0.1	desktop	\N	Windows	Chrome	\N	7EhTCFkha4kQ3BhhK9fMjCQlsnQqB79KYpN45Iz7	\N	\N	2026-09-10 16:17:54	2026-09-10 16:17:54	2026-09-10 16:17:54	2026-09-10 18:17:54	\N
+84	App\\Models\\User	1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	127.0.0.1	desktop	\N	Windows	Chrome	\N	wawRATLFe7QUgP8VOIcQEaKE6PxUh4oNmYccj17y	\N	\N	2026-09-12 09:44:20	2026-09-12 09:44:20	2026-09-12 09:44:20	2026-09-12 11:44:20	\N
+85	App\\Models\\User	3	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	127.0.0.1	desktop	\N	Windows	Chrome	\N	KMaqiCJsILUQ2UYsuRjZBwPUykWNOXbDbcNqx7f7	\N	\N	2026-09-12 09:47:04	2026-09-12 09:47:04	2026-09-12 09:47:04	2026-09-12 11:47:04	\N
+86	App\\Models\\User	1	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	127.0.0.1	desktop	\N	Windows	Chrome	\N	eG1GTlAU68LcQcBnGp3zBhZTdmmATWLNl82Jxs6F	\N	\N	2026-09-12 09:48:34	2026-09-12 09:48:34	2026-09-12 09:48:34	2026-09-12 11:48:34	\N
+87	App\\Models\\User	3	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36	127.0.0.1	desktop	\N	Windows	Chrome	\N	YGnNlpLzSJr6BnHmr9ZgBWLxZvgTsxYQ9yQ34DZd	\N	\N	2026-09-12 09:49:38	2026-09-12 09:49:38	2026-09-12 09:49:38	2026-09-12 11:49:38	\N
 \.
 
 
@@ -86533,6 +86726,7 @@ COPY public.merchant_transactions (id, merchant_id, type, reference, transaction
 12	2	registration	\N	App\\Models\\Shipment	24	24	\N	\N	\N	10.000	\N	0.000	OMR	\N	Shipment registered: PE100926841162	\N	\N	\N	\N	\N	\N	pending	\N	1	2026-09-10 14:45:33	2026-09-10 14:45:33	\N
 13	2	registration	\N	App\\Models\\Shipment	25	25	\N	\N	\N	10.000	\N	0.000	OMR	\N	Shipment registered: PE100926006565	\N	\N	\N	\N	\N	\N	pending	\N	1	2026-09-10 14:50:01	2026-09-10 14:50:01	\N
 14	2	cod_collected	\N	App\\Models\\Shipment	25	25	\N	\N	\N	9.000	\N	0.000	OMR	\N	COD collected for shipment PE100926006565	\N	\N	\N	\N	\N	\N	completed	2026-09-10 14:53:53	7	2026-09-10 14:53:53	2026-09-10 14:53:53	\N
+15	7	registration	\N	App\\Models\\Shipment	28	28	\N	\N	\N	10.000	\N	0.000	OMR	\N	Shipment registered: PE120926111802	\N	\N	\N	\N	\N	\N	pending	\N	1	2026-09-12 09:46:00	2026-09-12 09:46:00	\N
 \.
 
 
@@ -87213,6 +87407,9 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 646	2026_09_08_000002_add_return_payment_declared_to_shipments_table	6
 648	2026_09_02_120000_add_status_to_audit_events_table	7
 649	2026_09_08_120000_add_sorter_hot_path_indexes	7
+650	2026_09_10_130000_drop_geo_columns_from_shipments_table	8
+651	2026_09_12_000001_add_idempotency_key_to_shipment_deliveries_table	8
+652	2026_09_12_000002_create_shipment_exception_submissions_table	8
 \.
 
 
@@ -87236,6 +87433,7 @@ COPY public.model_has_roles (role_id, model_type, model_id) FROM stdin;
 4	App\\Models\\User	5
 4	App\\Models\\User	6
 4	App\\Models\\User	7
+4	App\\Models\\User	8
 \.
 
 
@@ -87251,6 +87449,7 @@ f1016ef6-d423-4f8e-b49f-a0cc93110083	driver_account_created	🚗 Welcome to Parc
 3b1868fd-7d10-4f18-9f52-e752e143c461	driver_account_created	🚗 Welcome to Parcel Express!	🚗 Welcome to Parcel Express!\n👋 Hello driver5,\n✅ Your driver account has been successfully created.\n🔑 You can now log in using your email and password.\n📱 Download our driver app to get started!	App\\Models\\User	7	5	{"title":"\\ud83d\\ude97 Welcome to Parcel Express!","content":"\\ud83d\\ude97 Welcome to Parcel Express!\\n\\ud83d\\udc4b Hello driver5,\\n\\u2705 Your driver account has been successfully created.\\n\\ud83d\\udd11 You can now log in using your email and password.\\n\\ud83d\\udcf1 Download our driver app to get started!","driver_id":4,"driver_name":"driver5","email":null,"phone":"1205034445","company":"Parcel Express","timestamp":"2026-09-10T14:44:01+00:00","priority":"high","action_url":"\\/driver\\/app-download"}	\N	\N	2026-09-10 14:44:01	2026-09-10 14:44:01
 f9fbe8cb-83ed-4518-b5ab-90e80011515c	address_update_request	📍 طلب تحديث عنوان - مدينة خاطئة	أبلغ السائق driver5 عن مدينة خاطئة للشحنة رقم PE100926841162 وقدم العنوان الصحيح. يرجى مراجعة الطلب والموافقة عليه.	App\\Models\\User	1	6	{"title":"\\ud83d\\udccd \\u0637\\u0644\\u0628 \\u062a\\u062d\\u062f\\u064a\\u062b \\u0639\\u0646\\u0648\\u0627\\u0646 - \\u0645\\u062f\\u064a\\u0646\\u0629 \\u062e\\u0627\\u0637\\u0626\\u0629","content":"\\u0623\\u0628\\u0644\\u063a \\u0627\\u0644\\u0633\\u0627\\u0626\\u0642 driver5 \\u0639\\u0646 \\u0645\\u062f\\u064a\\u0646\\u0629 \\u062e\\u0627\\u0637\\u0626\\u0629 \\u0644\\u0644\\u0634\\u062d\\u0646\\u0629 \\u0631\\u0642\\u0645 PE100926841162 \\u0648\\u0642\\u062f\\u0645 \\u0627\\u0644\\u0639\\u0646\\u0648\\u0627\\u0646 \\u0627\\u0644\\u0635\\u062d\\u064a\\u062d. \\u064a\\u0631\\u062c\\u0649 \\u0645\\u0631\\u0627\\u062c\\u0639\\u0629 \\u0627\\u0644\\u0637\\u0644\\u0628 \\u0648\\u0627\\u0644\\u0645\\u0648\\u0627\\u0641\\u0642\\u0629 \\u0639\\u0644\\u064a\\u0647.","shipment_id":24,"tracking_no":"PE100926841162","revision_id":3,"driver_id":7,"driver_name":"driver5","old_address":{"street":"Demo address","latitude":null,"longitude":null,"country_id":165,"state_id":1,"governorate_id":1,"place_id":1,"city_id":1,"location":null},"new_address":{"street":"Demo address","latitude":null,"longitude":null,"country_id":165,"state_id":1,"governorate_id":1,"place_id":1,"city_id":1,"location":null},"status":"pending_approval","facility_name":"Muscat Hub","facility_type":"Hub","facility_id":1,"exception_type":"WRONG_CITY"}	\N	\N	2026-09-10 14:48:57	2026-09-10 14:48:57
 b4eeaecd-a46e-4075-8d10-6ac28a7c2f65	address_update_request	📍 طلب تحديث عنوان - مدينة خاطئة	أبلغ السائق driver5 عن مدينة خاطئة للشحنة رقم PE100926238825 وقدم العنوان الصحيح. يرجى مراجعة الطلب والموافقة عليه.	App\\Models\\User	1	7	{"title":"\\ud83d\\udccd \\u0637\\u0644\\u0628 \\u062a\\u062d\\u062f\\u064a\\u062b \\u0639\\u0646\\u0648\\u0627\\u0646 - \\u0645\\u062f\\u064a\\u0646\\u0629 \\u062e\\u0627\\u0637\\u0626\\u0629","content":"\\u0623\\u0628\\u0644\\u063a \\u0627\\u0644\\u0633\\u0627\\u0626\\u0642 driver5 \\u0639\\u0646 \\u0645\\u062f\\u064a\\u0646\\u0629 \\u062e\\u0627\\u0637\\u0626\\u0629 \\u0644\\u0644\\u0634\\u062d\\u0646\\u0629 \\u0631\\u0642\\u0645 PE100926238825 \\u0648\\u0642\\u062f\\u0645 \\u0627\\u0644\\u0639\\u0646\\u0648\\u0627\\u0646 \\u0627\\u0644\\u0635\\u062d\\u064a\\u062d. \\u064a\\u0631\\u062c\\u0649 \\u0645\\u0631\\u0627\\u062c\\u0639\\u0629 \\u0627\\u0644\\u0637\\u0644\\u0628 \\u0648\\u0627\\u0644\\u0645\\u0648\\u0627\\u0641\\u0642\\u0629 \\u0639\\u0644\\u064a\\u0647.","shipment_id":27,"tracking_no":"PE100926238825","revision_id":4,"driver_id":7,"driver_name":"driver5","old_address":{"street":"Yiti","latitude":null,"longitude":null,"country_id":165,"state_id":1,"governorate_id":1,"place_id":null,"city_id":null,"location":null},"new_address":{"street":"Yiti","latitude":null,"longitude":null,"country_id":165,"state_id":1,"governorate_id":1,"place_id":null,"city_id":null,"location":null},"status":"pending_approval","facility_name":"Muscat Hub","facility_type":"Hub","facility_id":1,"exception_type":"WRONG_CITY"}	\N	\N	2026-09-10 16:17:15	2026-09-10 16:17:15
+cc4dab0d-e576-4934-8ae5-a47ab4b95643	driver_account_created	🚗 Welcome to Parcel Express!	🚗 Welcome to Parcel Express!\n👋 Hello driver1,\n✅ Your driver account has been successfully created.\n🔑 You can now log in using your email and password.\n📱 Download our driver app to get started!	App\\Models\\User	8	8	{"title":"\\ud83d\\ude97 Welcome to Parcel Express!","content":"\\ud83d\\ude97 Welcome to Parcel Express!\\n\\ud83d\\udc4b Hello driver1,\\n\\u2705 Your driver account has been successfully created.\\n\\ud83d\\udd11 You can now log in using your email and password.\\n\\ud83d\\udcf1 Download our driver app to get started!","driver_id":5,"driver_name":"driver1","email":null,"phone":"1205034446","company":"Parcel Express","timestamp":"2026-09-12T09:49:19+00:00","priority":"high","action_url":"\\/driver\\/app-download"}	\N	\N	2026-09-12 09:49:19	2026-09-12 09:49:19
 \.
 
 
@@ -88773,14 +88972,16 @@ COPY public.permissions (id, name, guard_name, type, created_at, updated_at, par
 COPY public.personal_access_tokens (id, tokenable_type, tokenable_id, name, token, abilities, last_used_at, expires_at, created_at, updated_at, rotated_at) FROM stdin;
 8	App\\Models\\User	4	refresh	e6cc1237c610c52b09e4469af55f9f7337d639f4cfd9333a78fa139700ac5131	["refresh"]	\N	2026-10-05 07:36:30	2026-09-05 07:36:30	2026-09-05 07:36:30	\N
 7	App\\Models\\User	4	access	5bfa27e0c6b686c7444e7a7ba8e143da999045483acedb5f4c6d23ec116cf330	["mode:live"]	2026-09-05 07:43:50	\N	2026-09-05 07:36:30	2026-09-05 07:43:50	\N
-127	App\\Models\\User	1	access	ac040ba080218f9c5676edeb569d55712be3fedca9cdeb76a7aad060aa29a274	["mode:live"]	2026-09-10 16:04:26	\N	2026-09-10 15:22:30	2026-09-10 16:04:26	\N
 94	App\\Models\\User	6	refresh	ed6cafa6fbf47702cfb6b6f2578392da22ffb75eebc5704168570e19b23f1ed1	["refresh"]	\N	2026-10-10 14:34:25	2026-09-10 14:34:25	2026-09-10 14:34:25	\N
 93	App\\Models\\User	6	access	3a48c46f4f51e6093776be570f4398b6644ee58d3b716d8109f4d4b9e90efc74	["mode:live"]	2026-09-10 14:35:00	\N	2026-09-10 14:34:25	2026-09-10 14:35:00	\N
-128	App\\Models\\User	1	refresh	3bda224a08090daf709855455a746fe07787c884d5c0320e1aadc1790ec38c12	["refresh"]	\N	2026-10-10 15:22:30	2026-09-10 15:22:30	2026-09-10 15:22:30	\N
 134	App\\Models\\User	7	refresh	5a0f9732aec97df30a01f310709844adcbf372193fcea5058923f1bcfadb362a	["refresh"]	\N	2026-10-10 16:16:39	2026-09-10 16:16:39	2026-09-10 16:16:39	\N
 133	App\\Models\\User	7	access	fb3a287eefc4d3d8a33f0a5b6989965b1bef84c5367605580a15f0fc118ccab1	["mode:live"]	2026-09-10 16:17:44	\N	2026-09-10 16:16:39	2026-09-10 16:17:44	\N
-136	App\\Models\\User	3	refresh	b17189aeab7798f282052d9e89c7fc2112461a2a3ba41dc41f5e784ea817f700	["refresh"]	\N	2026-10-10 16:17:54	2026-09-10 16:17:54	2026-09-10 16:17:54	\N
-135	App\\Models\\User	3	access	aaaad6142bc2bb7515c9990094fc0ba89b4c6ec716bd2be0338d811e1b344cbd	["mode:live"]	2026-09-10 16:18:09	\N	2026-09-10 16:17:54	2026-09-10 16:18:09	\N
+142	App\\Models\\User	1	refresh	840ac0d3e27af15278493de6262b1fafaa5e8719a3f094055cdb66aa1814005e	["refresh"]	\N	2026-10-12 09:48:36	2026-09-12 09:48:36	2026-09-12 09:48:36	\N
+141	App\\Models\\User	1	access	143815e4e82658921aeb1a39f355d879bb088ff2d978abdf4297105df365a15b	["mode:live"]	2026-09-12 09:49:19	\N	2026-09-12 09:48:36	2026-09-12 09:49:19	\N
+144	App\\Models\\User	3	refresh	05514029089e0123a97f49d9856be76cb8f2f0310627f75b6aaee33e905b6a2b	["refresh"]	\N	2026-10-12 09:49:38	2026-09-12 09:49:38	2026-09-12 09:49:38	\N
+143	App\\Models\\User	3	access	5385cc6ae63c852d2945e5988c494dede5ec9eb3baa3330236e89a0f6fbe0a25	["mode:live"]	2026-09-12 09:50:05	\N	2026-09-12 09:49:38	2026-09-12 09:50:05	\N
+147	App\\Models\\User	8	refresh	14ec4870f445f0ccb983a6bdaee95d0ae691f5a7c3768bac662e8aa706de4b82	["refresh"]	\N	2026-10-12 09:51:18	2026-09-12 09:51:18	2026-09-12 09:51:18	\N
+146	App\\Models\\User	8	access	3bf8e65fed1d760011cab5579c46a8e73b9d836bf8d31714ed2d6a907319c1d0	["mode:live"]	2026-09-12 09:51:45	\N	2026-09-12 09:51:18	2026-09-12 09:51:45	\N
 \.
 
 
@@ -93118,25 +93319,26 @@ COPY public.shipment_cs_timeline (id, shipment_id, source_type, source_id, event
 -- Data for Name: shipment_deliveries; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.shipment_deliveries (id, shipment_id, ofd_count, status, driver_call_count, future_delivery_date, deliver_later_until, deliver_later_reason, payment_bank_transfer, payment_cash, proof, delivery_lat, delivery_lng, note, correct_address_link, delivery_otp, otp_generated_at, otp_attempts, otp_verified_address_tokens, otp_verified, created_at, updated_at, delivery_confirm_token_hash, delivery_confirm_token_expires_at) FROM stdin;
-1	1	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	288495	2026-09-05 07:36:41	0	\N	f	2026-09-05 07:33:30	2026-09-05 07:36:41	\N	\N
-2	2	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-05 08:09:01	2026-09-05 08:09:01	\N	\N
-3	3	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-08 07:01:40	2026-09-08 07:01:40	\N	\N
-6	6	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	691728	2026-09-09 14:13:23	0	\N	f	2026-09-09 14:02:35	2026-09-09 14:13:23	\N	\N
-5	5	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	934875	2026-09-09 14:13:24	0	\N	f	2026-09-09 14:02:28	2026-09-09 14:13:24	\N	\N
-4	4	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	977081	2026-09-09 14:13:24	0	\N	f	2026-09-09 14:02:17	2026-09-09 14:13:24	\N	\N
-7	7	1	NOT_DELIVERED	0	\N	\N	\N	0	10	\N	0	0	\N	\N	825268	2026-09-10 06:47:40	0	\N	f	2026-09-10 06:43:52	2026-09-10 06:48:16	\N	\N
-8	8	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	989568	2026-09-10 06:53:42	0	\N	f	2026-09-10 06:52:04	2026-09-10 06:53:42	\N	\N
-9	10	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	338656	2026-09-10 09:30:42	0	\N	f	2026-09-10 09:29:50	2026-09-10 09:30:42	\N	\N
-10	9	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-10 10:06:22	2026-09-10 10:06:22	\N	\N
-11	20	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-10 13:24:02	2026-09-10 13:24:02	\N	\N
-12	21	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-10 14:06:15	2026-09-10 14:06:15	\N	\N
-13	22	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-10 14:33:29	2026-09-10 14:33:29	\N	\N
-14	23	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-10 14:39:45	2026-09-10 14:39:45	\N	\N
-15	24	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	588157	2026-09-10 14:47:20	0	\N	f	2026-09-10 14:45:35	2026-09-10 14:47:20	\N	\N
-16	25	1	NOT_DELIVERED	0	\N	\N	\N	0	10	\N	0	0	\N	\N	862577	2026-09-10 14:52:53	0	\N	f	2026-09-10 14:50:05	2026-09-10 14:53:53	\N	\N
-17	26	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-10 15:18:36	2026-09-10 15:18:36	\N	\N
-18	27	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	135870	2026-09-10 16:05:45	0	\N	f	2026-09-10 16:05:02	2026-09-10 16:05:45	\N	\N
+COPY public.shipment_deliveries (id, shipment_id, ofd_count, status, driver_call_count, future_delivery_date, deliver_later_until, deliver_later_reason, payment_bank_transfer, payment_cash, proof, delivery_lat, delivery_lng, note, correct_address_link, delivery_otp, otp_generated_at, otp_attempts, otp_verified_address_tokens, otp_verified, created_at, updated_at, delivery_confirm_token_hash, delivery_confirm_token_expires_at, idempotency_key) FROM stdin;
+1	1	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	288495	2026-09-05 07:36:41	0	\N	f	2026-09-05 07:33:30	2026-09-05 07:36:41	\N	\N	\N
+2	2	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-05 08:09:01	2026-09-05 08:09:01	\N	\N	\N
+3	3	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-08 07:01:40	2026-09-08 07:01:40	\N	\N	\N
+6	6	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	691728	2026-09-09 14:13:23	0	\N	f	2026-09-09 14:02:35	2026-09-09 14:13:23	\N	\N	\N
+5	5	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	934875	2026-09-09 14:13:24	0	\N	f	2026-09-09 14:02:28	2026-09-09 14:13:24	\N	\N	\N
+4	4	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	977081	2026-09-09 14:13:24	0	\N	f	2026-09-09 14:02:17	2026-09-09 14:13:24	\N	\N	\N
+7	7	1	NOT_DELIVERED	0	\N	\N	\N	0	10	\N	0	0	\N	\N	825268	2026-09-10 06:47:40	0	\N	f	2026-09-10 06:43:52	2026-09-10 06:48:16	\N	\N	\N
+8	8	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	989568	2026-09-10 06:53:42	0	\N	f	2026-09-10 06:52:04	2026-09-10 06:53:42	\N	\N	\N
+9	10	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	338656	2026-09-10 09:30:42	0	\N	f	2026-09-10 09:29:50	2026-09-10 09:30:42	\N	\N	\N
+10	9	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-10 10:06:22	2026-09-10 10:06:22	\N	\N	\N
+11	20	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-10 13:24:02	2026-09-10 13:24:02	\N	\N	\N
+12	21	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-10 14:06:15	2026-09-10 14:06:15	\N	\N	\N
+13	22	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-10 14:33:29	2026-09-10 14:33:29	\N	\N	\N
+14	23	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-10 14:39:45	2026-09-10 14:39:45	\N	\N	\N
+15	24	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	588157	2026-09-10 14:47:20	0	\N	f	2026-09-10 14:45:35	2026-09-10 14:47:20	\N	\N	\N
+16	25	1	NOT_DELIVERED	0	\N	\N	\N	0	10	\N	0	0	\N	\N	862577	2026-09-10 14:52:53	0	\N	f	2026-09-10 14:50:05	2026-09-10 14:53:53	\N	\N	\N
+17	26	0	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	f	2026-09-10 15:18:36	2026-09-10 15:18:36	\N	\N	\N
+18	27	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	135870	2026-09-10 16:05:45	0	\N	f	2026-09-10 16:05:02	2026-09-10 16:05:45	\N	\N	\N
+19	28	1	NOT_DELIVERED	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	464464	2026-09-12 09:51:45	0	\N	f	2026-09-12 09:46:03	2026-09-12 09:51:45	\N	\N	\N
 \.
 
 
@@ -93145,6 +93347,14 @@ COPY public.shipment_deliveries (id, shipment_id, ofd_count, status, driver_call
 --
 
 COPY public.shipment_delivery_partner_assignments (id, shipment_id, delivery_partner_id, assigned_at, handed_over_at, completed_at, status, cost_agreed, cod_to_collect, tracking_reference, created_at, updated_at, delivered_at, notes) FROM stdin;
+\.
+
+
+--
+-- Data for Name: shipment_exception_submissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.shipment_exception_submissions (id, shipment_id, idempotency_key, delivery_exception, user_id, created_at) FROM stdin;
 \.
 
 
@@ -93174,6 +93384,7 @@ COPY public.shipment_fee_allocations (id, shipment_tracking_no, first_warehouse_
 11	PE100926841162	1	\N	\N	\N	0.000	0.000	0.000	0.000	1.000	1.000	{"others_ids":[]}	2026-09-10 14:46:19	2026-09-10 14:46:19	\N
 12	PE100926006565	1	\N	\N	\N	0.000	0.000	0.000	0.000	1.000	1.000	{"others_ids":[]}	2026-09-10 14:50:47	2026-09-10 14:50:47	\N
 13	PE100926238825	1	\N	\N	\N	0.000	0.000	0.000	0.000	0.000	0.000	{"others_ids":[]}	2026-09-10 16:05:02	2026-09-10 16:05:02	\N
+14	PE120926111802	1	\N	\N	\N	0.000	0.000	0.000	0.000	1.000	1.000	{"others_ids":[]}	2026-09-12 09:47:20	2026-09-12 09:47:20	\N
 \.
 
 
@@ -93196,6 +93407,7 @@ COPY public.shipment_finances (id, shipment_tracking_no, shipment_pre_id, status
 12	PE100926841162	\N	pending	\N	\N	\N	\N	\N	\N	\N	\N	2026-09-10 14:45:35	2026-09-10 14:45:35
 13	PE100926006565	\N	pending	\N	\N	\N	\N	\N	\N	\N	\N	2026-09-10 14:50:05	2026-09-10 14:50:05
 14	PE100926238825	\N	pending	\N	\N	\N	\N	\N	\N	\N	\N	2026-09-10 15:28:33	2026-09-10 15:28:33
+15	PE120926111802	\N	pending	\N	\N	\N	\N	\N	\N	\N	\N	2026-09-12 09:46:03	2026-09-12 09:46:03
 \.
 
 
@@ -93261,6 +93473,7 @@ COPY public.shipment_histories (id, "fromPkgId", "operatorId", name, description
 23	\N	6	OFD	The parcel is with a delivery agent and on its way to the recipient. Driver: driver2	6 - driver2 - Driver	1	App\\Models\\Hub	\N	OFD	\N	2026-09-09 14:13:24	4	\N	{"_forced":true,"_forced_by":6,"_forced_at":"2026-09-09T14:13:24+00:00","_from":"DISPATCH"}	f	2026-09-09 14:13:24	2026-09-09 14:13:24	Asia/Muscat	\N	\N	\N	\N	t
 24	\N	1	CREATED	Shipment Created	1 - admin - Super Admin	1	App\\Models\\Hub	\N	CREATED	\N	2026-09-10 06:43:48	7	\N	\N	f	2026-09-10 06:43:49	2026-09-10 06:43:49	Asia/Muscat	\N	\N	\N	\N	t
 25	\N	3	INBOUND_SORTED	Move to Dispatch: Zone - Musact Zone	3 - Boula Nessim - Sorter	1	App\\Models\\Hub	\N	INBOUND SORTED	\N	2026-09-10 06:45:53	7	\N	{"_forced":true,"_forced_by":3,"_forced_at":"2026-09-10T06:45:53+00:00","_from":"CREATED"}	f	2026-09-10 06:45:53	2026-09-10 06:45:53	Asia/Muscat	\N	\N	\N	\N	t
+115	\N	1	CREATED	Shipment Created	1 - admin - Super Admin	1	App\\Models\\Hub	\N	CREATED	\N	2026-09-12 09:46:00	28	\N	\N	f	2026-09-12 09:46:00	2026-09-12 09:46:00	Asia/Muscat	\N	\N	\N	\N	t
 26	\N	3	DISPATCH	Shipment Dispatched by: Boula Nessim to: driver2	3 - Boula Nessim - Sorter	1	App\\Models\\Hub	\N	DISPATCH	\N	2026-09-10 06:46:45	7	\N	{"_forced":true,"_forced_by":3,"_forced_at":"2026-09-10T06:46:45+00:00","_from":"INBOUND_SORTED"}	f	2026-09-10 06:46:45	2026-09-10 06:46:45	Asia/Muscat	\N	\N	\N	\N	t
 27	\N	6	OFD	The parcel is with a delivery agent and on its way to the recipient. Driver: driver2	6 - driver2 - Driver	1	App\\Models\\Hub	\N	OFD	\N	2026-09-10 06:47:40	7	\N	{"_forced":true,"_forced_by":6,"_forced_at":"2026-09-10T06:47:40+00:00","_from":"DISPATCH"}	f	2026-09-10 06:47:40	2026-09-10 06:47:40	Asia/Muscat	\N	\N	\N	\N	t
 28	\N	6	DELIVERED	The parcel has been successfully delivered to the recipient.	6 - driver2 - Driver	1	App\\Models\\Hub	\N	DELIVERED	\N	2026-09-10 06:48:16	7	\N	{"_forced":true,"_forced_by":6,"_forced_at":"2026-09-10T06:48:16+00:00","_from":"OFD"}	f	2026-09-10 06:48:16	2026-09-10 06:48:16	Asia/Muscat	\N	\N	\N	\N	t
@@ -93331,6 +93544,19 @@ COPY public.shipment_histories (id, "fromPkgId", "operatorId", name, description
 102	\N	7	ADDRESS_UPDATE	Driver reported WRONG_CITY and provided correct address - pending admin approval	Driver	\N	driver	\N	Address Update Request (Driver - WRONG_CITY)	ADDRESS_UPDATE	2026-09-10 16:17:07	27	https://dev-pe-live-uploads.s3.eu-north-1.amazonaws.com/public/return_proofs/20260910_622a98de0ca6b177c5554d0b5f5a142a.png	{"old_address":{"street":"Yiti","latitude":null,"longitude":null,"country_id":165,"state_id":1,"governorate_id":1,"place_id":null,"city_id":null,"location":null},"new_address":{"street":"Yiti","latitude":null,"longitude":null,"country_id":165,"state_id":1,"governorate_id":1,"place_id":null,"city_id":null,"location":null},"status":"pending_approval","source":"driver_app_wrong_city","revision_id":4}	t	2026-09-10 16:17:07	2026-09-10 16:17:07	Asia/Muscat	\N	\N	\N	\N	t
 103	\N	3	RETURN_SORTED	Shipment is in the wrong location — pending supervisor review.	3 - Boula Nessim - Sorter	1	App\\Models\\Hub	\N	RETURN SORTED	\N	2026-09-10 16:18:09	27	\N	{"_forced":true,"_forced_by":3,"_forced_at":"2026-09-10T16:18:09+00:00","_from":"DELIVERY_EXCEPTION"}	f	2026-09-10 16:18:09	2026-09-10 16:18:09	Asia/Muscat	\N	\N	\N	\N	t
 104	\N	3	INBOUND_SORTED	Parcel received back at the facility and sorted for reprocessing.	3 - Boula Nessim - Sorter	1	App\\Models\\Hub	\N	INBOUND SORTED	\N	2026-09-10 16:18:09	27	\N	\N	f	2026-09-10 16:18:09	2026-09-10 16:18:09	Asia/Muscat	\N	\N	\N	\N	t
+105	\N	1	EDITED	Consignee details updated by admin — current_address_id: "1" → "4"	1 - admin - Super Admin	1	App\\Models\\Hub	\N	EDITED	\N	2026-09-12 09:45:59	1	\N	\N	f	2026-09-12 09:45:59	2026-09-12 09:45:59	Asia/Muscat	\N	\N	\N	\N	t
+106	\N	1	EDITED	Consignee details updated by admin — current_address_id: "1" → "4"	1 - admin - Super Admin	1	App\\Models\\Hub	\N	EDITED	\N	2026-09-12 09:46:00	2	\N	\N	f	2026-09-12 09:46:00	2026-09-12 09:46:00	Asia/Muscat	\N	\N	\N	\N	t
+107	\N	1	EDITED	Consignee details updated by admin — current_address_id: "1" → "4"	1 - admin - Super Admin	1	App\\Models\\Hub	\N	EDITED	\N	2026-09-12 09:46:00	3	\N	\N	f	2026-09-12 09:46:00	2026-09-12 09:46:00	Asia/Muscat	\N	\N	\N	\N	t
+108	\N	1	EDITED	Consignee details updated by admin — current_address_id: "1" → "4"	1 - admin - Super Admin	1	App\\Models\\Hub	\N	EDITED	\N	2026-09-12 09:46:00	6	\N	\N	f	2026-09-12 09:46:00	2026-09-12 09:46:00	Asia/Muscat	\N	\N	\N	\N	t
+109	\N	1	EDITED	Consignee details updated by admin — current_address_id: "1" → "4"	1 - admin - Super Admin	1	App\\Models\\Hub	\N	EDITED	\N	2026-09-12 09:46:00	5	\N	\N	f	2026-09-12 09:46:00	2026-09-12 09:46:00	Asia/Muscat	\N	\N	\N	\N	t
+110	\N	1	EDITED	Consignee details updated by admin — current_address_id: "1" → "4"	1 - admin - Super Admin	1	App\\Models\\Hub	\N	EDITED	\N	2026-09-12 09:46:00	4	\N	\N	f	2026-09-12 09:46:00	2026-09-12 09:46:00	Asia/Muscat	\N	\N	\N	\N	t
+111	\N	1	EDITED	Consignee details updated by admin — current_address_id: "1" → "4"	1 - admin - Super Admin	1	App\\Models\\Hub	\N	EDITED	\N	2026-09-12 09:46:00	8	\N	\N	f	2026-09-12 09:46:00	2026-09-12 09:46:00	Asia/Muscat	\N	\N	\N	\N	t
+112	\N	1	EDITED	Consignee details updated by admin — current_address_id: "1" → "4"	1 - admin - Super Admin	1	App\\Models\\Hub	\N	EDITED	\N	2026-09-12 09:46:00	24	\N	\N	f	2026-09-12 09:46:00	2026-09-12 09:46:00	Asia/Muscat	\N	\N	\N	\N	t
+113	\N	1	EDITED	Consignee details updated by admin — current_address_id: "1" → "4"	1 - admin - Super Admin	1	App\\Models\\Hub	\N	EDITED	\N	2026-09-12 09:46:00	10	\N	\N	f	2026-09-12 09:46:00	2026-09-12 09:46:00	Asia/Muscat	\N	\N	\N	\N	t
+114	\N	1	EDITED	Consignee details updated by admin — current_address_id: "1" → "4"	1 - admin - Super Admin	1	App\\Models\\Hub	\N	EDITED	\N	2026-09-12 09:46:00	23	\N	\N	f	2026-09-12 09:46:00	2026-09-12 09:46:00	Asia/Muscat	\N	\N	\N	\N	t
+116	\N	3	INBOUND_SORTED	Move to Dispatch: Zone - Musact Zone	3 - Boula Nessim - Sorter	1	App\\Models\\Hub	\N	INBOUND SORTED	\N	2026-09-12 09:47:19	28	\N	{"_forced":true,"_forced_by":3,"_forced_at":"2026-09-12T09:47:19+00:00","_from":"CREATED"}	f	2026-09-12 09:47:19	2026-09-12 09:47:19	Asia/Muscat	\N	\N	\N	\N	t
+117	\N	3	DISPATCH	Shipment Dispatched by: Boula Nessim to: driver1	3 - Boula Nessim - Sorter	1	App\\Models\\Hub	\N	DISPATCH	\N	2026-09-12 09:50:05	28	\N	{"_forced":true,"_forced_by":3,"_forced_at":"2026-09-12T09:50:05+00:00","_from":"INBOUND_SORTED"}	f	2026-09-12 09:50:05	2026-09-12 09:50:05	Asia/Muscat	\N	\N	\N	\N	t
+118	\N	8	OFD	The parcel is with a delivery agent and on its way to the recipient. Driver: driver1	8 - driver1 - Driver	1	App\\Models\\Hub	\N	OFD	\N	2026-09-12 09:51:45	28	\N	{"_forced":true,"_forced_by":8,"_forced_at":"2026-09-12T09:51:45+00:00","_from":"DISPATCH"}	f	2026-09-12 09:51:45	2026-09-12 09:51:45	Asia/Muscat	\N	\N	\N	\N	t
 \.
 
 
@@ -93365,6 +93591,7 @@ COPY public.shipment_information (id, shipment_id, merchant_id, package_id, zone
 16	25	2	\N	1	PE100926006565	f	f	\N	1	1	1	1	0	\N	2026-09-10 14:50:05	2026-09-10 14:52:53
 17	26	\N	\N	1	RET-260910642101	f	f	\N	1	1	1	1	0	\N	2026-09-10 15:18:36	2026-09-10 15:18:36
 18	27	\N	\N	1	PE100926238825	t	f	\N	1	15	20	30	0	\N	2026-09-10 15:28:33	2026-09-10 16:18:09
+19	28	7	\N	1	PE120926111802	f	f	\N	1	1	1	1	0	\N	2026-09-12 09:46:03	2026-09-12 09:51:45
 \.
 
 
@@ -93427,6 +93654,7 @@ COPY public.shipment_sla_clocks (id, shipment_id, partner_id, segment_id, tier_i
 4	25	1	2	1	2	INBOUND_SORTED	OFD	2026-09-10 14:50:47	2026-09-11 14:50:47	2026-09-10 14:52:53	24	0.04	0.00	0.04	0.17	healthy	completed	2026-09-10 14:52:53	2026-09-10 14:50:47	2026-09-10 14:52:53
 5	27	3	1	\N	1	FLIGHT_ARRIVED	HANDED_TO_LAST_MILE_PROVIDER	2026-09-10 16:02:10	2026-09-11 16:02:10	2026-09-10 16:04:27	24	0.04	0.00	0.04	0.17	healthy	completed	2026-09-10 16:04:27	2026-09-10 16:02:10	2026-09-10 16:04:27
 6	27	3	2	1	2	INBOUND_SORTED	OFD	2026-09-10 16:05:02	2026-09-11 16:05:02	2026-09-10 16:05:45	24	0.01	0.00	0.01	0.04	healthy	completed	2026-09-10 16:05:45	2026-09-10 16:05:02	2026-09-10 16:05:45
+7	28	1	2	1	2	INBOUND_SORTED	OFD	2026-09-12 09:47:20	2026-09-13 09:47:20	2026-09-12 09:51:45	24	0.07	0.00	0.07	0.29	healthy	completed	2026-09-12 09:51:45	2026-09-12 09:47:20	2026-09-12 09:51:45
 \.
 
 
@@ -93488,6 +93716,7 @@ COPY public.shipments (id, consignee_id, customer_id, merchant_id, driver_id, sh
 22	12	\N	\N	\N	1	\N	\N	RET-260910964104	0.000	0.000	0.000	\N	\N	t	f	f	\N	Customer no longer wants it	RETURNED	t	normal	any	\N	\N	\N	\N	\N	Al Khuwair Street	\N	\N	\N	\N	\N	f	\N	\N	\N	\N	f	\N	f	2026-09-10 14:33:27	2026-09-10 14:35:21	\N	16	\N	0.000	0.000	\N	3	\N	App\\Models\\Hub	1	App\\Models\\Hub	1	\N	\N	partner_inbound	\N	\N	2026-09-10 14:34:47	123456782748	\N	dto	marketplace_partner	3	\N	\N	\N	\N	12	\N	\N	\N	f	\N	internal	f	f	John Doe	90000000	f	\N	\N	\N	\N	\N	\N	1	OMR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	UNKNOWN	\N	\N	released	\N	f	\N	\N	\N	\N	\N	\N	USD	96891234567	Abuzaid Returns	0.000	\N	\N	state_mapping	\N	\N	\N	2026-09-10 14:35:21	\N
 23	1	\N	2	\N	1	\N	\N	PE100926841016	9.000	10.000	1.000	COD	\N	f	f	t	1	demo notes	INBOUND_SORTED	t	normal	any	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	f	\N	\N	\N	\N	f	\N	f	2026-09-10 14:39:43	2026-09-10 14:41:58	\N	\N	1	1.000	0.000	\N	\N	\N	App\\Models\\Hub	1	App\\Models\\Hub	1	App\\Models\\Hub	1	dashboard	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	f	\N	internal	f	f	Ali merchant	909090	f	\N	\N	\N	\N	\N	\N	1	OMR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	PEX-COD-001	\N	\N	released	\N	t	\N	1	\N	\N	\N	\N	USD	\N	\N	0.000	\N	\N	state_mapping	\N	\N	\N	\N	\N
 27	2	\N	\N	7	1	10	\N	PE100926238825	20.000	20.000	0.000	COD	\N	f	t	t	\N	\N	RETURN_SORTED	t	normal	any	\N	\N	\N	\N	\N	Al Khuwair, Muscat	\N	\N	\N	\N	\N	f	\N	\N	\N	\N	f	\N	f	2026-09-10 15:28:32	2026-09-10 16:18:09	\N	\N	3	0.000	0.000	\N	3	\N	App\\Models\\Hub	1	App\\Models\\Hub	1	\N	\N	partner_inbound	\N	\N	\N	123456782744	WRONG_CITY	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	f	\N	internal	f	f	Ahmed Ali	99999999	t	\N	\N	1.000	15.00	20.00	30.00	1	OMR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	PEX-COD-001	\N	PENDING_SUPERVISOR	released	29	f	2	\N	kg	cm	null	15.000	USD	+96891111111	Store	0.000	\N	\N	state_mapping	\N	\N	\N	\N	\N
+28	1	\N	7	8	1	11	\N	PE120926111802	9.000	10.000	1.000	COD	\N	f	f	f	1	demo notes	OFD	t	normal	any	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	f	\N	\N	\N	\N	f	\N	f	2026-09-12 09:46:00	2026-09-12 09:51:45	\N	\N	4	1.000	0.000	\N	\N	\N	App\\Models\\Hub	1	App\\Models\\Hub	1	App\\Models\\Hub	1	dashboard	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	f	\N	internal	f	f	Ali merchant	909090	f	\N	\N	\N	\N	\N	\N	1	OMR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	PEX-COD-001	\N	\N	released	\N	t	\N	1	\N	\N	\N	\N	USD	\N	\N	0.000	\N	\N	state_mapping	\N	\N	\N	\N	\N
 \.
 
 
@@ -93792,6 +94021,8 @@ COPY public.transactions (id, from_type, from_id, to_type, to_id, shipment_id, a
 30	\N	\N	App\\Models\\User	7	25	10.00	driver_cod_custody	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	2026-09-10 14:53:53	2026-09-10 14:53:53	f	\N	\N	\N
 31	App\\Models\\Hub	1	App\\Models\\User	7	27	20.00	assignment	\N	Assignment transaction for shipment PE100926238825	\N	\N	\N	\N	\N	\N	\N	\N	2026-09-10 16:05:23	2026-09-10 16:05:23	f	\N	\N	\N
 32	App\\Models\\User	7	\N	\N	27	0.00	Exception	WRONG_CITY	Marked as DELIVERY_EXCEPTION [WRONG_CITY]	7	https://dev-pe-live-uploads.s3.eu-north-1.amazonaws.com/public/return_proofs/20260910_622a98de0ca6b177c5554d0b5f5a142a.png	7	2026-09-10 16:17:07	\N	\N	\N	\N	2026-09-10 16:17:07	2026-09-10 16:17:07	f	\N	\N	\N
+33	\N	\N	App\\Models\\User	1	28	10.00	merchant_created	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	2026-09-12 09:46:03	2026-09-12 09:46:03	f	\N	\N	\N
+34	App\\Models\\Hub	1	App\\Models\\User	8	28	10.00	assignment	\N	Assignment transaction for shipment PE120926111802	\N	\N	\N	\N	\N	\N	\N	\N	2026-09-12 09:50:05	2026-09-12 09:50:05	f	\N	\N	\N
 \.
 
 
@@ -93898,6 +94129,7 @@ COPY public.user_actions (id, user_id, action_type, entity_type, entity_id, deta
 6	1	create_shipment	App\\Models\\Shipment	2	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":2,"tracking_no":"PE050926002010","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":1,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-05T08:09:00+00:00","created_at":"2026-09-05T08:09:00+00:00","id":2,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"}}	127.0.0.1	Desktop Chrome	f	2026-09-05 08:09:00	2026-09-05 08:09:00
 7	1	update_shipment	App\\Models\\Shipment	2	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":2,"tracking_no":"PE050926002010","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":1,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-05T08:09:01+00:00","created_at":"2026-09-05T08:09:00+00:00","id":2,"final_hub_type":"App\\\\Models\\\\Hub","final_hub_id":1,"zone_resolution_method":"state_mapping","from_hub_type":null,"from_hub_id":null,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"},"consignee":{"id":1,"name":"Ali merchant","email":"ali@gmail.com","country_key_cellphone":"968","cellphone":"909090","country_key_alternatePhone":"968","alternatePhone":"3434343","district":null,"identify":null,"taxNumber":null,"location":null,"address_update_url":"http:\\/\\/localhost\\/update-address\\/PE050926479291\\/xdycLeVvolKTvXFGjC2CS8msQGsNfGYwD0Sma9Ul","update_token":"$2y$12$JnrmZvn1BP7WWdVBR9YshO9p8OUegbhx.pJ7v2zFBOtwksIGYWrsa","address_confirmed":false,"is_guest":false,"owner_type":null,"owner_id":null,"address_update_otp":"$2y$12$zLK\\/cMmfBIGMQ4azLrfl6efuHG\\/zQmGD5cVbqf3SsfXAiRcH.sqUG","address_update_otp_expires_at":"2026-09-05T07:51:41+00:00","address_update_verified_at":null,"created_at":"2026-09-05T07:33:27+00:00","updated_at":"2026-09-05T07:36:43+00:00","current_address_id":1,"cellphone_hash":"06dc30c518d5c7ed4ed44ad653de60972eb502463809f733073354103444a281","current_address":{"id":1,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":false,"approved_at":null,"approved_by":null,"times_used":0,"last_used_at":null,"first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-05T07:33:29+00:00","updated_at":"2026-09-05T07:48:30+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"},"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":null,"anchor_lng":null,"anchor_extent_km":null,"bbox_min_lat":null,"bbox_max_lat":null,"bbox_min_lng":null,"bbox_max_lng":null,"polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":null,"anchor_lng":null,"anchor_extent_km":null,"bbox_min_lat":null,"bbox_max_lat":null,"bbox_min_lng":null,"bbox_max_lng":null}}},"delivery_address":{"id":1,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":false,"approved_at":null,"approved_by":null,"times_used":0,"last_used_at":null,"first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-05T07:33:29+00:00","updated_at":"2026-09-05T07:48:30+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":null,"anchor_lng":null,"anchor_extent_km":null,"bbox_min_lat":null,"bbox_max_lat":null,"bbox_min_lng":null,"bbox_max_lng":null,"polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":null,"anchor_lng":null,"anchor_extent_km":null,"bbox_min_lat":null,"bbox_max_lat":null,"bbox_min_lng":null,"bbox_max_lng":null},"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"}},"merchant":{"id":2,"owner_type":"App\\\\Models\\\\Hub","owner_id":1,"name":"Merchant","username":"merchant-dev","email":null,"country_code":"+968","phone":"01126785910","email_verified_at":null,"status":"active","google_id":null,"avatar":null,"firebase_uid":null,"apple_id":null,"phone_verified_at":null,"verification_code":null,"verification_code_expires_at":null,"created_at":"2026-09-05T06:45:11+00:00","updated_at":"2026-09-05T06:45:11+00:00","unassigned_last_seen_at":null,"unregistered_last_seen_at":null,"address_revision_last_seen_at":null,"deleted_at":null,"deleted_by":null,"timezone":null,"password_changed_at":"2026-08-30T00:00:00+00:00","allowed_environments":"live_only","active_environment":"live","failed_login_attempts":0,"locked_until":null,"merchant":{"id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"user_id":2,"address":"Test Address","lat":23.557791376911368,"lng":58.437488317871114,"currency":null,"facility_to_facility_fees":"20.00","created_at":"2026-09-05T06:45:11+00:00","updated_at":"2026-09-05T06:45:11+00:00","is_guest":false,"image":null,"deleted_at":null,"home_to_facility_fees":"0.000"}}}	127.0.0.1	Desktop Chrome	f	2026-09-05 08:09:01	2026-09-05 08:09:01
 8	1	update_driver	App\\Models\\Driver	2	{"id":2,"user_id":5,"company_id":null,"status":"rejected","rejection_reason":"no reason","id_card":null,"license":null,"car_ownership_id":null,"is_guest":true,"profile_image":null,"company_name":null,"created_at":"2026-09-07T07:27:33+00:00","updated_at":"2026-09-07T07:52:50+00:00","is_on_hold":false,"hold_reason":null,"hold_by":null,"hold_at":null,"deleted_at":null,"id_card_number":null,"license_number":null,"car_ownership_number":null,"driver_code":"DRV-DBH9SNGX"}	127.0.0.1	Desktop Chrome	f	2026-09-07 07:52:50	2026-09-07 07:52:50
+35	1	create_driver	App\\Models\\Driver	5	{"user_id":8,"company_id":"1","id_card":"","id_card_number":"2210654","license":"","license_number":null,"car_ownership_id":"","car_ownership_number":null,"updated_at":"2026-09-12T09:49:19+00:00","created_at":"2026-09-12T09:49:19+00:00","id":5}	127.0.0.1	Desktop Chrome	f	2026-09-12 09:49:19	2026-09-12 09:49:19
 9	1	create_shipment	App\\Models\\Shipment	3	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":2,"tracking_no":"PE080926070604","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":1,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-08T07:01:37+00:00","created_at":"2026-09-08T07:01:37+00:00","id":3,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"}}	127.0.0.1	Desktop Chrome	f	2026-09-08 07:01:37	2026-09-08 07:01:37
 10	1	update_shipment	App\\Models\\Shipment	3	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":2,"tracking_no":"PE080926070604","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":1,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-08T07:01:40+00:00","created_at":"2026-09-08T07:01:37+00:00","id":3,"final_hub_type":"App\\\\Models\\\\Hub","final_hub_id":1,"zone_resolution_method":"state_mapping","from_hub_type":null,"from_hub_id":null,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"},"consignee":{"id":1,"name":"Ali merchant","email":"ali@gmail.com","country_key_cellphone":"968","cellphone":"909090","country_key_alternatePhone":"968","alternatePhone":"3434343","district":null,"identify":null,"taxNumber":null,"location":null,"address_update_url":"http:\\/\\/localhost\\/update-address\\/PE050926479291\\/xdycLeVvolKTvXFGjC2CS8msQGsNfGYwD0Sma9Ul","update_token":"$2y$12$JnrmZvn1BP7WWdVBR9YshO9p8OUegbhx.pJ7v2zFBOtwksIGYWrsa","address_confirmed":false,"is_guest":false,"owner_type":null,"owner_id":null,"address_update_otp":"$2y$12$zLK\\/cMmfBIGMQ4azLrfl6efuHG\\/zQmGD5cVbqf3SsfXAiRcH.sqUG","address_update_otp_expires_at":"2026-09-05T07:51:41+00:00","address_update_verified_at":null,"created_at":"2026-09-05T07:33:27+00:00","updated_at":"2026-09-05T07:36:43+00:00","current_address_id":1,"cellphone_hash":"06dc30c518d5c7ed4ed44ad653de60972eb502463809f733073354103444a281","current_address":{"id":1,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":false,"approved_at":null,"approved_by":null,"times_used":0,"last_used_at":null,"first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-05T07:33:29+00:00","updated_at":"2026-09-05T07:48:30+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"},"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":"23.4843516","anchor_lng":"58.7136627","anchor_extent_km":"42.57","bbox_min_lat":"23.342167","bbox_max_lat":"23.626536","bbox_min_lng":"58.573909","bbox_max_lng":"58.853417","polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":"23.3204474","anchor_lng":"58.6261646","anchor_extent_km":"175.12","bbox_min_lat":"22.778478","bbox_max_lat":"23.862417","bbox_min_lng":"58.004077","bbox_max_lng":"59.248252"}}},"delivery_address":{"id":1,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":false,"approved_at":null,"approved_by":null,"times_used":0,"last_used_at":null,"first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-05T07:33:29+00:00","updated_at":"2026-09-05T07:48:30+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":"23.4843516","anchor_lng":"58.7136627","anchor_extent_km":"42.57","bbox_min_lat":"23.342167","bbox_max_lat":"23.626536","bbox_min_lng":"58.573909","bbox_max_lng":"58.853417","polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":"23.3204474","anchor_lng":"58.6261646","anchor_extent_km":"175.12","bbox_min_lat":"22.778478","bbox_max_lat":"23.862417","bbox_min_lng":"58.004077","bbox_max_lng":"59.248252"},"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"}},"merchant":{"id":2,"owner_type":"App\\\\Models\\\\Hub","owner_id":1,"name":"Merchant","username":"merchant-dev","email":null,"country_code":"+968","phone":"01126785910","email_verified_at":null,"status":"active","google_id":null,"avatar":null,"firebase_uid":null,"apple_id":null,"phone_verified_at":null,"verification_code":null,"verification_code_expires_at":null,"created_at":"2026-09-05T06:45:11+00:00","updated_at":"2026-09-05T06:45:11+00:00","unassigned_last_seen_at":null,"unregistered_last_seen_at":null,"address_revision_last_seen_at":null,"deleted_at":null,"deleted_by":null,"timezone":null,"password_changed_at":"2026-08-30T00:00:00+00:00","allowed_environments":"live_only","active_environment":"live","failed_login_attempts":0,"locked_until":null,"merchant":{"id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"user_id":2,"address":"Test Address","lat":23.557791376911368,"lng":58.437488317871114,"currency":null,"facility_to_facility_fees":"20.00","created_at":"2026-09-05T06:45:11+00:00","updated_at":"2026-09-05T06:45:11+00:00","is_guest":false,"image":null,"deleted_at":null,"home_to_facility_fees":"0.000"}}}	127.0.0.1	Desktop Chrome	f	2026-09-08 07:01:40	2026-09-08 07:01:40
 11	1	create_shipment	App\\Models\\Shipment	4	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":2,"tracking_no":"PE090926879870","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":1,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-09T14:02:14+00:00","created_at":"2026-09-09T14:02:14+00:00","id":4,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"}}	127.0.0.1	Desktop Chrome	f	2026-09-09 14:02:14	2026-09-09 14:02:14
@@ -93912,6 +94144,7 @@ COPY public.user_actions (id, user_id, action_type, entity_type, entity_id, deta
 20	1	update_shipment	App\\Models\\Shipment	7	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":2,"tracking_no":"PE100926489193","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":1,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-10T06:43:51+00:00","created_at":"2026-09-10T06:43:48+00:00","id":7,"final_hub_type":"App\\\\Models\\\\Hub","final_hub_id":1,"zone_resolution_method":"state_mapping","from_hub_type":null,"from_hub_id":null,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"},"consignee":{"id":1,"name":"Ali merchant","email":"ali@gmail.com","country_key_cellphone":"968","cellphone":"909090","country_key_alternatePhone":"968","alternatePhone":"3434343","district":null,"identify":null,"taxNumber":null,"location":null,"address_update_url":"http:\\/\\/localhost\\/update-address\\/PE090926879870\\/U3CMjh54xgxlvtssq8nDWWLTuf9RCkg2UGPWY5Ti","update_token":"$2y$12$CXSOHYV7CY..dKQBb11Qi.OX.3fjSZOqCAMSSNDZRQhY3h.eEmAWm","address_confirmed":false,"is_guest":false,"owner_type":null,"owner_id":null,"address_update_otp":"$2y$12$EB6\\/0hd9YbepD\\/cfTyO\\/..Qig8nUHhqv.7b.vJK9L\\/YXlk4GC4kuO","address_update_otp_expires_at":"2026-09-09T14:28:27+00:00","address_update_verified_at":null,"created_at":"2026-09-05T07:33:27+00:00","updated_at":"2026-09-09T14:13:28+00:00","current_address_id":1,"cellphone_hash":"06dc30c518d5c7ed4ed44ad653de60972eb502463809f733073354103444a281","current_address":{"id":1,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":false,"approved_at":null,"approved_by":null,"times_used":0,"last_used_at":null,"first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-05T07:33:29+00:00","updated_at":"2026-09-05T07:48:30+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"},"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":"23.4843516","anchor_lng":"58.7136627","anchor_extent_km":"42.57","bbox_min_lat":"23.342167","bbox_max_lat":"23.626536","bbox_min_lng":"58.573909","bbox_max_lng":"58.853417","polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":"23.3204474","anchor_lng":"58.6261646","anchor_extent_km":"175.12","bbox_min_lat":"22.778478","bbox_max_lat":"23.862417","bbox_min_lng":"58.004077","bbox_max_lng":"59.248252"}}},"delivery_address":{"id":1,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":false,"approved_at":null,"approved_by":null,"times_used":0,"last_used_at":null,"first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-05T07:33:29+00:00","updated_at":"2026-09-05T07:48:30+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":"23.4843516","anchor_lng":"58.7136627","anchor_extent_km":"42.57","bbox_min_lat":"23.342167","bbox_max_lat":"23.626536","bbox_min_lng":"58.573909","bbox_max_lng":"58.853417","polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":"23.3204474","anchor_lng":"58.6261646","anchor_extent_km":"175.12","bbox_min_lat":"22.778478","bbox_max_lat":"23.862417","bbox_min_lng":"58.004077","bbox_max_lng":"59.248252"},"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"}},"merchant":{"id":2,"owner_type":"App\\\\Models\\\\Hub","owner_id":1,"name":"Merchant","username":"merchant-dev","email":null,"country_code":"+968","phone":"01126785910","email_verified_at":null,"status":"active","google_id":null,"avatar":null,"firebase_uid":null,"apple_id":null,"phone_verified_at":null,"verification_code":null,"verification_code_expires_at":null,"created_at":"2026-09-05T06:45:11+00:00","updated_at":"2026-09-05T06:45:11+00:00","unassigned_last_seen_at":null,"unregistered_last_seen_at":null,"address_revision_last_seen_at":null,"deleted_at":null,"deleted_by":null,"timezone":null,"password_changed_at":"2026-08-30T00:00:00+00:00","allowed_environments":"live_only","active_environment":"live","failed_login_attempts":0,"locked_until":null,"merchant":{"id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"user_id":2,"address":"Test Address","lat":23.557791376911368,"lng":58.437488317871114,"currency":null,"facility_to_facility_fees":"20.00","created_at":"2026-09-05T06:45:11+00:00","updated_at":"2026-09-05T06:45:11+00:00","is_guest":false,"image":null,"deleted_at":null,"home_to_facility_fees":"0.000"}}}	127.0.0.1	Desktop Chrome	f	2026-09-10 06:43:51	2026-09-10 06:43:51
 21	1	create_shipment	App\\Models\\Shipment	8	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":2,"tracking_no":"PE100926152019","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":1,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-10T06:52:02+00:00","created_at":"2026-09-10T06:52:02+00:00","id":8,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"}}	127.0.0.1	Desktop Chrome	f	2026-09-10 06:52:02	2026-09-10 06:52:02
 22	1	update_shipment	App\\Models\\Shipment	8	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":2,"tracking_no":"PE100926152019","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":1,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-10T06:52:03+00:00","created_at":"2026-09-10T06:52:02+00:00","id":8,"final_hub_type":"App\\\\Models\\\\Hub","final_hub_id":1,"zone_resolution_method":"state_mapping","from_hub_type":null,"from_hub_id":null,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"},"consignee":{"id":1,"name":"Ali merchant","email":"ali@gmail.com","country_key_cellphone":"968","cellphone":"909090","country_key_alternatePhone":"968","alternatePhone":"3434343","district":null,"identify":null,"taxNumber":null,"location":null,"address_update_url":"http:\\/\\/localhost\\/update-address\\/PE100926489193\\/lIejVj1NwPms1XHXhkYe7Voe35GjP5DYe74LyeWp","update_token":"$2y$12$E5m.roMYpJFd2G8iXhwIZuckpMAWEcEBUBtK5nUAAm7C9Twu8JWSC","address_confirmed":false,"is_guest":false,"owner_type":null,"owner_id":null,"address_update_otp":"$2y$12$inX12Y0OU9gU\\/0xZze.ga.P\\/XjN47AavRnWG1xBk8cDj72\\/.5xd3C","address_update_otp_expires_at":"2026-09-10T07:02:40+00:00","address_update_verified_at":null,"created_at":"2026-09-05T07:33:27+00:00","updated_at":"2026-09-10T06:47:42+00:00","current_address_id":1,"cellphone_hash":"06dc30c518d5c7ed4ed44ad653de60972eb502463809f733073354103444a281","current_address":{"id":1,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":true,"approved_at":"2026-09-10T06:48:16+00:00","approved_by":6,"times_used":1,"last_used_at":"2026-09-10T06:48:16+00:00","first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-05T07:33:29+00:00","updated_at":"2026-09-10T06:48:16+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"},"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":"23.4843516","anchor_lng":"58.7136627","anchor_extent_km":"42.57","bbox_min_lat":"23.342167","bbox_max_lat":"23.626536","bbox_min_lng":"58.573909","bbox_max_lng":"58.853417","polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":"23.3204474","anchor_lng":"58.6261646","anchor_extent_km":"175.12","bbox_min_lat":"22.778478","bbox_max_lat":"23.862417","bbox_min_lng":"58.004077","bbox_max_lng":"59.248252"}}},"delivery_address":{"id":1,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":true,"approved_at":"2026-09-10T06:48:16+00:00","approved_by":6,"times_used":1,"last_used_at":"2026-09-10T06:48:16+00:00","first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-05T07:33:29+00:00","updated_at":"2026-09-10T06:48:16+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":"23.4843516","anchor_lng":"58.7136627","anchor_extent_km":"42.57","bbox_min_lat":"23.342167","bbox_max_lat":"23.626536","bbox_min_lng":"58.573909","bbox_max_lng":"58.853417","polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":"23.3204474","anchor_lng":"58.6261646","anchor_extent_km":"175.12","bbox_min_lat":"22.778478","bbox_max_lat":"23.862417","bbox_min_lng":"58.004077","bbox_max_lng":"59.248252"},"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"}},"merchant":{"id":2,"owner_type":"App\\\\Models\\\\Hub","owner_id":1,"name":"Merchant","username":"merchant-dev","email":null,"country_code":"+968","phone":"01126785910","email_verified_at":null,"status":"active","google_id":null,"avatar":null,"firebase_uid":null,"apple_id":null,"phone_verified_at":null,"verification_code":null,"verification_code_expires_at":null,"created_at":"2026-09-05T06:45:11+00:00","updated_at":"2026-09-05T06:45:11+00:00","unassigned_last_seen_at":null,"unregistered_last_seen_at":null,"address_revision_last_seen_at":null,"deleted_at":null,"deleted_by":null,"timezone":null,"password_changed_at":"2026-08-30T00:00:00+00:00","allowed_environments":"live_only","active_environment":"live","failed_login_attempts":0,"locked_until":null,"merchant":{"id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"user_id":2,"address":"Test Address","lat":23.557791376911368,"lng":58.437488317871114,"currency":null,"facility_to_facility_fees":"20.00","created_at":"2026-09-05T06:45:11+00:00","updated_at":"2026-09-05T06:45:11+00:00","is_guest":false,"image":null,"deleted_at":null,"home_to_facility_fees":"0.000"}}}	127.0.0.1	Desktop Chrome	f	2026-09-10 06:52:03	2026-09-10 06:52:03
+36	1	update_driver	App\\Models\\Driver	5	{"id":5,"user_id":8,"company_id":1,"status":"pending","rejection_reason":null,"id_card":"","license":"","car_ownership_id":"","is_guest":false,"profile_image":null,"company_name":null,"created_at":"2026-09-12T09:49:19+00:00","updated_at":"2026-09-12T09:49:19+00:00","is_on_hold":false,"hold_reason":null,"hold_by":null,"hold_at":null,"deleted_at":null,"id_card_number":"2210654","license_number":null,"car_ownership_number":null,"driver_code":"DRV-YY8P9JCN"}	127.0.0.1	Desktop Chrome	f	2026-09-12 09:49:19	2026-09-12 09:49:19
 23	1	create_shipment	App\\Models\\Shipment	10	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":2,"tracking_no":"PE100926886225","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":1,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-10T09:29:48+00:00","created_at":"2026-09-10T09:29:48+00:00","id":10,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"}}	127.0.0.1	Desktop Chrome	f	2026-09-10 09:29:48	2026-09-10 09:29:48
 24	1	update_shipment	App\\Models\\Shipment	10	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":2,"tracking_no":"PE100926886225","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":1,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-10T09:29:50+00:00","created_at":"2026-09-10T09:29:48+00:00","id":10,"final_hub_type":"App\\\\Models\\\\Hub","final_hub_id":1,"zone_resolution_method":"state_mapping","from_hub_type":null,"from_hub_id":null,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"},"consignee":{"id":1,"name":"Ali merchant","email":"ali@gmail.com","country_key_cellphone":"968","cellphone":"909090","country_key_alternatePhone":"968","alternatePhone":"3434343","district":null,"identify":null,"taxNumber":null,"location":null,"address_update_url":"http:\\/\\/localhost\\/update-address\\/PE100926152019\\/kaYKuinP5FyRYsSnSS2HQ2ArgI69JXpEH111aI5a","update_token":"$2y$12$DrPz.VNn9WXcuEYtVGXDsejyDGedZ4m7Q9PPKplzVwzLxxUCamWB6","address_confirmed":false,"is_guest":false,"owner_type":null,"owner_id":null,"address_update_otp":"$2y$12$uGLGA2dz.cQ6W9qzEcrTlO\\/LnQDTSMLhqVynl4as8EnP1jmZgsWeq","address_update_otp_expires_at":"2026-09-10T07:08:42+00:00","address_update_verified_at":null,"created_at":"2026-09-05T07:33:27+00:00","updated_at":"2026-09-10T06:53:43+00:00","current_address_id":1,"cellphone_hash":"06dc30c518d5c7ed4ed44ad653de60972eb502463809f733073354103444a281","current_address":{"id":1,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":true,"approved_at":"2026-09-10T06:48:16+00:00","approved_by":6,"times_used":1,"last_used_at":"2026-09-10T06:48:16+00:00","first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-05T07:33:29+00:00","updated_at":"2026-09-10T06:48:16+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"},"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":"23.4843516","anchor_lng":"58.7136627","anchor_extent_km":"42.57","bbox_min_lat":"23.342167","bbox_max_lat":"23.626536","bbox_min_lng":"58.573909","bbox_max_lng":"58.853417","polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":"23.3204474","anchor_lng":"58.6261646","anchor_extent_km":"175.12","bbox_min_lat":"22.778478","bbox_max_lat":"23.862417","bbox_min_lng":"58.004077","bbox_max_lng":"59.248252"}}},"delivery_address":{"id":1,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":true,"approved_at":"2026-09-10T06:48:16+00:00","approved_by":6,"times_used":1,"last_used_at":"2026-09-10T06:48:16+00:00","first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-05T07:33:29+00:00","updated_at":"2026-09-10T06:48:16+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":"23.4843516","anchor_lng":"58.7136627","anchor_extent_km":"42.57","bbox_min_lat":"23.342167","bbox_max_lat":"23.626536","bbox_min_lng":"58.573909","bbox_max_lng":"58.853417","polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":"23.3204474","anchor_lng":"58.6261646","anchor_extent_km":"175.12","bbox_min_lat":"22.778478","bbox_max_lat":"23.862417","bbox_min_lng":"58.004077","bbox_max_lng":"59.248252"},"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"}},"merchant":{"id":2,"owner_type":"App\\\\Models\\\\Hub","owner_id":1,"name":"Merchant","username":"merchant-dev","email":null,"country_code":"+968","phone":"01126785910","email_verified_at":null,"status":"active","google_id":null,"avatar":null,"firebase_uid":null,"apple_id":null,"phone_verified_at":null,"verification_code":null,"verification_code_expires_at":null,"created_at":"2026-09-05T06:45:11+00:00","updated_at":"2026-09-05T06:45:11+00:00","unassigned_last_seen_at":null,"unregistered_last_seen_at":null,"address_revision_last_seen_at":null,"deleted_at":null,"deleted_by":null,"timezone":null,"password_changed_at":"2026-08-30T00:00:00+00:00","allowed_environments":"live_only","active_environment":"live","failed_login_attempts":0,"locked_until":null,"merchant":{"id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"user_id":2,"address":"Test Address","lat":23.557791376911368,"lng":58.437488317871114,"currency":null,"facility_to_facility_fees":"20.00","created_at":"2026-09-05T06:45:11+00:00","updated_at":"2026-09-05T06:45:11+00:00","is_guest":false,"image":null,"deleted_at":null,"home_to_facility_fees":"0.000"}}}	127.0.0.1	Desktop Chrome	f	2026-09-10 09:29:50	2026-09-10 09:29:50
 25	1	create_shipment	App\\Models\\Shipment	23	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":2,"tracking_no":"PE100926841016","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":1,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-10T14:39:43+00:00","created_at":"2026-09-10T14:39:43+00:00","id":23,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"}}	127.0.0.1	Desktop Chrome	f	2026-09-10 14:39:43	2026-09-10 14:39:43
@@ -93922,6 +94155,8 @@ COPY public.user_actions (id, user_id, action_type, entity_type, entity_id, deta
 30	1	update_shipment	App\\Models\\Shipment	24	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":2,"tracking_no":"PE100926841162","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":1,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-10T14:45:35+00:00","created_at":"2026-09-10T14:45:33+00:00","id":24,"final_hub_type":"App\\\\Models\\\\Hub","final_hub_id":1,"zone_resolution_method":"state_mapping","from_hub_type":null,"from_hub_id":null,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"},"consignee":{"id":1,"name":"Ali merchant","email":"ali@gmail.com","country_key_cellphone":"968","cellphone":"909090","country_key_alternatePhone":"968","alternatePhone":"3434343","district":null,"identify":null,"taxNumber":null,"location":null,"address_update_url":"http:\\/\\/localhost\\/update-address\\/PE100926886225\\/L3YPrqmBBAJof4JeHZymRxY9CJ7SAtvBDlGzG7JG","update_token":"$2y$12$nXXww\\/ylTY9JZeaVslkQguqITr4IVGBWtGxl0LxQpw8\\/6V83ZLCbW","address_confirmed":false,"is_guest":false,"owner_type":null,"owner_id":null,"address_update_otp":"$2y$12$gDmXf9RkQ16YD2fOtrt\\/FOtED4nfCdSadyUX.XxHainUJgv\\/WkeWW","address_update_otp_expires_at":"2026-09-10T09:45:42+00:00","address_update_verified_at":null,"created_at":"2026-09-05T07:33:27+00:00","updated_at":"2026-09-10T09:30:45+00:00","current_address_id":1,"cellphone_hash":"06dc30c518d5c7ed4ed44ad653de60972eb502463809f733073354103444a281","current_address":{"id":1,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":true,"approved_at":"2026-09-10T06:48:16+00:00","approved_by":6,"times_used":1,"last_used_at":"2026-09-10T06:48:16+00:00","first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-05T07:33:29+00:00","updated_at":"2026-09-10T06:48:16+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"},"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":"23.4843516","anchor_lng":"58.7136627","anchor_extent_km":"42.57","bbox_min_lat":"23.342167","bbox_max_lat":"23.626536","bbox_min_lng":"58.573909","bbox_max_lng":"58.853417","polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":"23.3204474","anchor_lng":"58.6261646","anchor_extent_km":"175.12","bbox_min_lat":"22.778478","bbox_max_lat":"23.862417","bbox_min_lng":"58.004077","bbox_max_lng":"59.248252"}}},"delivery_address":{"id":1,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":true,"approved_at":"2026-09-10T06:48:16+00:00","approved_by":6,"times_used":1,"last_used_at":"2026-09-10T06:48:16+00:00","first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-05T07:33:29+00:00","updated_at":"2026-09-10T06:48:16+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":"23.4843516","anchor_lng":"58.7136627","anchor_extent_km":"42.57","bbox_min_lat":"23.342167","bbox_max_lat":"23.626536","bbox_min_lng":"58.573909","bbox_max_lng":"58.853417","polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":"23.3204474","anchor_lng":"58.6261646","anchor_extent_km":"175.12","bbox_min_lat":"22.778478","bbox_max_lat":"23.862417","bbox_min_lng":"58.004077","bbox_max_lng":"59.248252"},"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"}},"merchant":{"id":2,"owner_type":"App\\\\Models\\\\Hub","owner_id":1,"name":"Merchant","username":"merchant-dev","email":null,"country_code":"+968","phone":"01126785910","email_verified_at":null,"status":"active","google_id":null,"avatar":null,"firebase_uid":null,"apple_id":null,"phone_verified_at":null,"verification_code":null,"verification_code_expires_at":null,"created_at":"2026-09-05T06:45:11+00:00","updated_at":"2026-09-05T06:45:11+00:00","unassigned_last_seen_at":null,"unregistered_last_seen_at":null,"address_revision_last_seen_at":null,"deleted_at":null,"deleted_by":null,"timezone":null,"password_changed_at":"2026-08-30T00:00:00+00:00","allowed_environments":"live_only","active_environment":"live","failed_login_attempts":0,"locked_until":null,"merchant":{"id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"user_id":2,"address":"Test Address","lat":23.557791376911368,"lng":58.437488317871114,"currency":null,"facility_to_facility_fees":"20.00","created_at":"2026-09-05T06:45:11+00:00","updated_at":"2026-09-05T06:45:11+00:00","is_guest":false,"image":null,"deleted_at":null,"home_to_facility_fees":"0.000"}}}	127.0.0.1	Desktop Chrome	f	2026-09-10 14:45:35	2026-09-10 14:45:35
 31	1	create_shipment	App\\Models\\Shipment	25	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":2,"tracking_no":"PE100926006565","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":1,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-10T14:50:01+00:00","created_at":"2026-09-10T14:50:01+00:00","id":25,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"}}	127.0.0.1	Desktop Chrome	f	2026-09-10 14:50:01	2026-09-10 14:50:01
 32	1	update_shipment	App\\Models\\Shipment	25	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":2,"tracking_no":"PE100926006565","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":1,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-10T14:50:05+00:00","created_at":"2026-09-10T14:50:01+00:00","id":25,"final_hub_type":"App\\\\Models\\\\Hub","final_hub_id":1,"zone_resolution_method":"state_mapping","from_hub_type":null,"from_hub_id":null,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"},"consignee":{"id":1,"name":"Ali merchant","email":"ali@gmail.com","country_key_cellphone":"968","cellphone":"909090","country_key_alternatePhone":"968","alternatePhone":"3434343","district":null,"identify":null,"taxNumber":null,"location":null,"address_update_url":"http:\\/\\/localhost\\/update-address\\/PE100926841162\\/MeyrVavyD4xcnwdavFj1UwNXLTqGQgA5ICwIHMcb","update_token":"$2y$12$pzwb\\/NlLA.uB4Xeunm8TjOWTzqPTlJ7w1aBGKhbk22IGVKvVrZvb2","address_confirmed":false,"is_guest":false,"owner_type":null,"owner_id":null,"address_update_otp":"$2y$12$E9uprBfvbzX.Mo5Y2ES6OeMw1eiLaWxs1UvN1hmQx8cOO0CtNNfp2","address_update_otp_expires_at":"2026-09-10T15:02:20+00:00","address_update_verified_at":null,"created_at":"2026-09-05T07:33:27+00:00","updated_at":"2026-09-10T14:47:23+00:00","current_address_id":1,"cellphone_hash":"06dc30c518d5c7ed4ed44ad653de60972eb502463809f733073354103444a281","current_address":{"id":1,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":true,"approved_at":"2026-09-10T06:48:16+00:00","approved_by":6,"times_used":1,"last_used_at":"2026-09-10T06:48:16+00:00","first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-05T07:33:29+00:00","updated_at":"2026-09-10T06:48:16+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"},"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":"23.4843516","anchor_lng":"58.7136627","anchor_extent_km":"42.57","bbox_min_lat":"23.342167","bbox_max_lat":"23.626536","bbox_min_lng":"58.573909","bbox_max_lng":"58.853417","polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":"23.3204474","anchor_lng":"58.6261646","anchor_extent_km":"175.12","bbox_min_lat":"22.778478","bbox_max_lat":"23.862417","bbox_min_lng":"58.004077","bbox_max_lng":"59.248252"}}},"delivery_address":{"id":1,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":true,"approved_at":"2026-09-10T06:48:16+00:00","approved_by":6,"times_used":1,"last_used_at":"2026-09-10T06:48:16+00:00","first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-05T07:33:29+00:00","updated_at":"2026-09-10T06:48:16+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":"23.4843516","anchor_lng":"58.7136627","anchor_extent_km":"42.57","bbox_min_lat":"23.342167","bbox_max_lat":"23.626536","bbox_min_lng":"58.573909","bbox_max_lng":"58.853417","polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":"23.3204474","anchor_lng":"58.6261646","anchor_extent_km":"175.12","bbox_min_lat":"22.778478","bbox_max_lat":"23.862417","bbox_min_lng":"58.004077","bbox_max_lng":"59.248252"},"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"}},"merchant":{"id":2,"owner_type":"App\\\\Models\\\\Hub","owner_id":1,"name":"Merchant","username":"merchant-dev","email":null,"country_code":"+968","phone":"01126785910","email_verified_at":null,"status":"active","google_id":null,"avatar":null,"firebase_uid":null,"apple_id":null,"phone_verified_at":null,"verification_code":null,"verification_code_expires_at":null,"created_at":"2026-09-05T06:45:11+00:00","updated_at":"2026-09-05T06:45:11+00:00","unassigned_last_seen_at":null,"unregistered_last_seen_at":null,"address_revision_last_seen_at":null,"deleted_at":null,"deleted_by":null,"timezone":null,"password_changed_at":"2026-08-30T00:00:00+00:00","allowed_environments":"live_only","active_environment":"live","failed_login_attempts":0,"locked_until":null,"merchant":{"id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"user_id":2,"address":"Test Address","lat":23.557791376911368,"lng":58.437488317871114,"currency":null,"facility_to_facility_fees":"20.00","created_at":"2026-09-05T06:45:11+00:00","updated_at":"2026-09-05T06:45:11+00:00","is_guest":false,"image":null,"deleted_at":null,"home_to_facility_fees":"0.000"}}}	127.0.0.1	Desktop Chrome	f	2026-09-10 14:50:05	2026-09-10 14:50:05
+33	1	create_shipment	App\\Models\\Shipment	28	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":7,"tracking_no":"PE120926111802","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":4,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-12T09:46:00+00:00","created_at":"2026-09-12T09:46:00+00:00","id":28,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"}}	127.0.0.1	Desktop Chrome	f	2026-09-12 09:46:00	2026-09-12 09:46:00
+34	1	update_shipment	App\\Models\\Shipment	28	{"shipper_partner_id":1,"notes":"demo notes","payment_type":"COD","value":"9.000","merchant_id":7,"tracking_no":"PE120926111802","created_by":1,"consignee_id":1,"created_source":"dashboard","latitude":null,"longitude":null,"location_url":null,"delivery_address_id":4,"delivery_fee":"1.000","delivery_fee_before_discount":"1.000","delivery_fee_discount":"0.000","fee_payer":null,"customs_amount":"0.000","total_cod":"10.000","consignee_name":"Ali merchant","consignee_phone":"909090","product_code_id":null,"product_code":"PEX-COD-001","current_hub_type":"App\\\\Models\\\\Hub","current_hub_id":1,"updated_at":"2026-09-12T09:46:02+00:00","created_at":"2026-09-12T09:46:00+00:00","id":28,"final_hub_type":"App\\\\Models\\\\Hub","final_hub_id":1,"zone_resolution_method":"state_mapping","from_hub_type":null,"from_hub_id":null,"company":null,"customs_blocking":false,"actionability":"ACTIONABLE","owner_data":{"id":1,"name":"Muscat Hub","type":"hub"},"consignee":{"id":1,"name":"Ali merchant","email":"ali@gmail.com","country_key_cellphone":"968","cellphone":"909090","country_key_alternatePhone":"968","alternatePhone":"3434343","district":null,"identify":null,"taxNumber":null,"location":null,"address_update_url":"http:\\/\\/localhost\\/update-address\\/PE100926006565\\/H7lzkKTh6EvsEeEriZAk7oZ6LlhrqD9hRtPSQsK0","update_token":"$2y$12$7xxVBmU7ndQIhWR6knu6ruQVVw8B8LcALtTGjdQT7TBytsMr58L\\/O","address_confirmed":false,"is_guest":false,"owner_type":null,"owner_id":null,"address_update_otp":"$2y$12$4qYPz6AUap7u9\\/QyqBlLzu6AYgE2Z2pXzj8gAg8iaFmyX5ICjCYiS","address_update_otp_expires_at":"2026-09-10T15:07:53+00:00","address_update_verified_at":null,"created_at":"2026-09-05T07:33:27+00:00","updated_at":"2026-09-12T09:45:59+00:00","current_address_id":4,"cellphone_hash":"06dc30c518d5c7ed4ed44ad653de60972eb502463809f733073354103444a281","current_address":{"id":4,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":false,"approved_at":null,"approved_by":null,"times_used":0,"last_used_at":null,"first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-10T09:32:03+00:00","updated_at":"2026-09-10T09:32:03+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"},"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":"23.4843516","anchor_lng":"58.7136627","anchor_extent_km":"42.57","bbox_min_lat":"23.342167","bbox_max_lat":"23.626536","bbox_min_lng":"58.573909","bbox_max_lng":"58.853417","polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":"23.3204474","anchor_lng":"58.6261646","anchor_extent_km":"175.12","bbox_min_lat":"22.778478","bbox_max_lat":"23.862417","bbox_min_lng":"58.004077","bbox_max_lng":"59.248252"}}},"delivery_address":{"id":4,"consignee_id":1,"country_id":165,"governorate_id":1,"state_id":1,"place_id":1,"city_id":1,"zipcode":"23232","streetAddress":"Demo address","longitude":null,"latitude":null,"location_url":null,"label":null,"approved":false,"approved_at":null,"approved_by":null,"times_used":0,"last_used_at":null,"first_approved_shipment_id":null,"is_active":false,"address_signature":null,"deleted_at":null,"created_at":"2026-09-10T09:32:03+00:00","updated_at":"2026-09-10T09:32:03+00:00","is_verified":false,"verification_method":null,"proof_url":null,"proof_note":null,"verified_at":null,"address_2":null,"state":{"id":1,"country_id":165,"governorate_id":1,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637\\u00a0","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23T00:15:46+00:00","updated_at":"2025-02-23T00:20:31+00:00","anchor_lat":"23.4843516","anchor_lng":"58.7136627","anchor_extent_km":"42.57","bbox_min_lat":"23.342167","bbox_max_lat":"23.626536","bbox_min_lng":"58.573909","bbox_max_lng":"58.853417","polygon":null},"governorate":{"id":1,"country_id":165,"en_name":"Muscat","ar_name":"\\u0645\\u0633\\u0642\\u0637","lat":"23.58803070","lng":"58.38287170","is_active":true,"created_at":"2025-02-23 00:15:46","updated_at":"2025-02-23T00:19:38+00:00","sla_tier_id":1,"anchor_lat":"23.3204474","anchor_lng":"58.6261646","anchor_extent_km":"175.12","bbox_min_lat":"22.778478","bbox_max_lat":"23.862417","bbox_min_lng":"58.004077","bbox_max_lng":"59.248252"},"place":{"id":1,"state_id":1,"en_name":"Al Bustan","ar_name":"\\u0627\\u0644\\u0628\\u0633\\u062a\\u0627\\u0646","lat":null,"lng":null,"is_active":true,"created_at":"2025-02-23T05:59:49+00:00","updated_at":"2025-02-23T05:59:49+00:00"}},"merchant":{"id":7,"owner_type":"App\\\\Models\\\\Hub","owner_id":1,"name":"driver5","username":"4445driver7795","email":null,"country_code":"+20","phone":"1205034445","email_verified_at":null,"status":"active","google_id":null,"avatar":null,"firebase_uid":null,"apple_id":null,"phone_verified_at":null,"verification_code":null,"verification_code_expires_at":null,"created_at":"2026-09-10T14:44:01+00:00","updated_at":"2026-09-10T14:46:54+00:00","unassigned_last_seen_at":null,"unregistered_last_seen_at":null,"address_revision_last_seen_at":null,"deleted_at":null,"deleted_by":null,"timezone":"Asia\\/Muscat","password_changed_at":"2026-08-30T00:00:00+00:00","allowed_environments":"live_only","active_environment":"live","failed_login_attempts":0,"locked_until":null,"merchant":null}}	127.0.0.1	Desktop Chrome	f	2026-09-12 09:46:02	2026-09-12 09:46:02
 \.
 
 
@@ -93937,6 +94172,7 @@ COPY public.users (id, owner_type, owner_id, name, username, email, country_code
 5	\N	\N	name1	\N	ibrahim5@gmail.com	+20	1126785910	\N	active	$2y$12$INkPxobABsiFcg70y9m.TOMg8lUDys.jCUQYpj1pbLLFL5SV.x0S.	\N	\N	\N	\N	\N	$2y$12$y2cJIe79GIPTf/w2.kl/Ru2fBHz.1EvbB27fEjdRdw7H/Go4Sj1AK	2026-09-07 07:29:39	\N	2026-09-07 07:27:33	2026-09-07 07:27:40	\N	\N	\N	\N	\N	\N	2026-08-30 00:00:00	live_only	live	0	\N
 6	App\\Models\\Hub	1	driver2	4444driver7797	\N	+20	1205034444	\N	active	$2y$12$INkPxobABsiFcg70y9m.TOMg8lUDys.jCUQYpj1pbLLFL5SV.x0S.	\N	\N	\N	\N	\N	\N	\N	\N	2026-09-09 14:09:54	2026-09-09 14:12:01	\N	\N	\N	\N	\N	Asia/Muscat	2026-08-30 00:00:00	live_only	live	0	\N
 7	App\\Models\\Hub	1	driver5	4445driver7795	\N	+20	1205034445	\N	active	$2y$12$INkPxobABsiFcg70y9m.TOMg8lUDys.jCUQYpj1pbLLFL5SV.x0S.	\N	\N	\N	\N	\N	\N	\N	\N	2026-09-10 14:44:01	2026-09-10 14:46:54	\N	\N	\N	\N	\N	Asia/Muscat	2026-08-30 00:00:00	live_only	live	0	\N
+8	App\\Models\\Hub	1	driver1	4446driver7796	\N	+20	1205034446	\N	active	$2y$12$INkPxobABsiFcg70y9m.TOMg8lUDys.jCUQYpj1pbLLFL5SV.x0S.	\N	\N	\N	\N	\N	\N	\N	\N	2026-09-12 09:49:19	2026-09-12 09:51:04	\N	\N	\N	\N	\N	Asia/Muscat	2026-08-30 00:00:00	live_only	live	0	\N
 \.
 
 
@@ -94163,6 +94399,7 @@ COPY public.zone_shipments (id, owner_type, owner_id, zone_id, shipment_tracking
 14	\N	\N	1	PE100926841162	2026-09-10 14:46:18	2026-09-10 14:46:18
 15	\N	\N	1	PE100926006565	2026-09-10 14:50:47	2026-09-10 14:50:47
 16	\N	\N	1	PE100926238825	2026-09-10 16:05:02	2026-09-10 16:05:02
+17	\N	\N	1	PE120926111802	2026-09-12 09:47:19	2026-09-12 09:47:19
 \.
 
 
@@ -96244,7 +96481,7 @@ COPY sandbox.shipment_amounts (id, shipment_id, amount, display, scale, "doubleD
 -- Data for Name: shipment_deliveries; Type: TABLE DATA; Schema: sandbox; Owner: postgres
 --
 
-COPY sandbox.shipment_deliveries (id, shipment_id, ofd_count, status, driver_call_count, future_delivery_date, deliver_later_until, deliver_later_reason, payment_bank_transfer, payment_cash, proof, delivery_lat, delivery_lng, note, correct_address_link, delivery_otp, otp_generated_at, otp_attempts, otp_verified_address_tokens, otp_verified, created_at, updated_at, delivery_confirm_token_hash, delivery_confirm_token_expires_at) FROM stdin;
+COPY sandbox.shipment_deliveries (id, shipment_id, ofd_count, status, driver_call_count, future_delivery_date, deliver_later_until, deliver_later_reason, payment_bank_transfer, payment_cash, proof, delivery_lat, delivery_lng, note, correct_address_link, delivery_otp, otp_generated_at, otp_attempts, otp_verified_address_tokens, otp_verified, created_at, updated_at, delivery_confirm_token_hash, delivery_confirm_token_expires_at, idempotency_key) FROM stdin;
 \.
 
 
@@ -96253,6 +96490,14 @@ COPY sandbox.shipment_deliveries (id, shipment_id, ofd_count, status, driver_cal
 --
 
 COPY sandbox.shipment_delivery_partner_assignments (id, shipment_id, delivery_partner_id, assigned_at, handed_over_at, completed_at, status, cost_agreed, cod_to_collect, tracking_reference, created_at, updated_at, delivered_at, notes) FROM stdin;
+\.
+
+
+--
+-- Data for Name: shipment_exception_submissions; Type: TABLE DATA; Schema: sandbox; Owner: postgres
+--
+
+COPY sandbox.shipment_exception_submissions (id, shipment_id, idempotency_key, delivery_exception, user_id, created_at) FROM stdin;
 \.
 
 
@@ -96657,7 +96902,7 @@ SELECT pg_catalog.setval('public.access_scopes_id_seq', 1, false);
 -- Name: accounts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.accounts_id_seq', 8, true);
+SELECT pg_catalog.setval('public.accounts_id_seq', 9, true);
 
 
 --
@@ -96671,7 +96916,7 @@ SELECT pg_catalog.setval('public.activity_logs_id_seq', 1, false);
 -- Name: address_update_links_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.address_update_links_id_seq', 11, true);
+SELECT pg_catalog.setval('public.address_update_links_id_seq', 12, true);
 
 
 --
@@ -96741,7 +96986,7 @@ SELECT pg_catalog.setval('public.audit_events_failed_id_seq', 1, false);
 -- Name: audit_events_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.audit_events_id_seq', 264, true);
+SELECT pg_catalog.setval('public.audit_events_id_seq', 276, true);
 
 
 --
@@ -97175,7 +97420,7 @@ SELECT pg_catalog.setval('public.driver_bonus_templates_id_seq', 1, false);
 -- Name: driver_bonuses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.driver_bonuses_id_seq', 252, true);
+SELECT pg_catalog.setval('public.driver_bonuses_id_seq', 315, true);
 
 
 --
@@ -97273,7 +97518,7 @@ SELECT pg_catalog.setval('public.driver_relatives_id_seq', 1, false);
 -- Name: driver_runsheet_shipments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.driver_runsheet_shipments_id_seq', 12, true);
+SELECT pg_catalog.setval('public.driver_runsheet_shipments_id_seq', 13, true);
 
 
 --
@@ -97287,14 +97532,14 @@ SELECT pg_catalog.setval('public.driver_runsheet_submissions_id_seq', 1, false);
 -- Name: driver_runsheets_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.driver_runsheets_id_seq', 4, true);
+SELECT pg_catalog.setval('public.driver_runsheets_id_seq', 5, true);
 
 
 --
 -- Name: driver_settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.driver_settings_id_seq', 4, true);
+SELECT pg_catalog.setval('public.driver_settings_id_seq', 5, true);
 
 
 --
@@ -97308,7 +97553,7 @@ SELECT pg_catalog.setval('public.driver_settlement_batches_id_seq', 1, false);
 -- Name: driver_shipment_assignments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.driver_shipment_assignments_id_seq', 10, true);
+SELECT pg_catalog.setval('public.driver_shipment_assignments_id_seq', 11, true);
 
 
 --
@@ -97350,7 +97595,7 @@ SELECT pg_catalog.setval('public.driver_waybills_id_seq', 1, false);
 -- Name: drivers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.drivers_id_seq', 4, true);
+SELECT pg_catalog.setval('public.drivers_id_seq', 5, true);
 
 
 --
@@ -97616,14 +97861,14 @@ SELECT pg_catalog.setval('public.loans_id_seq', 1, false);
 -- Name: login_histories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.login_histories_id_seq', 73, true);
+SELECT pg_catalog.setval('public.login_histories_id_seq', 80, true);
 
 
 --
 -- Name: logins_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.logins_id_seq', 83, true);
+SELECT pg_catalog.setval('public.logins_id_seq', 87, true);
 
 
 --
@@ -97784,7 +98029,7 @@ SELECT pg_catalog.setval('public.merchant_tickets_id_seq', 1, false);
 -- Name: merchant_transactions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.merchant_transactions_id_seq', 14, true);
+SELECT pg_catalog.setval('public.merchant_transactions_id_seq', 15, true);
 
 
 --
@@ -97812,14 +98057,14 @@ SELECT pg_catalog.setval('public.merchants_id_seq', 1, true);
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 649, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 652, true);
 
 
 --
 -- Name: notifications_auto_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.notifications_auto_id_seq', 7, true);
+SELECT pg_catalog.setval('public.notifications_auto_id_seq', 8, true);
 
 
 --
@@ -98043,7 +98288,7 @@ SELECT pg_catalog.setval('public.permissions_id_seq', 1101, true);
 -- Name: personal_access_tokens_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.personal_access_tokens_id_seq', 136, true);
+SELECT pg_catalog.setval('public.personal_access_tokens_id_seq', 147, true);
 
 
 --
@@ -98267,7 +98512,7 @@ SELECT pg_catalog.setval('public.shipment_cs_timeline_id_seq', 2, true);
 -- Name: shipment_deliveries_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shipment_deliveries_id_seq', 18, true);
+SELECT pg_catalog.setval('public.shipment_deliveries_id_seq', 19, true);
 
 
 --
@@ -98275,6 +98520,13 @@ SELECT pg_catalog.setval('public.shipment_deliveries_id_seq', 18, true);
 --
 
 SELECT pg_catalog.setval('public.shipment_delivery_partner_assignments_id_seq', 1, false);
+
+
+--
+-- Name: shipment_exception_submissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.shipment_exception_submissions_id_seq', 1, false);
 
 
 --
@@ -98288,14 +98540,14 @@ SELECT pg_catalog.setval('public.shipment_fee_allocation_others_id_seq', 1, fals
 -- Name: shipment_fee_allocations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shipment_fee_allocations_id_seq', 13, true);
+SELECT pg_catalog.setval('public.shipment_fee_allocations_id_seq', 14, true);
 
 
 --
 -- Name: shipment_finances_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shipment_finances_id_seq', 14, true);
+SELECT pg_catalog.setval('public.shipment_finances_id_seq', 15, true);
 
 
 --
@@ -98330,7 +98582,7 @@ SELECT pg_catalog.setval('public.shipment_fulfillment_reports_id_seq', 1, false)
 -- Name: shipment_histories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shipment_histories_id_seq', 104, true);
+SELECT pg_catalog.setval('public.shipment_histories_id_seq', 118, true);
 
 
 --
@@ -98344,7 +98596,7 @@ SELECT pg_catalog.setval('public.shipment_history_archive_id_seq', 1, false);
 -- Name: shipment_information_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shipment_information_id_seq', 18, true);
+SELECT pg_catalog.setval('public.shipment_information_id_seq', 19, true);
 
 
 --
@@ -98386,7 +98638,7 @@ SELECT pg_catalog.setval('public.shipment_rules_id_seq', 1, false);
 -- Name: shipment_sla_clocks_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shipment_sla_clocks_id_seq', 6, true);
+SELECT pg_catalog.setval('public.shipment_sla_clocks_id_seq', 7, true);
 
 
 --
@@ -98421,7 +98673,7 @@ SELECT pg_catalog.setval('public.shipment_zone_exceptions_id_seq', 1, false);
 -- Name: shipments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shipments_id_seq', 27, true);
+SELECT pg_catalog.setval('public.shipments_id_seq', 28, true);
 
 
 --
@@ -98547,7 +98799,7 @@ SELECT pg_catalog.setval('public.tickets_id_seq', 1, false);
 -- Name: transactions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.transactions_id_seq', 32, true);
+SELECT pg_catalog.setval('public.transactions_id_seq', 34, true);
 
 
 --
@@ -98631,14 +98883,14 @@ SELECT pg_catalog.setval('public.units_id_seq', 2, true);
 -- Name: user_actions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_actions_id_seq', 32, true);
+SELECT pg_catalog.setval('public.user_actions_id_seq', 36, true);
 
 
 --
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 7, true);
+SELECT pg_catalog.setval('public.users_id_seq', 8, true);
 
 
 --
@@ -98729,7 +98981,7 @@ SELECT pg_catalog.setval('public.workspace_settings_id_seq', 1, false);
 -- Name: zone_shipments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.zone_shipments_id_seq', 16, true);
+SELECT pg_catalog.setval('public.zone_shipments_id_seq', 17, true);
 
 
 --
@@ -99878,6 +100130,13 @@ SELECT pg_catalog.setval('sandbox.shipment_deliveries_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('sandbox.shipment_delivery_partner_assignments_id_seq', 1, false);
+
+
+--
+-- Name: shipment_exception_submissions_id_seq; Type: SEQUENCE SET; Schema: sandbox; Owner: postgres
+--
+
+SELECT pg_catalog.setval('sandbox.shipment_exception_submissions_id_seq', 1, false);
 
 
 --
@@ -102946,6 +103205,22 @@ ALTER TABLE ONLY public.shipment_delivery_partner_assignments
 
 
 --
+-- Name: shipment_exception_submissions shipment_exception_submissions_key_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.shipment_exception_submissions
+    ADD CONSTRAINT shipment_exception_submissions_key_unique UNIQUE (shipment_id, idempotency_key);
+
+
+--
+-- Name: shipment_exception_submissions shipment_exception_submissions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.shipment_exception_submissions
+    ADD CONSTRAINT shipment_exception_submissions_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: shipment_fee_allocation_others shipment_fee_allocation_others_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -105623,6 +105898,22 @@ ALTER TABLE ONLY sandbox.shipment_delivery_partner_assignments
 
 ALTER TABLE ONLY sandbox.shipment_delivery_partner_assignments
     ADD CONSTRAINT shipment_delivery_partner_assignments_shipment_id_unique UNIQUE (shipment_id);
+
+
+--
+-- Name: shipment_exception_submissions shipment_exception_submissions_key_unique; Type: CONSTRAINT; Schema: sandbox; Owner: postgres
+--
+
+ALTER TABLE ONLY sandbox.shipment_exception_submissions
+    ADD CONSTRAINT shipment_exception_submissions_key_unique UNIQUE (shipment_id, idempotency_key);
+
+
+--
+-- Name: shipment_exception_submissions shipment_exception_submissions_pkey; Type: CONSTRAINT; Schema: sandbox; Owner: postgres
+--
+
+ALTER TABLE ONLY sandbox.shipment_exception_submissions
+    ADD CONSTRAINT shipment_exception_submissions_pkey PRIMARY KEY (id);
 
 
 --
@@ -115622,5 +115913,5 @@ GRANT SELECT,REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE sandbox.zones TO post
 -- PostgreSQL database dump complete
 --
 
-\unrestrict RpqMXEMQeaVlVSfydeRxXijPyvpqW4urAB4avi6lUWtAnHrrLaWqF8eoTVSrVMc
+\unrestrict g2Yh7VVxv84psXDsgQ0KIPzqZcpADHaNL7pfy9LdDUlPKp0W4TgPX4nVTDQhNXf
 
