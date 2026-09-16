@@ -897,7 +897,7 @@ public function queryMatching(Request $request)
     $db_credential_id = $request->query('db_credential_id');
 
     $queries = Query::where('d_b_credential_id', $db_credential_id)
-        ->where('query', 'like', "%{$keyword}%")
+        ->where('title', 'like', "%{$keyword}%")
         ->get();
 
     return response()->json([
