@@ -109,7 +109,8 @@ Route::post('/postFunction', [ActionController::class, 'postFunction']);
     Route::get('/get/searches/{id?}', [DatabaseController::class, 'getSearches'])->name('searches.get');
     Route::delete('/delete/search/{id}', [DatabaseController::class, 'deleteSearch'])->name('search.delete');
     Route::get('/databases/info/{dbname}/{namedb}', [DatabaseController::class, 'getDatabase']);
-
+    Route::post('/matching/queries', [DatabaseController::class, 'queryMatching']);
+      
 });
 
 }
