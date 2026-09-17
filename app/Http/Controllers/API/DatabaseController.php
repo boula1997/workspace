@@ -25,6 +25,7 @@ use App\Models\Task;
 use App\Models\DBCredential;
 use App\Models\Difference;
 use Spatie\Permission\Models\Role;
+use App\Scopes\ActiveScope;
 
 
 use App\Models\Gallery;
@@ -891,13 +892,16 @@ public function getDifferences(Request $request)
     }
 }
 
+
 public function queryMatching(Request $request)
 {
     $keyword = $request->query('keyword');
     $db_credential_id = $request->query('db_credential_id');
 
-    $queries = Query::where('d_b_credential_id', $db_credential_id)
-        ->where('title', 'like', "%{$keyword}%")->latest()
+    $queries = Query::withoutGlobalScope(ActiveScope::class)
+        ->where('d_b_credential_id', $db_credential_id)
+        ->where('title', 'like', "%{$keyword}%")
+        ->latest()
         ->get();
 
     return response()->json([
