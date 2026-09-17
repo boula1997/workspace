@@ -906,6 +906,127 @@ public function queryMatching(Request $request)
     ]);
 }
 
+/**
+ * Tab-triggered table/column suggestions, resolved live against the
+ * target database's information_schema (never a client-cached schema).
+ *
+ * Query params:
+ *   - keyword        (optional) partial text typed after the last token
+ *   - credential_id  (required) which DB credential to connect through
+ *   - database_name  (required) which database/schema to inspect
+ *   - table          (optional) raw table token detected in the query text;
+ *                     when present, column suggestions are scoped to it
+ *                     (with exact/plural resolution done here) and table
+ *                     suggestions are skipped
+ *   - limit          (optional, default 20, max 100)
+ */
+public function schemaMatching(Request $request)
+{
+    $keyword = trim((string) $request->query('keyword', ''));
+    $credentialId = $request->query('credential_id');
+    $databaseName = $request->query('database_name');
+    $table = $request->query('table');
+    $limit = (int) $request->query('limit', 20);
+    if ($limit <= 0 || $limit > 100) {
+        $limit = 20;
+    }
+
+    if (!$databaseName) {
+        return response()->json([
+            'success' => false,
+            'error' => 'database_name is required',
+        ], 422);
+    }
+
+    try {
+        self::setDynamicConnection($databaseName, $credentialId);
+
+        $driver = DB::connection('dynamic')->getDriverName();
+        $schemaName = $driver === 'pgsql'
+            ? (config('database.connections.dynamic.schema') ?? 'public')
+            : $databaseName;
+
+        // ── Resolve the raw table token typed by the user against the
+        // real schema (exact match, then plural fallback) so the frontend
+        // no longer needs a locally cached table list to do this. ──
+        $resolvedTable = null;
+        if ($table) {
+            $found = DB::connection('dynamic')->selectOne(
+                'SELECT table_name AS "TABLE_NAME" FROM information_schema.tables
+                 WHERE table_schema = ? AND LOWER(table_name) = LOWER(?) LIMIT 1',
+                [$schemaName, $table]
+            );
+
+            if (!$found) {
+                $found = DB::connection('dynamic')->selectOne(
+                    'SELECT table_name AS "TABLE_NAME" FROM information_schema.tables
+                     WHERE table_schema = ? AND LOWER(table_name) = LOWER(?) LIMIT 1',
+                    [$schemaName, $table . 's']
+                );
+            }
+
+            $resolvedTable = $found->TABLE_NAME ?? $table;
+        }
+
+        // ---- Table suggestions (skipped once a table is already scoped) ----
+        $tables = [];
+        if (!$resolvedTable) {
+            $tableSql = 'SELECT table_name AS "TABLE_NAME" FROM information_schema.tables WHERE table_schema = ?';
+            $tableParams = [$schemaName];
+
+            if ($keyword !== '') {
+                $tableSql .= ' AND table_name LIKE ?';
+                $tableParams[] = "%{$keyword}%";
+            }
+
+            $tableSql .= ' ORDER BY table_name LIMIT ' . $limit;
+
+            $tableRows = DB::connection('dynamic')->select($tableSql, $tableParams);
+            $tables = array_values(array_map(fn ($t) => $t->TABLE_NAME, $tableRows));
+        }
+
+        // ---- Column suggestions (scoped to $resolvedTable when present) ----
+        $columnSql = 'SELECT column_name AS "COLUMN_NAME", table_name AS "TABLE_NAME", data_type AS "DATA_TYPE"
+                       FROM information_schema.columns
+                       WHERE table_schema = ?';
+        $columnParams = [$schemaName];
+
+        if ($resolvedTable) {
+            $columnSql .= ' AND table_name = ?';
+            $columnParams[] = $resolvedTable;
+        }
+
+        if ($keyword !== '') {
+            $columnSql .= ' AND column_name LIKE ?';
+            $columnParams[] = "%{$keyword}%";
+        }
+
+        $columnSql .= ' ORDER BY table_name, column_name LIMIT ' . $limit;
+
+        $columnRows = DB::connection('dynamic')->select($columnSql, $columnParams);
+        $columns = array_map(function ($c) {
+            return [
+                'table'  => $c->TABLE_NAME,
+                'column' => $c->COLUMN_NAME,
+                'type'   => $c->DATA_TYPE,
+                'value'  => $c->TABLE_NAME . '.' . $c->COLUMN_NAME,
+            ];
+        }, $columnRows);
+
+        return response()->json([
+            'success'      => true,
+            'tables'       => $tables,
+            'columns'      => $columns,
+            'scoped_table' => $resolvedTable,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
 
 
 
