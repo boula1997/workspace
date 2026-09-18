@@ -718,7 +718,7 @@ public function getQueries($id = null)
         $all = Query::where('d_b_credential_id', $id)
             ->select('id','title')
             ->latest('updated_at')
-            ->take(1000)
+            ->take(20)
             ->get();
 
         $queries = $all->merge($fixed)->unique('id')->values();
