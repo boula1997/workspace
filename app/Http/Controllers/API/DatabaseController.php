@@ -707,6 +707,220 @@ public function getDatabase($dbname, $namedb)
 
 
 
+/**
+ * LIGHTWEIGHT: just table names + row counts, no columns/FKs/timestamps.
+ * This is what the mobile app should load on screen open instead of getDatabase().
+ */
+public function getTablesList($dbname, $namedb)
+{
+    try {
+        self::setDynamicConnection($namedb, $dbname);
+
+        $driver = DB::connection('dynamic')->getDriverName();
+        $schemaName = $driver === 'pgsql'
+            ? (config('database.connections.dynamic.schema') ?? 'public')
+            : $namedb;
+
+        $tables = DB::connection('dynamic')->select(
+            'SELECT table_name AS "TABLE_NAME", table_type AS "TABLE_TYPE"
+             FROM information_schema.tables WHERE table_schema = ? ORDER BY table_name',
+            [$schemaName]
+        );
+
+        $results = [];
+        foreach ($tables as $t) {
+            $rowCount = null;
+            if (($t->TABLE_TYPE ?? 'BASE TABLE') !== 'VIEW') {
+                try {
+                    $rowCount = DB::connection('dynamic')->table($t->TABLE_NAME)->count();
+                } catch (\Exception $e) {
+                    $rowCount = null; // e.g. broken view treated as base table
+                }
+            }
+            $results[] = [
+                'table_name' => $t->TABLE_NAME,
+                'table_type' => $t->TABLE_TYPE ?? 'BASE TABLE',
+                'row_count'  => $rowCount,
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'tables'  => $results,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to load table list: ' . $e->getMessage(),
+        ], 500);
+    }
+}
+
+/**
+ * SEARCH: server-side LIKE match against table + column names.
+ * Returns only matching tables (with their matching/relevant columns),
+ * never the whole schema. Used for the search box / autocomplete.
+ */
+public function searchSchema(Request $request, $dbname, $namedb)
+{
+    $term = trim((string) $request->query('q', ''));
+    $limit = min((int) $request->query('limit', 30), 100);
+
+    if ($term === '') {
+        return response()->json(['success' => true, 'tables' => []]);
+    }
+
+    try {
+        self::setDynamicConnection($namedb, $dbname);
+
+        $driver = DB::connection('dynamic')->getDriverName();
+        $schemaName = $driver === 'pgsql'
+            ? (config('database.connections.dynamic.schema') ?? 'public')
+            : $namedb;
+
+        $like = '%' . str_replace(['%', '_'], ['\\%', '\\_'], $term) . '%';
+
+        // Tables whose name matches directly
+        $matchingTables = DB::connection('dynamic')->select(
+            'SELECT DISTINCT table_name AS "TABLE_NAME" FROM information_schema.tables
+             WHERE table_schema = ? AND table_name LIKE ? ORDER BY table_name LIMIT ?',
+            [$schemaName, $like, $limit]
+        );
+
+        // Columns whose name matches (pulls in their parent tables too)
+        $matchingColumns = DB::connection('dynamic')->select(
+            'SELECT table_name AS "TABLE_NAME", column_name AS "COLUMN_NAME" FROM information_schema.columns
+             WHERE table_schema = ? AND column_name LIKE ? ORDER BY table_name, column_name LIMIT ?',
+            [$schemaName, $like, $limit * 5]
+        );
+
+        $tableNames = collect($matchingTables)->pluck('TABLE_NAME')
+            ->merge(collect($matchingColumns)->pluck('TABLE_NAME'))
+            ->unique()
+            ->take($limit)
+            ->values();
+
+        $results = [];
+        foreach ($tableNames as $tableName) {
+            $columns = DB::connection('dynamic')->select(
+                'SELECT column_name AS "Field" FROM information_schema.columns
+                 WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position',
+                [$schemaName, $tableName]
+            );
+
+            $results[] = [
+                'table_name' => $tableName,
+                'matched_columns' => collect($matchingColumns)
+                    ->where('TABLE_NAME', $tableName)
+                    ->pluck('COLUMN_NAME')
+                    ->values(),
+                'columns' => collect($columns)->pluck('Field')->values(),
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'tables'  => $results,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Search failed: ' . $e->getMessage(),
+        ], 500);
+    }
+}
+
+/**
+ * Full detail (columns + FKs) for exactly ONE table.
+ * Called lazily when the user expands a table in the UI.
+ */
+public function getTableDetail($dbname, $namedb, $tableName)
+{
+    try {
+        self::setDynamicConnection($namedb, $dbname);
+
+        $driver = DB::connection('dynamic')->getDriverName();
+        $schemaName = $driver === 'pgsql'
+            ? (config('database.connections.dynamic.schema') ?? 'public')
+            : $namedb;
+
+        if (!Schema::connection('dynamic')->hasTable($tableName)) {
+            return response()->json(['success' => false, 'message' => 'Table not found'], 404);
+        }
+
+        if ($driver === 'pgsql') {
+            $columns = DB::connection('dynamic')->select("
+                SELECT column_name AS \"Field\",
+                    data_type || CASE
+                        WHEN character_maximum_length IS NOT NULL THEN '(' || character_maximum_length || ')'
+                        WHEN numeric_precision IS NOT NULL AND numeric_scale IS NOT NULL THEN '(' || numeric_precision || ',' || numeric_scale || ')'
+                        ELSE ''
+                    END AS \"Type\",
+                    is_nullable AS \"Null\", '' AS \"Key\", column_default AS \"Default\", '' AS \"Extra\"
+                FROM information_schema.columns
+                WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position
+            ", [$schemaName, $tableName]);
+
+            $foreignKeys = DB::connection('dynamic')->select("
+                SELECT kcu.column_name AS \"COLUMN_NAME\",
+                    ccu.table_name AS \"REFERENCED_TABLE_NAME\",
+                    ccu.column_name AS \"REFERENCED_COLUMN_NAME\"
+                FROM information_schema.table_constraints tc
+                JOIN information_schema.key_column_usage kcu
+                    ON tc.constraint_name = kcu.constraint_name AND tc.table_schema = kcu.table_schema
+                JOIN information_schema.constraint_column_usage ccu
+                    ON tc.constraint_name = ccu.constraint_name AND tc.table_schema = ccu.table_schema
+                WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_schema = ? AND tc.table_name = ?
+            ", [$schemaName, $tableName]);
+        } else {
+            $columns = DB::connection('dynamic')->select("
+                SELECT column_name AS `Field`, column_type AS `Type`, is_nullable AS `Null`,
+                    column_key AS `Key`, column_default AS `Default`, extra AS `Extra`
+                FROM information_schema.columns
+                WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position
+            ", [$schemaName, $tableName]);
+
+            $foreignKeys = DB::connection('dynamic')->select("
+                SELECT COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
+                FROM information_schema.KEY_COLUMN_USAGE
+                WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL
+            ", [$schemaName, $tableName]);
+        }
+
+        $fkLookup = [];
+        foreach ($foreignKeys as $fk) {
+            $fkLookup[$fk->COLUMN_NAME] = $fk->REFERENCED_TABLE_NAME;
+        }
+
+        $rowCount = DB::connection('dynamic')->table($tableName)->count();
+
+        $columnsOut = array_map(function ($col) use ($fkLookup) {
+            return [
+                'Field' => $col->Field,
+                'Type' => $col->Type,
+                'Null' => $col->Null,
+                'Key' => $col->Key ?? '',
+                'Default' => $col->Default,
+                'Extra' => $col->Extra ?? '',
+                'IS_FOREIGN_KEY' => isset($fkLookup[$col->Field]),
+                'REFERENCED_TABLE' => $fkLookup[$col->Field] ?? null,
+            ];
+        }, $columns);
+
+        return response()->json([
+            'success' => true,
+            'table_name' => $tableName,
+            'row_count' => $rowCount,
+            'columns' => $columnsOut,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to load table detail: ' . $e->getMessage(),
+        ], 500);
+    }
+}
+
 public function getQueries($id = null)
 {
     try {
