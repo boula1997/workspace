@@ -117,6 +117,7 @@ class FileSearchController extends Controller
         $dbType       = null;
         $currentTable = null;
         $lineIndex    = 0;
+        $inCopy       = false; // true while inside a pg_dump "COPY ... FROM stdin;" data block
 
         while (($rawLine = fgets($handle)) !== false) {
             $lineText = rtrim($rawLine, "\r\n");
@@ -131,9 +132,24 @@ class FileSearchController extends Controller
                 }
             }
 
-            $detected = $this->detectTableName($lineText);
-            if ($detected !== null) {
-                $currentTable = $detected;
+            // Inside a pg_dump COPY block every line up to the "\." terminator is
+            // raw row data, not SQL. Never look for table names in it: a row whose
+            // text says "... revoked from driver: Ahmed" would otherwise be read as
+            // "FROM driver" and switch the current table to "driver" for every row
+            // that follows, so keyword hits get attributed to the wrong table.
+            if ($inCopy) {
+                if ($lineText === '\\.') {
+                    $inCopy = false;
+                }
+            } else {
+                $detected = $this->detectTableName($lineText);
+                if ($detected !== null) {
+                    $currentTable = $detected;
+                }
+
+                if (preg_match('/^COPY\s+\S+.*\bFROM\s+stdin\b/i', $lineText)) {
+                    $inCopy = true;
+                }
             }
 
             foreach ($terms as &$term) {
@@ -143,7 +159,7 @@ class FileSearchController extends Controller
 
                 $term['count'] += count($m[0]);
 
-                $truncated = $this->truncateToTableName($lineText);
+                $truncated = mb_strimwidth($this->truncateToTableName($lineText), 0, 120, '…');
 
                 foreach ($m[0] as $match) {
                     $offset      = $match[1];
@@ -269,7 +285,8 @@ class FileSearchController extends Controller
         $line = trim($lineText);
 
         // Table name: optional schema prefix (Postgres), optional backticks/quotes.
-        $schemaAndTable = '(?:[A-Za-z0-9_]+\.)?`?"?([A-Za-z0-9_]+)`?"?';
+        // Handles users, public.users, `users`, "users" and "public"."users".
+        $schemaAndTable = '(?:[`"]?[A-Za-z0-9_]+[`"]?\.)?[`"]?([A-Za-z0-9_]+)[`"]?';
 
         $patterns = [
             // --- MySQL / phpMyAdmin dump section markers ---
@@ -277,8 +294,9 @@ class FileSearchController extends Controller
             '/^--\s*Dumping data for table\s+`?"?([A-Za-z0-9_]+)`?"?/i',
 
             // --- PostgreSQL / pg_dump section markers ---
+            '/^--\s*Data for Name:\s*([A-Za-z0-9_]+);\s*Type:\s*TABLE DATA/i',
             '/^--\s*Name:\s*([A-Za-z0-9_]+);\s*Type:\s*TABLE/i',
-            '/^COPY\s+' . $schemaAndTable . '\s*\(/i',
+            '/^COPY\s+' . $schemaAndTable . '\s*(?:\(|FROM\b)/i',
 
             // --- Statement-level table references (either dialect) ---
             '/^(?:CREATE\s+TABLE\s+IF\s+NOT\s+EXISTS|CREATE\s+TABLE)\s+' . $schemaAndTable . '/i',
@@ -289,8 +307,13 @@ class FileSearchController extends Controller
             '/^DELETE\s+FROM\s+' . $schemaAndTable . '/i',
             '/^UPDATE\s+' . $schemaAndTable . '/i',
 
-            // --- Generic fallback: any "FROM x" (e.g. SELECT ... FROM) ---
-            '/\bFROM\s+' . $schemaAndTable . '/i',
+            '/^LOCK\s+TABLES\s+' . $schemaAndTable . '/i',
+
+            // --- Fallback: real SELECT statements only. It used to match ANY
+            // "from x" on any line, which also fired on plain text inside
+            // multi-line INSERT values (e.g. 'sent from home') and switched the
+            // current table to "home". ---
+            '/^SELECT\b.*?\bFROM\s+' . $schemaAndTable . '/i',
         ];
 
         foreach ($patterns as $pattern) {
