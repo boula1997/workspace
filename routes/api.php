@@ -195,6 +195,7 @@ Route::prefix('file')->group(function () {
     Route::post('/marketing/create-post', [TaskController::class, 'createPost']);
     Route::get('/marketing/get-posts', [TaskController::class, 'getPosts']);
     Route::delete('/marketing/delete-post/{id}', [TaskController::class, 'deletePost']);
+    Route::get('/marketing/get-ready-response-messages', [TaskController::class, 'getReadyResponseMessages']);
     Route::post('/add/project/hours', [TaskController::class, 'addProjectHours']);
     Route::get('/offline/info', [TaskController::class, 'offlineInfo']);
     Route::post('async/offline/info', [TaskController::class, 'asyncOfflineInfo']);
