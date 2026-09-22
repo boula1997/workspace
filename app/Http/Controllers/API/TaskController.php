@@ -2081,4 +2081,10 @@ $issueColumns = [
 
     return successResponse(Issue::latest()->get());
 }
+
+
+public function getReadyResponseMessages(){
+
+    return successResponse(ReadyClientResbonseMessage::latest()->get());
+}
 }
