@@ -26,6 +26,7 @@ class NavigationResource extends JsonResource
              'link' => $link,
 
             'title'=>$this->title,
+            'extra'=>$this->extra,
 
             'user'=>$this->user,
 
