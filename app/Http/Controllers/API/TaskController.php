@@ -2101,4 +2101,17 @@ public function getReadyResponseMessages(){
 
     return successResponse(ReadyClientResbonseMessage::latest()->get());
 }
+
+
+public function updateExtraNavigation(Request $request, $id)
+{
+    $request->validate([
+        'extra' => 'nullable|string',
+    ]);
+
+    $navigation = Navigation::findOrFail($id);
+    $navigation->update(['extra' => $request->input('extra')]);
+
+    return successResponse(new NavigationResource($navigation));
+}
 }
