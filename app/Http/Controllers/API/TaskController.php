@@ -629,21 +629,29 @@ public function toggleStatus($id)
     }
 }
 
-    public function links($id)
-    {
-        try {
+public function links($id, Request $request)
+{
+    try {
 
-            if (boula())
-                $links = Navigation::where("category_id", $id)->orderBy('title', 'asc')->get();
-            else
-                $links = [];
-            $data["links"] = NavigationResource::collection($links);
-            $data["isExpired"] = isExpired()[0];
-            return successResponse($data);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
+        if (boula()) {
+            $links = Navigation::where("category_id", $id);
+
+            if ($request->filled('search')) {
+                $links->where('title', 'like', '%' . $request->input('search') . '%');
+            }
+
+            $links = $links->orderBy('title', 'asc')->paginate(10);
+        } else {
+            $links = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
         }
+
+        $data["links"] = NavigationResource::collection($links);
+        $data["isExpired"] = isExpired()[0];
+        return successResponse($data);
+    } catch (Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
     }
+}
 
 public function lock()
 {
