@@ -629,12 +629,12 @@ public function toggleStatus($id)
     }
 }
 
-public function links($id, Request $request)
+public function links(Request $request)
 {
     try {
 
         if (boula()) {
-            $links = Navigation::where("category_id", $id);
+            $links = Navigation::query();
 
             if ($request->filled('search')) {
                 $links->where('title', 'like', '%' . $request->input('search') . '%');
