@@ -632,7 +632,6 @@ public function toggleStatus($id)
 public function links(Request $request)
 {
     try {
-
         if (boula()) {
             $links = Navigation::query();
 
@@ -645,14 +644,20 @@ public function links(Request $request)
             $links = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
         }
 
-        $data["links"] = NavigationResource::collection($links);
-        $data["isExpired"] = isExpired()[0];
+        $data['links'] = [
+            'data'         => NavigationResource::collection($links)->resolve(),
+            'current_page' => $links->currentPage(),
+            'last_page'    => $links->lastPage(),
+            'per_page'     => $links->perPage(),
+            'total'        => $links->total(),
+        ];
+        $data['isExpired'] = isExpired()[0];
+
         return successResponse($data);
     } catch (Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
+        return response()->json(['error' => $e->getMessage()], 500);
     }
 }
-
 public function lock()
 {
     try {
