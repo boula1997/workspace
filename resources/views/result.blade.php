@@ -1,7 +1,7 @@
 <div class="row mt-5">
     @if ($action == 'create new module')
-        <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         <div id="newModuleB">
             @foreach ($results as $result)
    
@@ -110,8 +110,8 @@
             @endforeach
             @include('shared')
 
-            <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-            <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+            <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+            <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
             <p>code resources\lang\en\general.php</p>
             <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -158,8 +158,8 @@
             <p class="clickable-text" title="click to copy" content="code src/pages/HomePage/index.jsx">code
                 src/pages/HomePage/index.jsx</p>
 
-            <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-            <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+            <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+            <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                         <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -200,8 +200,8 @@
 
 
     @if ($action == 'Reblace word in module')
-        <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         <div id="newModuleB">
             @if (isset($plural))
                 @foreach ($results as $result)
@@ -245,8 +245,8 @@
                     </p>
                 @endif
             @endforeach
-            <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-            <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+            <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+            <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                         <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -261,8 +261,8 @@
 
 
     @if ($action == 'Rename module')
-        <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         @foreach ($results as $result)
             @if (explode('\\', pathsArr($result->path)[1])[count(explode('\\', pathsArr($result->path)[1])) - 1] !==
                     explode('\\', pathsArr($result->path)[0])[count(explode('\\', pathsArr($result->path)[0])) - 1] &&
@@ -335,8 +335,8 @@
             </p>
         @endforeach
         @include('shared')
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -384,8 +384,8 @@
                 {{ pathsArr($result->path)[1] }}
             </p>
         @endforeach
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -426,13 +426,13 @@
 
     @endif
     @if ($action == 'Delete multible module')
-        <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         @foreach ($results as $result)
             <p>del -f {{ str_replace('\\', '/', $result->path) }}</p>
         @endforeach
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -471,8 +471,8 @@
         <p class="clickable-text" title="click to copy" content="code src/App.jsx">code src/App.jsx</p>
         <p class="clickable-text" title="click to copy" content="code src/components/Menubar/index.jsx">code
             src/components/Menubar/index.jsx</p>
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -511,8 +511,8 @@
             <hr>
         </div>
         {{-- <p class="text-warning">Note: this methodology depend on opening files that can lead to other files and these are the files that are not reachable from other files and can lead to other files</p> --}}
-        <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         @foreach ($results as $result)
             @if (
                 (!str_contains(str_replace('\\', '/', $result->path), 'http:') && !str_contains(str_replace('\\', '/', $result->path), 'https:')) ||
@@ -521,8 +521,8 @@
                     {{ str_replace('\\', '/', $result->path) }}</p>
             @endif
         @endforeach
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -562,8 +562,8 @@
             src/components/Menubar/index.jsx</p>
         <p class="clickable-text" title="click to copy" content="code src/pages/HomePage/index.jsx">code
             src/pages/HomePage/index.jsx</p>
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -596,15 +596,15 @@
     @endif
 
     @if ($action == 'copy multible modules using repo')
-        <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         <p>git remote set-url origin {{ $repo }}</p>
         @foreach ($results as $result)
             <p>git checkout origin/main -- {{ str_replace('\\', '/', $result->path) }}</p>
         @endforeach
         <p>git remote set-url origin {{ $prepo }}</p>
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -654,8 +654,8 @@
                 {{ str_replace('\\', '/', $result->path) }}
             </p>
         @endforeach
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -671,13 +671,13 @@
             routes,nav,lang,helper</p>
     @endif
     @if ($action == 'checkout multible module')
-        <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         @foreach ($results as $result)
             <p>git checkout {{ $commit }} -- {{ str_replace('\\', '/', $result->path) }}</p>
         @endforeach
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -726,8 +726,8 @@
                 {{ str_replace('\\', '/', $result->path) }}
             </p>
         @endforeach
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -749,8 +749,8 @@
                     {{ str_replace('\\', '/', $result->path) }}</p>
             @endif
         @endforeach
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
         <p>start https://chatgpt.com/</p>
@@ -797,8 +797,8 @@
                 <p>git restore -- public/{{ $result->url }}</p>
             @endif
         @endforeach
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -813,8 +813,8 @@
 
 
     @if ($action == 'translate all attributes')
-        <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         @foreach ($results as $result)
             <p>"{{ $result->COLUMN_NAME }}" => "{{ trim(Str::ucfirst($result->COLUMN_NAME), '_id') }}", </p>
         @endforeach
@@ -835,10 +835,10 @@
         <code> {{ __('$1') }} this should be put into double curly brackts</code>
         <p><a href="https://github.com/barryvdh/laravel-translation-manager" target="__blank">Used Package</a>
         </p>
-        <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -883,8 +883,8 @@
     @endif
 
     @if ($action == 'Prebare multible modules to work on')
-        <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p class="text-white">cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
         @foreach ($array as $item)
             @if ($item != 'http:' && $item != 'https:')
                 @foreach ($results as $result)
@@ -904,8 +904,8 @@
                     {{ str_replace('\\', '/', $result->path) }}</p>
             @endif
         @endforeach
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -945,8 +945,8 @@
             src/components/Menubar/index.jsx</p>
         <p class="clickable-text" title="click to copy" content="code src/pages/HomePage/index.jsx">code
             src/pages/HomePage/index.jsx</p>
-        <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-        <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+        <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                     <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -979,8 +979,8 @@
 
     <div>
         @if ($action == 'search project modules')
-            <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-            <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+            <p class="text-white">code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+            <p class="text-white">cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
             @foreach ($modules as $module)
                 @if (!str_contains($module->TABLE_NAME, 'translations'))
                     <h6>{{ $module->TABLE_NAME }}</h6>
@@ -995,10 +995,10 @@
     </div>
     <div>
         @if ($action == 'Open Shared Module Files')
-            <p class="text-white">code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-            <p class="text-white">cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-            <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-            <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+            <p class="text-white">code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+            <p class="text-white">cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+            <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+            <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                         <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>
@@ -1039,8 +1039,8 @@
                 src/components/Menubar/index.jsx</p>
             <p class="clickable-text" title="click to copy" content="code src/pages/HomePage/index.jsx">code
                 src/pages/HomePage/index.jsx</p>
-            <p>code E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
-            <p>cd /d E:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+            <p>code D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
+            <p>cd /d D:\xampp\htdocs\{{ isset($selectFlag)?$selectFlag:'' }}</p>
                         <p>code resources\lang\en\general.php</p>
                         <p>code resources\lang\ar\general.php</p>
             <p>start https://chatgpt.com/</p>

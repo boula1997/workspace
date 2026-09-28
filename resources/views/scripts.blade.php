@@ -2116,10 +2116,10 @@
             $('#phpMyAdmin').on('click', function(e) {
                 e.preventDefault();
                 navigator.clipboard.writeText(
-                    'cd /d E:/xampp/mysql/bin\n' +
-                    'mysqldump -u root -p --no-create-info --complete-insert --ignore-table=automation.migrations automation > "E:/xampp/htdocs/automation/exported_databases/automation.sql"\n' +
+                    'cd /d D:/xampp/mysql/bin\n' +
+                    'mysqldump -u root -p --no-create-info --complete-insert --ignore-table=automation.migrations automation > "D:/xampp/htdocs/automation/exported_databases/automation.sql"\n' +
                     '\n' +
-                    'cd /d E:/xampp/htdocs/automation\n' +
+                    'cd /d D:/xampp/htdocs/automation\n' +
                     'git add .\n' +
                     'git commit -m "commit" \n' +
                     'git pull origin main \n' +
