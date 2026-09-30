@@ -3,18 +3,22 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Deadline;
-use App\Models\Deal;
-use App\Models\Project;
 use App\Http\Resources\ProjectResource;
+use App\Models\Deal;
 use App\Models\Task;
+use App\Services\DeadlineService;
 use Exception;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class DeadlineController extends Controller
 {
+    protected $deadlineService;
+
+    public function __construct(DeadlineService $deadlineService)
+    {
+        $this->deadlineService = $deadlineService;
+    }
+
     /**
      * GET /deadlines
      * Returns all pending deadlines ordered by date (Boula-only).
@@ -22,7 +26,7 @@ class DeadlineController extends Controller
     public function index()
     {
         try {
-            $deadlines = Deadline::where('status', 0)->orderBy('date', 'asc')->get();
+            $deadlines = $this->deadlineService->getPendingDeadlines();
 
             $data = [
                 'deadlines' => $deadlines,
@@ -47,13 +51,13 @@ class DeadlineController extends Controller
     {
         try {
             if (boula()) {
-                Deadline::create([
+                $this->deadlineService->createDeadline([
                     'title' => $request->title,
                     'date'  => $request->date,
                 ]);
             }
 
-            $deadlines = Deadline::orderBy('date', 'asc')->get();
+            $deadlines = $this->deadlineService->getAllOrdered();
 
             return successResponse([
                 'deadlines' => $deadlines,
@@ -71,14 +75,14 @@ class DeadlineController extends Controller
     public function update(Request $request)
     {
         try {
-            $deadline = Deadline::find($request->id);
+            $deadline = $this->deadlineService->getDeadlineById($request->id);
 
             if ($request->action === 'delete') {
                 if ($deadline->isForever) {
                     return successResponse([], 'Deadline is forever!', 201);
                 }
 
-                $deadline->update(['status' => !$deadline->status]);
+                $this->deadlineService->updateDeadline($deadline->id, ['status' => !$deadline->status]);
 
                 // Sync linked Task
                 if ($deadline->deadlineable_type === Task::class && $deadline->deadlineable_id) {
@@ -100,20 +104,20 @@ class DeadlineController extends Controller
                     }
                 }
             } elseif (isset($request->date)) {
-                $deadline->update([
+                $this->deadlineService->updateDeadline($deadline->id, [
                     'date'  => $request->date,
                     'title' => $request->title ?? $deadline->title,
                 ]);
             }
 
-            $deadlines = Deadline::orderBy('date', 'asc')->get();
+            $deadlines = $this->deadlineService->getAllOrdered();
 
             return successResponse([
                 'boardProjects' => $deadlines,
                 'action'        => $request->action,
             ]);
         } catch (Exception $e) {
-            DB::table('tracks')->insert([
+            \Illuminate\Support\Facades\DB::table('tracks')->insert([
                 'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()),
                 'created_at'      => now(),
             ]);
@@ -133,15 +137,9 @@ class DeadlineController extends Controller
             'date'  => 'required|date',
         ]);
 
-        $date = Carbon::parse($request->date)->toDateString();
+        $date = \Carbon\Carbon::parse($request->date)->toDateString();
 
-        Deadline::query()
-            ->whereIn('id', $request->ids)
-            ->where('status', 0) // only unfinished
-            ->update([
-                'date'       => $date,
-                'updated_at' => now(),
-            ]);
+        $this->deadlineService->bulkUpdateDates($request->ids, $date);
 
         return successResponse([]);
     }
@@ -153,24 +151,20 @@ class DeadlineController extends Controller
     public function updateProjectDeadline(Request $request)
     {
         try {
-            DB::table('tracks')->insert([
+            \Illuminate\Support\Facades\DB::table('tracks')->insert([
                 'dispatch_status' => 'showing data of ' . json_encode($request->all()),
                 'created_at'      => now(),
             ]);
 
-            $project      = Project::find($request->id);
-            $deadlineTime = Carbon::parse($request->date, 'UTC')->setTimezone('Africa/Cairo');
-            $project->update(['deadline' => $deadlineTime]);
+            $this->deadlineService->updateProjectDeadline($request->id, $request->date);
 
             return successResponse([
                 'boardProjects' => ProjectResource::collection(
-                    Project::orderBy('deadline', 'asc')
-                        ->get()
-                        ->filter(fn($project) => $project->status != 1)
+                    $this->deadlineService->getPendingProjectsSortedByDeadline()
                 ),
             ]);
         } catch (Exception $e) {
-            DB::table('tracks')->insert([
+            \Illuminate\Support\Facades\DB::table('tracks')->insert([
                 'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()),
                 'created_at'      => now(),
             ]);

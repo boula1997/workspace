@@ -3,20 +3,19 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Base;
-use App\Models\Category;
-use App\Models\Note;
-use App\Models\Projecthour;
-use App\Models\ReadyClientResbonseMessage;
-use App\Models\Repeat;
-use App\Models\Survey;
+use App\Services\MiscService;
 use Exception;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class MiscController extends Controller
 {
+    protected $miscService;
+
+    public function __construct(MiscService $miscService)
+    {
+        $this->miscService = $miscService;
+    }
+
     /**
      * POST /track
      * Logs incoming request data to the tracks table (debug endpoint).
@@ -24,11 +23,7 @@ class MiscController extends Controller
     public function track(Request $request)
     {
         try {
-            DB::table('tracks')->insert([
-                'dispatch_status' => 'showing data of ' . json_encode(request()->all()),
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ]);
+            $this->miscService->logTrack(json_encode($request->all()));
 
             return response()->json([
                 'message' => 'User successfully registered',
@@ -46,7 +41,7 @@ class MiscController extends Controller
     public function bases()
     {
         try {
-            $bases = Base::get();
+            $bases = $this->miscService->getAllBases();
 
             return successResponse([
                 'bases'     => $bases,
@@ -72,12 +67,7 @@ class MiscController extends Controller
      */
     public function surveies()
     {
-        $surveies = Survey::query()
-            ->where('isActive', 1)
-            ->get()
-            ->shuffle()
-            ->take(5)
-            ->values();
+        $surveies = $this->miscService->getRandomSurveys(5);
 
         return successResponse($surveies);
     }
@@ -89,7 +79,7 @@ class MiscController extends Controller
     public function getRepeatSurveyMinuits()
     {
         return successResponse([
-            'repeat_survey_minuits' => setting()->repeat_survey_minuits,
+            'repeat_survey_minuits' => $this->miscService->getRepeatSurveyMinutes(),
         ]);
     }
 
@@ -99,12 +89,8 @@ class MiscController extends Controller
      */
     public function lastRepeatTime(Request $request)
     {
-        $lastRepeat = Repeat::latest()->first();
-
         return successResponse([
-            'lastRepeat' => $lastRepeat
-                ? Carbon::parse($lastRepeat->date)->timezone('Africa/Cairo')->toDateString()
-                : null,
+            'lastRepeat' => $this->miscService->getLastRepeatDate(),
         ]);
     }
 
@@ -118,11 +104,7 @@ class MiscController extends Controller
             'date' => 'required|date',
         ]);
 
-        Repeat::create([
-            'date'       => Carbon::parse($request->date)->toDateString(),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $this->miscService->createRepeatTime($request->date);
 
         return successResponse([]);
     }
@@ -139,7 +121,7 @@ class MiscController extends Controller
             'hours'      => 'required|numeric',
         ]);
 
-        $projectHour = Projecthour::create([
+        $projectHour = $this->miscService->createProjectHour([
             'project_id'  => $request->project_id,
             'hours_count' => $request->hours,
             'employee_id' => $request->admin_id,
@@ -158,7 +140,7 @@ class MiscController extends Controller
             return successResponse([]);
         }
 
-        $notes = Note::inRandomOrder()->take(300)->get();
+        $notes = $this->miscService->getRandomNotes(300);
 
         return successResponse($notes);
     }
@@ -169,7 +151,7 @@ class MiscController extends Controller
      */
     public function getReadyResponseMessages()
     {
-        return successResponse(ReadyClientResbonseMessage::latest()->get());
+        return successResponse($this->miscService->getReadyResponseMessages());
     }
 
     /**
@@ -179,72 +161,9 @@ class MiscController extends Controller
     public function elements($id, Request $request)
     {
         try {
-            $category = Category::withoutGlobalScopes()->findOrFail($id);
-
-            if (!$category->model) {
-                return response()->json(['error' => 'Model not defined'], 400);
-            }
-
-            if (!class_exists($category->model)) {
-                return response()->json([
-                    'error' => 'Model class not found',
-                    'model' => $category->model,
-                ], 400);
-            }
-
-            $model       = $category->model;
-            $searchKeys  = $category->search_keys ?? [];
-            $titleField  = 'id';
-            $configClass = $category->config_class ?? \App\CategoryConfigs\BaseCategoryConfig::class;
-
-            if (!class_exists($configClass)) {
-                return response()->json(['error' => 'Invalid config class'], 400);
-            }
-
-            // Normalize search keys to array
-            if (is_string($searchKeys)) {
-                $searchKeys = array_map('trim', explode(',', $searchKeys));
-            }
-
-            // Eager-load relations referenced in search keys
-            $relations = array_unique(array_filter(
-                array_map(fn($key) => strstr($key, '.', true) ?: null, $searchKeys)
-            ));
-
-            $query = $model::with($relations)->latest()->withoutGlobalScopes();
-
-            // Date filters
-            if ($request->from) {
-                $query->whereDate('created_at', '>=', $request->from);
-            }
-            if ($request->to) {
-                $query->whereDate('created_at', '<=', $request->to);
-            }
-
-            // Dynamic search
-            if ($request->search) {
-                $values = array_filter(array_map('trim', explode(',', $request->search)));
-                $configClass::applySearch($query, $values, $searchKeys);
-            }
-
-            $items = $query->paginate($request->per_page ?? 20);
-
-            // Transform items and append 'extra' field
-            $items->getCollection()->transform(function ($item) use ($configClass, $titleField, $searchKeys) {
-                $transformed  = $configClass::transform($item, $titleField);
-                $extraValues  = [];
-
-                foreach ($searchKeys as $key) {
-                    $value = data_get($item, trim($key));
-                    if ($value !== null && $value !== '') {
-                        $extraValues[] = $value;
-                    }
-                }
-
-                $transformed['extra'] = implode(', ', $extraValues);
-
-                return $transformed;
-            });
+            $filters = $request->only(['from', 'to', 'search', 'per_page']);
+            
+            $items = $this->miscService->getPaginatedElements($id, $filters);
 
             return response()->json([
                 'status'  => 200,

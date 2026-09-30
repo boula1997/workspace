@@ -3,77 +3,85 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Marketting;
-use App\Models\Navigation;
-use App\Http\Resources\PostResource;
+use App\Services\MarketingService;
 use Exception;
 use Illuminate\Http\Request;
 
 class MarketingController extends Controller
 {
+    protected $marketingService;
+
+    public function __construct(MarketingService $marketingService)
+    {
+        $this->marketingService = $marketingService;
+    }
+
     /**
      * POST /marketing/create-post
-     * Creates a marketing post with optional base64 images.
+     * Creates a new marketing post with optional images.
      */
     public function createPost(Request $request)
     {
-        $post = Marketting::create([
-            'text' => $request->text,
-        ]);
+        try {
+            $post = $this->marketingService->createPost($request->text);
 
-        if ($request->has('images') && is_array($request->images)) {
-            foreach ($request->images as $imageData) {
-                $base64   = $imageData['base64'];
-                $filename = $imageData['name'] ?? uniqid() . '.jpg';
-                $mimeType = $imageData['type'] ?? 'image/jpeg';
-
-                // Remove data:image/jpeg;base64, prefix if present
-                if (strpos($base64, 'base64,') !== false) {
-                    $base64 = explode('base64,', $base64)[1];
+            if ($request->has('images')) {
+                $destinationPath = public_path('uploads/marketing');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
                 }
 
-                $imageBinary    = base64_decode($base64);
-                $uniqueFilename = uniqid() . '_' . $filename;
-                $path           = 'images/' . $uniqueFilename;
+                foreach ($request->images as $image) {
+                    $base64 = $image['base64'] ?? null;
+                    if (!$base64) continue;
 
-                $tempPath = tempnam(sys_get_temp_dir(), 'img');
-                file_put_contents($tempPath, $imageBinary);
+                    if (strpos($base64, 'base64,') !== false) {
+                        $base64 = explode('base64,', $base64)[1];
+                    }
+                    $imageBinary = base64_decode($base64);
+                    if ($imageBinary === false) continue;
 
-                $file = new \Illuminate\Http\UploadedFile(
-                    $tempPath,
-                    $filename,
-                    $mimeType,
-                    null,
-                    true
-                );
+                    $extension = pathinfo($image['name'], PATHINFO_EXTENSION) ?: 'jpg';
+                    $filename  = time() . '_' . uniqid() . '.' . $extension;
 
-                $file->move('images', $uniqueFilename);
-                $post->files()->create(['url' => $path]);
+                    file_put_contents($destinationPath . '/' . $filename, $imageBinary);
 
-                if (file_exists($tempPath)) {
-                    unlink($tempPath);
+                    $post->files()->create([
+                        'url' => 'uploads/marketing/' . $filename,
+                    ]);
                 }
             }
-        }
 
-        return successResponse($post);
+            return successResponse($post->load('files'));
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
     }
 
     /**
      * GET /marketing/get-posts
-     * Returns paginated marketing posts with optional text search.
+     * Returns a paginated list of marketing posts.
      */
     public function getPosts(Request $request)
     {
-        $query = Marketting::orderBy('created_at', 'desc');
+        try {
+            $perPage = $request->input('per_page', 2);
+            $search  = $request->input('search');
 
-        if ($request->has('search') && !empty($request->search)) {
-            $query->where('text', 'like', '%' . $request->search . '%');
+            $posts = $this->marketingService->getPaginatedPosts($search, $perPage);
+
+            return successResponse([
+                'posts'      => $posts->items(),
+                'posts_meta' => [
+                    'current_page' => $posts->currentPage(),
+                    'last_page'    => $posts->lastPage(),
+                    'total'        => $posts->total(),
+                    'per_page'     => $posts->perPage(),
+                ],
+            ]);
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
         }
-
-        $posts = $query->paginate(2);
-
-        return successResponse(PostResource::collection($posts->items()), $posts);
     }
 
     /**
@@ -82,40 +90,41 @@ class MarketingController extends Controller
      */
     public function deletePost($id)
     {
-        $post = Marketting::find($id);
-        $post->deleteFiles();
-        $post->delete();
-
-        return successResponse($post);
+        try {
+            $this->marketingService->deletePost($id);
+            return successResponse(['message' => 'Post deleted successfully']);
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
     }
 
     /**
      * GET /competitors
-     * Returns navigation entries in the competitors category (id=25).
+     * Returns competitor links from the navigation structure.
      */
-    public function competitors(Request $request)
+    public function competitors()
     {
-        $competitors = Navigation::where('category_id', 25)->get();
-        return successResponse($competitors);
+        $links = $this->marketingService->getCompetitors();
+        return successResponse($links);
     }
 
     /**
      * GET /jobs
-     * Returns navigation entries in the jobs category (id=5).
+     * Returns job links from the navigation structure.
      */
-    public function jobs(Request $request)
+    public function jobs()
     {
-        $jobs = Navigation::where('category_id', 5)->get();
-        return successResponse($jobs);
+        $links = $this->marketingService->getJobs();
+        return successResponse($links);
     }
 
     /**
      * GET /marketing-tools
-     * Returns navigation entries in the marketing tools category (id=26).
+     * Returns marketing tool links.
      */
-    public function marketingTools(Request $request)
+    public function marketingTools()
     {
-        $tools = Navigation::where('category_id', 26)->get();
-        return successResponse($tools);
+        $links = $this->marketingService->getMarketingTools();
+        return successResponse($links);
     }
 }

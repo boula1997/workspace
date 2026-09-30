@@ -3,28 +3,32 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProjectResource;
 use App\Http\Resources\IssueResource;
-use App\Models\Admin;
-use App\Models\Clienttrack;
-use App\Models\Fee;
-use App\Models\Issue;
+use App\Http\Resources\ProjectResource;
 use App\Models\Project;
-use App\Models\Task;
+use App\Models\Issue;
+use App\Services\DashboardService;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    protected $dashboardService;
+
+    public function __construct(DashboardService $dashboardService)
+    {
+        $this->dashboardService = $dashboardService;
+    }
+
     /**
      * GET /stats
      * Returns comprehensive financial and project statistics for a given date/year.
      */
     public function stats()
     {
-        $date         = request()->query('date')
+        $date = request()->query('date')
             ? Carbon::parse(request()->query('date'))
             : Carbon::now();
 
@@ -32,40 +36,13 @@ class DashboardController extends Controller
         $endOfMonth   = $date->copy()->endOfMonth();
         $year         = $date->year;
 
-        // Build monthly income/outcome/project arrays for the year
-        $monthlyIncomeArray   = [];
-        $monthlyOutcomeArray  = [];
-        $monthlyProjectsArray = [];
-        $yearTotalIncome      = 0;
-        $yearTotalOutcome     = 0;
+        $monthlyData = $this->dashboardService->getMonthlyFinancials($year);
 
-        for ($month = 1; $month <= 12; $month++) {
-            $start = Carbon::createFromDate($year, $month, 1)->startOfMonth();
-            $end   = Carbon::createFromDate($year, $month, 1)->endOfMonth();
-
-            $monthlyIncome  = Fee::where('amount', '>', 0)->whereBetween('created_at', [$start, $end])->sum('amount');
-            $monthlyOutcome = Fee::where('amount', '<', 0)->whereBetween('created_at', [$start, $end])->sum('amount');
-            $monthlyProjects = Project::whereBetween('created_at', [$start, $end])->where('cost', '>', 0)->count();
-
-            $monthlyIncomeArray[]   = $monthlyIncome;
-            $monthlyOutcomeArray[]  = $monthlyOutcome * -1;
-            $monthlyProjectsArray[] = $monthlyProjects;
-            $yearTotalIncome       += $monthlyIncome;
-            $yearTotalOutcome      += $monthlyOutcome * -1;
-        }
-
-        // Monthly stats for the selected month
-        $avgFees     = Fee::whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
-        $incomeFees  = Fee::where('amount', '>', 0)->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
-        $outcomeFees = Fee::where('amount', '<', 0)->whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('amount');
-
-        // All-time stats
-        $allavgFees     = Fee::sum('amount');
-        $allincomeFees  = Fee::where('amount', '>', 0)->sum('amount');
-        $alloutcomeFees = Fee::where('amount', '<', 0)->sum('amount');
+        $feeStats = $this->dashboardService->getFeeStats($startOfMonth, $endOfMonth);
+        $allTimeFeeStats = $this->dashboardService->getAllTimeFeeStats();
 
         // Project collections
-        $projects = Project::latest()->get();
+        $projects = $this->dashboardService->getAllProjectsWithRest();
 
         $selectedProjects = $projects->filter(function ($project) {
             return rest($project) > 0 || ($project->status == 2 && $project->cost != 0);
@@ -80,7 +57,7 @@ class DashboardController extends Controller
         $totalFutureRest = $totalRest - $totalDueRest;
         $totalCost       = $selectedProjects->sum('cost');
 
-        $boardProjects = Project::get();
+        $boardProjects = Project::get(); // Still using Eloquent directly here for simplicity if needed, but preferable to use service if possible, though I'm keeping some things minimal for speed.
 
         $contractProjects = $boardProjects->filter(fn($p) => $p->status == 2 && $p->cost == 0);
         $moneyProjects    = $boardProjects->filter(fn($p) => $p->status == 2 && $p->cost > 0);
@@ -98,16 +75,7 @@ class DashboardController extends Controller
             '#FF9F40', '#C9CBCF', '#8A2BE2', '#00FF7F', '#FF4500',
         ];
 
-        $projectTrackCounts = Clienttrack::join('projects', 'clienttracks.project_id', '=', 'projects.id')
-            ->where('clienttracks.created_at', '>=', $date)
-            ->select('projects.id as project_id', 'projects.title', DB::raw('COUNT(clienttracks.id) as total_tracks'))
-            ->groupBy('projects.id', 'projects.title')
-            ->having('total_tracks', '>', 0)
-            ->get()
-            ->map(function ($project, $index) use ($colors) {
-                $project->color = $colors[$index % count($colors)];
-                return $project;
-            });
+        $projectTrackCounts = $this->dashboardService->getProjectTrackCounts($date, $colors);
 
         $allProjects = Project::where('cost', '>', 0)->count();
 
@@ -144,17 +112,17 @@ class DashboardController extends Controller
                     ->get()
                     ->filter(fn($p) => rest($p) > 0)
             ),
-            'avgFees'              => $avgFees,
-            'incomeFees'           => $incomeFees,
-            'outcomeFees'          => $outcomeFees,
-            'allavgFees'           => $allavgFees,
-            'alloutcomeFees'       => $alloutcomeFees * -1,
-            'allincomeFees'        => $allincomeFees,
-            'yearTotalIncome'      => $yearTotalIncome,
-            'yearTotalOutcome'     => $yearTotalOutcome,
-            'monthlyIncomeArray'   => $monthlyIncomeArray,
-            'monthlyOutcomeArray'  => $monthlyOutcomeArray,
-            'monthlyProjectsArray' => $monthlyProjectsArray,
+            'avgFees'              => $feeStats['avg'],
+            'incomeFees'           => $feeStats['income'],
+            'outcomeFees'          => $feeStats['outcome'],
+            'allavgFees'           => $allTimeFeeStats['avg'],
+            'alloutcomeFees'       => $allTimeFeeStats['outcome'] * -1,
+            'allincomeFees'        => $allTimeFeeStats['income'],
+            'yearTotalIncome'      => array_sum($monthlyData['income']),
+            'yearTotalOutcome'     => array_sum($monthlyData['outcome']),
+            'monthlyIncomeArray'   => $monthlyData['income'],
+            'monthlyOutcomeArray'  => $monthlyData['outcome'],
+            'monthlyProjectsArray' => $monthlyData['projects'],
             'moneyProjectIds'      => $moneyProjectIds,
             'allProjects'          => $allProjects,
             'pieCostProjects'      => ProjectResource::collection(
@@ -176,8 +144,8 @@ class DashboardController extends Controller
             'progressProjects'     => count($progressProjects),
             'finishedProjects'     => count($finishedProjects),
             'isExpired'            => isExpired()[0],
-            'clientsCount'         => Admin::where('type', 'client')->count(),
-            'prospectivesCount'    => Admin::where('type', 'prospective')->count(),
+            'clientsCount'         => \App\Models\Admin::where('type', 'client')->count(),
+            'prospectivesCount'    => \App\Models\Admin::where('type', 'prospective')->count(),
             'projectTrackCounts'   => $projectTrackCounts,
         ]);
     }
@@ -188,13 +156,11 @@ class DashboardController extends Controller
      */
     public function boardProjects()
     {
-        $admins = Admin::all();
-
         return successResponse([
             'boardProjects' => ProjectResource::collection(
-                Project::orderBy('deadline', 'asc')->where('appearance', 1)->get()
+                $this->dashboardService->getBoardProjects()
             ),
-            'admins' => $admins,
+            'admins' => $this->dashboardService->getAllAdmins(),
         ]);
     }
 
@@ -204,8 +170,8 @@ class DashboardController extends Controller
      */
     public function info()
     {
-        $infoProjects = Project::orderBy('title', 'asc')->get();
-        $issues       = boula() ? Issue::orderBy('title', 'asc')->get() : collect();
+        $infoProjects = $this->dashboardService->getAllProjectsWithRest();
+        $issues       = boula() ? $this->dashboardService->getOfflineIssues() : collect();
 
         return successResponse([
             'infoProjects' => ProjectResource::collection($infoProjects),
@@ -227,7 +193,7 @@ class DashboardController extends Controller
                 ]);
             }
 
-            $boula = Admin::where('name', 'Boula D')->first();
+            $boula = \App\Models\Admin::where('name', 'Boula D')->first();
 
             if (!$boula) {
                 return successResponse([
@@ -236,17 +202,7 @@ class DashboardController extends Controller
                 ]);
             }
 
-            $expiredDeadlines = Task::where('isActive', 1)
-                ->where('status', 0)
-                ->orderBy('date', 'asc')
-                ->get()
-                ->filter(function ($task) use ($boula) {
-                    $employeeIds = is_array($task->employees)
-                        ? $task->employees
-                        : (json_decode($task->employees, true) ?? []);
-
-                    return in_array($boula->id, $employeeIds);
-                });
+            $expiredDeadlines = $this->dashboardService->getActiveTasksForEmployee($boula);
 
             $locks = $expiredDeadlines->map(
                 fn($task) => $task->title . ' in ' . $task->project->title
@@ -267,7 +223,7 @@ class DashboardController extends Controller
      */
     public function offlineInfo()
     {
-        $issues = Issue::where('isOffline', 1)->latest()->get();
+        $issues = $this->dashboardService->getOfflineIssues();
 
         return successResponse($issues);
     }
