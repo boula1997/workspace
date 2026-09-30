@@ -4,16 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class postGig extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $guarded = [];
 
-
     public function linkHistories()
-{
-    return $this->hasMany(LinkHistory::class);
-}
+    {
+        return $this->hasMany(LinkHistory::class);
+    }
 }
