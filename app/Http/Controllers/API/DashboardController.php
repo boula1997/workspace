@@ -255,15 +255,8 @@ class DashboardController extends Controller
 
         // Mapping: DB column => payload key
         $projectColumns = [
-            'title'                  => 'name',
-            'cost'                   => 'cost',
-            'deadline'               => 'deadline',
-            'fixed'                  => 'fixed',
-            'isHosted'               => 'isHosted',
-            'isOverthinking'         => 'isOverthinking',
-            'renewalDate'            => 'renewalDate',
-            'githubDevModeLinkBack'  => 'githubDevModeLinkBack',
-            'githubDevModeLinkFront' => 'githubDevModeLinkFront',
+            'ai_prompt'      => 'title',
+            'isOverthinking' => 'isOverthinking',
         ];
 
         $issueColumns = [
