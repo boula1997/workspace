@@ -171,7 +171,7 @@ class DashboardController extends Controller
     public function info()
     {
         $infoProjects = $this->dashboardService->getAllProjectsWithRest();
-        $issues       = boula() ? $this->dashboardService->getOfflineIssues() : collect();
+        $issues       = boula() ? $this->dashboardService->allIssues() : collect();
 
         return successResponse([
             'infoProjects' => ProjectResource::collection($infoProjects),

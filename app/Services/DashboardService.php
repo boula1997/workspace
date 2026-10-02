@@ -59,4 +59,9 @@ class DashboardService
     {
         return $this->dashboardRepository->issuesByOffline();
     }
+
+    public function getAllIssues()
+    {
+        return $this->dashboardRepository->allIssues();
+    }
 }
