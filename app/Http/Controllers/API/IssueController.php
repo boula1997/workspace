@@ -56,7 +56,7 @@ class IssueController extends Controller
             $request->validate([
                 'project_id'  => ['nullable', 'integer'],
                 'refrence_id' => ['nullable', 'integer'],
-                'ai_prompt'   => ['required', 'string'],
+                'title'   => ['required', 'string'],
             ]);
 
             if ($request->filled('refrence_id')) {
@@ -74,7 +74,7 @@ class IssueController extends Controller
             $this->issueService->updateAiPrompt(
                 $type,
                 $id,
-                $request->ai_prompt
+                $request->title
             );
 
             return successResponse([]);
