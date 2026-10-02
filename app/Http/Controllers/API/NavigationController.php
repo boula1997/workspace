@@ -59,6 +59,10 @@ class NavigationController extends Controller
                     $links->where('title', 'like', '%' . $request->input('search') . '%');
                 }
 
+                if ($request->filled('category_id')) {
+                    $links->where('category_id', $request->input('category_id'));
+                }
+
                 $links = $links->orderBy('title', 'asc')->paginate(10);
             } else {
                 $links = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
@@ -75,7 +79,9 @@ class NavigationController extends Controller
                 'isExpired' => isExpired()[0],
             ]);
         } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
