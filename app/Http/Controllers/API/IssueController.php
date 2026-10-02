@@ -49,19 +49,47 @@ class IssueController extends Controller
      * POST /apptask/refproPost
      * Updates the `ai_prompt` column on either an Issue or a Project.
      */
+
     public function refproPost(Request $request)
     {
         try {
-            $this->issueService->updateAiPrompt($request->type, $request->id, $request->ai_prompt);
+            $request->validate([
+                'project_id'  => ['nullable', 'integer'],
+                'refrence_id' => ['nullable', 'integer'],
+                'ai_prompt'   => ['required', 'string'],
+            ]);
+
+            if ($request->filled('refrence_id')) {
+                $type = 'reference';
+                $id = $request->refrence_id;
+            } elseif ($request->filled('project_id')) {
+                $type = 'project';
+                $id = $request->project_id;
+            } else {
+                return failedResponse(
+                    'Either project_id or refrence_id is required.'
+                );
+            }
+
+            $this->issueService->updateAiPrompt(
+                $type,
+                $id,
+                $request->ai_prompt
+            );
+
             return successResponse([]);
+
         } catch (Exception $e) {
             DB::table('tracks')->insert([
                 'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()),
                 'created_at'      => now(),
             ]);
+
             return failedResponse($e->getMessage());
         }
     }
+
+
 
     /**
      * POST /apptask/refproGet
