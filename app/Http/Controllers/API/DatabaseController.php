@@ -620,30 +620,23 @@ public function getDatabase($dbname, $namedb)
                     }
                 }
 
-                // Count rows sharing the same timestamps
+                // Count rows sharing the same timestamps (+/-1 minute window).
+                // Kept as a range query so an index on the column can be used.
                 if ($hasCreatedAt && $latestCreatedAt) {
                     $latestCreatedAtCarbon = Carbon::parse($latestCreatedAt);
 
-                    // ±1 minute window
-                    $start = $latestCreatedAtCarbon->copy()->subMinute();
-                    $end   = $latestCreatedAtCarbon->copy()->addMinute();
-
                     $latestCreatedAtCount = DB::connection('dynamic')
                         ->table($tableName)
-                        ->whereBetween('created_at', [$start, $end])
+                        ->whereBetween('created_at', [$latestCreatedAtCarbon->copy()->subMinute(), $latestCreatedAtCarbon->copy()->addMinute()])
                         ->count();
                 }
 
                 if ($hasUpdatedAt && $latestUpdatedAt) {
                     $latestUpdatedAtCarbon = Carbon::parse($latestUpdatedAt);
 
-                    // ±1 minute range
-                    $start = $latestUpdatedAtCarbon->copy()->subMinute();
-                    $end   = $latestUpdatedAtCarbon->copy()->addMinute();
-
                     $latestUpdatedAtCount = DB::connection('dynamic')
                         ->table($tableName)
-                        ->whereBetween('updated_at', [$start, $end])
+                        ->whereBetween('updated_at', [$latestUpdatedAtCarbon->copy()->subMinute(), $latestUpdatedAtCarbon->copy()->addMinute()])
                         ->count();
                 }
             }
