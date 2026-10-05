@@ -34,6 +34,8 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use App\Services\SchemaDiffService;
+use App\Services\SchemaSearchMatcher;
 use Illuminate\Support\Facades\Schema;
 
 class DatabaseController extends Controller
@@ -460,14 +462,14 @@ public function updateSkippedTables(Request $request, $id)
  *   q     search word. "table.col" => table must equal "table", column contains "col";
  *         otherwise columns contain q and tables contain q (case-insensitive).
  *   table optional - restrict columns to this exact table.
- *   limit rows per list (default 50, max 200).
+ *   limit rows per list (default 50, max 1000).
  */
 public function suggestSchema(Request $request, $dbname, $namedb)
 {
     try {
         $search = mb_strtolower(trim((string) $request->query('q', '')));
         $tableFilter = trim((string) $request->query('table', ''));
-        $limit = max(1, min(200, (int) $request->query('limit', 50)));
+        $limit = max(1, min(1000, (int) $request->query("limit", 50)));
 
         self::setDynamicConnection($namedb, $dbname);
         $conn = DB::connection('dynamic');
@@ -525,12 +527,14 @@ public function suggestSchema(Request $request, $dbname, $namedb)
 
         $columnTotal = (int) ($conn->selectOne("SELECT COUNT(*) AS total {$colSql}", $colBind)->total ?? 0);
         $columns = array_map(fn ($r) => [
-            'table'  => $r->tname,
-            'column' => $r->cname,
-            'type'   => $r->ctype,
-            'value'  => $r->tname . '.' . $r->cname,
+            'table'    => $r->tname,
+            'column'   => $r->cname,
+            'type'     => $r->ctype,
+            'nullable' => $r->cnull === 'YES' ? 'YES' : 'NO',
+            'default'  => $r->cdef,
+            'value'    => $r->tname . '.' . $r->cname,
         ], $conn->select(
-            "SELECT table_name AS tname, column_name AS cname, {$typeExpr} AS ctype {$colSql}
+            "SELECT table_name AS tname, column_name AS cname, is_nullable AS cnull, column_default AS cdef, {$typeExpr} AS ctype {$colSql}
              ORDER BY LOWER(column_name), table_name LIMIT {$limit}",
             $colBind
         ));
@@ -545,6 +549,155 @@ public function suggestSchema(Request $request, $dbname, $namedb)
             'success' => false,
             'message' => 'Failed to load suggestions: ' . $e->getMessage(),
         ], 500);
+    }
+}
+
+/**
+ * POST /databases/changes/{dbname}/{namedb}
+ *
+ * Scans the database on THIS backend, diffs it against the stored baseline
+ * (d_b_credentials.last_snapshot), stores any difference + the new baseline, and returns only
+ * what the SQL tab needs to display - not the whole schema.
+ *
+ * Query params:
+ *   skip_tables    same as getDatabase()
+ *   skip_diff      1 => only scan (no diff / baseline storing), e.g. on credential change
+ *   include_schema 1 => also return the full getDatabase() payload under "info" (for the
+ *                  tables browser) so the app needs just one scan
+ *   detected_at    client formatted time shown in the diff header (defaults to server time)
+ */
+public function checkChanges(Request $request, $dbname, $namedb)
+{
+    try {
+        $scan = $this->getDatabase($dbname, $namedb);
+        $info = $scan->getData(true);
+
+        if ($scan->getStatusCode() !== 200 || !($info['success'] ?? false)) {
+            return $scan;
+        }
+
+        [$organized, $tableMeta] = SchemaDiffService::organize($info['data'] ?? []);
+
+        $diff = [
+            'checked'          => false,
+            'changes_count'    => 0,
+            'stored'           => false,
+            'baseline_created' => false,
+            'reason'           => null,
+        ];
+
+        if (!$request->boolean('skip_diff')) {
+            $diff['checked'] = true;
+            $detectedAt = (string) $request->query('detected_at', now()->toDateTimeString());
+            $credential = DBCredential::withoutGlobalScopes()->find($dbname);
+
+            if (!$credential) {
+                // e.g. a local backend that has no row for this production credential id
+                $diff['reason'] = 'credential not found on this backend';
+            } else {
+                $raw = $credential->last_snapshot;
+                $baseline = is_string($raw) ? json_decode($raw, true) : (is_array($raw) ? $raw : null);
+                $hasBaseline = is_array($baseline) && count($baseline) > 0;
+
+                $lines = $hasBaseline ? SchemaDiffService::diffLines($baseline, $organized) : [];
+
+                if ($hasBaseline && !$lines) {
+                    // nothing changed and a baseline already exists: nothing to store
+                } elseif (!$hasBaseline && !$organized) {
+                    $diff['reason'] = 'no schema to store as baseline';
+                } else {
+                    $text = SchemaDiffService::buildText(
+                        $namedb,
+                        $dbname,
+                        $detectedAt,
+                        $hasBaseline ? $lines : [SchemaDiffService::BASELINE_MESSAGE]
+                    );
+
+                    DB::transaction(function () use ($credential, $text, $organized) {
+                        Difference::create([
+                            'd_b_credential_id' => $credential->id,
+                            'diff_db'           => $text,
+                        ]);
+                        $credential->last_snapshot = json_encode($organized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                        $credential->save();
+                    });
+
+                    $diff['stored'] = true;
+                    $diff['changes_count'] = $hasBaseline ? count($lines) : 0;
+                    $diff['baseline_created'] = !$hasBaseline;
+                }
+            }
+        }
+
+        $payload = [
+            'success'             => true,
+            'table_meta'          => (object) $tableMeta,
+            'latest_overall_date' => $info['latest_overall_date'] ?? null,
+            'ls_command'          => $info['ls_command'] ?? null,
+            'id_columns'          => $info['id_columns'] ?? [],
+            'diff'                => $diff,
+        ];
+
+        if ($request->boolean('include_schema')) {
+            $payload['info'] = $info;
+        }
+
+        return response()->json($payload);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to check database changes: ' . $e->getMessage(),
+        ], 500);
+    }
+}
+
+/**
+ * GET /databases/tables/{dbname}/{namedb}?search=&mode=partial|exact|smart
+ *
+ * The SQL tab's tables list, filtered ON THE SERVER with the same rules the app used to apply
+ * locally (see SchemaSearchMatcher). Row counts / timestamps are only computed for the tables
+ * that match, so a search no longer scans the whole database. An empty search returns every
+ * table (same as the full info scan).
+ *
+ * Returns the same row shape as getDatabase()["data"].
+ */
+public function tablesBrowser(Request $request, $dbname, $namedb)
+{
+    $search = (string) $request->query('search', '');
+    $mode = (string) $request->query('mode', 'partial');
+    if (!in_array($mode, SchemaSearchMatcher::MODES, true)) {
+        $mode = 'partial';
+    }
+
+    if (trim($search) !== '') {
+        // Columns come straight from the information_schema rows (Field/Type/Null/Default).
+        request()->attributes->set('schema_table_filter', function (string $tableName, array $columns) use ($search, $mode) {
+            $cols = array_map(fn ($c) => [
+                'column'       => $c->Field,
+                'type'         => $c->Type ?? null,
+                'nullable'     => ($c->Null ?? null) === 'YES' ? 'YES' : 'NO',
+                'defaultValue' => $c->Default ?? null,
+            ], $columns);
+
+            return SchemaSearchMatcher::tableMatches($tableName, $cols, $search, $mode);
+        });
+    }
+
+    try {
+        $scan = $this->getDatabase($dbname, $namedb);
+        $info = $scan->getData(true);
+
+        if ($scan->getStatusCode() !== 200 || !($info['success'] ?? false)) {
+            return $scan;
+        }
+
+        return response()->json([
+            'success'             => true,
+            'data'                => $info['data'] ?? [],
+            'latest_overall_date' => $info['latest_overall_date'] ?? null,
+        ]);
+    } finally {
+        request()->attributes->remove('schema_table_filter');
     }
 }
 
@@ -668,6 +821,8 @@ public function getDatabase($dbname, $namedb)
         }
         $skipTables = array_flip(self::parseSkippedTables($skipSource));
 
+        $tableFilter = request()->attributes->get('schema_table_filter');
+
         foreach ($tables as $t) {
             $tableName = $t->TABLE_NAME;
             $tableType = $t->TABLE_TYPE ?? 'BASE TABLE';
@@ -678,6 +833,12 @@ public function getDatabase($dbname, $namedb)
             // query never did, and the response sets TABLE_NAME itself below.
             foreach ($columns as $col) {
                 unset($col->TABLE_NAME);
+            }
+
+            // Optional filter (see tablesBrowser): tables that don't match are skipped entirely,
+            // so no row-count / timestamp queries run for them.
+            if ($tableFilter && !$tableFilter($tableName, $columns)) {
+                continue;
             }
 
             $foreignKeys = $fksByTable[$tableName] ?? [];
