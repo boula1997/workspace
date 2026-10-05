@@ -558,12 +558,19 @@ public function getDatabase($dbname, $namedb)
             $fksByTable[$fk->TABLE_NAME][] = $fk;
         }
 
-        // Comma-separated list (d_b_credentials.skipped_tables) of tables whose DATA
-        // checks (row count and latest timestamps) are skipped. Their columns are still
-        // returned so the schema diff keeps working.
-        $skipTables = array_flip(self::parseSkippedTables(
-            DBCredential::where('id', $dbname)->value('skipped_tables')
-        ));
+        // Comma-separated list of tables whose DATA checks (row count and latest
+        // timestamps) are skipped. Their columns are still returned so the schema diff
+        // keeps working. The app sends the list (kept on the production backend) as
+        // ?skip_tables=; without it, fall back to this database's own
+        // d_b_credentials.skipped_tables.
+        if (request()->query->has('skip_tables')) {
+            $skipSource = request()->query('skip_tables');
+        } elseif (Schema::hasColumn('d_b_credentials', 'skipped_tables')) {
+            $skipSource = DBCredential::where('id', $dbname)->value('skipped_tables');
+        } else {
+            $skipSource = '';
+        }
+        $skipTables = array_flip(self::parseSkippedTables($skipSource));
 
         foreach ($tables as $t) {
             $tableName = $t->TABLE_NAME;
