@@ -49,36 +49,87 @@ class IssueController extends Controller
      * POST /apptask/refproPost
      * Updates the `ai_prompt` column on either an Issue or a Project.
      */
+
     public function refproPost(Request $request)
     {
         try {
-            $this->issueService->updateAiPrompt($request->type, $request->id, $request->ai_prompt);
+            $request->validate([
+                'project_id'  => ['nullable', 'integer'],
+                'refrence_id' => ['nullable', 'integer'],
+                'title'   => ['required', 'string'],
+            ]);
+
+            if ($request->filled('refrence_id')) {
+                $type = 'reference';
+                $id = $request->refrence_id;
+            } elseif ($request->filled('project_id')) {
+                $type = 'project';
+                $id = $request->project_id;
+            } else {
+                return failedResponse(
+                    'Either project_id or refrence_id is required.'
+                );
+            }
+
+            $this->issueService->updateAiPrompt(
+                $type,
+                $id,
+                $request->title
+            );
+
             return successResponse([]);
+
         } catch (Exception $e) {
             DB::table('tracks')->insert([
                 'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()),
                 'created_at'      => now(),
             ]);
+
             return failedResponse($e->getMessage());
         }
     }
+
+
 
     /**
      * POST /apptask/refproGet
      * Fetches the model (Issue or Project) based on type and ID, 
      * typically to retrieve the `ai_prompt`.
      */
+
+
     public function refproGet(Request $request)
     {
         try {
-            $model = $this->issueService->getAiPrompt($request->type, $request->id);
+            $request->validate([
+                'project_id'  => ['nullable', 'integer'],
+                'refrence_id' => ['nullable', 'integer'],
+            ]);
+
+            if ($request->filled('refrence_id')) {
+                $type = 'reference';
+                $id = $request->refrence_id;
+            } elseif ($request->filled('project_id')) {
+                $type = 'project';
+                $id = $request->project_id;
+            } else {
+                return failedResponse('Either project_id or refrence_id is required.');
+            }
+
+            $model = $this->issueService->getAiPrompt($type, $id);
+
             return successResponse($model);
+
         } catch (Exception $e) {
             DB::table('tracks')->insert([
                 'dispatch_status' => 'showing data of ' . json_encode($e->getMessage()),
                 'created_at'      => now(),
             ]);
+
             return failedResponse($e->getMessage());
         }
     }
+
+
+
 }

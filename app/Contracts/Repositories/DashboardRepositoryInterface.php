@@ -13,4 +13,5 @@ interface DashboardRepositoryInterface
     public function allTimeFeeStats(): array;
     public function activeTasksForEmployee(\App\Models\Admin $admin): \Illuminate\Support\Collection;
     public function issuesByOffline(): \Illuminate\Database\Eloquent\Collection;
+    public function allIssues(): \Illuminate\Database\Eloquent\Collection;
 }

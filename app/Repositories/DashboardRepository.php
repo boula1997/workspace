@@ -102,4 +102,9 @@ class DashboardRepository implements DashboardRepositoryInterface
     {
         return Issue::where('isOffline', 1)->latest()->get();
     }
+
+    public function allIssues(): \Illuminate\Database\Eloquent\Collection
+    {
+        return Issue::latest()->get();
+    }
 }

@@ -171,7 +171,7 @@ class DashboardController extends Controller
     public function info()
     {
         $infoProjects = $this->dashboardService->getAllProjectsWithRest();
-        $issues       = boula() ? $this->dashboardService->getOfflineIssues() : collect();
+        $issues       = boula() ? $this->dashboardService->getAllIssues() : collect();
 
         return successResponse([
             'infoProjects' => ProjectResource::collection($infoProjects),
@@ -255,15 +255,8 @@ class DashboardController extends Controller
 
         // Mapping: DB column => payload key
         $projectColumns = [
-            'title'                  => 'name',
-            'cost'                   => 'cost',
-            'deadline'               => 'deadline',
-            'fixed'                  => 'fixed',
-            'isHosted'               => 'isHosted',
-            'isOverthinking'         => 'isOverthinking',
-            'renewalDate'            => 'renewalDate',
-            'githubDevModeLinkBack'  => 'githubDevModeLinkBack',
-            'githubDevModeLinkFront' => 'githubDevModeLinkFront',
+            'ai_prompt'      => 'title',
+            'isOverthinking' => 'isOverthinking',
         ];
 
         $issueColumns = [
