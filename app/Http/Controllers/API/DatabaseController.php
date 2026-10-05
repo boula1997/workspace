@@ -423,6 +423,35 @@ public function saveSearch(Request $request)
     }
 }
 
+private static function parseSkippedTables($value): array
+{
+    return array_values(array_unique(array_filter(array_map('trim', explode(',', (string) $value)))));
+}
+
+public function getSkippedTables($id)
+{
+    return response()->json([
+        'success' => true,
+        'skipped_tables' => (string) DBCredential::where('id', $id)->value('skipped_tables'),
+    ]);
+}
+
+public function updateSkippedTables(Request $request, $id)
+{
+    $validated = $request->validate([
+        'skipped_tables' => 'nullable|string|max:5000',
+    ]);
+
+    $credential = DBCredential::findOrFail($id);
+    $credential->skipped_tables = implode(',', self::parseSkippedTables($validated['skipped_tables'] ?? ''));
+    $credential->save();
+
+    return response()->json([
+        'success' => true,
+        'skipped_tables' => $credential->skipped_tables,
+    ]);
+}
+
 public function getDatabase($dbname, $namedb)
 {
     try {
@@ -529,10 +558,12 @@ public function getDatabase($dbname, $namedb)
             $fksByTable[$fk->TABLE_NAME][] = $fk;
         }
 
-        // Optional comma-separated list of tables whose DATA checks (row count and
-        // latest timestamps) are skipped. Their columns are still returned so the
-        // schema diff keeps working.
-        $skipTables = array_flip(array_filter(array_map('trim', explode(',', (string) request()->query('skip_tables', '')))));
+        // Comma-separated list (d_b_credentials.skipped_tables) of tables whose DATA
+        // checks (row count and latest timestamps) are skipped. Their columns are still
+        // returned so the schema diff keeps working.
+        $skipTables = array_flip(self::parseSkippedTables(
+            DBCredential::where('id', $dbname)->value('skipped_tables')
+        ));
 
         foreach ($tables as $t) {
             $tableName = $t->TABLE_NAME;
