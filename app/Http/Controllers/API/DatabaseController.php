@@ -452,6 +452,102 @@ public function updateSkippedTables(Request $request, $id)
     ]);
 }
 
+/**
+ * Table / column suggestions straight from the database (information_schema), so the app
+ * doesn't have to depend on the full schema fetched by getDatabase().
+ *
+ * Query params:
+ *   q     search word. "table.col" => table must equal "table", column contains "col";
+ *         otherwise columns contain q and tables contain q (case-insensitive).
+ *   table optional - restrict columns to this exact table.
+ *   limit rows per list (default 50, max 200).
+ */
+public function suggestSchema(Request $request, $dbname, $namedb)
+{
+    try {
+        $search = mb_strtolower(trim((string) $request->query('q', '')));
+        $tableFilter = trim((string) $request->query('table', ''));
+        $limit = max(1, min(200, (int) $request->query('limit', 50)));
+
+        self::setDynamicConnection($namedb, $dbname);
+        $conn = DB::connection('dynamic');
+        $driver = $conn->getDriverName();
+        $schemaName = $driver === 'pgsql'
+            ? (config('database.connections.dynamic.schema') ?? 'public')
+            : $namedb;
+
+        // '!' is the LIKE escape character (portable across MySQL and PostgreSQL).
+        $like = fn (string $v) => '%' . str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $v) . '%';
+
+        // ── Tables: name contains the whole search word ──
+        $tableSql = 'FROM information_schema.tables WHERE table_schema = ?';
+        $tableBind = [$schemaName];
+        if ($search !== '') {
+            $tableSql .= " AND LOWER(table_name) LIKE ? ESCAPE '!'";
+            $tableBind[] = $like($search);
+        }
+        $tableTotal = (int) ($conn->selectOne("SELECT COUNT(*) AS total {$tableSql}", $tableBind)->total ?? 0);
+        $tables = array_map(
+            fn ($r) => $r->tname,
+            $conn->select("SELECT table_name AS tname {$tableSql} ORDER BY LOWER(table_name) LIMIT {$limit}", $tableBind)
+        );
+
+        // ── Columns ──
+        $colSql = 'FROM information_schema.columns WHERE table_schema = ?';
+        $colBind = [$schemaName];
+
+        $columnPart = $search;
+        if (str_contains($search, '.')) {
+            $parts = explode('.', $search);
+            $tablePart = $parts[0];
+            $columnPart = end($parts);
+            if ($tablePart !== '') {
+                $colSql .= ' AND LOWER(table_name) = ?';
+                $colBind[] = $tablePart;
+            }
+        }
+        if ($columnPart !== '') {
+            $colSql .= " AND LOWER(column_name) LIKE ? ESCAPE '!'";
+            $colBind[] = $like($columnPart);
+        }
+        if ($tableFilter !== '') {
+            $colSql .= ' AND table_name = ?';
+            $colBind[] = $tableFilter;
+        }
+
+        $typeExpr = $driver === 'pgsql'
+            ? "data_type || CASE
+                    WHEN character_maximum_length IS NOT NULL THEN '(' || character_maximum_length || ')'
+                    WHEN numeric_precision IS NOT NULL AND numeric_scale IS NOT NULL THEN '(' || numeric_precision || ',' || numeric_scale || ')'
+                    ELSE ''
+               END"
+            : 'column_type';
+
+        $columnTotal = (int) ($conn->selectOne("SELECT COUNT(*) AS total {$colSql}", $colBind)->total ?? 0);
+        $columns = array_map(fn ($r) => [
+            'table'  => $r->tname,
+            'column' => $r->cname,
+            'type'   => $r->ctype,
+            'value'  => $r->tname . '.' . $r->cname,
+        ], $conn->select(
+            "SELECT table_name AS tname, column_name AS cname, {$typeExpr} AS ctype {$colSql}
+             ORDER BY LOWER(column_name), table_name LIMIT {$limit}",
+            $colBind
+        ));
+
+        return response()->json([
+            'success' => true,
+            'tables'  => ['rows' => $tables, 'total' => $tableTotal],
+            'columns' => ['rows' => $columns, 'total' => $columnTotal],
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to load suggestions: ' . $e->getMessage(),
+        ], 500);
+    }
+}
+
 public function getDatabase($dbname, $namedb)
 {
     try {

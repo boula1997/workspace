@@ -96,6 +96,7 @@ if (App::environment('local')) {
     Route::post('/save/search', [DatabaseController::class, 'saveSearch'])->name('search.save');
     Route::delete('/delete/search/{id}', [DatabaseController::class, 'deleteSearch'])->name('search.delete');
     Route::get('/databases/info/{dbname}/{namedb}', [DatabaseController::class, 'getDatabase']);
+    Route::get('/databases/suggest/{dbname}/{namedb}', [DatabaseController::class, 'suggestSchema']);
     Route::get('/databases/skipped-tables/{id}', [DatabaseController::class, 'getSkippedTables']);
     Route::post('/databases/skipped-tables/{id}', [DatabaseController::class, 'updateSkippedTables']);
     Route::post('/matching/queries', [DatabaseController::class, 'queryMatching']);
@@ -109,6 +110,7 @@ if (App::environment('local')) {
         Route::get('/get/searches/{id?}', [DatabaseController::class, 'getSearches'])->name('searches.get');
         Route::delete('/delete/search/{id}', [DatabaseController::class, 'deleteSearch'])->name('search.delete');
         Route::get('/databases/info/{dbname}/{namedb}', [DatabaseController::class, 'getDatabase']);
+        Route::get('/databases/suggest/{dbname}/{namedb}', [DatabaseController::class, 'suggestSchema']);
         Route::get('/databases/skipped-tables/{id}', [DatabaseController::class, 'getSkippedTables']);
         Route::post('/databases/skipped-tables/{id}', [DatabaseController::class, 'updateSkippedTables']);
         Route::post('/matching/queries', [DatabaseController::class, 'queryMatching']);
