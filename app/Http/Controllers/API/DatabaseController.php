@@ -447,91 +447,100 @@ public function getDatabase($dbname, $namedb)
         // Array to store all ID columns and their tables
         $idColumns = [];
 
+        // Fetch columns and foreign keys for the WHOLE schema in one query each,
+        // instead of two information_schema queries per table.
+        try {
+            if ($driver === 'pgsql') {
+                $allColumns = DB::connection('dynamic')->select("
+                    SELECT
+                        table_name AS \"TABLE_NAME\",
+                        column_name AS \"Field\",
+                        data_type || CASE
+                            WHEN character_maximum_length IS NOT NULL THEN '(' || character_maximum_length || ')'
+                            WHEN numeric_precision IS NOT NULL AND numeric_scale IS NOT NULL THEN '(' || numeric_precision || ',' || numeric_scale || ')'
+                            ELSE ''
+                        END AS \"Type\",
+                        is_nullable AS \"Null\",
+                        '' AS \"Key\",
+                        column_default AS \"Default\",
+                        '' AS \"Extra\"
+                    FROM information_schema.columns
+                    WHERE table_schema = ?
+                    ORDER BY table_name, ordinal_position
+                ", [$schemaName]);
+            } else {
+                $allColumns = DB::connection('dynamic')->select("
+                    SELECT
+                        table_name AS `TABLE_NAME`,
+                        column_name AS `Field`,
+                        column_type AS `Type`,
+                        is_nullable AS `Null`,
+                        column_key AS `Key`,
+                        column_default AS `Default`,
+                        extra AS `Extra`
+                    FROM information_schema.columns
+                    WHERE table_schema = ?
+                    ORDER BY table_name, ordinal_position
+                ", [$schemaName]);
+            }
+        } catch (\Exception $colException) {
+            // Without the schema's columns nothing below is meaningful
+            throw $colException;
+        }
+
+        if ($driver === 'pgsql') {
+            // Postgres' key_column_usage doesn't carry the referenced
+            // table/column (that's a MySQL-only extension), so join
+            // through constraint_column_usage to get it.
+            $allForeignKeys = DB::connection('dynamic')->select("
+                SELECT
+                    tc.table_name AS \"TABLE_NAME\",
+                    kcu.column_name AS \"COLUMN_NAME\",
+                    ccu.table_name AS \"REFERENCED_TABLE_NAME\",
+                    ccu.column_name AS \"REFERENCED_COLUMN_NAME\"
+                FROM information_schema.table_constraints tc
+                JOIN information_schema.key_column_usage kcu
+                    ON tc.constraint_name = kcu.constraint_name AND tc.table_schema = kcu.table_schema
+                JOIN information_schema.constraint_column_usage ccu
+                    ON tc.constraint_name = ccu.constraint_name AND tc.table_schema = ccu.table_schema
+                WHERE tc.constraint_type = 'FOREIGN KEY'
+                    AND tc.table_schema = ?
+            ", [$schemaName]);
+        } else {
+            $allForeignKeys = DB::connection('dynamic')->select("
+                SELECT
+                    TABLE_NAME AS `TABLE_NAME`,
+                    COLUMN_NAME,
+                    REFERENCED_TABLE_NAME,
+                    REFERENCED_COLUMN_NAME
+                FROM information_schema.KEY_COLUMN_USAGE
+                WHERE
+                    TABLE_SCHEMA = ?
+                    AND REFERENCED_TABLE_NAME IS NOT NULL
+            ", [$schemaName]);
+        }
+
+        $columnsByTable = [];
+        foreach ($allColumns as $c) {
+            $columnsByTable[$c->TABLE_NAME][] = $c;
+        }
+        $fksByTable = [];
+        foreach ($allForeignKeys as $fk) {
+            $fksByTable[$fk->TABLE_NAME][] = $fk;
+        }
+
         foreach ($tables as $t) {
             $tableName = $t->TABLE_NAME;
             $tableType = $t->TABLE_TYPE ?? 'BASE TABLE';
 
-            // Row count (skip views)
-            if ($tableType === 'VIEW') {
-                $rowCount = null;
-            } else {
-                $rowCount = DB::connection('dynamic')->table($tableName)->count();
+            $columns = $columnsByTable[$tableName] ?? [];
+            // The bulk query returns the TABLE_NAME helper column; the per-table
+            // query never did, and the response sets TABLE_NAME itself below.
+            foreach ($columns as $col) {
+                unset($col->TABLE_NAME);
             }
 
-            // Get columns - wrap in try-catch to handle invalid views
-            try {
-                if ($driver === 'pgsql') {
-                    $columns = DB::connection('dynamic')->select("
-                        SELECT
-                            column_name AS \"Field\",
-                            data_type || CASE
-                                WHEN character_maximum_length IS NOT NULL THEN '(' || character_maximum_length || ')'
-                                WHEN numeric_precision IS NOT NULL AND numeric_scale IS NOT NULL THEN '(' || numeric_precision || ',' || numeric_scale || ')'
-                                ELSE ''
-                            END AS \"Type\",
-                            is_nullable AS \"Null\",
-                            '' AS \"Key\",
-                            column_default AS \"Default\",
-                            '' AS \"Extra\"
-                        FROM information_schema.columns
-                        WHERE table_schema = ? AND table_name = ?
-                        ORDER BY ordinal_position
-                    ", [$schemaName, $tableName]);
-                } else {
-                    $columns = DB::connection('dynamic')->select("
-                        SELECT
-                            column_name AS `Field`,
-                            column_type AS `Type`,
-                            is_nullable AS `Null`,
-                            column_key AS `Key`,
-                            column_default AS `Default`,
-                            extra AS `Extra`
-                        FROM information_schema.columns
-                        WHERE table_schema = ? AND table_name = ?
-                        ORDER BY ordinal_position
-                    ", [$schemaName, $tableName]);
-                }
-            } catch (\Exception $colException) {
-                // Skip invalid views that reference non-existent tables/columns or lack permissions
-                if ($tableType === 'VIEW') {
-                    continue; // Skip this view entirely
-                }
-                // For base tables, re-throw the exception
-                throw $colException;
-            }
-
-            // Get actual foreign key information for this table
-            if ($driver === 'pgsql') {
-                // Postgres' key_column_usage doesn't carry the referenced
-                // table/column (that's a MySQL-only extension), so join
-                // through constraint_column_usage to get it.
-                $foreignKeys = DB::connection('dynamic')->select("
-                    SELECT
-                        kcu.column_name AS \"COLUMN_NAME\",
-                        ccu.table_name AS \"REFERENCED_TABLE_NAME\",
-                        ccu.column_name AS \"REFERENCED_COLUMN_NAME\"
-                    FROM information_schema.table_constraints tc
-                    JOIN information_schema.key_column_usage kcu
-                        ON tc.constraint_name = kcu.constraint_name AND tc.table_schema = kcu.table_schema
-                    JOIN information_schema.constraint_column_usage ccu
-                        ON tc.constraint_name = ccu.constraint_name AND tc.table_schema = ccu.table_schema
-                    WHERE tc.constraint_type = 'FOREIGN KEY'
-                        AND tc.table_schema = ?
-                        AND tc.table_name = ?
-                ", [$schemaName, $tableName]);
-            } else {
-                $foreignKeys = DB::connection('dynamic')->select("
-                    SELECT
-                        COLUMN_NAME,
-                        REFERENCED_TABLE_NAME,
-                        REFERENCED_COLUMN_NAME
-                    FROM information_schema.KEY_COLUMN_USAGE
-                    WHERE
-                        TABLE_SCHEMA = ?
-                        AND TABLE_NAME = ?
-                        AND REFERENCED_TABLE_NAME IS NOT NULL
-                ", [$schemaName, $tableName]);
-            }
+            $foreignKeys = $fksByTable[$tableName] ?? [];
 
             // Create a lookup array for quick access
             $fkLookup = [];
@@ -576,9 +585,12 @@ public function getDatabase($dbname, $namedb)
             $latestCreatedAtCount = null;
             $latestUpdatedAtCount = null;
 
-            // Get latest timestamps only if columns exist and not a view
-            if ($tableType !== 'VIEW' && ($hasCreatedAt || $hasUpdatedAt)) {
-                $selects = [];
+            // Row count (skip views) - computed together with the MAX timestamps
+            // in a single table scan instead of separate queries.
+            $rowCount = null;
+
+            if ($tableType !== 'VIEW') {
+                $selects = ['COUNT(*) as row_count'];
 
                 if ($hasCreatedAt) {
                     $selects[] = 'MAX(created_at) as latest_created_at';
@@ -592,6 +604,11 @@ public function getDatabase($dbname, $namedb)
                     ->selectRaw(implode(', ', $selects))
                     ->first();
 
+                $rowCount = (int) ($dates->row_count ?? 0);
+            }
+
+            // Get latest timestamps only if columns exist and not a view
+            if ($tableType !== 'VIEW' && ($hasCreatedAt || $hasUpdatedAt)) {
                 $latestCreatedAt = $dates->latest_created_at ?? null;
                 $latestUpdatedAt = $dates->latest_updated_at ?? null;
 
