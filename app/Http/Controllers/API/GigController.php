@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\phoneGig;
+use App\Models\postGig;
 use App\Services\GigService;
 use Exception;
 use Illuminate\Http\Request;
@@ -49,7 +51,7 @@ class GigController extends Controller
     public function getAllPhoneGigs(Request $request)
     {
         try {
-            $gigs = $this->gigService->getPaginatedPhoneGigs($request->per_page ?? 15);
+            $gigs = $this->gigService->getPaginatedPhoneGigs($request->per_page ?? 15, auth('admin-api')->id());
             return successResponse($gigs);
         } catch (Exception $e) {
             return failedResponse($e->getMessage());
@@ -79,8 +81,35 @@ class GigController extends Controller
                 'phone_gig_id' => 'required|exists:phone_gigs,id',
             ]);
 
-            $callHistory = $this->gigService->createCallHistory($request->phone_gig_id);
+            $callHistory = $this->gigService->createCallHistory($request->phone_gig_id, auth('admin-api')->id());
             return successResponse($callHistory);
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
+    }
+
+    /**
+     * GET /phone-gig/{id}/history-stats
+     * Per-user history counts for one phone gig (logged in user separately, others by count).
+     */
+    public function phoneGigHistoryStats($id)
+    {
+        try {
+            phoneGig::findOrFail($id);
+            return successResponse($this->gigService->phoneGigHistoryStats((int) $id, auth('admin-api')->id()));
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
+    }
+
+    /**
+     * GET /post-gig/{id}/history-stats
+     */
+    public function postGigHistoryStats($id)
+    {
+        try {
+            postGig::findOrFail($id);
+            return successResponse($this->gigService->postGigHistoryStats((int) $id, auth('admin-api')->id()));
         } catch (Exception $e) {
             return failedResponse($e->getMessage());
         }
@@ -115,7 +144,7 @@ class GigController extends Controller
     public function getAllPostGigs(Request $request)
     {
         try {
-            $gigs = $this->gigService->getPaginatedPostGigs($request->per_page ?? 15);
+            $gigs = $this->gigService->getPaginatedPostGigs($request->per_page ?? 15, auth('admin-api')->id());
             return successResponse($gigs);
         } catch (Exception $e) {
             return failedResponse($e->getMessage());
@@ -145,7 +174,7 @@ class GigController extends Controller
                 'post_gig_id' => 'required|exists:post_gigs,id',
             ]);
 
-            $linkHistory = $this->gigService->createLinkHistory($request->post_gig_id);
+            $linkHistory = $this->gigService->createLinkHistory($request->post_gig_id, auth('admin-api')->id());
             return successResponse($linkHistory);
         } catch (Exception $e) {
             return failedResponse($e->getMessage());
