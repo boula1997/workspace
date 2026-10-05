@@ -529,9 +529,15 @@ public function getDatabase($dbname, $namedb)
             $fksByTable[$fk->TABLE_NAME][] = $fk;
         }
 
+        // Optional comma-separated list of tables whose DATA checks (row count and
+        // latest timestamps) are skipped. Their columns are still returned so the
+        // schema diff keeps working.
+        $skipTables = array_flip(array_filter(array_map('trim', explode(',', (string) request()->query('skip_tables', '')))));
+
         foreach ($tables as $t) {
             $tableName = $t->TABLE_NAME;
             $tableType = $t->TABLE_TYPE ?? 'BASE TABLE';
+            $skipData = isset($skipTables[$tableName]);
 
             $columns = $columnsByTable[$tableName] ?? [];
             // The bulk query returns the TABLE_NAME helper column; the per-table
@@ -589,7 +595,7 @@ public function getDatabase($dbname, $namedb)
             // in a single table scan instead of separate queries.
             $rowCount = null;
 
-            if ($tableType !== 'VIEW') {
+            if ($tableType !== 'VIEW' && !$skipData) {
                 $selects = ['COUNT(*) as row_count'];
 
                 if ($hasCreatedAt) {
@@ -608,7 +614,7 @@ public function getDatabase($dbname, $namedb)
             }
 
             // Get latest timestamps only if columns exist and not a view
-            if ($tableType !== 'VIEW' && ($hasCreatedAt || $hasUpdatedAt)) {
+            if ($tableType !== 'VIEW' && !$skipData && ($hasCreatedAt || $hasUpdatedAt)) {
                 $latestCreatedAt = $dates->latest_created_at ?? null;
                 $latestUpdatedAt = $dates->latest_updated_at ?? null;
 
