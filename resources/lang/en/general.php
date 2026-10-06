@@ -200,7 +200,7 @@ return [
 
 "debit" => "Debit",
 
-"isYousab" => "IsYousab",
+"isYousab" => "IsBlanko",
 
 "appearance" => "Appearance",
 

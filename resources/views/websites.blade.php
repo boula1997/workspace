@@ -10,7 +10,7 @@
                 <a class="dropdown-item text-white " target="__blank" href="http://localhost/elmestabaat/public/en">Msabaat Steel</a>
                 <a class="dropdown-item text-white " target="__blank" href="http://localhost/aljazira/">Aljazira</a>
                 <a class="dropdown-item text-white " target="__blank" href="http://localhost/celine/">Celine</a>
-                <a class="dropdown-item text-white " target="__blank" href="http://localhost/yousab-tech/public/">Yousab Tech</a>
+                <a class="dropdown-item text-white " target="__blank" href="http://localhost/yousab-tech/public/">Blanko Tech</a>
                 <a class="dropdown-item text-white " target="__blank" href="http://localhost/erp/public/en/dashboard/admin/login">ERP</a>
                 <a class="dropdown-item text-white " target="__blank" href="http://localhost/asleltawfeer/public/ar/">Asl Eltawfeer</a>
                 <a class="dropdown-item text-white " target="__blank" href="http://localhost/Reservya/ReservyaDashboardProfile/public/ar/dashboard/admin/login">Reservya</a>
@@ -32,7 +32,7 @@
                 <a class="dropdown-item text-white " target="__blank" href="https://msabaat-steel.com/en">Msabaat Steel</a>
                 <a class="dropdown-item text-white " target="__blank" href="https://yousab-tech.com/aljazira/">Aljazira</a>
                 <a class="dropdown-item text-white " target="__blank" href="https://yousab-tech.com/celine/">Celine</a>
-                <a class="dropdown-item text-white " target="__blank" href="https://yousab-tech.com/yousab-tech/public/en">Yousab Tech</a>
+                <a class="dropdown-item text-white " target="__blank" href="https://yousab-tech.com/yousab-tech/public/en">Blanko Tech</a>
                 <a class="dropdown-item text-white " target="__blank" href="https://elmandra.yousab-tech.com/">Elmandra Front</a>
                 <a class="dropdown-item text-white " target="__blank" href="https://yousab-tech.com/elmandra-alarabia/public/ar/dashboard/admin/login">Elmandra Back</a>
                 <a class="dropdown-item text-white " target="__blank" href="https://worldsports.yousab-tech.com/">Gym Front</a>

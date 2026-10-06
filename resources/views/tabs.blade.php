@@ -13,7 +13,7 @@
     
     <div class="row">
         <button class="btn btn-outline-warning col-2 clickable-text" style="cursor: pointer;"  content="{{ activeWebsitesContent() }}" id="{{boula()?'stress':''}}">Stress</button>
-        <button class="btn btn-outline-warning col-2" id="{{boula()?'yousab':''}}">Yousab</button>
+        <button class="btn btn-outline-warning col-2" id="{{boula()?'yousab':''}}">Blanko</button>
         <button class="btn btn-outline-warning col-2" id="{{boula()?'issues':''}}">Refrences</button>
         <button class="btn btn-outline-warning col-2" id="{{boula()?'phpMyAdmin':''}}">sql</button>
         <button class="btn btn-outline-warning col-2" id="{{boula()?'backup':''}}">Backup</button>

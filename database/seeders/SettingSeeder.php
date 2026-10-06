@@ -17,16 +17,16 @@ class SettingSeeder extends Seeder
         Setting::create([
             'en' => [
                 'appointment1' => ': 24/7',
-                'copyright' => 'Copyright reserved by Yousab Tech © 2024',
-                'title' => 'Yousab Tech',
+                'copyright' => 'Copyright reserved by Blanko Tech © 2024',
+                'title' => 'Blanko Tech',
                 'address' => 'Online',
                 'description' => 'We are a web development company specialized in creating, fixing and mangaing websites using latest technologies and web services',
                 'meta_data' => 'Web Development Company',
             ],
             'ar' => [
                 'appointment1' => ': 24/7',
-                'copyright' => 'جميع الحقوق محفوظة لدي يوساب تك © 2023 ',
-                'title' => 'يوساب تك',
+                'copyright' => 'جميع الحقوق محفوظة لدي بلانكو تك © 2023 ',
+                'title' => 'بلانكو تك',
                 'address' => 'عبر الانترنت',
                 'description' => 'نحن شركة تطوير لمواقع الويب متخصصون في انشاء,صيانة وادارة مواقع الويب',
                 'meta_data' => 'شركة خدمات ويب',

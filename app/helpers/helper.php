@@ -371,10 +371,10 @@ function yousabEmails()
             $body = '<html lang="en">
                         <head>
                             <meta charset="UTF-8">
-                            <title>Yousab Tech Report</title>
+                            <title>Blanko Tech Report</title>
                         </head>
                         <body>
-                            <h1>Yousab Tech Report</h1>';
+                            <h1>Blanko Tech Report</h1>';
             // Add Expired Free Hosting section
             $body .= '<h2>🚨 Expired Free Hosting</h2>';
             $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">

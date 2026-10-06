@@ -1,5 +1,5 @@
 <footer class="main-footer text-center fixed-bottom">
-  <strong>Copyright &copy; 2023 <a href="{{ route('home') }}">Yousab Tech</a>.</strong>
+  <strong>Copyright &copy; 2023 <a href="{{ route('home') }}">Blanko Tech</a>.</strong>
   All rights reserved.
 </footer>
 

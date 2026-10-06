@@ -165,7 +165,7 @@ return [
 
 "debit" => "مدين",
 
-"isYousab" => "IsYousab", // If this is a name, it shouldn't be translated.
+"isYousab" => "IsBlanko", // If this is a name, it shouldn't be translated.
 
 "appearance" => "المظهر",
 

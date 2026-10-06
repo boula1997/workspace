@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-3">
-        <h6>Yousab Tech</h6>
+        <h6>Blanko Tech</h6>
         <p class="clickable-text" content="ssh yousabte@192.185.41.219 -p2222">server SSH</p>
         <p class="clickable-text" content="2JCoIkhAyWRqrzdy">Password</p>
        <br>

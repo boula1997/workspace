@@ -158,7 +158,7 @@ public function getFunction(Request $request)
 
             // Final output: ONE notification string
             if(boula()){
-                $notifications[] = "Yousab Tech + LapMob Ecommerce + Fixed Salary Programming Job";
+                $notifications[] = "Blanko Tech + LapMob Ecommerce + Fixed Salary Programming Job";
                 $notifications[]="Your role is Marketting + Project Mangement";
             }
             */
