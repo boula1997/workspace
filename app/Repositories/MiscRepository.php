@@ -74,7 +74,8 @@ class MiscRepository implements MiscRepositoryInterface
 
     public function allReadyResponseMessages(): \Illuminate\Database\Eloquent\Collection
     {
-        return ReadyClientResbonseMessage::latest()->get();
+        // Personal messages first: older app builds take the first match, and personal is the default.
+        return ReadyClientResbonseMessage::orderByDesc('is_personal')->latest()->get();
     }
 
     public function paginateElements(int $categoryId, array $filters): \Illuminate\Contracts\Pagination\LengthAwarePaginator
