@@ -589,12 +589,19 @@ public function checkChanges(Request $request, $dbname, $namedb)
         if (!$request->boolean('skip_diff')) {
             $diff['checked'] = true;
             $detectedAt = (string) $request->query('detected_at', now()->toDateTimeString());
-            $credential = DBCredential::withoutGlobalScopes()->find($dbname);
 
-            if (!$credential) {
-                // e.g. a local backend that has no row for this production credential id
-                $diff['reason'] = 'credential not found on this backend';
-            } else {
+            // Read the baseline, diff and store the new one under a row lock, so two overlapping
+            // checks (phone + web, a retry, a double trigger) are serialized: the second one diffs
+            // against the baseline the first one just saved instead of the stale one it read earlier.
+            DB::transaction(function () use ($dbname, $namedb, $organized, $detectedAt, &$diff) {
+                $credential = DBCredential::withoutGlobalScopes()->lockForUpdate()->find($dbname);
+
+                if (!$credential) {
+                    // e.g. a local backend that has no row for this production credential id
+                    $diff['reason'] = 'credential not found on this backend';
+                    return;
+                }
+
                 $raw = $credential->last_snapshot;
                 $baseline = is_string($raw) ? json_decode($raw, true) : (is_array($raw) ? $raw : null);
                 $hasBaseline = is_array($baseline) && count($baseline) > 0;
@@ -603,30 +610,32 @@ public function checkChanges(Request $request, $dbname, $namedb)
 
                 if ($hasBaseline && !$lines) {
                     // nothing changed and a baseline already exists: nothing to store
-                } elseif (!$hasBaseline && !$organized) {
-                    $diff['reason'] = 'no schema to store as baseline';
-                } else {
-                    $text = SchemaDiffService::buildText(
-                        $namedb,
-                        $dbname,
-                        $detectedAt,
-                        $hasBaseline ? $lines : [SchemaDiffService::BASELINE_MESSAGE]
-                    );
-
-                    DB::transaction(function () use ($credential, $text, $organized) {
-                        Difference::create([
-                            'd_b_credential_id' => $credential->id,
-                            'diff_db'           => $text,
-                        ]);
-                        $credential->last_snapshot = json_encode($organized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                        $credential->save();
-                    });
-
-                    $diff['stored'] = true;
-                    $diff['changes_count'] = $hasBaseline ? count($lines) : 0;
-                    $diff['baseline_created'] = !$hasBaseline;
+                    return;
                 }
-            }
+
+                if (!$hasBaseline && !$organized) {
+                    $diff['reason'] = 'no schema to store as baseline';
+                    return;
+                }
+
+                $text = SchemaDiffService::buildText(
+                    $namedb,
+                    $dbname,
+                    $detectedAt,
+                    $hasBaseline ? $lines : [SchemaDiffService::BASELINE_MESSAGE]
+                );
+
+                Difference::create([
+                    'd_b_credential_id' => $credential->id,
+                    'diff_db'           => $text,
+                ]);
+                $credential->last_snapshot = json_encode($organized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                $credential->save();
+
+                $diff['stored'] = true;
+                $diff['changes_count'] = $hasBaseline ? count($lines) : 0;
+                $diff['baseline_created'] = !$hasBaseline;
+            });
         }
 
         $payload = [
