@@ -98,6 +98,7 @@ if (App::environment('local')) {
     Route::get('/databases/info/{dbname}/{namedb}', [DatabaseController::class, 'getDatabase']);
     Route::get('/databases/tables/{dbname}/{namedb}', [DatabaseController::class, 'tablesBrowser']);
     Route::post('/databases/changes/{dbname}/{namedb}', [DatabaseController::class, 'checkChanges']);
+    Route::post('/databases/diff/{dbname}/{namedb}', [DatabaseController::class, 'submitSchemaDiff']);
     Route::get('/databases/suggest/{dbname}/{namedb}', [DatabaseController::class, 'suggestSchema']);
     Route::get('/databases/skipped-tables/{id}', [DatabaseController::class, 'getSkippedTables']);
     Route::post('/databases/skipped-tables/{id}', [DatabaseController::class, 'updateSkippedTables']);
@@ -114,6 +115,7 @@ if (App::environment('local')) {
         Route::get('/databases/info/{dbname}/{namedb}', [DatabaseController::class, 'getDatabase']);
         Route::get('/databases/tables/{dbname}/{namedb}', [DatabaseController::class, 'tablesBrowser']);
         Route::post('/databases/changes/{dbname}/{namedb}', [DatabaseController::class, 'checkChanges']);
+        Route::post('/databases/diff/{dbname}/{namedb}', [DatabaseController::class, 'submitSchemaDiff']);
         Route::get('/databases/suggest/{dbname}/{namedb}', [DatabaseController::class, 'suggestSchema']);
         Route::get('/databases/skipped-tables/{id}', [DatabaseController::class, 'getSkippedTables']);
         Route::post('/databases/skipped-tables/{id}', [DatabaseController::class, 'updateSkippedTables']);

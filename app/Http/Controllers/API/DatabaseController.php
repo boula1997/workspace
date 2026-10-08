@@ -587,55 +587,12 @@ public function checkChanges(Request $request, $dbname, $namedb)
         ];
 
         if (!$request->boolean('skip_diff')) {
-            $diff['checked'] = true;
-            $detectedAt = (string) $request->query('detected_at', now()->toDateTimeString());
-
-            // Read the baseline, diff and store the new one under a row lock, so two overlapping
-            // checks (phone + web, a retry, a double trigger) are serialized: the second one diffs
-            // against the baseline the first one just saved instead of the stale one it read earlier.
-            DB::transaction(function () use ($dbname, $namedb, $organized, $detectedAt, &$diff) {
-                $credential = DBCredential::withoutGlobalScopes()->lockForUpdate()->find($dbname);
-
-                if (!$credential) {
-                    // e.g. a local backend that has no row for this production credential id
-                    $diff['reason'] = 'credential not found on this backend';
-                    return;
-                }
-
-                $raw = $credential->last_snapshot;
-                $baseline = is_string($raw) ? json_decode($raw, true) : (is_array($raw) ? $raw : null);
-                $hasBaseline = is_array($baseline) && count($baseline) > 0;
-
-                $lines = $hasBaseline ? SchemaDiffService::diffLines($baseline, $organized) : [];
-
-                if ($hasBaseline && !$lines) {
-                    // nothing changed and a baseline already exists: nothing to store
-                    return;
-                }
-
-                if (!$hasBaseline && !$organized) {
-                    $diff['reason'] = 'no schema to store as baseline';
-                    return;
-                }
-
-                $text = SchemaDiffService::buildText(
-                    $namedb,
-                    $dbname,
-                    $detectedAt,
-                    $hasBaseline ? $lines : [SchemaDiffService::BASELINE_MESSAGE]
-                );
-
-                Difference::create([
-                    'd_b_credential_id' => $credential->id,
-                    'diff_db'           => $text,
-                ]);
-                $credential->last_snapshot = json_encode($organized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                $credential->save();
-
-                $diff['stored'] = true;
-                $diff['changes_count'] = $hasBaseline ? count($lines) : 0;
-                $diff['baseline_created'] = !$hasBaseline;
-            });
+            $diff = $this->storeSchemaDiff(
+                $dbname,
+                $namedb,
+                $organized,
+                (string) $request->query('detected_at', now()->toDateTimeString())
+            );
         }
 
         $payload = [
@@ -651,11 +608,122 @@ public function checkChanges(Request $request, $dbname, $namedb)
             $payload['info'] = $info;
         }
 
+        // The scanned schema in the baseline format, so the app can send it to the backend that
+        // keeps the baseline (production) when THIS backend only scans.
+        if ($request->boolean('return_schema')) {
+            $payload['schema'] = $organized;
+        }
+
         return response()->json($payload);
     } catch (\Throwable $e) {
         return response()->json([
             'success' => false,
             'message' => 'Failed to check database changes: ' . $e->getMessage(),
+        ], 500);
+    }
+}
+
+/**
+ * Compares a scanned schema with the stored baseline (d_b_credentials.last_snapshot) and stores
+ * the difference + the new baseline. Needs no connection to the scanned database, so it can run
+ * on a backend that cannot reach it (production, for a database that only exists locally).
+ *
+ * Reading the baseline, diffing and saving happen under a row lock, so two overlapping checks are
+ * serialized: the second one diffs against the baseline the first one just saved.
+ */
+private function storeSchemaDiff($dbname, $namedb, array $organized, string $detectedAt): array
+{
+    $diff = [
+        'checked'          => true,
+        'changes_count'    => 0,
+        'stored'           => false,
+        'baseline_created' => false,
+        'reason'           => null,
+    ];
+
+    DB::transaction(function () use ($dbname, $namedb, $organized, $detectedAt, &$diff) {
+        $credential = DBCredential::withoutGlobalScopes()->lockForUpdate()->find($dbname);
+
+        if (!$credential) {
+            // e.g. a local backend that has no row for this production credential id
+            $diff['reason'] = 'credential not found on this backend';
+            return;
+        }
+
+        $raw = $credential->last_snapshot;
+        $baseline = is_string($raw) ? json_decode($raw, true) : (is_array($raw) ? $raw : null);
+        $hasBaseline = is_array($baseline) && count($baseline) > 0;
+
+        $lines = $hasBaseline ? SchemaDiffService::diffLines($baseline, $organized) : [];
+
+        if ($hasBaseline && !$lines) {
+            // nothing changed and a baseline already exists: nothing to store
+            return;
+        }
+
+        if (!$hasBaseline && !$organized) {
+            $diff['reason'] = 'no schema to store as baseline';
+            return;
+        }
+
+        $text = SchemaDiffService::buildText(
+            $namedb,
+            $dbname,
+            $detectedAt,
+            $hasBaseline ? $lines : [SchemaDiffService::BASELINE_MESSAGE]
+        );
+
+        Difference::create([
+            'd_b_credential_id' => $credential->id,
+            'diff_db'           => $text,
+        ]);
+        $credential->last_snapshot = json_encode($organized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $credential->save();
+
+        $diff['stored'] = true;
+        $diff['changes_count'] = $hasBaseline ? count($lines) : 0;
+        $diff['baseline_created'] = !$hasBaseline;
+    });
+
+    return $diff;
+}
+
+/**
+ * POST /databases/diff/{dbname}/{namedb}
+ *
+ * Body: { schema: { table: [column, ...], ... }, detected_at?: string }
+ *
+ * The schema was scanned by ANOTHER backend (the one the app is connected to, e.g. a local one
+ * that can reach a database production cannot). This backend only keeps the single shared
+ * baseline: it diffs the posted schema against it and stores the result. It never opens the
+ * scanned database.
+ */
+public function submitSchemaDiff(Request $request, $dbname, $namedb)
+{
+    try {
+        $validated = $request->validate([
+            'schema'      => 'required|array|min:1',
+            'schema.*'    => 'array',
+            'detected_at' => 'nullable|string|max:100',
+        ]);
+
+        $diff = $this->storeSchemaDiff(
+            $dbname,
+            $namedb,
+            $validated['schema'],
+            (string) ($validated['detected_at'] ?? now()->toDateTimeString())
+        );
+
+        return response()->json(['success' => true, 'diff' => $diff]);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid schema: ' . collect($e->errors())->flatten()->first(),
+        ], 422);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to store schema difference: ' . $e->getMessage(),
         ], 500);
     }
 }
