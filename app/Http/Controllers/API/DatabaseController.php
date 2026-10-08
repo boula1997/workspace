@@ -875,6 +875,71 @@ public function getDatabase($dbname, $namedb)
             ", [$schemaName]);
         }
 
+        // Index info for the "is this column indexed?" display: one bulk query per schema. Kept
+        // out of the Key/Extra fields on purpose - the schema diff compares those, and Postgres
+        // has no Key, so filling it would flag every column as changed. If the query fails
+        // (permissions, old server) the scan still works and indexes are simply not reported.
+        $indexMap = null; // table => column => [labels]
+        try {
+            if ($driver === 'pgsql') {
+                $indexRows = DB::connection('dynamic')->select("
+                    SELECT
+                        t.relname AS \"TABLE_NAME\",
+                        a.attname AS \"COLUMN_NAME\",
+                        i.relname AS \"INDEX_NAME\",
+                        ix.indisunique AS \"IS_UNIQUE\",
+                        ix.indisprimary AS \"IS_PRIMARY\",
+                        k.ord AS \"SEQ\",
+                        (ix.indpred IS NOT NULL) AS \"IS_PARTIAL\"
+                    FROM pg_index ix
+                    JOIN pg_class t ON t.oid = ix.indrelid
+                    JOIN pg_class i ON i.oid = ix.indexrelid
+                    JOIN pg_namespace n ON n.oid = t.relnamespace
+                    CROSS JOIN LATERAL unnest(ix.indkey) WITH ORDINALITY AS k(attnum, ord)
+                    JOIN pg_attribute a ON a.attrelid = t.oid AND a.attnum = k.attnum
+                    WHERE n.nspname = ? AND ix.indisvalid AND k.attnum > 0 AND k.ord <= ix.indnkeyatts
+                    ORDER BY t.relname, i.relname, k.ord
+                ", [$schemaName]);
+            } else {
+                $indexRows = DB::connection('dynamic')->select("
+                    SELECT
+                        table_name AS `TABLE_NAME`,
+                        column_name AS `COLUMN_NAME`,
+                        index_name AS `INDEX_NAME`,
+                        (non_unique = 0) AS `IS_UNIQUE`,
+                        (index_name = 'PRIMARY') AS `IS_PRIMARY`,
+                        seq_in_index AS `SEQ`,
+                        0 AS `IS_PARTIAL`,
+                        index_type AS `INDEX_TYPE`
+                    FROM information_schema.statistics
+                    WHERE table_schema = ? AND column_name IS NOT NULL
+                    ORDER BY table_name, index_name, seq_in_index
+                ", [$schemaName]);
+            }
+
+            $indexMap = [];
+            foreach ($indexRows as $ix) {
+                $kind = !empty($ix->IS_PRIMARY) ? 'PRIMARY KEY' : (!empty($ix->IS_UNIQUE) ? 'UNIQUE' : 'INDEX');
+                $label = $kind;
+                if (empty($ix->IS_PRIMARY) || $ix->INDEX_NAME !== 'PRIMARY') {
+                    $label .= ' ' . $ix->INDEX_NAME;
+                }
+                if (isset($ix->INDEX_TYPE) && in_array(strtoupper($ix->INDEX_TYPE), ['FULLTEXT', 'SPATIAL'], true)) {
+                    $label .= ' [' . strtolower($ix->INDEX_TYPE) . ']';
+                }
+                if ((int) $ix->SEQ > 1) {
+                    $label .= ' (position ' . (int) $ix->SEQ . ')';
+                }
+                if (!empty($ix->IS_PARTIAL)) {
+                    $label .= ' [partial]';
+                }
+                $indexMap[$ix->TABLE_NAME][$ix->COLUMN_NAME][] = $label;
+            }
+        } catch (\Throwable $indexException) {
+            \Log::warning('Could not read index info: ' . $indexException->getMessage());
+            $indexMap = null;
+        }
+
         $columnsByTable = [];
         foreach ($allColumns as $c) {
             $columnsByTable[$c->TABLE_NAME][] = $c;
@@ -1030,6 +1095,16 @@ public function getDatabase($dbname, $namedb)
                 $col->LATEST_UPDATED_AT = $latestUpdatedAt;
                 $col->LATEST_UPDATED_AT_COUNT = $latestUpdatedAtCount;
                 
+                // Indexed or not (null = unknown: view, or index info not available)
+                if ($indexMap !== null && $tableType !== 'VIEW') {
+                    $labels = $indexMap[$tableName][$col->Field] ?? [];
+                    $col->IS_INDEXED = count($labels) > 0;
+                    $col->INDEXES = $labels ? implode('; ', $labels) : null;
+                } else {
+                    $col->IS_INDEXED = null;
+                    $col->INDEXES = null;
+                }
+
                 // Add foreign key information if this column has a constraint
                 if (isset($fkLookup[$col->Field])) {
                     $col->IS_FOREIGN_KEY = true;
