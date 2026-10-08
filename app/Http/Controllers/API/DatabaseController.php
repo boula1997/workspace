@@ -1364,7 +1364,10 @@ public function queryMatching(Request $request)
     $queries = Query::withoutGlobalScope(ActiveScope::class)
         ->where('d_b_credential_id', $db_credential_id)
         ->where('title', 'like', "%{$keyword}%")
-        ->latest()
+        // saveQuery() touches updated_at every time a query is run, so this is "latest run first"
+        // (latest() alone sorts by created_at, i.e. when the query was first written).
+        ->orderByDesc('updated_at')
+        ->orderByDesc('id')
         ->get();
 
     return response()->json([
