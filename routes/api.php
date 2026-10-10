@@ -92,6 +92,8 @@ Route::get('/is/boula', function () {
 
 Route::post('/postFunction', [ActionController::class, 'postFunction']);
 
+// Visits of profile.blanko.tech (logged against the personal "Profile" project); must stay above the generic route
+Route::get('/clienttrack/profile/{action}', [ClienttrackController::class, 'profileTrack'])->middleware('throttle:30,1');
 Route::get('/clienttrack/{project_id}/{action}', [ClienttrackController::class, 'clienttrack']);
 Route::get('tracks/{id}', [TrackController::class, 'index']);
 
