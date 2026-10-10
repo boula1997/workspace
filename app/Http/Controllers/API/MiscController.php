@@ -160,6 +160,11 @@ class MiscController extends Controller
      */
     public function elements($id, Request $request)
     {
+        // The audit logs module follows the same rule as the module list: only boula() sees it.
+        if (!boula() && \App\Models\Category::withoutGlobalScopes()->whereKey($id)->value('model') === \App\Models\AuditLog::class) {
+            return response()->json(['status' => 403, 'message' => 'Forbidden'], 403);
+        }
+
         try {
             $filters = $request->only(['from', 'to', 'search', 'per_page']);
             

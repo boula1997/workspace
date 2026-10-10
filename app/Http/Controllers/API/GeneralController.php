@@ -17,6 +17,7 @@ use App\Models\DBCredential;
 use Illuminate\Support\Facades\File;
 
 use App\Models\Admin;
+use App\Services\AuditLogger;
 
 
 use Carbon\Carbon;
@@ -30,6 +31,10 @@ class GeneralController extends Controller
 
    public function storeUpdate(Request $request, $dbname, $table, $itemId = null)
 {
+    if ($table === 'audit_logs') {
+        return response()->json(['success' => false, 'message' => 'Audit logs are read-only.'], 403);
+    }
+
     try {
         // Step 0: Get DB credentials
         $credential = DBCredential::where('db_name', $dbname)->first();
@@ -62,6 +67,7 @@ class GeneralController extends Controller
         ", [dynamicSchemaName($dbDriver, $dbName), $table]);
 
         $columnNames = collect($columns)->pluck('COLUMN_NAME')->toArray();
+        $audited = $this->isAuditedTable($dbName, $table);
         $exclude = ['id'];
         $data = [];
 
@@ -106,9 +112,10 @@ class GeneralController extends Controller
                 $data = ['updated_at' => $now, 'id' => $itemId];
             }
 
-            DB::connection('dynamic')->table($table)
+            $write = fn () => DB::connection('dynamic')->table($table)
                 ->where('id', $itemId)
                 ->update($data);
+            $audited ? $this->auditedWrite($table, $itemId, $write) : $write();
         } else {
             // CREATE OPERATION
             // 🟡 CREATE — set both created_at and updated_at
@@ -119,7 +126,8 @@ class GeneralController extends Controller
                 $data['updated_at'] = $now;
             }
 
-            $itemId = DB::connection('dynamic')->table($table)->insertGetId($data);
+            $write = fn () => DB::connection('dynamic')->table($table)->insertGetId($data);
+            $itemId = $audited ? $this->auditedWrite($table, null, $write) : $write();
         }
 
         // Step 4: Handle image & images via files table (unchanged)
@@ -661,6 +669,10 @@ public function showEditCreate($dbname, $table, $itemId = null)
 
     public function deleteItem($dbname, $table, $itemId)
     {
+        if ($table === 'audit_logs') {
+            return response()->json(['success' => false, 'message' => 'Audit logs are read-only.'], 403);
+        }
+
 
         // Step 0: Get DB credentials
         $credential = DBCredential::where('db_name', $dbname)->first();
@@ -705,9 +717,10 @@ public function showEditCreate($dbname, $table, $itemId = null)
         ];
 
         // Retrieve record data
-        $data = DB::connection('dynamic')->select("
+        $write = fn () => DB::connection('dynamic')->select("
         delete FROM {$table} WHERE id = ?
     ", [$itemId]);
+        $data = $this->isAuditedTable($dbName, $table) ? $this->auditedWrite($table, $itemId, $write) : $write();
 
 
 
@@ -718,6 +731,31 @@ public function showEditCreate($dbname, $table, $itemId = null)
         ]);
     }
 
+
+    // Finance tables of the main database are written through the 'dynamic' connection here,
+    // which skips model events, so their changes are logged explicitly.
+    private function isAuditedTable(string $dbName, string $table): bool
+    {
+        return AuditLogger::isAuditedTable($table) && $dbName === DB::connection()->getDatabaseName();
+    }
+
+    // Runs the write and its audit entry together: if the entry cannot be saved, the write is rolled back.
+    private function auditedWrite(string $table, $itemId, callable $write)
+    {
+        return DB::connection('dynamic')->transaction(function () use ($table, $itemId, $write) {
+            $before = $itemId ? $this->dynamicRow($table, $itemId) : null;
+            $result = $write();
+            $itemId = $itemId ?: $result; // insertGetId returns the new id
+            AuditLogger::recordRow($table, $itemId, $before, $this->dynamicRow($table, $itemId));
+            return $result;
+        });
+    }
+
+    private function dynamicRow(string $table, $id): ?array
+    {
+        $row = DB::connection('dynamic')->table($table)->where('id', $id)->first();
+        return $row ? (array) $row : null;
+    }
 
     public function index($dbname, $table, $column = null, $equal = null)
     {

@@ -129,7 +129,10 @@ class MiscRepository implements MiscRepositoryInterface
                 }
             }
 
-            $transformed['extra'] = implode(', ', $extraValues);
+            // A config class can provide its own list line (e.g. the audit log's change summary)
+            $transformed['extra'] = method_exists($configClass, 'extra')
+                ? $configClass::extra($item)
+                : implode(', ', $extraValues);
             return $transformed;
         });
 
