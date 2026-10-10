@@ -124,7 +124,7 @@ function quoteDynamicIdentifier(string $driver, string $identifier): string
 /**
  * Portable equivalent of MySQL's INFORMATION_SCHEMA.COLUMNS lookup (incl.
  * column comment) for the 'dynamic' connection. Returns stdClass rows with
- * COLUMN_NAME/DATA_TYPE/IS_NULLABLE/COLUMN_COMMENT so existing MySQL-shaped
+ * COLUMN_NAME/DATA_TYPE/IS_NULLABLE/COLUMN_DEFAULT/COLUMN_COMMENT so existing MySQL-shaped
  * consumers don't need to change.
  */
 function dynamicTableColumns(string $driver, string $schemaName, string $tableName): array
@@ -135,6 +135,7 @@ function dynamicTableColumns(string $driver, string $schemaName, string $tableNa
                 c.column_name AS \"COLUMN_NAME\",
                 c.data_type AS \"DATA_TYPE\",
                 c.is_nullable AS \"IS_NULLABLE\",
+                c.column_default AS \"COLUMN_DEFAULT\",
                 COALESCE(pgd.description, '') AS \"COLUMN_COMMENT\"
             FROM information_schema.columns c
             LEFT JOIN pg_catalog.pg_statio_all_tables st
@@ -151,6 +152,7 @@ function dynamicTableColumns(string $driver, string $schemaName, string $tableNa
             COLUMN_NAME AS `COLUMN_NAME`,
             DATA_TYPE AS `DATA_TYPE`,
             IS_NULLABLE AS `IS_NULLABLE`,
+            COLUMN_DEFAULT AS `COLUMN_DEFAULT`,
             COLUMN_COMMENT AS `COLUMN_COMMENT`
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
