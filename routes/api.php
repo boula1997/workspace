@@ -153,6 +153,7 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
     Route::post('/storeUpdate/{dbname}/{table}/{itemId}', [GeneralController::class, 'storeUpdate']);
     Route::post('/blocktables/{dbname}', [GeneralController::class, 'blockTables']);
     Route::get('/deleteItem/{dbname}/{table}/{itemId}', [GeneralController::class, 'deleteItem']);
+    Route::delete('/deleteItem/{dbname}/{table}/{itemId}', [GeneralController::class, 'deleteItem']);
     Route::get('/index/{dbname}/{table}/{column?}/{equal?}', [GeneralController::class, 'index']);
     Route::get('/tables/{dbname}', [GeneralController::class, 'tableNames']);
     Route::get('/all/tables/{dbname}/{admin_id?}', [GeneralController::class, 'allTableNames']);

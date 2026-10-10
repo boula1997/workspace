@@ -20,14 +20,21 @@ class Setting extends \App\Models\BaseModel implements TranslatableContract
 
     public function getLogoAttribute($val)
     {
-        return file_exists($val) ? asset($val) :  settings()->logo;
+        return $this->assetOrNull($val);
     }
     public function getTabAttribute($val)
     {
-        return file_exists($val) ? asset($val) :  settings()->logo;
+        return $this->assetOrNull($val);
     }
     public function getwhiteLogoAttribute($val)
     {
-        return file_exists($val) ? asset($val) :  settings()->logo;
+        return $this->assetOrNull($val);
+    }
+
+    // The old fallback (settings()->logo) re-entered this same accessor and recursed forever
+    // whenever file_exists() missed, e.g. when not running from public/.
+    private function assetOrNull($val)
+    {
+        return $val ? asset($val) : null;
     }
 }
