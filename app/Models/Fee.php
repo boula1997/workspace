@@ -12,6 +12,7 @@ use App\Scopes\DateFilterScope;
 class Fee extends \App\Models\BaseModel
 {
     use HasFactory;
+    use \App\Models\Concerns\Auditable;
     protected $table = 'fees';
     protected $guarded = [];
     public $translatedAttributes = ['title'];

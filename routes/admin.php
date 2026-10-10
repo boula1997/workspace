@@ -118,6 +118,7 @@ Route::group(
                  Route::resource('navigations', NavigationController::class);
                  Route::resource('notes', NoteController::class);
                  Route::resource('fees', FeeController::class);
+                 Route::get('/finance-logs', [App\Http\Controllers\Admin\FinanceLogController::class, 'index'])->name('finance-logs.index');
                  Route::resource('vaccancies',VaccancyController::class);
      
                  Route::get('/update-counter', [TaskController::class, 'updateCounter'])->name('counter.update');

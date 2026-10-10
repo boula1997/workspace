@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 class Accountant extends \App\Models\BaseModel
 {
     use HasFactory;
+    use \App\Models\Concerns\Auditable;
     protected $table = 'accountants';
     protected $guarded = [];
     public $translatedAttributes = ['title'];

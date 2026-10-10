@@ -506,4 +506,25 @@ return [
     "Confirm" => "تأكيد",
     "Logout" => "تسجيل الخروج",
 
+    // Finance logs
+    "finance_logs" => "سجل العمليات المالية",
+    "log_when" => "الوقت",
+    "log_who" => "بواسطة",
+    "log_action" => "العملية",
+    "log_record" => "السجل",
+    "log_record_type" => "نوع السجل",
+    "log_record_id" => "رقم السجل",
+    "log_changes" => "التغييرات",
+    "log_created" => "إضافة",
+    "log_updated" => "تعديل",
+    "log_deleted" => "حذف",
+    "log_system" => "النظام",
+    "log_all" => "الكل",
+    "log_from" => "من",
+    "log_to" => "إلى",
+    "log_filter" => "تصفية",
+    "log_reset" => "مسح التصفية",
+    "log_empty" => "لا توجد تغييرات مسجلة بعد.",
+    "log_history_of_record" => "عرض السجل الكامل لهذا العنصر",
+
 ];

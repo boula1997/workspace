@@ -636,6 +636,15 @@
                     </li>
                 @endcan
 
+                @can('finance-log-list')
+                    <li class="nav-item">
+                        <a href="{{ route('finance-logs.index') }}" class="nav-link">
+                            <i class=" px-1 fas fa-history"></i>
+                            <p>@lang('general.finance_logs')</p>
+                        </a>
+                    </li>
+                @endcan
+
 
                 @can('video-list')
                     <li class="nav-item">

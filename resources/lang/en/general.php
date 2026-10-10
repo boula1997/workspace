@@ -571,4 +571,25 @@ return [
     "Confirm" => "Confirm",
     "Logout" => "Logout",
 
+    // Finance logs
+    "finance_logs" => "Finance logs",
+    "log_when" => "When",
+    "log_who" => "Who",
+    "log_action" => "Action",
+    "log_record" => "Record",
+    "log_record_type" => "Record type",
+    "log_record_id" => "Record #",
+    "log_changes" => "Changes",
+    "log_created" => "Created",
+    "log_updated" => "Updated",
+    "log_deleted" => "Deleted",
+    "log_system" => "System",
+    "log_all" => "All",
+    "log_from" => "From",
+    "log_to" => "To",
+    "log_filter" => "Filter",
+    "log_reset" => "Clear filters",
+    "log_empty" => "No changes recorded yet.",
+    "log_history_of_record" => "Show the full history of this record",
+
 ];

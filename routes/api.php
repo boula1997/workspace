@@ -64,6 +64,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['middleware' => ['apiLocalization', 'cors'], 'prefix' => 'auth'], function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Signed-in admin's account (AuthController requires auth:admin-api for these)
+    Route::get('/profile', [AuthController::class, 'userProfile']);
+    Route::get('/sessions', [AuthController::class, 'sessions']);
+    Route::middleware('throttle:10,1')->group(function () {
+        Route::post('/change-password', [AuthController::class, 'adminPassword']);
+        Route::post('/change-email', [AuthController::class, 'changeEmail']);
+    });
 });
 
 Route::post('/track', [MiscController::class, 'track']);

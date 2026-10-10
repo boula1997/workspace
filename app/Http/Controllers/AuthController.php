@@ -52,6 +52,8 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use App\Services\MailService;
+use App\Services\AdminSessionService;
+use App\Models\AdminSession;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
 
@@ -62,7 +64,7 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct(private AdminSessionService $sessions) {
         $this->middleware('auth:admin-api', ['except' => ['login', 'register','checkToken','updateCharge']]);
     }
     
@@ -85,6 +87,8 @@ class AuthController extends Controller
         if (!$token = auth('admin-api')->attempt($validator->validated())) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+        $this->sessions->start(auth('admin-api')->user(), $token, $request);
 
         return $this->createNewToken($token);
     }
@@ -139,6 +143,7 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function logout() {
+        $this->sessions->end(auth('admin-api')->payload()->get('jti'));
         auth('admin-api')->logout();
         return response()->json(['message' => 'Admin successfully signed out']);
     }
@@ -148,8 +153,13 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh() {
-        return $this->createNewToken(auth('admin-api')->refresh());
+    public function refresh(Request $request) {
+        $admin = auth('admin-api')->user();
+        $oldJti = auth('admin-api')->payload()->get('jti');
+        $token = auth('admin-api')->refresh();
+        $this->sessions->rotate($admin, $oldJti, $token, $request);
+
+        return $this->createNewToken($token);
     }
 
     public function checkToken(Request $request)
@@ -234,7 +244,7 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'current_password' => 'required|string',
-            'new_password' => 'required|string|min:6',
+            'new_password' => 'required|string|min:6|different:current_password',
             'confirm_password' => 'required|string|same:new_password',
         ]);
 
@@ -248,12 +258,77 @@ class AuthController extends Controller
             return response()->json(['error' => 'Current password is incorrect'], 401);
         }
 
+        $oldJti = auth('admin-api')->payload()->get('jti');
+
         $admin->password = bcrypt($request->new_password);
         $admin->save();
 
+        // The old token stops working; this device continues with the new one. Other signed-in
+        // devices keep their sessions.
+        auth('admin-api')->invalidate();
         $token = auth('admin-api')->login($admin);
+        $this->sessions->rotate($admin, $oldJti, $token, $request);
 
         return $this->createNewToken($token);
+    }
+
+    /**
+     * POST /auth/change-email  { email, current_password }
+     */
+    public function changeEmail(Request $request)
+    {
+        $admin = auth('admin-api')->user();
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:100|unique:admins,email,' . $admin->id,
+            'current_password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        if (!Hash::check($request->current_password, $admin->password)) {
+            return response()->json(['error' => 'Current password is incorrect'], 401);
+        }
+
+        $admin->email = $request->email;
+        $admin->save();
+
+        return successResponse([
+            'admin' => new AdminResource($admin->load(['roles.permissions', 'permissions'])),
+        ]);
+    }
+
+    /**
+     * GET /auth/sessions - devices where this account is signed in (not logged out).
+     */
+    public function sessions()
+    {
+        $admin = auth('admin-api')->user();
+        $currentJti = auth('admin-api')->payload()->get('jti');
+        $activeSince = now()->subMinutes(AdminSessionService::ACTIVE_NOW_MINUTES);
+
+        $sessions = AdminSession::where('admin_id', $admin->id)
+            ->whereNull('revoked_at')
+            ->orderByDesc('last_active_at')
+            ->get()
+            ->map(fn (AdminSession $session) => [
+                'id' => $session->id,
+                'device_name' => $session->device_name,
+                'ip_address' => $session->ip_address,
+                'last_active_at' => $session->last_active_at,
+                'signed_in_at' => $session->created_at,
+                'is_current' => $session->jti === $currentJti,
+                'active_now' => $session->last_active_at && $session->last_active_at->gte($activeSince),
+            ])
+            ->values();
+
+        return successResponse([
+            'count' => $sessions->count(),
+            'active_now_count' => $sessions->where('active_now', true)->count(),
+            'sessions' => $sessions,
+        ]);
     }
 
     public function insertAddress(AddressRequest $request){

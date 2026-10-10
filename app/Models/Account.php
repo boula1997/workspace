@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Account extends \App\Models\BaseModel
 {
     use HasFactory;
+    use \App\Models\Concerns\Auditable;
   
     /**
      * The attributes that are mass assignable.
