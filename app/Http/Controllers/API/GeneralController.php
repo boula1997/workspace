@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\File;
 
 use App\Models\Admin;
 use App\Services\AuditLogger;
+use Spatie\Permission\Models\Role;
 
 
 use Carbon\Carbon;
@@ -150,6 +151,23 @@ class GeneralController extends Controller
             && DB::connection('dynamic')->getDatabaseName() === DB::connection()->getDatabaseName();
     }
 
+    // The app's own admins table: `type` holds the role name and must match the admin's role
+    private function isMainAdminsTable(string $table): bool
+    {
+        return $table === 'admins'
+            && DB::connection('dynamic')->getDatabaseName() === DB::connection()->getDatabaseName();
+    }
+
+    // Roles that can be picked for an admin (Super Admin is given by migration only)
+    private function assignableRoleNames(): array
+    {
+        return Role::where('guard_name', 'admin')
+            ->where('name', '!=', Admin::SUPER_ADMIN_ROLE)
+            ->orderBy('name')
+            ->pluck('name')
+            ->all();
+    }
+
     private function dynamicRow(string $table, $id): ?array
     {
         $row = DB::connection('dynamic')->table($table)->where('id', $id)->first();
@@ -171,6 +189,15 @@ class GeneralController extends Controller
 
         if (!$isCreating) {
             abort_unless($conn->table($table)->where('id', $itemId)->exists(), 404, 'Record not found');
+        }
+
+        // Admins: `type` is the role; only an existing, assignable role is accepted (never empty)
+        $syncRole = $this->isMainAdminsTable($table) && $request->has('type');
+        if ($syncRole && !in_array($request->input('type'), $this->assignableRoleNames(), true)) {
+            return response()->json([
+                'success' => false,
+                'message' => filled($request->input('type')) ? 'Unknown role: ' . $request->input('type') : 'Please choose a role.',
+            ], 422);
         }
 
         $hasFiles = $this->hasTable('files');
@@ -271,6 +298,16 @@ class GeneralController extends Controller
             }
 
             $conn->commit();
+
+            if ($syncRole && ($admin = Admin::find($itemId))) {
+                $keepSuperAdmin = $admin->isSuperAdmin();
+                DB::table('model_has_roles')->where('model_type', Admin::class)->where('model_id', $admin->id)->delete();
+                $admin->unsetRelation('roles');
+                $admin->assignRole($request->input('type'));
+                if ($keepSuperAdmin) {
+                    $admin->assignRole(Admin::SUPER_ADMIN_ROLE);
+                }
+            }
 
             // Step 3: Handle image & images via files table
             if ($hasFiles && $request->hasFile('image')) {
@@ -548,6 +585,13 @@ class GeneralController extends Controller
 
                 $relatedOptions[$colName] = $relatedData;
             }
+        }
+
+        // Admins: `type` is picked from the roles (value and label are the role name)
+        if ($this->isMainAdminsTable($table) && collect($columns)->contains('COLUMN_NAME', 'type')) {
+            $relatedOptions['type'] = collect($this->assignableRoleNames())
+                ->map(fn ($name) => ['id' => $name, 'label' => $name])
+                ->values();
         }
 
         // Step 5: Translation columns - always added for create & edit
