@@ -9,7 +9,7 @@
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="tab_{{ $tab }}"
                             name="tabs[{{ $tab }}]" value="1"
-                            @checked(session()->hasOldInput() ? old("tabs.$tab") : ($admin?->{$tab} ?? false))>
+                            @checked(session()->hasOldInput() ? old("tabs.$tab") : ($admin?->{$tab} ?? in_array($tab, \App\Models\Admin::APP_TABS_ON_BY_DEFAULT, true)))>
                         <label class="form-check-label" for="tab_{{ $tab }}">{{ $label }}</label>
                     </div>
                 </div>

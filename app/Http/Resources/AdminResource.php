@@ -46,6 +46,10 @@ class AdminResource extends JsonResource
             "info" => $this->info?true:false,
             "workspace" => $this->workspace?true:false,
             "sql" => $this->sql?true:false,
+            // Default on: these tabs were always visible before they had a switch
+            "account" => (bool) ($this->account ?? true),
+            "explore" => (bool) ($this->explore ?? true),
+            "logout" => (bool) ($this->logout ?? true),
         ];
     }
 

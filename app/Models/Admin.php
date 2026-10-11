@@ -35,7 +35,13 @@ class Admin extends Authenticatable implements JWTSubject
         'info' => 'Info',
         'workspace' => 'Workspace',
         'sql' => 'SQL',
+        'account' => 'Account',
+        'explore' => 'Explore',
+        'logout' => 'Logout',
     ];
+
+    // Tabs that are on unless turned off (they were always visible before they had a switch)
+    public const APP_TABS_ON_BY_DEFAULT = ['account', 'explore', 'logout'];
 
     protected $fillable = [
         'name',
