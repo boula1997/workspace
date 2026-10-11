@@ -60,15 +60,24 @@ class AdminController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    // App tab switches from the form's tabs[...] checkboxes: an unticked tab is turned off.
+    private function appTabs(Request $request): array
+    {
+        return collect(Admin::APP_TABS)
+            ->mapWithKeys(fn ($label, $tab) => [$tab => $request->boolean("tabs.$tab")])
+            ->all();
+    }
+
     public function store(AdminRequest $request)
     {
         try {
             dectatorBoula();
-            $input = $request->except('image','profile_avatar_remove');
+            $input = $request->except('image','profile_avatar_remove','tabs');
             $input["type"]=$request->input('roles');
 
             $input['password'] = Hash::make($input['password']);
             $admin = Admin::create($input);
+            $admin->forceFill($this->appTabs($request))->save();
             $admin->assignRole($request->input('roles'));
             $admin->uploadFile();
             return redirect()->route('admins.index')
@@ -119,7 +128,7 @@ class AdminController extends Controller
         try {
       
             dectatorBoula();
-            $input = $request->except('image','profile_avatar_remove');
+            $input = $request->except('image','profile_avatar_remove','tabs');
             $input["type"]=$request->input('roles');
             if (!empty($input['password'])) {
                 $input['password'] = Hash::make($input['password']);
@@ -128,6 +137,7 @@ class AdminController extends Controller
             }
             $admin = Admin::find($id);
             $admin->update($input);
+            $admin->forceFill($this->appTabs($request))->save();
             DB::table('model_has_roles')->where('model_id', $id)->delete();
             $admin->assignRole($request->input('roles'));
             $admin->updateFile();

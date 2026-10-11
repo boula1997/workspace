@@ -102,6 +102,8 @@
                                         class="form-control @error('') invalid @enderror" id="exampleInputConfirmpassword"
                                         placeholder="@lang('general.confirm_password')">
                                 </div>
+                                @include('admin.crud.admins._app_tabs', ['admin' => null])
+
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">@lang('general.role')</label>
                                     <select name="roles" id="" class="form-control @error('') invalid @enderror">

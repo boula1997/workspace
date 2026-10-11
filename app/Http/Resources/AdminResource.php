@@ -38,6 +38,7 @@ class AdminResource extends JsonResource
             "table" => $this->table?true:false,
             "projects" => $this->projects?true:false,
             "tasks" => $this->tasks?true:false,
+            "offline" => $this->offline?true:false,
             "marketting" => $this->marketting?true:false,
             "offline_center" => $this->offline_center?true:false,
             "locks" => $this->locks?true:false,

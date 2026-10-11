@@ -592,4 +592,6 @@ return [
     "log_empty" => "No changes recorded yet.",
     "log_history_of_record" => "Show the full history of this record",
 
+    "app_tabs" => "App tabs",
+    "app_tabs_hint" => "Tabs this user sees in the app. Changes apply the next time they open the app.",
 ];

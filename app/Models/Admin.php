@@ -21,6 +21,22 @@ class Admin extends Authenticatable implements JWTSubject
      *
      * @var array<int, string>
      */
+    // App tabs each admin can be given (column => label). Set explicitly by the dashboard,
+    // deliberately not mass assignable.
+    public const APP_TABS = [
+        'table' => 'Table',
+        'projects' => 'Projects',
+        'tasks' => 'Tasks',
+        'offline' => 'Offline Tasks',
+        'marketting' => 'Marketing',
+        'offline_center' => 'Offline Center',
+        'locks' => 'Locks',
+        'stats' => 'Stats',
+        'info' => 'Info',
+        'workspace' => 'Workspace',
+        'sql' => 'SQL',
+    ];
+
     protected $fillable = [
         'name',
         'email',
