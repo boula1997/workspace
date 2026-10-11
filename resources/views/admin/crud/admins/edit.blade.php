@@ -111,7 +111,7 @@
                                     <label for="exampleInputEmail1">@lang('general.role')</label>
                                     <select name="roles" id="" class="form-control @error('') invalid @enderror">
                                         @foreach ($roles as $role)
-                                            <option @selected($role ==$admin->type) value="{{ $role }}">{{ $role }}</option>
+                                            <option @selected($role == ($admin->isSuperAdmin() ? \App\Models\Admin::SUPER_ADMIN_ROLE : $admin->type)) value="{{ $role }}">{{ $role }}</option>
                                         @endforeach
                                     </select>
                                 </div>

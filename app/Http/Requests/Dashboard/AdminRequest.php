@@ -35,8 +35,19 @@ class AdminRequest extends FormRequest
 
             'whatsapp' => 'nullable',
             'password' => 'nullable|same:confirm-password',
-            // Super Admin (the owner) is assigned by migration only, never from a form
-            'roles' => ['required', Rule::notIn([\App\Models\Admin::SUPER_ADMIN_ROLE])],
+            'roles' => [
+                'required',
+                'string',
+                Rule::exists('roles', 'name')->where('guard_name', 'admin'),
+                // Super Admin can be given here, but not taken from yourself or from the last Super Admin
+                function ($attribute, $value, $fail) {
+                    $id = $this->route('admin');
+                    $admin = $id ? \App\Models\Admin::find(is_object($id) ? $id->getKey() : $id) : null;
+                    if ($admin && ($error = $admin->superAdminRemovalError((string) $value))) {
+                        $fail($error);
+                    }
+                },
+            ],
         ];
     }
 }

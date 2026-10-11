@@ -158,11 +158,10 @@ class GeneralController extends Controller
             && DB::connection('dynamic')->getDatabaseName() === DB::connection()->getDatabaseName();
     }
 
-    // Roles that can be picked for an admin (Super Admin is given by migration only)
+    // Roles that can be picked for an admin (Super Admin included - see Admin::applyRole)
     private function assignableRoleNames(): array
     {
         return Role::where('guard_name', 'admin')
-            ->where('name', '!=', Admin::SUPER_ADMIN_ROLE)
             ->orderBy('name')
             ->pluck('name')
             ->all();
@@ -198,6 +197,10 @@ class GeneralController extends Controller
                 'success' => false,
                 'message' => filled($request->input('type')) ? 'Unknown role: ' . $request->input('type') : 'Please choose a role.',
             ], 422);
+        }
+        if ($syncRole && !$isCreating && ($target = Admin::find($itemId))
+            && ($error = $target->superAdminRemovalError((string) $request->input('type')))) {
+            return response()->json(['success' => false, 'message' => $error], 422);
         }
 
         $hasFiles = $this->hasTable('files');
@@ -300,13 +303,7 @@ class GeneralController extends Controller
             $conn->commit();
 
             if ($syncRole && ($admin = Admin::find($itemId))) {
-                $keepSuperAdmin = $admin->isSuperAdmin();
-                DB::table('model_has_roles')->where('model_type', Admin::class)->where('model_id', $admin->id)->delete();
-                $admin->unsetRelation('roles');
-                $admin->assignRole($request->input('type'));
-                if ($keepSuperAdmin) {
-                    $admin->assignRole(Admin::SUPER_ADMIN_ROLE);
-                }
+                $admin->applyRole($request->input('type'));
             }
 
             // Step 3: Handle image & images via files table
@@ -637,6 +634,12 @@ class GeneralController extends Controller
         }
 
         $data = (array) $data;
+
+        // Admins: a Super Admin shows that as their role, so saving the form unchanged keeps it
+        if ($this->isMainAdminsTable($table) && array_key_exists('type', $data)
+            && ($admin = Admin::find($itemId)) && $admin->isSuperAdmin()) {
+            $data['type'] = Admin::SUPER_ADMIN_ROLE;
+        }
 
         foreach (['password', 'remember_token', 'api_token', 'access_token'] as $field) {
             if (array_key_exists($field, $data)) {

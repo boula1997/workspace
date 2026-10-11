@@ -16,12 +16,54 @@ class Admin extends Authenticatable implements JWTSubject
 
     public $guard_name = 'admin';
 
-    // Owner role: only this account counts as boula() (see the create_super_admin_role migration)
+    // Owner role: admins holding it count as boula(). Can be picked as a role in the admin forms.
     public const SUPER_ADMIN_ROLE = 'Super Admin';
 
     public function isSuperAdmin(): bool
     {
         return $this->hasRole(self::SUPER_ADMIN_ROLE, 'admin');
+    }
+
+    /**
+     * Applies the role picked in an admin form (Blade, API or the generic dashboard table).
+     *
+     * Super Admin carries no permissions of its own, so picking it is added on top of the admin's
+     * current roles (they keep their normal permissions). Picking any other role makes that the
+     * admin's only role, which also takes Super Admin away.
+     */
+    public function applyRole(string $role): void
+    {
+        if ($role !== self::SUPER_ADMIN_ROLE) {
+            \Illuminate\Support\Facades\DB::table('model_has_roles')
+                ->where('model_type', self::class)
+                ->where('model_id', $this->id)
+                ->delete();
+            $this->unsetRelation('roles');
+        }
+
+        $this->assignRole($role);
+    }
+
+    /**
+     * Why $newRole may not replace this admin's Super Admin role, or null when it may.
+     * Nobody can take Super Admin from themselves, and the last Super Admin can't lose it.
+     */
+    public function superAdminRemovalError(string $newRole): ?string
+    {
+        if ($newRole === self::SUPER_ADMIN_ROLE || !$this->isSuperAdmin()) {
+            return null;
+        }
+
+        $actor = auth('admin')->user() ?? auth('admin-api')->user();
+        if ($actor instanceof self && $actor->is($this)) {
+            return "You can't remove the Super Admin role from your own account.";
+        }
+
+        if (self::role(self::SUPER_ADMIN_ROLE, 'admin')->count() <= 1) {
+            return 'At least one Super Admin must remain.';
+        }
+
+        return null;
     }
 
     /**

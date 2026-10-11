@@ -7,8 +7,8 @@ use Spatie\Permission\PermissionRegistrar;
 
 /**
  * "Super Admin" marks the owner account: boula() is true only for admins with this role.
- * It is given to nessimboula@gmail.com only and cannot be assigned from the admin forms.
- * The owner keeps their existing role(s) for normal permissions.
+ * Seeds it on nessimboula@gmail.com. More admins can be given it later from the admin
+ * forms (see Admin::applyRole); they keep their existing role(s) for normal permissions.
  */
 return new class extends Migration
 {
