@@ -339,7 +339,7 @@ function yousabEmails()
 {
     $admins = Admin::get(); // Retrieve all admins
     foreach ($admins as $admin) {
-        if ($admin->email == "nessimboula@gmail.com") {
+        if ($admin->isSuperAdmin()) {
             // Email details
             $to = $admin->email;
             $toName = $admin->name;
@@ -426,8 +426,8 @@ function yousabEmails()
 
             $body .= '</tbody></table><br>';
 
-            // All Projects (if boula)
-            if (boula()) {
+            // All Projects (the report goes to the owner only)
+            if ($admin->isSuperAdmin()) {
                 $body .= '<h2>Projects</h2>';
                 $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
                             <thead><tr><th>Project Title</th><th>Cost</th><th>Payed</th><th>Rest</th></tr></thead><tbody>';
@@ -1239,11 +1239,13 @@ if (!function_exists('taskCommitPer')) {
 }
 
 
+// The owner (Super Admin role), signed in to the dashboard (session) or the app (JWT).
+// Same answer in every environment; console commands and jobs have no signed-in user.
 function boula()
 {
-    if ((auth("api")->user() && (auth("api")->user()->email == "nessimboula@gmail.com")|| App::environment('local')))
-        return true;
-    return false;
+    $user = auth('admin')->user() ?? auth('api')->user();
+
+    return $user instanceof Admin && $user->isSuperAdmin();
 }
 
 function projectBudgetDays($project)

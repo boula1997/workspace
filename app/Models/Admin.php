@@ -16,6 +16,14 @@ class Admin extends Authenticatable implements JWTSubject
 
     public $guard_name = 'admin';
 
+    // Owner role: only this account counts as boula() (see the create_super_admin_role migration)
+    public const SUPER_ADMIN_ROLE = 'Super Admin';
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole(self::SUPER_ADMIN_ROLE, 'admin');
+    }
+
     /**
      * The attributes that are mass assignable.
      *

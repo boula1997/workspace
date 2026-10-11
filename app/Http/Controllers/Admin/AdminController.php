@@ -50,7 +50,7 @@ class AdminController extends Controller
      */
     public function create()
     {
-        $roles = Role::pluck('name', 'name')->all();
+        $roles = Role::where('name', '!=', Admin::SUPER_ADMIN_ROLE)->pluck('name', 'name')->all();
         return view('admin.crud.admins.create', compact('roles'));
     }
 
@@ -109,7 +109,7 @@ class AdminController extends Controller
     public function edit($id)
     {
         $admin = Admin::find($id);
-        $roles = Role::pluck('name', 'name')->all();
+        $roles = Role::where('name', '!=', Admin::SUPER_ADMIN_ROLE)->pluck('name', 'name')->all();
         $adminRole = $admin->roles->pluck('name', 'name')->all();
 
 
@@ -138,8 +138,12 @@ class AdminController extends Controller
             $admin = Admin::find($id);
             $admin->update($input);
             $admin->forceFill($this->appTabs($request))->save();
+            $keepSuperAdmin = $admin->isSuperAdmin();
             DB::table('model_has_roles')->where('model_id', $id)->delete();
             $admin->assignRole($request->input('roles'));
+            if ($keepSuperAdmin) {
+                $admin->assignRole(Admin::SUPER_ADMIN_ROLE);
+            }
             $admin->updateFile();
             return redirect()->route('admins.index')
                 ->with('success', 'Admin updated successfully');

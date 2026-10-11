@@ -35,7 +35,8 @@ class AdminRequest extends FormRequest
 
             'whatsapp' => 'nullable',
             'password' => 'nullable|same:confirm-password',
-            'roles' => 'required'
+            // Super Admin (the owner) is assigned by migration only, never from a form
+            'roles' => ['required', Rule::notIn([\App\Models\Admin::SUPER_ADMIN_ROLE])],
         ];
     }
 }

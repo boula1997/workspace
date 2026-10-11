@@ -58,8 +58,8 @@
 
 <!-- Dark Mode Handling -->
 <script>
-var userEmail = @json(auth()->user()->email ?? 'AM*Wo8owc^7');
-if (localStorage.getItem('darkmode') == "true" || userEmail === "nessimboula@gmail.com") {
+var isOwner = @json(boula());
+if (localStorage.getItem('darkmode') == "true" || isOwner) {
     $('body').addClass('dark-mode');
 } else {
     $('body').removeClass('dark-mode');
@@ -91,7 +91,7 @@ if (localStorage.getItem('darkmode') == "true" || userEmail === "nessimboula@gma
 <script> eruda.init(); </script>
 
 <!-- Alarm Sound (if needed) -->
-@if (boula() || App::environment('local'))
+@if (boula())
   <script>
       document.addEventListener("DOMContentLoaded", function () {
           let lastPlayedHour = localStorage.getItem('lastPlayedHourFront') || null;

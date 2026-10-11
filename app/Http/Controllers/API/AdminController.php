@@ -183,8 +183,12 @@ class AdminController extends Controller
             $admin->update($input);
             
             // Update roles
+            $keepSuperAdmin = $admin->isSuperAdmin();
             DB::table('model_has_roles')->where('model_id', $id)->delete();
             $admin->assignRole($request->input('roles'));
+            if ($keepSuperAdmin) {
+                $admin->assignRole(Admin::SUPER_ADMIN_ROLE);
+            }
             
             // Handle file uploads
             $admin->updateFile();

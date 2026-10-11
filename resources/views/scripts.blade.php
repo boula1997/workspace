@@ -3105,7 +3105,7 @@
 
 
 
-    @if (boula() || App::environment('local'))
+    @if (boula())
         {{-- <audio id="alarmSound" src="{{ asset('alarm.mp3') }}" preload="auto"></audio> --}}
 
         <script>
