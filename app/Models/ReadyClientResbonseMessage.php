@@ -24,4 +24,10 @@ class ReadyClientResbonseMessage extends Model
     {
         return $this->is_comment ? 'comment' : $this->gig_type;
     }
+
+    // The admin the message belongs to (null = shared)
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'admin_id');
+    }
 }

@@ -72,10 +72,15 @@ class MiscRepository implements MiscRepositoryInterface
         return Note::inRandomOrder()->take($take)->get();
     }
 
-    public function allReadyResponseMessages(): \Illuminate\Database\Eloquent\Collection
+    public function allReadyResponseMessages(?int $adminId = null): \Illuminate\Database\Eloquent\Collection
     {
+        // The admin's own messages; an admin without any gets the shared ones (no admin set).
         // Personal messages first: older app builds take the first match, and personal is the default.
-        return ReadyClientResbonseMessage::orderByDesc('is_personal')->latest()->get();
+        $query = fn ($owner) => ReadyClientResbonseMessage::where('admin_id', $owner)->orderByDesc('is_personal')->latest()->get();
+
+        $own = $adminId ? $query($adminId) : collect();
+
+        return $own->isNotEmpty() ? $own : $query(null);
     }
 
     public function paginateElements(int $categoryId, array $filters): \Illuminate\Contracts\Pagination\LengthAwarePaginator

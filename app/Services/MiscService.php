@@ -53,9 +53,10 @@ class MiscService
         return $this->miscRepository->randomNotes($take);
     }
 
+    // Messages of the signed-in admin (or the shared ones when they have none)
     public function getReadyResponseMessages()
     {
-        return $this->miscRepository->allReadyResponseMessages();
+        return $this->miscRepository->allReadyResponseMessages(auth('admin-api')->id());
     }
 
     public function getPaginatedElements(int $categoryId, array $filters)
