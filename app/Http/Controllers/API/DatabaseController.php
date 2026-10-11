@@ -104,7 +104,16 @@ private function extractTableFromSelect(string $sql): ?string
             self::setDynamicConnection($request->database_name,$request->credential_id);
             $dbDriver = DB::connection('dynamic')->getDriverName();
 
-            $queryCommands = explode('++', $request->title);
+            // Statements split like a database editor: `;` (or the older `++`), comments removed
+            $queryCommands = \App\Services\SqlScriptSplitter::split((string) $request->title, $dbDriver);
+            if (!$queryCommands) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Nothing to run: the query only contains comments.',
+                    'data' => 'Nothing to run: the query only contains comments.',
+                ]);
+            }
             $finalResult = [];
 
 
