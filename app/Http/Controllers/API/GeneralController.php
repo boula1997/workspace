@@ -227,6 +227,12 @@ class GeneralController extends Controller
                 $data[$column] = $value;
             }
 
+            // Picking Super Admin adds it on top of the admin's role (Admin::applyRole), so `type`
+            // keeps naming that main role instead of being overwritten with "Super Admin".
+            if ($syncRole && !$isCreating && $request->input('type') === Admin::SUPER_ADMIN_ROLE) {
+                unset($data['type']);
+            }
+
             $now = now();
 
             $conn->beginTransaction();
