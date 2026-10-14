@@ -61,7 +61,7 @@
                                                 <td>{{ $admin->messanger_id }}</td>
 
 <td>{{ $admin->whatsapp }}</td>
-                                                <td>{{ $admin->isActive ? __('general.yes') : __('general.no') }}</td>
+                                                <td>{{ $admin->is_active ? __('general.yes') : __('general.no') }}</td>
 
                                                 <td>
                                                     @if (!empty($admin->getRoleNames()))

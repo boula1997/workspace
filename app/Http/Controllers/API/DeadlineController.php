@@ -78,7 +78,7 @@ class DeadlineController extends Controller
             $deadline = $this->deadlineService->getDeadlineById($request->id);
 
             if ($request->action === 'delete') {
-                if ($deadline->isForever) {
+                if ($deadline->is_forever) {
                     return successResponse([], 'Deadline is forever!', 201);
                 }
 
@@ -100,7 +100,7 @@ class DeadlineController extends Controller
                 ) {
                     $deal = Deal::find($deadline->deadlineable_id);
                     if ($deal) {
-                        $deal->update(['isPaid' => 1]);
+                        $deal->update(['is_paid' => 1]);
                     }
                 }
             } elseif (isset($request->date)) {

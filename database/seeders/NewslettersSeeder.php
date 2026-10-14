@@ -21,7 +21,7 @@ class NewslettersSeeder extends Seeder
         for ($i = 0; $i <3 ; $i++) {
             $newsletter = Newsletter::create([
            
-                    'newsletterEmail' => $email[$i],
+                    'newsletter_email' => $email[$i],
 
                     
                 

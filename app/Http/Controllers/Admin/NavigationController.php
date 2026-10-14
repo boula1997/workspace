@@ -72,14 +72,14 @@ class NavigationController extends Controller
                 'startdate' => 'nullable|date',
                 'enddate' => 'nullable|date',
                 'difficulty' => 'nullable|integer',
-                'hasPhone' => 'nullable|boolean',
+                'has_phone' => 'nullable|boolean',
             ]);
         
             // Set default values
             $startdate = $validatedData['startdate'] ?? '1970-01-01';
             $enddate = $validatedData['enddate'] ?? now()->format('Y-m-d');
             $difficulty = $validatedData['difficulty'] ?? null;
-            $hasPhone = $validatedData['hasPhone'] ?? null;
+            $hasPhone = $validatedData['has_phone'] ?? null;
         
             // Build the query dynamically
             $navigations = Navigation::whereDate('created_at', '>=', $startdate)
@@ -88,7 +88,7 @@ class NavigationController extends Controller
                                      return $query->where('difficulty', $difficulty);
                                  })
                                  ->when($hasPhone, function ($query, $hasPhone) {
-                                     return $query->where('hasPhone', $hasPhone);
+                                     return $query->where('has_phone', $hasPhone);
                                  })
                                  ->get();
         
@@ -142,7 +142,7 @@ class NavigationController extends Controller
     {
         try {
             $data=$request->all();
-            $data['isExcavation']=$request->has('isExcavation')?1:0;
+            $data['is_excavation']=$request->has('is_excavation')?1:0;
             Navigation::create($data);
             // Get the previous and the one before the previous route
             $previousRoute = session('previousRoute');
@@ -197,7 +197,7 @@ class NavigationController extends Controller
     {
         try {
             $data = $request->except('employees');
-            $data['isExcavation']=$request->has('isExcavation')?1:0;
+            $data['is_excavation']=$request->has('is_excavation')?1:0;
 
             $navigation->update($data);
                       // Get the previous and the one before the previous route

@@ -52,7 +52,7 @@ public function index(Request $request)
         // Filter by status
         if ($request->filled('status')) {
             $status = $request->input('status');
-            $query->where('isActive', $status === 'active' ? 1 : 0);
+            $query->where('is_active', $status === 'active' ? 1 : 0);
         }
         
         // Filter by date range
@@ -71,8 +71,8 @@ public function index(Request $request)
         $sortColumn = $sortBy;
         if ($sortBy === 'guard_name') {
             $sortColumn = 'guard_name';
-        } elseif ($sortBy === 'isActive') {
-            $sortColumn = 'isActive';
+        } elseif ($sortBy === 'is_active') {
+            $sortColumn = 'is_active';
         }
         
         $query->orderBy($sortColumn, $sortOrder);

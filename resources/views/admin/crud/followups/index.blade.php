@@ -107,7 +107,7 @@
                             <div class="form-group">
                                 <div class="form-group">
                                     <div class="form-check form-switch"> <input class="form-check-input"
-                                            @checked(old('hasPhone')) type="checkbox" id="hasPhone" name="hasPhone"
+                                            @checked(old('has_phone')) type="checkbox" id="hasPhone" name="has_phone"
                                             value="1"> <label class="form-check-label"
                                             for="hasPhone">{{ __('general.hasPhone') }} <span class="text-danger"> *
                                             </span></label> </div>
@@ -179,7 +179,7 @@
                                                         <td>{{ $followup->difficulty ? __
                                                         ('general.yes') : __('general.no') }}
                                                         </td>
-                                                        <td>{{ $followup->hasPhone ? __
+                                                        <td>{{ $followup->has_phone ? __
                                                         ('general.yes') : __('general.no') }}
                                                         </td>
                                                         <td>{{ $followup->created_at }}</td>

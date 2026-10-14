@@ -18,6 +18,14 @@ class ServiceRequestRequest extends FormRequest
         return true;
     }
 
+    // Older clients (and the public site form) post the camelCase field name
+    protected function prepareForValidation()
+    {
+        if ($this->has('serviceRequest') && !$this->has('service_request')) {
+            $this->merge(['service_request' => $this->input('serviceRequest')]);
+        }
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

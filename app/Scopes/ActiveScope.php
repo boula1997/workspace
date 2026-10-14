@@ -10,9 +10,9 @@ class ActiveScope implements Scope
 {
     public function apply(Builder $builder, Model $model)
     {
-        // Apply isActive = 1 filter automatically
-        // if (schemaHasColumn($model->getTable(), 'isActive')) {
-            $builder->where($model->getTable() . '.isActive', 1);
+        // Apply is_active = 1 filter automatically
+        // if (schemaHasColumn($model->getTable(), 'is_active')) {
+            $builder->where($model->getTable() . '.is_active', 1);
         // }
     }
 }

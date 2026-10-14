@@ -62,7 +62,7 @@ class ClienttrackController extends Controller
     {
         $projectId = Project::withoutGlobalScopes()
             ->where('title', self::PROFILE_PROJECT)
-            ->where('isPersonal', 1)
+            ->where('is_personal', 1)
             ->value('id');
 
         if (!$projectId) {

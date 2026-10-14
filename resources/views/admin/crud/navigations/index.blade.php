@@ -59,7 +59,7 @@
                                                 <td>{{ $navigation->user }}</td>
                                                 <td>{{ $navigation->password }}</td>
                                                 <td>{{ $navigation->category->title }}</td>
-                                                <td>{{$navigation->isExcavation?__('general.yes'):__('general.no') }}</td>
+                                                <td>{{$navigation->is_excavation?__('general.yes'):__('general.no') }}</td>
                                                 <td>
                                                     @include('admin.components.controls', [
                                                         'route' => 'navigations',

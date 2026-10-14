@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ServiceRequest extends \App\Models\BaseModel
 {
     use HasFactory;
-    protected $table = 'serviceRequests';
+    protected $table = 'service_requests';
     protected $guarded = [];
     public $timestamps = true;
     

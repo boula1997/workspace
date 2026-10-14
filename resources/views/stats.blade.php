@@ -43,7 +43,7 @@
     <h5>{{ $day }}</h5> <!-- Display the date -->
     <ul>
         @foreach ($clicks as $click)
-            <li class="list-unstyled">{{ \Carbon\Carbon::parse($click->clickTime)->format('H:i') }}</li> <!-- Display time only -->
+            <li class="list-unstyled">{{ \Carbon\Carbon::parse($click->click_time)->format('H:i') }}</li> <!-- Display time only -->
         @endforeach
     </ul>
 @endforeach --}}

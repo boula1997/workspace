@@ -7,7 +7,7 @@ use App\Models\Project;
   
 class Posts extends Component
 {
-    public $posts, $title,$tasks,$fees,$cost,$payed,$debit,$deadline,$lastTransaction, $routesLink,$post_id,$ai_prompt;
+    public $posts, $title,$tasks,$fees,$cost,$payed,$debit,$deadline,$last_transaction, $routes_link,$post_id,$ai_prompt;
     public $updateMode = false;
     public $sortField = 'title'; 
     public $sortDirection = 'asc'; // Default sort direction
@@ -41,9 +41,9 @@ class Posts extends Component
 
         $query = Project::orderBy($this->sortField, $this->sortDirection);
         if(request()->routeIs('accountantFilter')) {
-            $this->posts = Project::where('isYousab',1)->orderBy('debit', 'DESC')->get();
+            $this->posts = Project::where('is_yousab',1)->orderBy('debit', 'DESC')->get();
         } else {
-            $this->posts = Project::where('isYousab',1)->orderBy('title', 'ASC')->get();
+            $this->posts = Project::where('is_yousab',1)->orderBy('title', 'ASC')->get();
         }
     
         // Combine all ai_prompt values
@@ -56,7 +56,7 @@ class Posts extends Component
         foreach ($wordsToReplace as $word) {
             $combinedai_prompt = preg_replace('/\b' . preg_quote($word, '/') . '\b/', 'unknown', $combinedai_prompt);
         }
-        $this->posts = $query->where('isYousab',1)->get();
+        $this->posts = $query->where('is_yousab',1)->get();
     
         return view('livewire.posts', [
             'posts' => $this->posts,
@@ -89,8 +89,8 @@ class Posts extends Component
         $this->payed = '';
         $this->debit = '';
         $this->deadline = '';
-        $this->lastTransaction = '';
-        $this->routesLink = '';
+        $this->last_transaction = '';
+        $this->routes_link = '';
         $this->ai_prompt = '';
     }
    
@@ -120,9 +120,9 @@ class Posts extends Component
         'deadline' => $this->deadline,
         'tasks' => $this->tasks,
         'ai_prompt' => $this->ai_prompt,
-        'lastTransaction' => $this->lastTransaction,
-        'routesLink' => $this->routesLink,
-        'isYousab' => 1,
+        'last_transaction' => $this->last_transaction,
+        'routes_link' => $this->routes_link,
+        'is_yousab' => 1,
     ]);
   
         session()->flash('message', 'Post Created Successfully.');
@@ -147,8 +147,8 @@ class Posts extends Component
         $this->deadline = $post->deadline;
         $this->tasks = $post->tasks;
         $this->ai_prompt = $post->ai_prompt;
-        $this->lastTransaction = $post->lastTransaction;
-        $this->routesLink = $post->routesLink;
+        $this->last_transaction = $post->last_transaction;
+        $this->routes_link = $post->routes_link;
   
         $this->updateMode = true;
     }
@@ -178,18 +178,18 @@ class Posts extends Component
             'deadline' => 'date|required',
             'tasks' => 'nullable',
             'ai_prompt' => 'nullable',
-            'routesLink' => 'nullable',
+            'routes_link' => 'nullable',
         ]);
   
         $post = Project::find($this->post_id);
         
         if($post->payed!==$this->payed)
         $post->update([
-            'lastTransaction' => todayDate(),
+            'last_transaction' => todayDate(),
         ]);
         else
             $post->update([
-                'lastTransaction' => $this->lastTransaction,
+                'last_transaction' => $this->last_transaction,
             ]);
 
         $post->update([
@@ -200,8 +200,8 @@ class Posts extends Component
             'debit' => $this->cost-$this->payed,
             'deadline' => $this->deadline,
             'ai_prompt' => $this->ai_prompt,
-            'routesLink' => $this->routesLink,
-            'isYousab' => 1,
+            'routes_link' => $this->routes_link,
+            'is_yousab' => 1,
         ]);
 
 

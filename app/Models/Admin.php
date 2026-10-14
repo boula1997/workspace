@@ -101,7 +101,7 @@ class Admin extends Authenticatable implements JWTSubject
         'whatsapp',
         'messanger_id',
         'type',
-        'isActive',
+        'is_active',
     ];
 
     /**
@@ -121,7 +121,7 @@ class Admin extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'isActive' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     /**

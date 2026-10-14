@@ -336,7 +336,7 @@ private function extractTableFromSelect(string $sql): ?string
                     'updated_at' => now()
                 ]
             );
-            $fixed = Query::where('isFixed', 1)->get();
+            $fixed = Query::where('is_fixed', 1)->get();
 
             $all = Query::latest('updated_at')
                 ->take(50)
@@ -1188,7 +1188,7 @@ public function getQueries($id = null)
     try {
 
         $fixed = Query::where('d_b_credential_id', $id)->select('id','title')
-            ->where('isFixed', 1)
+            ->where('is_fixed', 1)
             ->get();
 
         $all = Query::where('d_b_credential_id', $id)
@@ -1220,7 +1220,7 @@ public function getQueries($id = null)
         try {
 
             $fixed = Search::where("d_b_credential_id", $id)
-                ->where('isFixed', 1)
+                ->where('is_fixed', 1)
                 ->get();
 
             $all = Search::where("d_b_credential_id", $id)
@@ -1250,7 +1250,7 @@ public function getQueries($id = null)
         try {
 
 
-            $commands = Command::where("d_b_credential_id", $id)->orWhere("isGeneral", 1)
+            $commands = Command::where("d_b_credential_id", $id)->orWhere("is_general", 1)
                 ->latest('updated_at')
                 ->take(50)
                 ->get();

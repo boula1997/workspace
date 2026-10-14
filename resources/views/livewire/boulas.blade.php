@@ -65,7 +65,7 @@
                                     <td class="text-success">{{ $boula->payed }}</td>
                                     <td class="text-danger">{{ $boula->cost - $boula->payed }}</td>
                                     <td>{{ $boula->fees }}</td>
-                                    <td  class="{{ countDaysSince($boula->lastTransaction) > 30 &&  ($boula->payed!=$boula->cost || $boula->cost==0)  ? 'text-danger' : '' }}">{{ countDaysSince($boula->lastTransaction) }}</td>
+                                    <td  class="{{ countDaysSince($boula->last_transaction) > 30 &&  ($boula->payed!=$boula->cost || $boula->cost==0)  ? 'text-danger' : '' }}">{{ countDaysSince($boula->last_transaction) }}</td>
                                     {{-- <td>{{ getTimeAgo($boula->updated_at) }}</td> --}}
                                 @endif
                                 <td><p style="cursor: pointer;" class="text-decoration-none {{ $boula->deal?'text-success':'text-danger' }} toggleBoulaDeal" id="{{ $boula->id }}">{{ $boula->deal?'Yes':'No' }}</></td>

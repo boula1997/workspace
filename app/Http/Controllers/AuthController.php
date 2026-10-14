@@ -526,7 +526,7 @@ class AuthController extends Controller
     {
         try {
             $data['restaurant_id']=$id;
-            $data['newsletterEmail']=Auth::guard('admin-api')->user()->email;
+            $data['newsletter_email']=Auth::guard('admin-api')->user()->email;
             $newsletter = Newsletter::create($data);
             return successResponse($newsletter);
         } catch (Exception $e) {
@@ -541,7 +541,7 @@ class AuthController extends Controller
             $email = Auth::guard('admin-api')->user()->email;
 
             $deletedRows = Newsletter::where('restaurant_id', $restaurant_id)
-                                      ->where('newsletterEmail', $email)
+                                      ->where('newsletter_email', $email)
                                       ->delete();
             return successResponse(['message' => 'newsletter_entry_deleted_successfully']);
         } catch (Exception $e) {
@@ -553,7 +553,7 @@ class AuthController extends Controller
     {
         try {
             $email = Auth::guard('admin-api')->user()->email;
-            $newsletters = Newsletter::where('newsletterEmail', $email)->latest()->get();
+            $newsletters = Newsletter::where('newsletter_email', $email)->latest()->get();
 
             if ($newsletters->isEmpty()) {
                 return failedResponse('no_newsletters_found_for_this_user');

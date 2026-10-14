@@ -22,8 +22,8 @@
         <div class="form-group col-md-6">
             <label for="exampleFormControlInput132">Last Transaction:</label>
             <input type="date" class="form-control noHide" id="exampleFormControlInput132"
-                placeholder="Enter Last Transaction" wire:model="lastTransaction">
-            @error('lastTransaction')
+                placeholder="Enter Last Transaction" wire:model="last_transaction">
+            @error('last_transaction')
                 <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
@@ -67,9 +67,9 @@
     </div>
     <div class="form-group">
         <label for="exampleFormControlInput27">Routes Link</label>
-        <textarea name="routesLink" id="exampleFormControlInput27" class="form-control noHide" cols="30" rows="2"
-            wire:model="routesLink"></textarea>
-        @error('routesLink')
+        <textarea name="routes_link" id="exampleFormControlInput27" class="form-control noHide" cols="30" rows="2"
+            wire:model="routes_link"></textarea>
+        @error('routes_link')
             <span class="text-danger">{{ $message }}</span>
         @enderror
     </div>

@@ -26,10 +26,10 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">  <div class="form-group mb-3"> <label class="input-label" for="renewalDate">@lang('messages.renewalDate')</label> <input type="date" name="renewalDate" id="renewalDate" class="form-control" placeholder="@lang('messages.renewalDate')" value=""> </div> </div>
+                        <div class="col-md-6">  <div class="form-group mb-3"> <label class="input-label" for="renewalDate">@lang('messages.renewalDate')</label> <input type="date" name="renewal_date" id="renewalDate" class="form-control" placeholder="@lang('messages.renewalDate')" value=""> </div> </div>
 
-                        <!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.githubDevModeLinkFront')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="githubDevModeLinkFront" placeholder="{{__('general.githubDevModeLinkFront')}}" class="form-control pl-1 min-h-40px @error('githubDevModeLinkFront') is-invalid @enderror" value="{{ old('githubDevModeLinkFront') }}"> </div> </div> </div>
-                        <!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.githubDevModeLinkBack')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="githubDevModeLinkBack" placeholder="{{__('general.githubDevModeLinkBack')}}" class="form-control pl-1 min-h-40px @error('githubDevModeLinkBack') is-invalid @enderror" value="{{ old('githubDevModeLinkBack') }}"> </div> </div> </div>
+                        <!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.githubDevModeLinkFront')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="github_dev_mode_link_front" placeholder="{{__('general.githubDevModeLinkFront')}}" class="form-control pl-1 min-h-40px @error('githubDevModeLinkFront') is-invalid @enderror" value="{{ old('github_dev_mode_link_front') }}"> </div> </div> </div>
+                        <!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.githubDevModeLinkBack')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="github_dev_mode_link_back" placeholder="{{__('general.githubDevModeLinkBack')}}" class="form-control pl-1 min-h-40px @error('githubDevModeLinkBack') is-invalid @enderror" value="{{ old('github_dev_mode_link_back') }}"> </div> </div> </div>
 
                         {{-- Number Input --}} <div class="col-md-6">
                             <div class="form-group"> <label>{{ __('general.cost') }} <span class="text-danger"> *
@@ -63,7 +63,7 @@
                             <div class="form-group">
                                 <div class="form-group">
                                     <div class="form-check form-switch"> <input class="form-check-input"
-                                            @checked(old('isYousab')) type="checkbox" id="isYousab" name="isYousab"
+                                            @checked(old('is_yousab')) type="checkbox" id="isYousab" name="is_yousab"
                                             value="1"> <label class="form-check-label"
                                             for="isYousab">{{ __('general.isYousab') }} <span class="text-danger"> *
                                             </span></label> </div>
@@ -138,8 +138,8 @@
                                 <div class="input-group">
                                     <div class="input-group-prepend"> <span class="input-group-text"><i
                                                 class="fas fa-calendar-alt"></i></span> </div> <input type="date"
-                                        id="dateInput" class="form-control" value="{{ old('lastTransaction') }}"
-                                        name="lastTransaction">
+                                        id="dateInput" class="form-control" value="{{ old('last_transaction') }}"
+                                        name="last_transaction">
                                 </div>
                             </div>
                         </div>

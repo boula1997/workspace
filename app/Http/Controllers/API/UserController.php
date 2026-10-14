@@ -52,7 +52,7 @@ public function index(Request $request)
         // Filter by status
         if ($request->filled('status')) {
             $status = $request->input('status');
-            $query->where('isActive', $status === 'active' ? 1 : 0);
+            $query->where('is_active', $status === 'active' ? 1 : 0);
         }
         
         // Filter by role

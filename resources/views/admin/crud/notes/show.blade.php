@@ -34,7 +34,7 @@
                                                             <h5 class="font-weight-bolder text-dark">
                                                                 {{ __('general.isNotification') }}:</h5>
                                                             <p style="margin: 0; color: inherit; font-weight: normal;">
-                                                                {{ $note->isNotification ? _('general.yes') : __('general.no') }}
+                                                                {{ $note->is_notification ? _('general.yes') : __('general.no') }}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -48,7 +48,7 @@
                                                             <h5 class="font-weight-bolder text-dark">
                                                                 {{ __('general.isPending') }}:</h5>
                                                             <p style="margin: 0; color: inherit; font-weight: normal;">
-                                                                {{ $note->isOverthinking ? _('general.yes') : __('general.no') }}
+                                                                {{ $note->is_overthinking ? _('general.yes') : __('general.no') }}
                                                             </p>
                                                         </div>
                                                     </div>

@@ -86,7 +86,7 @@
         <div class="col-lg-6 col-md-8 mx-auto"> 
           <h1 class="font-weight-light">{{ $data->name}}</h1>
           <p class="lead text-muted">{{ $data->phone}}</p>
-          <p class="lead text-muted">{{ $data->serviceRequest}}</p>
+          <p class="lead text-muted">{{ $data->service_request}}</p>
           <p class="lead text-muted">{{ $data->email }}</p>
           <p>
             <a href="#" class="btn btn-primary my-2">Main call to action</a>

@@ -45,7 +45,7 @@
                                             @foreach ($data as $newsletter)
                                                 <tr class="p-0 m-0">
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $newsletter->newsletterEmail }}</td>
+                                                    <td>{{ $newsletter->newsletter_email }}</td>
                                                     <td>
                                                         @include('admin.components.controls', [
                                                             'route' => 'newsletters',

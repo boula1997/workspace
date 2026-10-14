@@ -57,7 +57,7 @@ class DashboardRepository implements DashboardRepositoryInterface
             ->where('clienttracks.created_at', '>=', $date)
             ->select('projects.id as project_id', 'projects.title', DB::raw('COUNT(clienttracks.id) as total_tracks'))
             ->groupBy('projects.id', 'projects.title')
-            ->having('total_tracks', '>', 0)
+            ->havingRaw('COUNT(clienttracks.id) > 0')
             ->get()
             ->map(function ($project, $index) use ($colors) {
                 $project->color = $colors[$index % count($colors)];
@@ -85,7 +85,7 @@ class DashboardRepository implements DashboardRepositoryInterface
 
     public function activeTasksForEmployee(Admin $admin): \Illuminate\Support\Collection
     {
-        return Task::where('isActive', 1)
+        return Task::where('is_active', 1)
             ->where('status', 0)
             ->orderBy('date', 'asc')
             ->get()
@@ -100,7 +100,7 @@ class DashboardRepository implements DashboardRepositoryInterface
 
     public function issuesByOffline(): \Illuminate\Database\Eloquent\Collection
     {
-        return Issue::where('isOffline', 1)->latest()->get();
+        return Issue::where('is_offline', 1)->latest()->get();
     }
 
     public function allIssues(): \Illuminate\Database\Eloquent\Collection

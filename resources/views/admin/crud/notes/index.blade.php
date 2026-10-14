@@ -46,7 +46,7 @@
                                             <tr class="p-0 m-0">
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $note->title }}</td>
-                                                <td>{{ $note->isOverthinking ? __('general.yes') : __('general.no') }}</td>
+                                                <td>{{ $note->is_overthinking ? __('general.yes') : __('general.no') }}</td>
                                                 <td>
                                                     @include('admin.components.controls', [
                                                         'route' => 'notes',

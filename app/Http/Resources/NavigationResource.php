@@ -32,7 +32,7 @@ class NavigationResource extends JsonResource
 
             'password'=>$this->password,
             'category'=>$this->category,
-            'isExcavation'=>$this->isExcavation,
+            'is_excavation'=>$this->is_excavation,
         ];
     }
 }

@@ -45,7 +45,7 @@
                                 <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('debit')">Debit</th>
                                 <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('fees')">Fees</th>
                                 {{-- <th>Lat Payed</th> --}}
-                                <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('lastTransaction')">Days</th>
+                                <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('last_transaction')">Days</th>
                                 <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('status')">Status </th>
                             @endif
                             <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('deal')">Deal</th>
@@ -70,8 +70,8 @@
                                     <td class="text-danger">{{ $account->cost - $account->payed }}</td>
                                     <td>{{ $account->fees }}</td>
                                     <td
-                                        class="{{ countDaysSince($account->lastTransaction) > 30 && ($account->payed != $account->cost || $account->cost == 0) ? 'text-danger' : '' }}">
-                                        {{ countDaysSince($account->lastTransaction) }}</td>
+                                        class="{{ countDaysSince($account->last_transaction) > 30 && ($account->payed != $account->cost || $account->cost == 0) ? 'text-danger' : '' }}">
+                                        {{ countDaysSince($account->last_transaction) }}</td>
                                     {{-- <td>{{ getTimeAgo($account->updated_at) }}</td> --}}
                                     <td class="{{ $account->payed == $account->cost ? 'text-success' : 'text-danger' }} ">
                                         {{ $account->payed == $account->cost ? 'Payed' : 'Not Payed' }}</td>

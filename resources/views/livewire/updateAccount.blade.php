@@ -22,8 +22,8 @@
         <div class="form-group col-md-6">
             <label for="exampleFormControlInput132">Last Transaction:</label>
             <input type="date" class="form-control noHide" id="exampleFormControlInput132"
-                placeholder="Enter Last Transaction" wire:model="lastTransaction">
-            @error('lastTransaction')
+                placeholder="Enter Last Transaction" wire:model="last_transaction">
+            @error('last_transaction')
                 <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>

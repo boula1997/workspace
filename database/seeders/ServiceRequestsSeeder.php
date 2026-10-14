@@ -27,7 +27,7 @@ class ServiceRequestsSeeder extends Seeder
                     'name' => $name[$i],
                     'email' => $email[$i],
                     'phone' => $Phone[$i],
-                    'serviceRequest'=>$serviceRequest[$i],
+                    'service_request'=>$serviceRequest[$i],
                     
                 
             ]);

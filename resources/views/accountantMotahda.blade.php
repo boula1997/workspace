@@ -154,7 +154,7 @@
         </div>
     </div>
 
-    <div id="startTime" startTime={{ getHourFromDateTime(settingFirst()->startTime) }}></div>
+    <div id="startTime" startTime={{ getHourFromDateTime(settingFirst()->start_time) }}></div>
 
     @include('navIcon')
 @include('moveIcon')

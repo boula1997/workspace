@@ -217,8 +217,8 @@
             <p class="text-center fw-bold">Open in Desktop Web View</p>
             <p class="text-center fw-bold">python /e/xampp/htdocs/workspace/workspace.py</p>
 
-            <div class="text-white text-center">{{ startAndEndTime(settingFirst()->startTime)[0] }} -
-                {{ startAndEndTime(settingFirst()->startTime)[1] }}
+            <div class="text-white text-center">{{ startAndEndTime(settingFirst()->start_time)[0] }} -
+                {{ startAndEndTime(settingFirst()->start_time)[1] }}
 
                 @if (boula())
                     {{-- <p class="text-warning" id="deadline">{{activeDeadline()["deadline"]}}  {{activeDeadline()["action"]}}</p> --}}
@@ -354,7 +354,7 @@
                     <div class="mt-2" id="allRoutes">
                         <div class="website-container d-flex flex-wrap">
                             @foreach (websitesRoutes() as $website)
-                                <a href="{{ $website->routesLink }}">
+                                <a href="{{ $website->routes_link }}">
                                     <button type="button" content="{{ $website->ai_prompt }}"
                                         id="{{ $website->id }}" title="1click:yellow 2click:green 3click:red"
                                         class="btn {{ $website->status == 0 ? 'btn-outline-warning' : ($website->status == 1 ? 'btn-outline-warning' : 'btn-success') }}  hover-cursor mx-1 text-nowrap m-2">{{ $website->title }}</button>

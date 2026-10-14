@@ -79,12 +79,12 @@
                                                         {{ $project->title }}
                                                     </td>
                                                                                                                                                       <td>
-                                                        <a href="{{ $project->githubDevModeLinkFront }}" target="__blank">
+                                                        <a href="{{ $project->github_dev_mode_link_front }}" target="__blank">
                                                         {{ __("general.linkFront") }}
                                                         </a>
                                                     </td>
                                                                                                                                                       <td>
-                                                        <a href="{{ $project->githubDevModeLinkBack }}" target="__blank">
+                                                        <a href="{{ $project->github_dev_mode_link_back }}" target="__blank">
                                                         {{ __("general.linkBack") }}
                                                         </a>
                                                     </td>
@@ -103,7 +103,7 @@
                                         
                                                     <td>{{ $project->deal ? __('general.yes') : __('general.no') }}</td>
                                         
-                                                   <td>{{ $project->renewalDate }}</td>
+                                                   <td>{{ $project->renewal_date }}</td>
                                         
                                         
                                                     <td>{{ $project->fees }}</td>

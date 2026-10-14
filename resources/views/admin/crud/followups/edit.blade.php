@@ -62,7 +62,7 @@
                             <div class="form-group">
                                 <div class="form-group">
                                     <div class="form-check form-switch"> <input class="form-check-input"
-                                            @checked(old('hasPhone', $followup->hasPhone)) type="checkbox" id="hasPhone" name="hasPhone"
+                                            @checked(old('has_phone', $followup->has_phone)) type="checkbox" id="hasPhone" name="has_phone"
                                             value="1"> <label class="form-check-label"
                                             for="hasPhone">{{ __('general.hasPhone') }} <span class="text-danger"> *
                                             </span></label> </div>

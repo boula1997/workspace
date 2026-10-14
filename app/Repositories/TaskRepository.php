@@ -73,7 +73,7 @@ class TaskRepository implements TaskRepositoryInterface
         $tasks = Task::whereIn('id', $ids)->get();
 
         foreach ($tasks as $task) {
-            if ($task->isFixed) continue;
+            if ($task->is_fixed) continue;
 
             $task->status     = $task->status == 1 ? 0 : 1;
             $task->admin_id   = $adminId;
@@ -132,7 +132,7 @@ class TaskRepository implements TaskRepositoryInterface
                 ],
                 [
                     'date'     => Carbon::now()->addDay()->toDateString(),
-                    'isActive' => 1,
+                    'is_active' => 1,
                 ]
             );
             $task->update(['piority' => !$priority]);
@@ -168,7 +168,7 @@ class TaskRepository implements TaskRepositoryInterface
     {
         $employeesContainsSql = jsonArrayContainsIntSql('tasks.employees', 'admins.id');
 
-        return Admin::where('isActive', 1)
+        return Admin::where('is_active', 1)
             ->whereNotIn('type', ['client', 'prospective'])
             ->select('admins.*')
             ->selectRaw("(

@@ -7,7 +7,7 @@ use App\Models\Boula;
   
 class Boulas extends Component
 {
-    public $boulas, $title,$tasks,$fees,$cost,$payed,$debit,$deadline,$lastTransaction, $boula_id,$ai_prompt;
+    public $boulas, $title,$tasks,$fees,$cost,$payed,$debit,$deadline,$last_transaction, $boula_id,$ai_prompt;
     public $updateMode = false;
    
     /**
@@ -50,7 +50,7 @@ class Boulas extends Component
         $this->payed = '';
         $this->debit = '';
         $this->deadline = '';
-        $this->lastTransaction = '';
+        $this->last_transaction = '';
         $this->ai_prompt = '';
     }
    
@@ -80,7 +80,7 @@ class Boulas extends Component
         'deadline' => $this->deadline,
         'tasks' => $this->tasks,
         'ai_prompt' => $this->ai_prompt,
-        'lastTransaction' => $this->lastTransaction,
+        'last_transaction' => $this->last_transaction,
     ]);
   
         session()->flash('message', 'Boula Created Successfully.');
@@ -105,7 +105,7 @@ class Boulas extends Component
         $this->deadline = $boula->deadline;
         $this->tasks = $boula->tasks;
         $this->ai_prompt = $boula->ai_prompt;
-        $this->lastTransaction = $boula->lastTransaction;
+        $this->last_transaction = $boula->last_transaction;
   
         $this->updateMode = true;
     }
@@ -141,11 +141,11 @@ class Boulas extends Component
         
         if($boula->payed!==$this->payed)
         $boula->update([
-            'lastTransaction' => todayDate(),
+            'last_transaction' => todayDate(),
         ]);
         else
             $boula->update([
-                'lastTransaction' => $this->lastTransaction,
+                'last_transaction' => $this->last_transaction,
             ]);
 
         $boula->update([

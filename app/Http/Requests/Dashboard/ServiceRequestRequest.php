@@ -23,7 +23,7 @@ class ServiceRequestRequest extends FormRequest
     {
         $rules = [
             'subject' =>  'string|required',
-            'serviceRequest' =>  'string|required',
+            'service_request' =>  'string|required',
         ];
         return  $rules;
     }

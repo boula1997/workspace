@@ -45,7 +45,7 @@
                                 <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('debit')">Debit</th>
                                 <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('fees')">Fees</th>
                                 {{-- <th>Lat Payed</th> --}}
-                                <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('lastTransaction')">Days</th>
+                                <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('last_transaction')">Days</th>
                                 <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('status')">Status </th>
                             @endif
                             <th class="text-white text-decoration-none" style="cursor:pointer;" wire:click.prevent="sortBy('deal')">Deal</th>
@@ -70,8 +70,8 @@
                                     <td class="text-danger">{{ $post->cost - $post->payed }}</td>
                                     <td>{{ $post->fees }}</td>
                                     <td
-                                        class="{{ countDaysSince($post->lastTransaction) > 30 && ($post->payed != $post->cost || $post->cost == 0) ? 'text-danger' : '' }}">
-                                        {{ countDaysSince($post->lastTransaction) }}</td>
+                                        class="{{ countDaysSince($post->last_transaction) > 30 && ($post->payed != $post->cost || $post->cost == 0) ? 'text-danger' : '' }}">
+                                        {{ countDaysSince($post->last_transaction) }}</td>
                                     {{-- <td>{{ getTimeAgo($post->updated_at) }}</td> --}}
                                     <td class="{{ $post->payed == $post->cost ? 'text-success' : 'text-danger' }} ">
                                         {{ $post->payed == $post->cost ? 'Payed' : 'Not Payed' }}</td>

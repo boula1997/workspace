@@ -62,13 +62,13 @@ public function getFunction(Request $request)
                     ->filter(fn($project) => $project->status == 1) ;
 
             $dealProjects = Project::whereHas('deals', function ($query) {
-                $query->where('isPaid', 0);
+                $query->where('is_paid', 0);
             })->get();
 
             $deals =Deal::get();
 
-            $renewProjects = Project::whereNotNull('renewalDate')
-                ->orderBy('renewalDate', 'asc')->whereDate('renewalDate', '<=', Carbon::now()->addWeek())
+            $renewProjects = Project::whereNotNull('renewal_date')
+                ->orderBy('renewal_date', 'asc')->whereDate('renewal_date', '<=', Carbon::now()->addWeek())
                 ->get();
 
             $tasks = Task::where('status', 0)
@@ -96,7 +96,7 @@ public function getFunction(Request $request)
                     "isExpired" => isExpired()[0],
                 ]);
             }
-            $dangerousTasks = Task::where('isActive', 1)
+            $dangerousTasks = Task::where('is_active', 1)
                 ->where('status', 0)
                 ->orderBy('date', 'asc') // Soonest first
                 ->get()
@@ -144,7 +144,7 @@ public function getFunction(Request $request)
 
             if ($renewProjects->isNotEmpty() && boula()) {
                 foreach ($renewProjects as $project) {
-                    $renewalDate = Carbon::parse($project->renewalDate)->format('Y-m-d');
+                    $renewalDate = Carbon::parse($project->renewal_date)->format('Y-m-d');
                     $notifications[] = $project->title . " renewal on " . $renewalDate;
                 }
             }

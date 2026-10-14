@@ -37,7 +37,7 @@
                                 <div class="mb-5 bg-light p-3 rounded h-100">
                                     <div class="card-title fw-bold">
                                         <h5 class="font-weight-bolder text-dark">@lang('general.serviceRequest'):</h5>
-                                        <p style="margin: 0; color: inherit; font-weight: normal;">{{ $serviceRequest->serviceRequest }}</p>
+                                        <p style="margin: 0; color: inherit; font-weight: normal;">{{ $serviceRequest->service_request }}</p>
                                     </div>
                                 </div>
                             </div>

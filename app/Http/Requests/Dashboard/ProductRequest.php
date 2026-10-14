@@ -37,7 +37,7 @@ class ProductRequest extends FormRequest
 
 'generation' => 'required',
 
-'screenCard' => 'required',
+'screen_card' => 'required',
         ];
         foreach (config('translatable.locales') as $locale) {
             $rules += [$locale . '.title' => ['required', 'string']];

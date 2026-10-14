@@ -18,10 +18,10 @@ public function index(Request $request)
     $query = KitTool::query();
 
     if ($request->has('is_public')) {
-        $query->where('isPublic', $request->boolean('is_public'));
+        $query->where('is_public', $request->boolean('is_public'));
     } elseif ($request->filled('d_b_credential_id')) {
         $query->where(function ($q) use ($request) {
-            $q->where('isPublic', 1)
+            $q->where('is_public', 1)
               ->orWhere('d_b_credential_id', $request->query('d_b_credential_id'));
         });
     }
@@ -50,10 +50,10 @@ public function store(Request $request)
         'title' => 'required|string|max:255',
         'd_b_credential_id' => 'required|integer',
         'content' => 'nullable|string',
-        'isPublic' => 'sometimes|boolean',
+        'is_public' => 'sometimes|boolean',
     ]);
 
-    $validated['isPublic'] = $request->isPublic ? 1 : 0;
+    $validated['is_public'] = $request->is_public ? 1 : 0;
 
     $kitTool = KitTool::create($validated);
 
@@ -87,10 +87,10 @@ public function update(Request $request, $id)
         'title' => 'sometimes|required|string|max:255',
         'd_b_credential_id' => 'sometimes|required|integer',
         'content' => 'nullable|string',
-        'isPublic' => 'sometimes|boolean',
+        'is_public' => 'sometimes|boolean',
     ]);
 
-    $validated['isPublic'] = $request->isPublic ? 1 : 0;
+    $validated['is_public'] = $request->is_public ? 1 : 0;
 
 
     $kitTool->update($validated);

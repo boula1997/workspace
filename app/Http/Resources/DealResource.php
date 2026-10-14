@@ -17,7 +17,7 @@ class DealResource extends JsonResource
         return [
             "id" => $this->id,
             'title'=>$this->title,
-            'isPaid'=>0,
+            'is_paid'=>0,
             'cost'=>$this->cost,
             'description'=>$this->description,
             'project'=>$this->project->title,

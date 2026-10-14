@@ -29,8 +29,8 @@ public function index(Request $request) {
             });
         }
 
-        if ($request->filled('isActive')) {
-            $query->where('isActive', $request->isActive);
+        if ($request->filled('is_active')) {
+            $query->where('is_active', $request->is_active);
         }
 
         // Paginate

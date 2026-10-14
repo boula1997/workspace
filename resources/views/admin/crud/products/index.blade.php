@@ -73,7 +73,7 @@
 
 <td>{{ $product->generation }}</td>
 
-<td>{{ $product->screenCard }}</td>
+<td>{{ $product->screen_card }}</td>
                                                     <td>
                                                         @include('admin.components.controls', [
                                                             'route' => 'products',

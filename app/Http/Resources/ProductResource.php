@@ -27,7 +27,7 @@ class ProductResource extends JsonResource
             "generation" => $this->generation,
             "processor" => $this->processor,
             "ram" => $this->ram,
-            "screenCard" => $this->screenCard,
+            "screen_card" => $this->screen_card,
             "ssd" => $this->ssd,
             "hdd" => $this->hdd,
         ];

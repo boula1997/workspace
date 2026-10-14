@@ -8,7 +8,7 @@ use App\Models\Post;
 
 class Accounts extends Component
 {
-    public $accounts, $title,$tasks,$fees,$cost,$payed,$debit,$deadline,$lastTransaction, $account_id,$ai_prompt;
+    public $accounts, $title,$tasks,$fees,$cost,$payed,$debit,$deadline,$last_transaction, $account_id,$ai_prompt;
     public $updateMode = false;
     public $sortField = 'title'; 
     public $sortDirection = 'asc'; // Default sort direction
@@ -42,9 +42,9 @@ class Accounts extends Component
 
         $query = Project::orderBy($this->sortField, $this->sortDirection);
         if(request()->routeIs('accountantFilter')) {
-            $this->accounts = Project::where('isYousab',0)->orderBy('debit', 'DESC')->get();
+            $this->accounts = Project::where('is_yousab',0)->orderBy('debit', 'DESC')->get();
         } else {
-            $this->accounts = Project::where('isYousab',0)->orderBy('title', 'ASC')->get();
+            $this->accounts = Project::where('is_yousab',0)->orderBy('title', 'ASC')->get();
         }
     
         // Combine all ai_prompt values
@@ -57,7 +57,7 @@ class Accounts extends Component
         foreach ($wordsToReplace as $word) {
             $combinedai_prompt = preg_replace('/\b' . preg_quote($word, '/') . '\b/', 'unknown', $combinedai_prompt);
         }
-        $this->accounts = $query->where('isYousab',0)->get();
+        $this->accounts = $query->where('is_yousab',0)->get();
     
         return view('livewire.accounts', [
             'accounts' => $this->accounts,
@@ -90,7 +90,7 @@ class Accounts extends Component
         $this->payed = '';
         $this->debit = '';
         $this->deadline = '';
-        $this->lastTransaction = '';
+        $this->last_transaction = '';
         $this->ai_prompt = '';
     }
    
@@ -120,8 +120,8 @@ class Accounts extends Component
         'deadline' => $this->deadline,
         'tasks' => $this->tasks,
         'ai_prompt' => $this->ai_prompt,
-        'lastTransaction' => $this->lastTransaction,
-        'isYousab' => 0,
+        'last_transaction' => $this->last_transaction,
+        'is_yousab' => 0,
     ]);
   
         session()->flash('message', 'Account Created Successfully.');
@@ -146,7 +146,7 @@ class Accounts extends Component
         $this->deadline = $account->deadline;
         $this->tasks = $account->tasks;
         $this->ai_prompt = $account->ai_prompt;
-        $this->lastTransaction = $account->lastTransaction;
+        $this->last_transaction = $account->last_transaction;
   
         $this->updateMode = true;
     }
@@ -182,11 +182,11 @@ class Accounts extends Component
         
         if($account->payed!==$this->payed)
         $account->update([
-            'lastTransaction' => todayDate(),
+            'last_transaction' => todayDate(),
         ]);
         else
             $account->update([
-                'lastTransaction' => $this->lastTransaction,
+                'last_transaction' => $this->last_transaction,
             ]);
 
         $account->update([
@@ -197,7 +197,7 @@ class Accounts extends Component
             'debit' => $this->cost-$this->payed,
             'deadline' => $this->deadline,
             'ai_prompt' => $this->ai_prompt,
-            'isYousab' => 0,
+            'is_yousab' => 0,
         ]);
 
 

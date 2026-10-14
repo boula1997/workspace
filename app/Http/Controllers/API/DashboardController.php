@@ -90,9 +90,9 @@ class DashboardController extends Controller
                     ->sortByDesc(fn($project) => $project->status)
             ),
             'renewalProjects'      => ProjectResource::collection(
-                Project::whereNotNull('renewalDate')
-                    ->orderBy('renewalDate', 'asc')
-                    ->whereDate('renewalDate', '<=', Carbon::now()->addWeek())
+                Project::whereNotNull('renewal_date')
+                    ->orderBy('renewal_date', 'asc')
+                    ->whereDate('renewal_date', '<=', Carbon::now()->addWeek())
                     ->get()
             ),
             'taskProjects'         => ProjectResource::collection(
@@ -245,23 +245,23 @@ class DashboardController extends Controller
             'updates.*.payed'                  => 'nullable',
             'updates.*.deal'                   => 'nullable',
             'updates.*.fixed'                  => 'nullable',
-            'updates.*.isHosted'               => 'nullable',
-            'updates.*.isOverthinking'         => 'nullable',
+            'updates.*.is_hosted'               => 'nullable',
+            'updates.*.is_overthinking'         => 'nullable',
             'updates.*.deadline'               => 'nullable|date',
-            'updates.*.renewalDate'            => 'nullable|date',
-            'updates.*.githubDevModeLinkBack'  => 'nullable|string',
-            'updates.*.githubDevModeLinkFront' => 'nullable|string',
+            'updates.*.renewal_date'            => 'nullable|date',
+            'updates.*.github_dev_mode_link_back'  => 'nullable|string',
+            'updates.*.github_dev_mode_link_front' => 'nullable|string',
         ]);
 
         // Mapping: DB column => payload key
         $projectColumns = [
             'ai_prompt'      => 'title',
-            'isOverthinking' => 'isOverthinking',
+            'is_overthinking' => 'is_overthinking',
         ];
 
         $issueColumns = [
             'ai_prompt'      => 'title',
-            'isOverthinking' => 'isOverthinking',
+            'is_overthinking' => 'is_overthinking',
         ];
 
         DB::transaction(function () use ($validated, $projectColumns, $issueColumns) {

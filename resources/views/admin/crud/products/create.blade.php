@@ -79,7 +79,7 @@
 
 <!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.generation')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="generation" placeholder="{{__('general.generation')}}" class="form-control pl-1 min-h-40px @error('generation') is-invalid @enderror" value="{{ old('generation') }}"> </div> </div> </div>
 
-<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.screenCard')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="screenCard" placeholder="{{__('general.screenCard')}}" class="form-control pl-1 min-h-40px @error('screenCard') is-invalid @enderror" value="{{ old('screenCard') }}"> </div> </div> </div>
+<!-- Normal title input --> <div class="col-md-12"> <div class="form-group"> <label>{{__('general.screenCard')}} <span class="text-danger"> * </span></label> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text"><i class="fas fa-pen"></i></span> </div> <input type="text" name="screen_card" placeholder="{{__('general.screenCard')}}" class="form-control pl-1 min-h-40px @error('screenCard') is-invalid @enderror" value="{{ old('screen_card') }}"> </div> </div> </div>
 
 
 

@@ -13,7 +13,7 @@ class Deal extends Model
         'title',
         'description',
         'cost',
-        'isPaid',
+        'is_paid',
     ];
 
 public function project()

@@ -46,9 +46,9 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $issue->title }}</td>
 
-                                                <td>{{$issue->isOverthinking?__('general.yes'):__('general.no') }}</td>
+                                                <td>{{$issue->is_overthinking?__('general.yes'):__('general.no') }}</td>
 
-                                                <td>{{$issue->isNotification?__('general.yes'):__('general.no') }}</td>
+                                                <td>{{$issue->is_notification?__('general.yes'):__('general.no') }}</td>
 
 
                                                 <td>

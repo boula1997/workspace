@@ -35,7 +35,7 @@
 
 <!-- tel input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{ __('general.whatsapp') }}:</h5> <a href="tel:{{ $admin->whatsapp }}" style="margin: 0; color: inherit; font-weight: normal;">{{ $admin->whatsapp }}</a> </div> </div> </div>
 
-                                    <!-- checkbox input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{ __('general.isActive') }}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{$admin->isActive?_('general.yes'):__('general.no')}}</p> </div> </div> </div>
+                                    <!-- checkbox input --> <div class="col-md-6"> <div class="mb-5 bg-light p-3 rounded h-100"> <div class="card-title fw-bold"> <h5 class="font-weight-bolder text-dark">{{ __('general.isActive') }}:</h5> <p style="margin: 0; color: inherit; font-weight: normal;">{{$admin->is_active?_('general.yes'):__('general.no')}}</p> </div> </div> </div>
 
                                     <div class="form-group">
                                         <div class="col-md-6">

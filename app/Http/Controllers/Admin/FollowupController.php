@@ -119,14 +119,14 @@ class FollowupController extends Controller
                 'startdate' => 'nullable|date',
                 'enddate' => 'nullable|date',
                 'difficulty' => 'nullable|integer',
-                'hasPhone' => 'nullable|boolean',
+                'has_phone' => 'nullable|boolean',
             ]);
         
             // Set default values
             $startdate = $validatedData['startdate'] ?? '1970-01-01';
             $enddate = $validatedData['enddate'] ?? now()->format('Y-m-d');
             $difficulty = $validatedData['difficulty'] ?? null;
-            $hasPhone = $validatedData['hasPhone'] ?? null;
+            $hasPhone = $validatedData['has_phone'] ?? null;
         
             // Build the query dynamically
             $followups = Followup::whereDate('created_at', '>=', $startdate)
@@ -135,7 +135,7 @@ class FollowupController extends Controller
                                      return $query->where('difficulty', $difficulty);
                                  })
                                  ->when($hasPhone, function ($query, $hasPhone) {
-                                     return $query->where('hasPhone', $hasPhone);
+                                     return $query->where('has_phone', $hasPhone);
                                  })
                                  ->get()
                                  ->unique('title');
@@ -191,14 +191,14 @@ class FollowupController extends Controller
         try {
             $titles = explode('+', $request->title);
             $data['difficulty']=$request->has('difficulty')?1:0;
-            $data['hasPhone']=$request->has('hasPhone')?1:0;
+            $data['has_phone']=$request->has('has_phone')?1:0;
             foreach ($titles as $title) {
                 foreach ($request->employees as $employee) {
                     Followup::create([
                         'title' => $title,
                         'admin_id' => $employee,
                         'difficulty' => $data['difficulty'],
-                        'hasPhone' => $data['hasPhone'],
+                        'has_phone' => $data['has_phone'],
                     ]);
                 }
             }
@@ -256,7 +256,7 @@ class FollowupController extends Controller
         try {
             $data = $request->except('employees');
             $data['difficulty']=$request->has('difficulty')?1:0;
-            $data['hasPhone']=$request->has('hasPhone')?1:0;
+            $data['has_phone']=$request->has('has_phone')?1:0;
             $followups=Followup::where('title',$followup->title)->get();
             foreach($followups as $followup) 
             $followup->update($data);

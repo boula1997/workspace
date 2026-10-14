@@ -19,7 +19,7 @@ class AdminResource extends JsonResource
             "email" => $this->email,
             "email_verified_at" => $this->email_verified_at,
             "id" => $this->id,
-            "isActive" => $this->isActive,
+            "is_active" => $this->is_active,
             "messanger_id" => $this->messanger_id,
             "name" => $this->name,
             "phone" => $this->phone,

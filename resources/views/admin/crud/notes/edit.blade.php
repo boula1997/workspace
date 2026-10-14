@@ -28,8 +28,8 @@
                                     <div class="form-group">
                                         <div class="form-group">
                                             <div class="form-check form-switch"> <input class="form-check-input"
-                                                    @checked(old('isNotification', $note->isNotification)) type="checkbox" id="isNotification"
-                                                    name="isNotification" value="1"> <label class="form-check-label"
+                                                    @checked(old('is_notification', $note->is_notification)) type="checkbox" id="isNotification"
+                                                    name="is_notification" value="1"> <label class="form-check-label"
                                                     for="isNotification">{{ __('general.isNotification') }} <span
                                                         class="text-danger"> * </span></label> </div>
                                         </div>
@@ -41,8 +41,8 @@
                                     <div class="form-group">
                                         <div class="form-group">
                                             <div class="form-check form-switch"> <input class="form-check-input"
-                                                    @checked(old('isOverthinking', $note->isOverthinking)) type="checkbox" id="isOverthinking"
-                                                    name="isOverthinking" value="1"> <label class="form-check-label"
+                                                    @checked(old('is_overthinking', $note->is_overthinking)) type="checkbox" id="isOverthinking"
+                                                    name="is_overthinking" value="1"> <label class="form-check-label"
                                                     for="isOverthinking">{{ __('general.isPending') }} <span
                                                         class="text-danger"> * </span></label> </div>
                                         </div>

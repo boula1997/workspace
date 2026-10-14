@@ -39,7 +39,7 @@ public function project()
 
         // --- Working hours ---
         if (!isWithinWorkingHours() && empty($options['ignore_working_hours'])) {
-            $query->where('isOverthinking', 0);
+            $query->where('is_overthinking', 0);
         }
 
         // --- Restrict to logged user (unless Boula) ---
@@ -88,7 +88,7 @@ public function project()
 
         // --- isFixed ---
         if ($request->has('is_fixed') && $request->is_fixed !== '' && $request->is_fixed !== null) {
-            $query->where('isFixed', (int) $request->is_fixed);
+            $query->where('is_fixed', (int) $request->is_fixed);
         }
 
         // --- Date filters ---
@@ -124,12 +124,12 @@ public function project()
             $type = $request->input('type');
 
             if ($type === 'personal') {
-                $query->whereHas('project', fn($q) => $q->where('isPersonal', 1));
+                $query->whereHas('project', fn($q) => $q->where('is_personal', 1));
             } elseif ($type === 'yousab') {
-                $query->whereHas('project', fn($q) => $q->where('isYousab', 1));
+                $query->whereHas('project', fn($q) => $q->where('is_yousab', 1));
             } elseif ($type === 'all') {
                 $query->whereHas('project', fn($q) =>
-                    $q->where('isPersonal', 1)->orWhere('isYousab', 1)
+                    $q->where('is_personal', 1)->orWhere('is_yousab', 1)
                 );
             }
         }
@@ -140,7 +140,7 @@ public function project()
         }
 
         // --- Active only ---
-        $query->where('isActive', 1);
+        $query->where('is_active', 1);
 
         // --- Ordering ---
         $query->orderByRaw('(date IS NULL), date ASC')

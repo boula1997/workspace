@@ -58,7 +58,7 @@ class ActionController extends Controller
   public function excavations()
   {
       // Fetch all templates
-       $excavations = Navigation::where("isExcavation",1)->get();
+       $excavations = Navigation::where("is_excavation",1)->get();
 
       // Return them as JSON response
       return response()->json([
@@ -588,11 +588,11 @@ class ActionController extends Controller
       $currentMonth = Carbon::now()->month;
       $data = Setting::whereMonth('last_time', $currentMonth)->latest()->get();
       $last = Setting::latest()->first();
-      $timeClicks = Time::whereMonth('clickTime', $currentMonth)->latest()->get();
+      $timeClicks = Time::whereMonth('click_time', $currentMonth)->latest()->get();
       // Group clicks by day
       $clicksByDay = $timeClicks->groupBy(function ($click) {
         // Parse the clickTime string to DateTime object before formatting
-        $clickTime = \Carbon\Carbon::parse($click->clickTime);
+        $clickTime = \Carbon\Carbon::parse($click->click_time);
         return $clickTime->format('Y-m-d'); // Group by date
       });
 
@@ -1075,15 +1075,15 @@ public function show($db, $table, $query)
     $data = Setting::whereYear('last_time', $year)
       ->whereMonth('last_time', $month)->latest()
       ->get();
-    $timeClicks= Time::whereYear('clickTime', $year)
-      ->whereMonth('clickTime', $month)->latest()
+    $timeClicks= Time::whereYear('click_time', $year)
+      ->whereMonth('click_time', $month)->latest()
       ->get();
 
       // Group clicks by day
       // Group clicks by day
       $clicksByDay = $timeClicks->groupBy(function ($click) {
         // Parse the clickTime string to DateTime object before formatting
-        $clickTime = \Carbon\Carbon::parse($click->clickTime);
+        $clickTime = \Carbon\Carbon::parse($click->click_time);
         return $clickTime->format('Y-m-d'); // Group by date
       });
       
@@ -1310,7 +1310,7 @@ public function show($db, $table, $query)
        public function createClickTime(Request $request){
         // Get the last record from the times table
         $lastRecord = Time::latest()->first();
-        if (!$lastRecord || $lastRecord->clickTime->format('Y-m-d H:i') !== now()->format('Y-m-d H:i')) {
+        if (!$lastRecord || $lastRecord->click_time->format('Y-m-d H:i') !== now()->format('Y-m-d H:i')) {
             // Create a new record
             Time::create($request->all());
             return response()->json(['success' => true]);
@@ -1323,15 +1323,15 @@ public function show($db, $table, $query)
     {
         // Validate the request data
         $validated = $request->validate([
-            'startTime' => 'required|date',
+            'start_time' => 'required|date',
         ]);
 
         // Store the datetime in the database
         $setting =Setting::first();
         $currentDate = Carbon::now()->format('Y-m-d');
-        $startDate = Carbon::parse($setting->startTime)->format('Y-m-d');
+        $startDate = Carbon::parse($setting->start_time)->format('Y-m-d');
         if($startDate!== $currentDate || request()->routeIs('reset.datetime')){
-          $setting->update(['startTime'=>$validated['startTime']]);
+          $setting->update(['start_time'=>$validated['start_time']]);
           // Return a response
           return response()->json(['success' => true]);
           }
@@ -1341,14 +1341,14 @@ public function show($db, $table, $query)
     {
         // Validate the request data
         $validated = $request->validate([
-            'startTime' => 'required|date',
+            'start_time' => 'required|date',
         ]);
 
         // Store the datetime in the database
         $setting =Setting::first();
         $currentDate = Carbon::now()->format('Y-m-d');
-        $startDate = Carbon::parse($setting->startTime)->format('Y-m-d');
-        $setting->update(['startTime'=>$validated['startTime']]);
+        $startDate = Carbon::parse($setting->start_time)->format('Y-m-d');
+        $setting->update(['start_time'=>$validated['start_time']]);
         // yousabEmails();
         return response()->json(['success' => true]);
 

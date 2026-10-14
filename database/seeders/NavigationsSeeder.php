@@ -30,7 +30,7 @@ class NavigationsSeeder extends Seeder
                  'admin_id'=>$employee[0],
                 
                  'difficulty'=>$difficulty[0],
-                 'hasPhone'=>$hasPhone[0],
+                 'has_phone'=>$hasPhone[0],
             ]);
         }
     }

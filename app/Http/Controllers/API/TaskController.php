@@ -66,8 +66,8 @@ class TaskController extends Controller
             $employees = Admin::where('email', auth('api')->user()->email)->get();
         }
 
-        $clients      = Admin::where('isActive', 1)->where('type', 'client')->orderBy('name')->get();
-        $prospectives = Admin::where('isActive', 1)->where('type', 'prospective')->orderBy('name')->get();
+        $clients      = Admin::where('is_active', 1)->where('type', 'client')->orderBy('name')->get();
+        $prospectives = Admin::where('is_active', 1)->where('type', 'prospective')->orderBy('name')->get();
 
         if (auth('api')->user()->email == 'parcel@gmail.com') {
             $projects = Project::withoutGlobalScope('excludePersonal')
@@ -106,7 +106,7 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         try {
-            $overthinkingTasks = \App\Models\Task::where('isOverthinking', 1)->get();
+            $overthinkingTasks = \App\Models\Task::where('is_overthinking', 1)->get();
             $allTasks          = \App\Models\Task::get();
 
             if (count($allTasks) == count($overthinkingTasks) && !isWithinWorkingHours()) {
@@ -200,8 +200,8 @@ class TaskController extends Controller
             'created_at' => $task->created_at?->format('Y-m-d'),
             'piority'    => $task->piority,
             'status'     => $task->status,
-            'isDeleted'  => $task->isActive == 0,
-            'isFixed'    => $task->isFixed,
+            'isDeleted'  => $task->is_active == 0,
+            'is_fixed'    => $task->is_fixed,
         ]);
 
         return response()->json([
@@ -274,7 +274,7 @@ class TaskController extends Controller
                 'created_at' => $task->created_at?->format('Y-m-d'),
                 'piority'    => $task->piority,
                 'status'     => $task->status,
-                'isFixed'    => $task->isFixed,
+                'is_fixed'    => $task->is_fixed,
                 'images'     => $task->images,
             ]);
 
@@ -313,7 +313,7 @@ class TaskController extends Controller
             }
 
             $task = \App\Models\Task::findOrFail($id);
-            if ($task->isFixed) {
+            if ($task->is_fixed) {
                 return failedResponse([]);
             }
 
@@ -367,18 +367,18 @@ class TaskController extends Controller
         $adminId = auth('api')->user()->id;
         $tasks   = $this->taskService->bulkDeleteTasks($request->task_ids, $adminId);
 
-        $affected = $tasks->where('isFixed', 0)->count();
+        $affected = $tasks->where('is_fixed', 0)->count();
 
         return response()->json([
             'status'  => 200,
             'message' => "$affected task(s) toggled successfully.",
             'data'    => [
                 'affected' => $affected,
-                'skipped'  => $tasks->where('isFixed', 1)->count(),
+                'skipped'  => $tasks->where('is_fixed', 1)->count(),
                 'tasks'    => $tasks->map(fn($t) => [
                     'id'      => $t->id,
                     'status'  => $t->status,
-                    'isFixed' => $t->isFixed,
+                    'is_fixed' => $t->is_fixed,
                 ]),
             ],
         ]);
@@ -654,7 +654,7 @@ class TaskController extends Controller
                 'project_id' => $validated['project_id'],
                 'status'     => 0,
                 'date'       => $task['deadline'] ?? now()->toDateString(),
-                'isFixed'    => false,
+                'is_fixed'    => false,
                 'piority'    => $task['piority'] ?? 0,
                 'employees'  => $task['employees'] ?? [],
             ]);

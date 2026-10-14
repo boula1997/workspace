@@ -16,6 +16,14 @@ class NewsletterRequest extends FormRequest
         return true;
     }
 
+    // Older clients (and the public site form) post the camelCase field name
+    protected function prepareForValidation()
+    {
+        if ($this->has('newsletterEmail') && !$this->has('newsletter_email')) {
+            $this->merge(['newsletter_email' => $this->input('newsletterEmail')]);
+        }
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,7 +32,7 @@ class NewsletterRequest extends FormRequest
     public function rules()
     {
         $rules= [
-            'newsletterEmail'=>'required|email',
+            'newsletter_email'=>'required|email',
         ];
 
         return $rules;

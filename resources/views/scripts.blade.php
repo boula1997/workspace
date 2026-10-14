@@ -96,8 +96,8 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 
-    <div id="startTime" startTime={{ getHourFromDateTime(settingFirst()->startTime) }}></div>
-    <div id="startTimeDate" startTimeDate={{ getDateFromDateTime(settingFirst()->startTime) }}></div>
+    <div id="startTime" startTime={{ getHourFromDateTime(settingFirst()->start_time) }}></div>
+    <div id="startTimeDate" startTimeDate={{ getDateFromDateTime(settingFirst()->start_time) }}></div>
 
     <script>
         $(document).ready(function(e) {
@@ -807,7 +807,7 @@
                 url: '{{ route('update.datetime') }}', // Replace 'your_update_start_time_endpoint' with your actual endpoint URL
                 type: 'POST',
                 data: {
-                    startTime: startTime,
+                    start_time: startTime,
                     _token: '{{ csrf_token() }}' // Include CSRF token if using Laravel CSRF protection
                 },
                 success: function(response) {
@@ -3283,9 +3283,9 @@
 
 
 <script>
-    let pricePerHour = {{ settings()->pricePerHour }};
-    let editsPercent = {{ settings()->editsPercent }};
-    let negotiatePercent = {{ settings()->negotiatePercent }};
+    let pricePerHour = {{ settings()->price_per_hour }};
+    let editsPercent = {{ settings()->edits_percent }};
+    let negotiatePercent = {{ settings()->negotiate_percent }};
     let dollarRate = {{ settings()->dollar }};
     let ryalRate = {{ settings()->ryal }};
 

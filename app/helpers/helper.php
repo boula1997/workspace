@@ -287,7 +287,7 @@ function activeDeadline()
 function updateStopClosingStatus(){
 
 
-if(settings2()->stopClosing==1){
+if(settings2()->stop_closing==1){
      $diffInMinutes = Carbon::now()->diffInMinutes(settings2()->updated_at);
      $now = Carbon::now();
 
@@ -295,7 +295,7 @@ if(settings2()->stopClosing==1){
 
     if($diffInMinutes>490)
     Setting::query()->update([
-        'stopClosing' => 0,
+        'stop_closing' => 0,
         'updated_at' => now()
     ]);
 }
@@ -370,7 +370,7 @@ function yousabEmails()
 
 
             // Get expired free hosting projects
-            $expiredProjects = Project::where("isHosted",1)->where('created_at', '<', now()->subYears(2))->get();
+            $expiredProjects = Project::where("is_hosted",1)->where('created_at', '<', now()->subYears(2))->get();
             
             
             // Construct the email content
@@ -584,7 +584,7 @@ function hasExceededDeadlines()
         return false;
     }
 
-    $expiredDeadlines = Task::where('isActive', 1)
+    $expiredDeadlines = Task::where('is_active', 1)
         ->where('status', 0)
         ->whereDate('date', '<=', $yesterday)
         ->get()
@@ -694,7 +694,7 @@ function isExpired()
 
 
     $projectsDeadline = Project::where('deadline', '<=', $now)->get()->filter(fn($project) => $project->status == 1) ;
-    $projectsRenewalDate = Project::where('renewalDate', '<=', $nowUtc)->get();
+    $projectsRenewalDate = Project::where('renewal_date', '<=', $nowUtc)->get();
     $deadlines = Deadline::where("status",0)->where('date', '<=', $nowUtc)->get();
 
     // if (
@@ -1026,7 +1026,7 @@ function websites()
 }
 function websitesRoutes()
 {
-    return Project::where('routesLink', '!=', null)->latest()->get();
+    return Project::where('routes_link', '!=', null)->latest()->get();
 }
 function websitesActive()
 {
@@ -1254,7 +1254,7 @@ function boula()
 
 function projectBudgetDays($project)
 {
-    $total = ((rest($project) - $project->futureExpense) * 0.6) / 500;
+    $total = ((rest($project) - $project->future_expense) * 0.6) / 500;
     return max(0, $total);
 }
 
@@ -1264,7 +1264,7 @@ function projectBudgetDays($project)
 function isWithinWorkingHours(){
         return true;    
     
-    if(settings()->stopClosing==1)
+    if(settings()->stop_closing==1)
         return true;    
 
       date_default_timezone_set('Africa/Cairo');

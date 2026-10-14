@@ -34,6 +34,9 @@ class GeneralController extends Controller
     /** Cached table list of the current 'dynamic' connection. */
     private ?array $tablesCache = null;
 
+    /** Cached column lists of the current 'dynamic' connection, by table. */
+    private array $columnCache = [];
+
     /**
      * Points the 'dynamic' connection at $dbname.
      *
@@ -70,6 +73,25 @@ class GeneralController extends Controller
         $this->driver = $driver;
         $this->schema = dynamicSchemaName($driver, $config['database']);
         $this->tablesCache = null;
+        $this->columnCache = [];
+    }
+
+    /**
+     * A column of the connected database under whichever name it really has: the snake_case one
+     * (this workspace, e.g. is_multiply) or the legacy camelCase one that client databases still
+     * use (isMultiply). Falls back to the snake_case name.
+     */
+    private function col(string $table, string $snake): string
+    {
+        $this->columnCache[$table] ??= Schema::connection('dynamic')->getColumnListing($table);
+
+        if (in_array($snake, $this->columnCache[$table], true)) {
+            return $snake;
+        }
+
+        $camel = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $snake))));
+
+        return in_array($camel, $this->columnCache[$table], true) ? $camel : $snake;
     }
 
     /** All table names of the current 'dynamic' connection. */
@@ -205,6 +227,7 @@ class GeneralController extends Controller
         }
 
         $hasFiles = $this->hasTable('files');
+        $multiplyColumn = $hasFiles ? $this->col('files', 'is_multiply') : 'is_multiply';
         $fileableType = $this->fileableType($table);
         $image = null;
         $images = [];
@@ -281,8 +304,9 @@ class GeneralController extends Controller
                     $fields[$foreignKey] = $itemId;
                     $fields['locale'] = $locale;
 
-                    if (in_array('isActive', $translationCols, true) && !isset($fields['isActive'])) {
-                        $fields['isActive'] = 1;
+                    $activeColumn = $this->col($translationTable, 'is_active');
+                    if (in_array($activeColumn, $translationCols, true) && !isset($fields[$activeColumn])) {
+                        $fields[$activeColumn] = 1;
                     }
                     if (in_array('updated_at', $translationCols, true)) {
                         $fields['updated_at'] = $now;
@@ -318,7 +342,7 @@ class GeneralController extends Controller
                 $currentImage = $conn->table('files')
                     ->where('fileable_type', $fileableType)
                     ->where('fileable_id', $itemId)
-                    ->where('isMultiply', 0)
+                    ->where($multiplyColumn, 0)
                     ->first();
 
                 if ($currentImage) {
@@ -336,7 +360,7 @@ class GeneralController extends Controller
                     'url' => $path,
                     'fileable_type' => $fileableType,
                     'fileable_id' => $itemId,
-                    'isMultiply' => 0,
+                    $multiplyColumn => 0,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -346,7 +370,7 @@ class GeneralController extends Controller
                 $currentImages = $conn->table('files')
                     ->where('fileable_type', $fileableType)
                     ->where('fileable_id', $itemId)
-                    ->where('isMultiply', 1)
+                    ->where($multiplyColumn, 1)
                     ->get();
 
                 foreach ($currentImages as $currentImage) {
@@ -364,7 +388,7 @@ class GeneralController extends Controller
                         'url' => $path,
                         'fileable_type' => $fileableType,
                         'fileable_id' => $itemId,
-                        'isMultiply' => 1,
+                        $multiplyColumn => 1,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
@@ -376,13 +400,13 @@ class GeneralController extends Controller
                 $image = $conn->table('files')
                     ->where('fileable_type', $fileableType)
                     ->where('fileable_id', $itemId)
-                    ->where('isMultiply', 0)
+                    ->where($multiplyColumn, 0)
                     ->value('url');
 
                 $images = $conn->table('files')
                     ->where('fileable_type', $fileableType)
                     ->where('fileable_id', $itemId)
-                    ->where('isMultiply', 1)
+                    ->where($multiplyColumn, 1)
                     ->pluck('url')
                     ->map(fn($url) => asset('storage/' . $url))
                     ->toArray();
@@ -428,7 +452,7 @@ class GeneralController extends Controller
                     'title'      => "Get {$request->cost} deal - " . now()->format('Y-m-d H:i:s'),
                     'project_id' => $project->id,
                     'date'       => Carbon::now()->addDay()->toDateString(),
-                    'isActive'   => 1,
+                    'is_active'  => 1,
                     'status'     => 0,
                     'counter'    => 20,
                     'level'      => '0',
@@ -655,14 +679,15 @@ class GeneralController extends Controller
         }
 
         if ($hasFiles) {
+            $multiplyColumn = $this->col('files', 'is_multiply');
             $files = $conn->table('files')
                 ->where('fileable_type', $this->fileableType($table))
                 ->where('fileable_id', $itemId)
-                ->get(['url', 'isMultiply']);
+                ->get(['url', $multiplyColumn]);
 
-            $data['image'] = optional($files->firstWhere('isMultiply', 0))->url;
+            $data['image'] = optional($files->firstWhere($multiplyColumn, 0))->url;
             $data['image'] = $data['image'] ? asset($data['image']) : settings()?->logo;
-            $data['images'] = $files->where('isMultiply', 1)->pluck('url')->map(fn($url) => asset($url))->values()->toArray();
+            $data['images'] = $files->where($multiplyColumn, 1)->pluck('url')->map(fn($url) => asset($url))->values()->toArray();
         }
 
         // Step 8: Translations of this record
@@ -899,7 +924,7 @@ class GeneralController extends Controller
         if ($hasFiles) {
             $urls = $conn->table('files')
                 ->where('fileable_type', $this->fileableType($table))
-                ->where('isMultiply', 0)
+                ->where($this->col('files', 'is_multiply'), 0)
                 ->whereIn('fileable_id', $rows->pluck('id')->filter()->all())
                 ->pluck('url', 'fileable_id');
             $logo = settings()?->logo;
@@ -961,7 +986,7 @@ class GeneralController extends Controller
 
         try {
             if (isset($admin_id)) {
-                $permissions = $conn->table('admins')->where('id', $admin_id)->value('reactPermissions');
+                $permissions = $conn->table('admins')->where('id', $admin_id)->value($this->col('admins', 'react_permissions'));
                 $blockedTables = collect(json_decode($permissions, true) ?? []);
                 $blockedModules = $conn->table('blocked_modules')->pluck('table_name');
             } else {
@@ -996,7 +1021,7 @@ class GeneralController extends Controller
             $conn->table('admins')
                 ->where('id', $request->admin_id)
                 ->update([
-                    'reactPermissions' => json_encode($tables),
+                    $this->col('admins', 'react_permissions') => json_encode($tables),
                     'updated_at' => now(),
                 ]);
 
@@ -1062,7 +1087,15 @@ class GeneralController extends Controller
             // Databases without the table simply have no per-column visibility rules
             $inputAppearances = $this->hasTable('input_appearances')
                 ? DB::connection('dynamic')->table('input_appearances')
-                    ->select('id', 'isCreate', 'isEdit', 'isIndex', 'isShow', 'table_name', 'column_name')
+                    ->select(
+                        'id',
+                        $this->col('input_appearances', 'is_create') . ' as is_create',
+                        $this->col('input_appearances', 'is_edit') . ' as is_edit',
+                        $this->col('input_appearances', 'is_index') . ' as is_index',
+                        $this->col('input_appearances', 'is_show') . ' as is_show',
+                        'table_name',
+                        'column_name'
+                    )
                     ->orderBy('id')
                     ->get()
                 : [];

@@ -13,16 +13,16 @@ class Search extends Model
         'title',
         'd_b_credential_id',
         'user_id',
-        'isActive',
-        'isFixed',
+        'is_active',
+        'is_fixed',
         'search_count',
         'last_searched_at',
         'updated_at',
     ];
 
     protected $casts = [
-        'isActive' => 'boolean',
-        'isFixed' => 'boolean',
+        'is_active' => 'boolean',
+        'is_fixed' => 'boolean',
         'last_searched_at' => 'datetime',
     ];
 
@@ -40,7 +40,7 @@ class Search extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('isActive', true);
+        return $query->where('is_active', true);
     }
 
     /**
@@ -48,7 +48,7 @@ class Search extends Model
      */
     public function scopeFixed($query)
     {
-        return $query->where('isFixed', true);
+        return $query->where('is_fixed', true);
     }
 
 

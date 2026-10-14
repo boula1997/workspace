@@ -28,7 +28,7 @@ class Project extends \App\Models\BaseModel
     protected static function booted()
 {
     static::addGlobalScope('excludePersonal', function ($query) {
-        $query->where('isPersonal', '!=', 1);
+        $query->where('is_personal', '!=', 1);
     });
 }
 
@@ -89,7 +89,7 @@ public function getDealAttribute()
 {
     // لو فيه أي deal مش paid
     $hasUnsettledDeal = $this->deals()
-        ->where('isPaid', 0)
+        ->where('is_paid', 0)
         ->exists();
 
     return $hasUnsettledDeal ? 0 : 1;

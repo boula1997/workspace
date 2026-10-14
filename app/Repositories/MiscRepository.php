@@ -32,7 +32,7 @@ class MiscRepository implements MiscRepositoryInterface
     public function randomSurveys(int $take = 5): \Illuminate\Support\Collection
     {
         return Survey::query()
-            ->where('isActive', 1)
+            ->where('is_active', 1)
             ->get()
             ->shuffle()
             ->take($take)

@@ -15,7 +15,7 @@ class KitTool extends \App\Models\BaseModel
      * @var array
      */
     protected $fillable = [
-        'title', 'content', 'project_id', 'd_b_credential_id','isPublic'
+        'title', 'content', 'project_id', 'd_b_credential_id','is_public'
     ];
 
 
