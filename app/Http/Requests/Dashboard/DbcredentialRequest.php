@@ -27,6 +27,7 @@ class DbcredentialRequest extends FormRequest
         // dd(request()->all());
         return [
             'db_host' => 'required',
+            'db_port' => 'nullable|integer|between:1,65535',
 
             'db_name' => 'required',
 

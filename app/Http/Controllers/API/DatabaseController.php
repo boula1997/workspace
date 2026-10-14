@@ -45,7 +45,12 @@ class DatabaseController extends Controller
         // ✅ Static function inside controller
     public static function setDynamicConnection($dbname,$credentialId=null)
     {
-        if (App::environment('local')) {
+        // A credential with its own port points to a separate server (e.g. a second PostgreSQL
+        // on 5442): it is used exactly as stored, in every environment.
+        $credential = isset($credentialId) ? DBCredential::find($credentialId) : null;
+        $hasOwnPort = $credential && filled($credential->db_port);
+
+        if (App::environment('local') && !$hasOwnPort) {
             // Locally we don't have per-client credentials, so just reuse
             // the app's own default connection (whichever driver DB_CONNECTION
             // in .env points to) and swap only the database name.
@@ -60,7 +65,6 @@ class DatabaseController extends Controller
             ]);
         } else {
             if(isset($credentialId)){
-                $credential = DBCredential::find($credentialId);
                 $dbDriver = $credential->db_driver ?? 'mysql';
                 $dbHost = $credential->db_host ?? 'localhost';
                 $dbName = $credential->db_name ?? 'u112116784_workspace';
@@ -76,7 +80,7 @@ class DatabaseController extends Controller
             }
 
             config([
-                'database.connections.dynamic' => buildDynamicConnectionConfig($dbDriver, $dbHost, $dbName, $dbUser, $dbPass),
+                'database.connections.dynamic' => buildDynamicConnectionConfig($dbDriver, $dbHost, $dbName, $dbUser, $dbPass, $credential->db_port ?? null),
             ]);
         }
 

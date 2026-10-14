@@ -53,7 +53,8 @@ class GeneralController extends Controller
                 $credential->db_host ?: 'localhost',
                 $credential->db_name,
                 $credential->db_username ?? '',
-                $credential->db_password ?? ''
+                $credential->db_password ?? '',
+                $credential->db_port ?? null
             );
         } else {
             $default = config('database.connections.' . config('database.default'));

@@ -92,7 +92,7 @@ class ActionController extends Controller
       $dbPass = isset($credential->db_password)?$credential->db_password:'o$01Yqf{R;s6';
           // Temporarily configure the database connection
           config([
-            'database.connections.dynamic' => buildDynamicConnectionConfig($dbDriver, $dbHost, $dbName, $dbUser, $dbPass),
+            'database.connections.dynamic' => buildDynamicConnectionConfig($dbDriver, $dbHost, $dbName, $dbUser, $dbPass, $credential->db_port ?? null),
         ]);
 
             // Use the dynamic connection
@@ -843,7 +843,7 @@ public function execQuery(Request $request)
         $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
 
         config([
-            'database.connections.dynamic' => buildDynamicConnectionConfig($dbDriver, $dbHost, $dbName, $dbUser, $dbPass),
+            'database.connections.dynamic' => buildDynamicConnectionConfig($dbDriver, $dbHost, $dbName, $dbUser, $dbPass, $credential->db_port ?? null),
         ]);
 
         DB::purge('dynamic');
@@ -925,7 +925,7 @@ public function show($db, $table, $query)
     $dbPass = $credential->db_password ?? 'AM*Wo8owc^7';
 
     config([
-        'database.connections.dynamic' => buildDynamicConnectionConfig($dbDriver, $dbHost, $dbName, $dbUser, $dbPass),
+        'database.connections.dynamic' => buildDynamicConnectionConfig($dbDriver, $dbHost, $dbName, $dbUser, $dbPass, $credential->db_port ?? null),
     ]);
 
     DB::purge('dynamic');

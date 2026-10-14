@@ -594,4 +594,7 @@ return [
 
     "app_tabs" => "App tabs",
     "app_tabs_hint" => "Tabs this user sees in the app. Changes apply the next time they open the app.",
+    "db_port" => "Port",
+    "db_port_hint" => "Empty = standard port (e.g. 5432)",
+    "db_port_default" => "standard",
 ];

@@ -84,16 +84,20 @@ function jsonArrayContainsIntSql(string $jsonColumn, string $intExpr): string
  * inherited port is meaningless - so it's always overridden with the
  * driver's standard port instead of trusting whatever leaked through.
  */
-function buildDynamicConnectionConfig(string $driver, string $host, string $database, string $username, string $password): array
+function buildDynamicConnectionConfig(string $driver, string $host, string $database, string $username, string $password, $port = null): array
 {
     $base = config("database.connections.$driver") ?? config('database.connections.mysql');
 
     $standardPorts = ['mysql' => 3306, 'pgsql' => 5432, 'sqlsrv' => 1433];
 
+    // The credential's own port when it has one (e.g. a second PostgreSQL server on 5442),
+    // otherwise the driver's standard port.
+    $port = is_numeric($port) && (int) $port > 0 ? (int) $port : null;
+
     return array_merge($base, [
         'url' => null,
         'host' => $host,
-        'port' => $standardPorts[$driver] ?? $base['port'],
+        'port' => $port ?? ($standardPorts[$driver] ?? $base['port']),
         'database' => $database,
         'username' => $username,
         'password' => $password,
