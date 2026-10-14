@@ -90,6 +90,13 @@ function buildDynamicConnectionConfig(string $driver, string $host, string $data
 
     $standardPorts = ['mysql' => 3306, 'pgsql' => 5432, 'sqlsrv' => 1433];
 
+    // A host saved as "host:port" (e.g. "localhost:5442" or "[::1]:5442") would be looked up as a
+    // host name and fail; split the port off. An explicit $port still wins over the embedded one.
+    if (preg_match('/^\[?([^\[\]]+?)\]?:(\d+)$/', trim($host), $m) && substr_count($m[1], ':') !== 1) {
+        $host = $m[1];
+        $port = is_numeric($port) && (int) $port > 0 ? $port : $m[2];
+    }
+
     // The credential's own port when it has one (e.g. a second PostgreSQL server on 5442),
     // otherwise the driver's standard port.
     $port = is_numeric($port) && (int) $port > 0 ? (int) $port : null;
