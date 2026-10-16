@@ -246,6 +246,7 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
         Route::post('/add/link/history', [GigController::class, 'addLinkHistory']);
         Route::get('/get/all/phone/gigs', [GigController::class, 'getAllPhoneGigs']);
         Route::get('/get/all/post/gigs', [GigController::class, 'getAllPostGigs']);
+        Route::get('/gigs', [GigController::class, 'getGigFeed']);
         Route::delete('phone-gig/{id}', [GigController::class, 'deletePhoneGig']);
         Route::delete('post-gig/{id}', [GigController::class, 'deletePostGig']);
         Route::get('phone-gig/{id}/history-stats', [GigController::class, 'phoneGigHistoryStats']);

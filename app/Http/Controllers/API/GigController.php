@@ -18,6 +18,35 @@ class GigController extends Controller
         $this->gigService = $gigService;
     }
 
+    /**
+     * GET /gigs
+     * Phone and post gigs in one feed, for the app's Gigs tab. All filters run here:
+     * kind (phone|post), type (job|freelance), status (new|contacted, by the logged in user),
+     * platform (facebook|linkedin|other, posts only) and search (number, link or description).
+     * The response is a normal page plus `facets`: how many gigs each kind/platform has under
+     * the other filters, for the filter chips.
+     */
+    public function getGigFeed(Request $request)
+    {
+        try {
+            $filters = $request->validate([
+                'kind'     => 'nullable|in:phone,post',
+                'type'     => 'nullable|in:job,freelance',
+                'status'   => 'nullable|in:new,contacted',
+                'platform' => 'nullable|in:facebook,linkedin,other',
+                'search'   => 'nullable|string|max:200',
+                'per_page' => 'nullable|integer|min:1|max:100',
+            ]);
+
+            $feed = $this->gigService->getGigFeed($filters, (int) ($filters['per_page'] ?? 20), auth('admin-api')->id());
+            return successResponse($feed);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return failedResponse($e->validator->errors()->first());
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
+    }
+
     // ─────────────────────────────────────────────
     //  Phone Gigs
     // ─────────────────────────────────────────────

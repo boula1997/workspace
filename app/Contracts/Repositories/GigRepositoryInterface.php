@@ -15,6 +15,10 @@ interface GigRepositoryInterface
     public function paginatePostGigs(int $perPage = 15, ?int $adminId = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator;
     public function deletePostGig(int $id): \App\Models\postGig;
 
+    // Phone and post gigs in one filtered, paginated feed
+    public function paginateGigFeed(array $filters, int $perPage, ?int $adminId): \Illuminate\Contracts\Pagination\LengthAwarePaginator;
+    public function gigFeedFacets(array $filters, ?int $adminId): array;
+
     // Histories
     public function createCallHistory(int $phoneGigId, ?int $adminId = null): \App\Models\CallHistory;
     public function createLinkHistory(int $postGigId, ?int $adminId = null): \App\Models\LinkHistory;

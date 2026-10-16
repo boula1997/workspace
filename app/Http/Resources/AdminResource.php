@@ -40,6 +40,8 @@ class AdminResource extends JsonResource
             "tasks" => $this->tasks?true:false,
             "offline" => $this->offline?true:false,
             "marketting" => $this->marketting?true:false,
+            // Falls back to Marketing for admins saved before the Gigs switch existed
+            "gigs" => (bool) ($this->gigs ?? $this->marketting),
             "offline_center" => $this->offline_center?true:false,
             "locks" => $this->locks?true:false,
             "stats" => $this->stats?true:false,

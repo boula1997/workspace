@@ -95,6 +95,141 @@ class GigRepository implements GigRepositoryInterface
     }
 
     // ─────────────────────────────────────────────
+    //  Gig feed (phone + post gigs together)
+    // ─────────────────────────────────────────────
+
+    // Post links by site. LIKE patterns on the lower-cased link.
+    private const PLATFORM_PATTERNS = [
+        'facebook' => ['%facebook.com%', '%fb.watch%', '%fb.me/%', '%://fb.com%', '%.fb.com%'],
+        'linkedin' => ['%linkedin.com%', '%lnkd.in%'],
+    ];
+
+    public function paginateGigFeed(array $filters, int $perPage, ?int $adminId): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        // Same order as the separate lists: gigs this user hasn't contacted yet first (newest
+        // first), then the ones they contacted, longest ago first.
+        return $this->filteredFeed($filters, $adminId)
+            ->orderByRaw('CASE WHEN feed.my_histories_count = 0 THEN 0 ELSE 1 END ASC')
+            ->orderByRaw('CASE WHEN feed.my_histories_count = 0 THEN feed.created_at END DESC')
+            ->orderBy('feed.last_contact', 'ASC')
+            ->orderBy('feed.id', 'DESC')
+            ->paginate($perPage);
+    }
+
+    // Counts per kind and per platform, with every filter applied except kind and platform
+    // themselves (so each chip says how many gigs picking it would show).
+    public function gigFeedFacets(array $filters, ?int $adminId): array
+    {
+        $byPlatform = $this->filteredFeed(array_diff_key($filters, ['kind' => 1, 'platform' => 1]), $adminId)
+            ->select(DB::raw('feed.platform, COUNT(*) as cnt'))
+            ->groupBy('feed.platform')
+            ->pluck('cnt', 'platform');
+
+        $facebook = (int) ($byPlatform['facebook'] ?? 0);
+        $linkedin = (int) ($byPlatform['linkedin'] ?? 0);
+        $other = (int) ($byPlatform['other'] ?? 0);
+        $phone = (int) ($byPlatform['phone'] ?? 0);
+
+        return [
+            'all'      => $phone + $facebook + $linkedin + $other,
+            'phone'    => $phone,
+            'post'     => $facebook + $linkedin + $other,
+            'facebook' => $facebook,
+            'linkedin' => $linkedin,
+            'other'    => $other,
+        ];
+    }
+
+    private function filteredFeed(array $filters, ?int $adminId): \Illuminate\Database\Query\Builder
+    {
+        $query = DB::query()->fromSub($this->feedUnion($adminId), 'feed')->select('feed.*');
+
+        if (!empty($filters['kind'])) {
+            $query->where('feed.kind', $filters['kind']);
+        }
+        if (!empty($filters['platform'])) {
+            $query->where('feed.platform', $filters['platform']); // phone gigs have platform 'phone'
+        }
+        if (!empty($filters['type'])) {
+            $query->where('feed.type', $filters['type']);
+        }
+        if (($filters['status'] ?? null) === 'new') {
+            $query->where('feed.my_histories_count', 0);
+        } elseif (($filters['status'] ?? null) === 'contacted') {
+            $query->where('feed.my_histories_count', '>', 0);
+        }
+
+        $search = trim((string) ($filters['search'] ?? ''));
+        if ($search !== '') {
+            $like = '%' . addcslashes(mb_strtolower($search), '%_\\') . '%';
+            $digits = preg_replace('/\D/', '', $search);
+            $looksLikeNumber = strlen($digits) >= 3 && preg_match('/^[\d\s+()-]+$/', $search);
+
+            $query->where(function ($q) use ($like, $digits, $looksLikeNumber) {
+                $q->whereRaw('LOWER(COALESCE(feed.description, \'\')) LIKE ?', [$like])
+                    ->orWhereRaw('LOWER(feed.target) LIKE ?', [$like]);
+                if ($looksLikeNumber) {
+                    // Numbers are saved as +<digits>, so "010 123" still finds +2010123...
+                    $q->orWhere(fn ($n) => $n->where('feed.kind', 'phone')->where('feed.target', 'LIKE', '%' . $digits . '%'));
+                }
+            });
+        }
+
+        return $query;
+    }
+
+    // Both tables in one shape: kind, id, target (phone or link), phone, post_link, description,
+    // type, platform, last_contact (this user's last contact), histories_count, my_histories_count.
+    private function feedUnion(?int $adminId): \Illuminate\Database\Query\Builder
+    {
+        $phones = $this->feedPart('phone_gigs', 'call_histories', 'phone_gig_id', $adminId)
+            ->selectRaw("'phone' as kind, g.id, g.phone as target, g.phone, NULL as post_link")
+            ->selectRaw("'phone' as platform");
+        $this->addSharedFeedColumns($phones);
+
+        $platform = 'CASE';
+        $bindings = [];
+        foreach (self::PLATFORM_PATTERNS as $name => $patterns) {
+            $platform .= ' WHEN ' . implode(' OR ', array_fill(0, count($patterns), 'LOWER(g.post_link) LIKE ?')) . " THEN '$name'";
+            array_push($bindings, ...$patterns);
+        }
+        $platform .= " ELSE 'other' END as platform";
+
+        $posts = $this->feedPart('post_gigs', 'link_histories', 'post_gig_id', $adminId)
+            ->selectRaw("'post' as kind, g.id, g.post_link as target, NULL as phone, g.post_link")
+            ->selectRaw($platform, $bindings);
+        $this->addSharedFeedColumns($posts);
+
+        return $phones->unionAll($posts);
+    }
+
+    private function feedPart(string $table, string $historyTable, string $gigColumn, ?int $adminId): \Illuminate\Database\Query\Builder
+    {
+        $all = DB::table($historyTable)
+            ->selectRaw("$gigColumn as gig_id, COUNT(*) as cnt")
+            ->groupBy($gigColumn);
+
+        $mine = DB::table($historyTable)
+            ->selectRaw("$gigColumn as gig_id, COUNT(*) as cnt, MAX(created_at) as last_at")
+            ->where('admin_id', $adminId ?? 0)
+            ->groupBy($gigColumn);
+
+        return DB::table("$table as g")
+            ->leftJoinSub($all, 'allh', 'allh.gig_id', '=', 'g.id')
+            ->leftJoinSub($mine, 'mine', 'mine.gig_id', '=', 'g.id');
+    }
+
+    // Columns both tables have. A UNION matches columns by position, so these go last on both parts.
+    private function addSharedFeedColumns(\Illuminate\Database\Query\Builder $query): void
+    {
+        // `type` is a separate enum per table on Postgres, which a UNION can't merge: cast to text
+        $text = DB::getDriverName() === 'mysql' ? 'CHAR' : 'VARCHAR';
+        $query->selectRaw("g.description, CAST(g.type AS $text) as type, mine.last_at as last_contact")
+            ->selectRaw('COALESCE(allh.cnt, 0) as histories_count, COALESCE(mine.cnt, 0) as my_histories_count')
+            ->selectRaw('g.created_at, g.updated_at');
+    }
+
+    // ─────────────────────────────────────────────
     //  Histories
     // ─────────────────────────────────────────────
 

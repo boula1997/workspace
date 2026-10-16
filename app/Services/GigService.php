@@ -13,6 +13,13 @@ class GigService
         $this->gigRepository = $gigRepository;
     }
 
+    public function getGigFeed(array $filters, int $perPage, ?int $adminId): array
+    {
+        $page = $this->gigRepository->paginateGigFeed($filters, $perPage, $adminId)->toArray();
+        $page['facets'] = $this->gigRepository->gigFeedFacets($filters, $adminId);
+        return $page;
+    }
+
     public function createPhoneGig(array $data)
     {
         return $this->gigRepository->createPhoneGig($data);
