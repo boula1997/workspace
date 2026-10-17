@@ -76,7 +76,8 @@ Route::group(['middleware' => ['apiLocalization', 'cors'], 'prefix' => 'auth'], 
 
 Route::post('/track', [MiscController::class, 'track']);
 
-Route::post('/async/create', [TaskController::class, 'asyncCreate']);
+// Signed-in admins only: the batch is credited to them (gig authors, task admin)
+Route::post('/async/create', [TaskController::class, 'asyncCreate'])->middleware('auth:admin-api');
 
 Route::get('/deadlines/exceeded', function () {
     return response()->json([

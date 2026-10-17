@@ -12,6 +12,12 @@ class phoneGig extends Model
 
     protected $guarded = [];
 
+    // Admin who created the gig (NULL for gigs created before authors were recorded)
+    public function author()
+    {
+        return $this->belongsTo(Admin::class, 'author_id');
+    }
+
     public function callHistories()
     {
         return $this->hasMany(CallHistory::class);
