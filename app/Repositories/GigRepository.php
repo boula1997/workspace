@@ -43,11 +43,23 @@ class GigRepository implements GigRepositoryInterface
             ->paginate($perPage);
     }
 
+    // Soft delete: the gig and its contact history stay, so it can be restored.
+    // Deleting a gig that is already deleted is not an error.
     public function deletePhoneGig(int $id): phoneGig
     {
-        $phoneGig = phoneGig::findOrFail($id);
-        $phoneGig->callHistories()->delete();
-        $phoneGig->delete();
+        $phoneGig = phoneGig::withTrashed()->findOrFail($id);
+        if (!$phoneGig->trashed()) {
+            $phoneGig->delete();
+        }
+        return $phoneGig;
+    }
+
+    public function restorePhoneGig(int $id): phoneGig
+    {
+        $phoneGig = phoneGig::withTrashed()->findOrFail($id);
+        if ($phoneGig->trashed()) {
+            $phoneGig->restore();
+        }
         return $phoneGig;
     }
 
@@ -88,9 +100,19 @@ class GigRepository implements GigRepositoryInterface
 
     public function deletePostGig(int $id): postGig
     {
-        $postGig = postGig::findOrFail($id);
-        $postGig->linkHistories()->delete();
-        $postGig->delete();
+        $postGig = postGig::withTrashed()->findOrFail($id);
+        if (!$postGig->trashed()) {
+            $postGig->delete();
+        }
+        return $postGig;
+    }
+
+    public function restorePostGig(int $id): postGig
+    {
+        $postGig = postGig::withTrashed()->findOrFail($id);
+        if ($postGig->trashed()) {
+            $postGig->restore();
+        }
         return $postGig;
     }
 
@@ -143,6 +165,13 @@ class GigRepository implements GigRepositoryInterface
     private function filteredFeed(array $filters, ?int $adminId): \Illuminate\Database\Query\Builder
     {
         $query = DB::query()->fromSub($this->feedUnion($adminId), 'feed')->select('feed.*');
+
+        // Deleted (soft deleted) gigs are listed only when asked for, and then on their own
+        if (!empty($filters['deleted'])) {
+            $query->whereNotNull('feed.deleted_at');
+        } else {
+            $query->whereNull('feed.deleted_at');
+        }
 
         if (!empty($filters['kind'])) {
             $query->where('feed.kind', $filters['kind']);
@@ -226,7 +255,7 @@ class GigRepository implements GigRepositoryInterface
         $text = DB::getDriverName() === 'mysql' ? 'CHAR' : 'VARCHAR';
         $query->selectRaw("g.description, CAST(g.type AS $text) as type, mine.last_at as last_contact")
             ->selectRaw('COALESCE(allh.cnt, 0) as histories_count, COALESCE(mine.cnt, 0) as my_histories_count')
-            ->selectRaw('g.created_at, g.updated_at');
+            ->selectRaw('g.created_at, g.updated_at, g.deleted_at');
     }
 
     // ─────────────────────────────────────────────

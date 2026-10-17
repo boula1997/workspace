@@ -8,12 +8,14 @@ interface GigRepositoryInterface
     public function createPhoneGig(array $data): \App\Models\phoneGig;
     public function paginatePhoneGigs(int $perPage = 15, ?int $adminId = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator;
     public function deletePhoneGig(int $id): \App\Models\phoneGig;
+    public function restorePhoneGig(int $id): \App\Models\phoneGig;
     public function phoneGigExists(string $phone): bool;
 
     // Post Gigs
     public function createPostGig(array $data): \App\Models\postGig;
     public function paginatePostGigs(int $perPage = 15, ?int $adminId = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator;
     public function deletePostGig(int $id): \App\Models\postGig;
+    public function restorePostGig(int $id): \App\Models\postGig;
 
     // Phone and post gigs in one filtered, paginated feed
     public function paginateGigFeed(array $filters, int $perPage, ?int $adminId): \Illuminate\Contracts\Pagination\LengthAwarePaginator;
