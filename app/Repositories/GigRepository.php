@@ -43,11 +43,23 @@ class GigRepository implements GigRepositoryInterface
             ->paginate($perPage);
     }
 
+    // Soft delete: the gig and its contact history stay, so it can be restored.
+    // Deleting a gig that is already deleted is not an error.
     public function deletePhoneGig(int $id): phoneGig
     {
-        $phoneGig = phoneGig::findOrFail($id);
-        $phoneGig->callHistories()->delete();
-        $phoneGig->delete();
+        $phoneGig = phoneGig::withTrashed()->findOrFail($id);
+        if (!$phoneGig->trashed()) {
+            $phoneGig->delete();
+        }
+        return $phoneGig;
+    }
+
+    public function restorePhoneGig(int $id): phoneGig
+    {
+        $phoneGig = phoneGig::withTrashed()->findOrFail($id);
+        if ($phoneGig->trashed()) {
+            $phoneGig->restore();
+        }
         return $phoneGig;
     }
 
@@ -88,9 +100,19 @@ class GigRepository implements GigRepositoryInterface
 
     public function deletePostGig(int $id): postGig
     {
-        $postGig = postGig::findOrFail($id);
-        $postGig->linkHistories()->delete();
-        $postGig->delete();
+        $postGig = postGig::withTrashed()->findOrFail($id);
+        if (!$postGig->trashed()) {
+            $postGig->delete();
+        }
+        return $postGig;
+    }
+
+    public function restorePostGig(int $id): postGig
+    {
+        $postGig = postGig::withTrashed()->findOrFail($id);
+        if ($postGig->trashed()) {
+            $postGig->restore();
+        }
         return $postGig;
     }
 
@@ -106,12 +128,11 @@ class GigRepository implements GigRepositoryInterface
 
     public function paginateGigFeed(array $filters, int $perPage, ?int $adminId): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        // Same order as the separate lists: gigs this user hasn't contacted yet first (newest
-        // first), then the ones they contacted, longest ago first.
+        // Newest created first. Whether the user already contacted a gig is shown on the card
+        // (my_histories_count) and can be filtered with status, it does not change the order.
         return $this->filteredFeed($filters, $adminId)
-            ->orderByRaw('CASE WHEN feed.my_histories_count = 0 THEN 0 ELSE 1 END ASC')
-            ->orderByRaw('CASE WHEN feed.my_histories_count = 0 THEN feed.created_at END DESC')
-            ->orderBy('feed.last_contact', 'ASC')
+            ->orderBy('feed.created_at', 'DESC')
+            ->orderBy('feed.kind', 'ASC')
             ->orderBy('feed.id', 'DESC')
             ->paginate($perPage);
     }
@@ -131,6 +152,7 @@ class GigRepository implements GigRepositoryInterface
         $phone = (int) ($byPlatform['phone'] ?? 0);
 
         return [
+            'authors'  => $this->authorFacet($filters, $adminId),
             'all'      => $phone + $facebook + $linkedin + $other,
             'phone'    => $phone,
             'post'     => $facebook + $linkedin + $other,
@@ -140,9 +162,35 @@ class GigRepository implements GigRepositoryInterface
         ];
     }
 
+    // Who created the gigs under the other filters (not the author filter itself), most gigs
+    // first. id is null for gigs created before authors were recorded.
+    private function authorFacet(array $filters, ?int $adminId): array
+    {
+        return $this->filteredFeed(array_diff_key($filters, ['author' => 1]), $adminId)
+            ->select(DB::raw('feed.author_id, MAX(feed.author_name) as author_name, COUNT(*) as cnt'))
+            ->groupBy('feed.author_id')
+            ->orderByDesc('cnt')
+            ->get()
+            ->map(fn ($row) => [
+                'id'    => $row->author_id !== null ? (int) $row->author_id : null,
+                'name'  => $row->author_id !== null ? ($row->author_name ?? 'User #' . $row->author_id) : 'Unknown',
+                'count' => (int) $row->cnt,
+            ])
+            ->sortBy(fn ($a) => [-$a['count'], $a['name']])
+            ->values()
+            ->all();
+    }
+
     private function filteredFeed(array $filters, ?int $adminId): \Illuminate\Database\Query\Builder
     {
         $query = DB::query()->fromSub($this->feedUnion($adminId), 'feed')->select('feed.*');
+
+        // Deleted (soft deleted) gigs are listed only when asked for, and then on their own
+        if (!empty($filters['deleted'])) {
+            $query->whereNotNull('feed.deleted_at');
+        } else {
+            $query->whereNull('feed.deleted_at');
+        }
 
         if (!empty($filters['kind'])) {
             $query->where('feed.kind', $filters['kind']);
@@ -152,6 +200,11 @@ class GigRepository implements GigRepositoryInterface
         }
         if (!empty($filters['type'])) {
             $query->where('feed.type', $filters['type']);
+        }
+        if (isset($filters['author']) && $filters['author'] !== '') {
+            $filters['author'] === 'none'
+                ? $query->whereNull('feed.author_id')
+                : $query->where('feed.author_id', (int) $filters['author']);
         }
         if (($filters['status'] ?? null) === 'new') {
             $query->where('feed.my_histories_count', 0);
@@ -226,7 +279,8 @@ class GigRepository implements GigRepositoryInterface
         $text = DB::getDriverName() === 'mysql' ? 'CHAR' : 'VARCHAR';
         $query->selectRaw("g.description, CAST(g.type AS $text) as type, mine.last_at as last_contact")
             ->selectRaw('COALESCE(allh.cnt, 0) as histories_count, COALESCE(mine.cnt, 0) as my_histories_count')
-            ->selectRaw('g.created_at, g.updated_at');
+            ->selectRaw('g.created_at, g.updated_at, g.deleted_at, g.author_id')
+            ->selectRaw('(SELECT admins.name FROM admins WHERE admins.id = g.author_id) as author_name');
     }
 
     // ─────────────────────────────────────────────

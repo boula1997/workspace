@@ -22,7 +22,9 @@ class GigController extends Controller
      * GET /gigs
      * Phone and post gigs in one feed, for the app's Gigs tab. All filters run here:
      * kind (phone|post), type (job|freelance), status (new|contacted, by the logged in user),
-     * platform (facebook|linkedin|other, posts only) and search (number, link or description).
+     * platform (facebook|linkedin|other, posts only), search (number, link or description) and
+     * deleted (1 = only soft deleted gigs, otherwise only live ones) and author (an admin id, or
+     * "none" for gigs created before authors were recorded).
      * The response is a normal page plus `facets`: how many gigs each kind/platform has under
      * the other filters, for the filter chips.
      */
@@ -34,6 +36,9 @@ class GigController extends Controller
                 'type'     => 'nullable|in:job,freelance',
                 'status'   => 'nullable|in:new,contacted',
                 'platform' => 'nullable|in:facebook,linkedin,other',
+                'deleted'  => 'nullable|boolean',
+                // array syntax: the "|" inside the regex would otherwise split the rule
+                'author'   => ['nullable', 'string', 'regex:/^(\d+|none)$/'],
                 'search'   => 'nullable|string|max:200',
                 'per_page' => 'nullable|integer|min:1|max:100',
             ]);
@@ -67,7 +72,10 @@ class GigController extends Controller
                 return failedResponse('phone is founded');
             }
 
-            $phoneGig = $this->gigService->createPhoneGig($request->all());
+            // Only the form's fields; the author is always the signed-in admin, never client supplied
+            $phoneGig = $this->gigService->createPhoneGig(
+                $request->only(['phone', 'description', 'type']) + ['author_id' => auth('admin-api')->id()]
+            );
             return successResponse($phoneGig);
         } catch (Exception $e) {
             return failedResponse($e->getMessage());
@@ -93,8 +101,24 @@ class GigController extends Controller
     public function deletePhoneGig($id)
     {
         try {
-            $this->gigService->deletePhoneGig($id);
+            $this->gigService->deletePhoneGig((int) $id);
             return successResponse([]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return failedResponse('This gig no longer exists.');
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
+    }
+
+    /**
+     * POST /phone-gig/{id}/restore
+     */
+    public function restorePhoneGig($id)
+    {
+        try {
+            return successResponse($this->gigService->restorePhoneGig((int) $id));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return failedResponse('This gig no longer exists.');
         } catch (Exception $e) {
             return failedResponse($e->getMessage());
         }
@@ -124,7 +148,7 @@ class GigController extends Controller
     public function phoneGigHistoryStats($id)
     {
         try {
-            phoneGig::findOrFail($id);
+            phoneGig::withTrashed()->findOrFail($id);
             return successResponse($this->gigService->phoneGigHistoryStats((int) $id, auth('admin-api')->id()));
         } catch (Exception $e) {
             return failedResponse($e->getMessage());
@@ -137,7 +161,7 @@ class GigController extends Controller
     public function postGigHistoryStats($id)
     {
         try {
-            postGig::findOrFail($id);
+            postGig::withTrashed()->findOrFail($id);
             return successResponse($this->gigService->postGigHistoryStats((int) $id, auth('admin-api')->id()));
         } catch (Exception $e) {
             return failedResponse($e->getMessage());
@@ -160,7 +184,9 @@ class GigController extends Controller
                 'type'        => 'required',
             ]);
 
-            $postGig = $this->gigService->createPostGig($request->all());
+            $postGig = $this->gigService->createPostGig(
+                $request->only(['post_link', 'description', 'type']) + ['author_id' => auth('admin-api')->id()]
+            );
             return successResponse($postGig);
         } catch (Exception $e) {
             return failedResponse($e->getMessage());
@@ -186,8 +212,24 @@ class GigController extends Controller
     public function deletePostGig($id)
     {
         try {
-            $this->gigService->deletePostGig($id);
+            $this->gigService->deletePostGig((int) $id);
             return successResponse([]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return failedResponse('This gig no longer exists.');
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
+    }
+
+    /**
+     * POST /post-gig/{id}/restore
+     */
+    public function restorePostGig($id)
+    {
+        try {
+            return successResponse($this->gigService->restorePostGig((int) $id));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return failedResponse('This gig no longer exists.');
         } catch (Exception $e) {
             return failedResponse($e->getMessage());
         }

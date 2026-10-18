@@ -76,7 +76,8 @@ Route::group(['middleware' => ['apiLocalization', 'cors'], 'prefix' => 'auth'], 
 
 Route::post('/track', [MiscController::class, 'track']);
 
-Route::post('/async/create', [TaskController::class, 'asyncCreate']);
+// Signed-in admins only: the batch is credited to them (gig authors, task admin)
+Route::post('/async/create', [TaskController::class, 'asyncCreate'])->middleware('auth:admin-api');
 
 Route::get('/deadlines/exceeded', function () {
     return response()->json([
@@ -249,6 +250,8 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
         Route::get('/gigs', [GigController::class, 'getGigFeed']);
         Route::delete('phone-gig/{id}', [GigController::class, 'deletePhoneGig']);
         Route::delete('post-gig/{id}', [GigController::class, 'deletePostGig']);
+        Route::post('phone-gig/{id}/restore', [GigController::class, 'restorePhoneGig']);
+        Route::post('post-gig/{id}/restore', [GigController::class, 'restorePostGig']);
         Route::get('phone-gig/{id}/history-stats', [GigController::class, 'phoneGigHistoryStats']);
         Route::get('post-gig/{id}/history-stats', [GigController::class, 'postGigHistoryStats']);
 

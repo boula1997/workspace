@@ -12,6 +12,12 @@ class postGig extends Model
 
     protected $guarded = [];
 
+    // Admin who created the gig (NULL for gigs created before authors were recorded)
+    public function author()
+    {
+        return $this->belongsTo(Admin::class, 'author_id');
+    }
+
     public function linkHistories()
     {
         return $this->hasMany(LinkHistory::class);

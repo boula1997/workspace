@@ -35,6 +35,11 @@ class GigService
         return $this->gigRepository->deletePhoneGig($id);
     }
 
+    public function restorePhoneGig(int $id)
+    {
+        return $this->gigRepository->restorePhoneGig($id);
+    }
+
     public function createPostGig(array $data)
     {
         return $this->gigRepository->createPostGig($data);
@@ -48,6 +53,11 @@ class GigService
     public function deletePostGig(int $id)
     {
         return $this->gigRepository->deletePostGig($id);
+    }
+
+    public function restorePostGig(int $id)
+    {
+        return $this->gigRepository->restorePostGig($id);
     }
 
     public function createCallHistory(int $phoneGigId, ?int $adminId = null)

@@ -482,13 +482,12 @@ class TaskController extends Controller
 
     /**
      * POST /async/create
+     * Atomic batch endpoint for the app's offline queues: creates tasks, notes, phone/post gigs and
+     * surveys; updates and deletes tasks; and reassigns employees - all in one transaction.
+     * Everything is validated first, so a 422 means nothing was saved.
      */
     public function asyncCreate(Request $request)
     {
-        // Leaving this as-is in Controller for brevity, as it handles a huge atomic transaction 
-        // across many models that don't neatly fit a single service.
-        // Or it could be moved to an AsyncService in the future.
-        // For now, I will keep the large block here to avoid breaking it.
         $request->validate([
             'tasks'            => 'nullable|array',
             'notes'            => 'nullable|array',
@@ -501,20 +500,107 @@ class TaskController extends Controller
         ]);
 
         $errors = [];
+        $filled = fn ($value) => is_string($value) ? trim($value) !== '' : !empty($value);
 
         foreach ($request->tasks ?? [] as $index => $item) {
-            if (empty(trim($item['title'] ?? 'AM*Wo8owc^7'))) {
+            if (!$filled($item['title'] ?? null)) {
                 $errors[] = "tasks[$index]: title is required.";
+            }
+            if (empty($item['project_id'])) {
+                $errors[] = "tasks[$index]: project is required.";
+            }
+        }
+
+        foreach ($request->notes ?? [] as $index => $item) {
+            if (!$filled($item['title'] ?? null)) {
+                $errors[] = "notes[$index]: title is required.";
+            }
+        }
+
+        $seenPhones = [];
+        foreach ($request->phone_gigs ?? [] as $index => $item) {
+            $phone = trim((string) ($item['phone'] ?? ''));
+
+            if ($phone === '') {
+                $errors[] = "phone_gigs[$index]: phone is required.";
+            } elseif (\App\Models\phoneGig::where('phone', $phone)->exists() || isset($seenPhones[$phone])) {
+                $errors[] = "phone_gigs[$index]: phone '$phone' already exists.";
+            }
+            $seenPhones[$phone] = true;
+
+            if (!$filled($item['description'] ?? null)) {
+                $errors[] = "phone_gigs[$index]: description is required.";
+            }
+            if (!in_array($item['type'] ?? null, ['job', 'freelance'], true)) {
+                $errors[] = "phone_gigs[$index]: type must be job or freelance.";
+            }
+        }
+
+        foreach ($request->post_gigs ?? [] as $index => $item) {
+            if (!$filled($item['post_link'] ?? null)) {
+                $errors[] = "post_gigs[$index]: post_link is required.";
+            }
+            if (!$filled($item['description'] ?? null)) {
+                $errors[] = "post_gigs[$index]: description is required.";
+            }
+            if (!in_array($item['type'] ?? null, ['job', 'freelance'], true)) {
+                $errors[] = "post_gigs[$index]: type must be job or freelance.";
+            }
+        }
+
+        foreach ($request->surveys ?? [] as $index => $item) {
+            if (!$filled($item['question'] ?? null)) {
+                $errors[] = "surveys[$index]: question is required.";
+            }
+        }
+
+        foreach ($request->task_updates ?? [] as $index => $item) {
+            if (empty($item['task_id'])) {
+                $errors[] = "task_updates[$index]: task_id is required.";
+                continue;
+            }
+
+            $hasFields = array_key_exists('title', $item)
+                || array_key_exists('date', $item)
+                || array_key_exists('project_id', $item)
+                || array_key_exists('employees', $item)
+                || array_key_exists('comments', $item);
+
+            if (!$hasFields) {
+                $errors[] = "task_updates[$index]: no updatable fields provided.";
+            }
+
+            if (array_key_exists('title', $item) && !$filled($item['title'])) {
+                $errors[] = "task_updates[$index]: title cannot be empty when provided.";
+            }
+        }
+
+        foreach ($request->task_deletes ?? [] as $index => $item) {
+            if (empty($item['task_id'])) {
+                $errors[] = "task_deletes[$index]: task_id is required.";
+            }
+        }
+
+        foreach ($request->task_assignments ?? [] as $index => $item) {
+            if (empty($item['task_id'])) {
+                $errors[] = "task_assignments[$index]: task_id is required.";
+                continue;
+            }
+            if (empty($item['employee_ids']) || !is_array($item['employee_ids'])) {
+                $errors[] = "task_assignments[$index]: employee_ids must be a non-empty array.";
             }
         }
 
         if (!empty($errors)) {
             return response()->json([
                 'status'  => 422,
-                'message' => 'Validation failed.',
+                'message' => 'Validation failed. Nothing was saved.',
                 'errors'  => $errors,
             ], 422);
         }
+
+        // The route requires a signed-in admin: they are the author of everything created here
+        $adminId = auth('admin-api')->id();
 
         DB::beginTransaction();
 
@@ -532,7 +618,23 @@ class TaskController extends Controller
                 mkdir($destinationPath, 0755, true);
             }
 
-            // CREATE TASKS
+            // SURVEYS
+            foreach ($request->surveys ?? [] as $item) {
+                $survey = \App\Models\Survey::create([
+                    'question'  => trim($item['question']),
+                    'is_active' => $item['is_active'] ?? $item['isActive'] ?? 1,
+                    'link'      => $item['link'] ?? null,
+                    'phone'     => $item['phone'] ?? null,
+                    'whatsapp'  => $item['whatsapp'] ?? null,
+                ]);
+
+                $created['surveys'][] = [
+                    'temp_id' => $item['id'] ?? null,
+                    'real_id' => $survey->id,
+                ];
+            }
+
+            // CREATE TASKS (a title with "+" makes several tasks)
             foreach ($request->tasks ?? [] as $item) {
                 foreach (explode('+', $item['title']) as $title) {
                     $title = trim($title);
@@ -540,7 +642,7 @@ class TaskController extends Controller
 
                     $task = $this->taskService->createTask([
                         'title'      => $title,
-                        'admin_id'   => auth('api')->id() ?? 1,
+                        'admin_id'   => $adminId,
                         'project_id' => $item['project_id'] ?? null,
                         'employees'  => $item['employees'] ?? [],
                         'date'       => $item['date'] ?? null,
@@ -557,11 +659,78 @@ class TaskController extends Controller
                 }
             }
 
-            // Other entity creation code (surveys, phone_gigs, etc)...
-            // For brevity I'll leave the controller handling this complex mixed logic,
-            // as rewriting the entire transaction block across 4 services is risky here.
+            // UPDATE TASKS
+            foreach ($request->task_updates ?? [] as $item) {
+                $task = \App\Models\Task::find($item['task_id']);
+                if (!$task) continue;
+
+                $payload = [];
+                if (array_key_exists('title', $item))      $payload['title']      = trim($item['title']);
+                if (array_key_exists('date', $item))       $payload['date']       = $item['date'];
+                if (array_key_exists('project_id', $item)) $payload['project_id'] = $item['project_id'];
+                if (array_key_exists('employees', $item))  $payload['employees']  = $item['employees'];
+                if (array_key_exists('comments', $item))   $payload['comments']   = $item['comments'];
+
+                if (!empty($payload)) {
+                    $task->update($payload);
+                }
+            }
+
+            // TASK ASSIGNMENTS
+            foreach ($request->task_assignments ?? [] as $item) {
+                $task = \App\Models\Task::find($item['task_id']);
+                if (!$task) continue;
+
+                $task->update(['employees' => $item['employee_ids']]);
+            }
+
+            // DELETE TASKS (soft-delete via status=1)
+            foreach ($request->task_deletes ?? [] as $item) {
+                \App\Models\Task::where('id', $item['task_id'])->update(['status' => 1]);
+            }
+
+            // NOTES
+            foreach ($request->notes ?? [] as $item) {
+                $note = \App\Models\Note::create(['title' => trim($item['title'])]);
+
+                $created['notes'][] = [
+                    'temp_id' => $item['id'] ?? null,
+                    'real_id' => $note->id,
+                ];
+            }
+
+            // PHONE GIGS
+            foreach ($request->phone_gigs ?? [] as $item) {
+                $phoneGig = \App\Models\phoneGig::create([
+                    'phone'       => trim($item['phone']),
+                    'description' => $item['description'],
+                    'type'        => $item['type'],
+                    'author_id'   => $adminId,
+                ]);
+
+                $created['phone_gigs'][] = [
+                    'temp_id' => $item['id'] ?? null,
+                    'real_id' => $phoneGig->id,
+                ];
+            }
+
+            // POST GIGS
+            foreach ($request->post_gigs ?? [] as $item) {
+                $postGig = \App\Models\postGig::create([
+                    'post_link'   => trim($item['post_link']),
+                    'description' => $item['description'],
+                    'type'        => $item['type'],
+                    'author_id'   => $adminId,
+                ]);
+
+                $created['post_gigs'][] = [
+                    'temp_id' => $item['id'] ?? null,
+                    'real_id' => $postGig->id,
+                ];
+            }
 
             DB::commit();
+
             return successResponse(['created' => $created]);
         } catch (Exception $e) {
             DB::rollBack();
