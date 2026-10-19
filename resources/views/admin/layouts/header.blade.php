@@ -66,6 +66,9 @@
 
     {{-- Load Select2 CSS and JS --}}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {{-- Modern skin: keep last so it overrides AdminLTE / Bootstrap / plugin styles --}}
+    <link rel="stylesheet" href="{{ asset('admin/css/modern.css') }}?v={{ @filemtime(public_path('admin/css/modern.css')) }}">
 
 
 
