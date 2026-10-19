@@ -151,6 +151,8 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
 
     Route::resource('complains', ComplainController::class);
     Route::apiResource('kit_tools', \App\Http\Controllers\API\KitToolController::class);
+    Route::post('plans/{id}/current', [\App\Http\Controllers\API\PlanController::class, 'setCurrent']);
+    Route::apiResource('plans', \App\Http\Controllers\API\PlanController::class)->except(['show']);
 
     Route::get('/showEditCreate/{dbname}/{table}/{itemId}', [GeneralController::class, 'showEditCreate']);
     Route::post('/storeUpdate/{dbname}/{table}/{itemId}', [GeneralController::class, 'storeUpdate']);
