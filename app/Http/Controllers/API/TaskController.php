@@ -497,6 +497,8 @@ class TaskController extends Controller
             'task_deletes'     => 'nullable|array',
             'task_assignments' => 'nullable|array',
             'surveys'          => 'nullable|array',
+            'plans'            => 'nullable|array',
+            'learnings'        => 'nullable|array',
         ]);
 
         $errors = [];
@@ -551,6 +553,27 @@ class TaskController extends Controller
         foreach ($request->surveys ?? [] as $index => $item) {
             if (!$filled($item['question'] ?? null)) {
                 $errors[] = "surveys[$index]: question is required.";
+            }
+        }
+
+        foreach ($request->plans ?? [] as $index => $item) {
+            $name = trim((string) ($item['name'] ?? ''));
+            if ($name === '') {
+                $errors[] = "plans[$index]: name is required.";
+            } elseif (mb_strlen($name) > 255) {
+                $errors[] = "plans[$index]: name must not be longer than 255 characters.";
+            }
+        }
+
+        foreach ($request->learnings ?? [] as $index => $item) {
+            $title = trim((string) ($item['title'] ?? ''));
+            if ($title === '') {
+                $errors[] = "learnings[$index]: title is required.";
+            } elseif (mb_strlen($title) > 255) {
+                $errors[] = "learnings[$index]: title must not be longer than 255 characters.";
+            }
+            if (isset($item['status']) && !in_array($item['status'], \App\Models\Learning::STATUSES, true)) {
+                $errors[] = "learnings[$index]: status must be one of " . implode(', ', \App\Models\Learning::STATUSES) . '.';
             }
         }
 
@@ -611,6 +634,8 @@ class TaskController extends Controller
                 'phone_gigs' => [],
                 'post_gigs'  => [],
                 'surveys'    => [],
+                'plans'      => [],
+                'learnings'  => [],
             ];
 
             $destinationPath = public_path('uploads/tasks');
@@ -726,6 +751,43 @@ class TaskController extends Controller
                 $created['post_gigs'][] = [
                     'temp_id' => $item['id'] ?? null,
                     'real_id' => $postGig->id,
+                ];
+            }
+
+            // PLANS (same rule as PlanController: at most one current plan per admin; the last one queued wins)
+            foreach ($request->plans ?? [] as $item) {
+                $makeCurrent = filter_var($item['is_current'] ?? false, FILTER_VALIDATE_BOOLEAN);
+                if ($makeCurrent) {
+                    \App\Models\Plan::where('admin_id', $adminId)->update(['is_current' => false]);
+                }
+
+                $description = isset($item['description']) ? trim((string) $item['description']) : '';
+                $plan = \App\Models\Plan::create([
+                    'admin_id'    => $adminId,
+                    'name'        => trim($item['name']),
+                    'description' => $description !== '' ? $description : null,
+                    'is_current'  => $makeCurrent,
+                ]);
+
+                $created['plans'][] = [
+                    'temp_id' => $item['id'] ?? null,
+                    'real_id' => $plan->id,
+                ];
+            }
+
+            // LEARNINGS
+            foreach ($request->learnings ?? [] as $item) {
+                $notes = isset($item['notes']) ? trim((string) $item['notes']) : '';
+                $learning = \App\Models\Learning::create([
+                    'admin_id' => $adminId,
+                    'title'    => trim($item['title']),
+                    'notes'    => $notes !== '' ? $notes : null,
+                    'status'   => $item['status'] ?? 'todo',
+                ]);
+
+                $created['learnings'][] = [
+                    'temp_id' => $item['id'] ?? null,
+                    'real_id' => $learning->id,
                 ];
             }
 
