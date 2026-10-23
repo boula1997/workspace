@@ -24,7 +24,8 @@ class SchemaSearchMatcher
     // ───────────────────────── terms ─────────────────────────
 
     /**
-     * "a + b + 'c d'" => ['a', 'b', 'c d']  (exact mode keeps the original case).
+     * "a, b + 'c d'" => ['a', 'b', 'c d']  (terms are separated by "," or the older "+";
+     * exact mode keeps the original case).
      */
     public static function terms(?string $search, bool $preserveCase = false): array
     {
@@ -35,7 +36,7 @@ class SchemaSearchMatcher
         $processed = $preserveCase ? $search : mb_strtolower($search);
         $terms = [];
 
-        foreach (explode('+', $processed) as $piece) {
+        foreach (preg_split('/[,+]/', $processed) as $piece) {
             $term = $preserveCase ? $piece : trim($piece);
             $len = mb_strlen($term);
 
