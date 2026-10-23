@@ -326,6 +326,27 @@ class TaskController extends Controller
     }
 
     /**
+     * POST /apptask/complete/{id}
+     * Marks a task done. Unlike toggleStatus this never re-opens a finished task, so it is safe to call
+     * from a notification button that may fire for a task that was already completed.
+     */
+    public function completeTask($id)
+    {
+        try {
+            $task = \App\Models\Task::findOrFail($id);
+            if ($task->is_fixed) {
+                return failedResponse([]);
+            }
+            if (!$task->status) {
+                $task->update(['status' => 1]);
+            }
+            return successResponse($task->fresh());
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+    }
+
+    /**
      * GET /piority/toggle/{id}
      */
     public function togglePiority($id)

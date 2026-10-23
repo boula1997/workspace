@@ -16,6 +16,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+
+        // WhatsApp digest of Boula D's open tasks (needs the server cron: * * * * * php artisan schedule:run)
+        foreach (array_filter(array_map('trim', explode(',', (string) config('services.whatsapp.digest_times')))) as $time) {
+            $schedule->command('tasks:whatsapp-digest')->dailyAt($time);
+        }
     }
 
     /**

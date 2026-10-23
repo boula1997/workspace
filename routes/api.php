@@ -210,6 +210,7 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
     Route::get('/apptask/finished/tasks', [TaskController::class, 'finishedTasks']);
     Route::post('/apptask/store', [TaskController::class, 'store']);
     Route::post('apptask/update-task/{id}', [TaskController::class, 'updateTaskTitleAndComments']);
+    Route::post('apptask/complete/{id}', [TaskController::class, 'completeTask']);
     Route::get('apptask/by-credential/{db_credential_id}', [TaskController::class, 'tasksByCredential']);
 
     // Misc

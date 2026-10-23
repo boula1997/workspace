@@ -129,9 +129,13 @@ public function getFunction(Request $request)
             */
 
             // Only Boula D's own tasks appear in notifications
+            // Same order as $notifications: the app turns these into the Done button, the badge and the
+            // always-visible "open tasks" notification
+            $taskRefs = [];
             if ($dangerousTasks->isNotEmpty()) {
                 foreach ($dangerousTasks as $task) {
                     $notifications[] = $task->title . " is due in " . $task->date;
+                    $taskRefs[] = ['id' => $task->id, 'title' => $task->title, 'date' => (string) $task->date];
                 }
             }
 
@@ -163,13 +167,24 @@ public function getFunction(Request $request)
             }
             */
 
-            // Shuffle notifications to randomize order
-            shuffle($notifications);
+            // Shuffle notifications to randomize order (task references move with their message)
+            $order = array_keys($notifications);
+            shuffle($order);
 
             // Limit notifications to allowed count
-            $notifications = array_slice($notifications, 0, $countAllowed);
+            $order = array_slice($order, 0, $countAllowed);
+            $shuffledNotifications = [];
+            $shuffledTasks = [];
+            foreach ($order as $index) {
+                $shuffledNotifications[] = $notifications[$index];
+                $shuffledTasks[] = $taskRefs[$index] ?? null;
+            }
+            $notifications = $shuffledNotifications;
 
             $data["notifications"] = $notifications;
+            $data["tasks"] = $shuffledTasks;
+            // All of Boula D's open tasks (the list above is capped at the daily slot count)
+            $data["open_count"] = $dangerousTasks->count();
             $data["period"] = settings()->period;
         }
 
