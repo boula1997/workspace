@@ -29,6 +29,7 @@ class ProjectResource extends JsonResource
             'worked_hours' => $this->hours,
             "last_worked_on" => $this->projectHours()->latest()->first()?->created_at?->locale('en')->diffForHumans() ?? 'N/A',
             'deadline' => $this->deadline,
+            'reminder' => (bool) $this->reminder,
             'is_yousab' => $this->is_yousab,
             'is_personal' => $this->is_personal,
             'days_to_deadline' => $this->deadline

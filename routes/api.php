@@ -244,6 +244,8 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
 
         // Project hours
         Route::post('/add/project/hours', [MiscController::class, 'addProjectHours']);
+        Route::post('/project/reminder', [MiscController::class, 'setProjectReminder']);
+        Route::get('/project/reminders/count', [MiscController::class, 'projectReminders']);
 
         // Gigs
         Route::post('/add/phone/gig', [GigController::class, 'addPhoneGig']);

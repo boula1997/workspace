@@ -131,6 +131,37 @@ class MiscController extends Controller
     }
 
     /**
+     * POST /project/reminder
+     * Turns a project's reminder flag on or off; returns how many board projects have it on.
+     */
+    public function setProjectReminder(Request $request)
+    {
+        $request->validate([
+            'project_id' => 'required|exists:projects,id',
+            'reminder'   => 'required|boolean',
+        ]);
+
+        \App\Models\Project::findOrFail($request->project_id)
+            ->update(['reminder' => $request->boolean('reminder')]);
+
+        return successResponse(['count' => $this->projectReminderCount()]);
+    }
+
+    /**
+     * GET /project/reminders/count
+     * Number of board projects with the reminder flag on (badge on the Projects tab).
+     */
+    public function projectReminders()
+    {
+        return successResponse(['count' => $this->projectReminderCount()]);
+    }
+
+    private function projectReminderCount(): int
+    {
+        return \App\Models\Project::where('appearance', 1)->where('reminder', true)->count();
+    }
+
+    /**
      * GET /offline/notes
      * Returns up to 300 random notes (Boula-only).
      */
