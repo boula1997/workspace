@@ -156,6 +156,43 @@ class MiscController extends Controller
         return successResponse(['count' => $this->projectReminderCount()]);
     }
 
+    /**
+     * POST /project/appearance
+     * Hides (appearance 0) or shows (appearance 1) a project on the board, like the web toggle.
+     */
+    public function setProjectAppearance(Request $request)
+    {
+        $request->validate([
+            'project_id' => 'required|exists:projects,id',
+            'appearance' => 'required|boolean',
+        ]);
+
+        \App\Models\Project::findOrFail($request->project_id)
+            ->update(['appearance' => $request->boolean('appearance') ? 1 : 0]);
+
+        return successResponse(['count' => $this->projectReminderCount()]);
+    }
+
+    /**
+     * GET /project/hidden?search=
+     * Hidden projects (appearance 0), optionally narrowed by a case-insensitive name search.
+     */
+    public function hiddenProjects(Request $request)
+    {
+        $query = \App\Models\Project::where(fn ($q) => $q->where('appearance', 0)->orWhereNull('appearance'))
+            ->orderBy('title');
+
+        $search = trim((string) $request->query('search', ''));
+        if ($search !== '') {
+            $escaped = addcslashes(mb_strtolower($search), '%_\\');
+            $query->whereRaw('LOWER(title) LIKE ?', ['%' . $escaped . '%']);
+        }
+
+        return successResponse([
+            'projects' => $query->limit(100)->get(['id', 'title']),
+        ]);
+    }
+
     private function projectReminderCount(): int
     {
         return \App\Models\Project::where('appearance', 1)->where('reminder', true)->count();
