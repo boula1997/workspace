@@ -154,6 +154,8 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
     Route::post('plans/{id}/current', [\App\Http\Controllers\API\PlanController::class, 'setCurrent']);
     Route::apiResource('plans', \App\Http\Controllers\API\PlanController::class)->except(['show']);
     Route::apiResource('learnings', \App\Http\Controllers\API\LearningController::class)->except(['show']);
+    Route::get('claude-md', [\App\Http\Controllers\API\ClaudeDocumentController::class, 'show']);
+    Route::put('claude-md', [\App\Http\Controllers\API\ClaudeDocumentController::class, 'update']);
     Route::apiResource('academics', \App\Http\Controllers\API\AcademicController::class)->except(['show']);
     Route::get('academics/{id}/items', [\App\Http\Controllers\API\AcademicController::class, 'items']);
     Route::post('academics/{id}/items', [\App\Http\Controllers\API\AcademicController::class, 'storeItem']);
