@@ -203,7 +203,9 @@ class GeneralController extends Controller
         }
 
         $this->connectDynamic($dbname);
-        $columnNames = collect($this->tableColumns($table))->pluck('COLUMN_NAME')->all();
+        $columnInfo = collect($this->tableColumns($table));
+        $columnNames = $columnInfo->pluck('COLUMN_NAME')->all();
+        $nullableColumns = $columnInfo->filter(fn ($c) => strtoupper((string) $c->IS_NULLABLE) === 'YES')->pluck('COLUMN_NAME')->all();
         $conn = DB::connection('dynamic');
         $audited = $this->isAuditedTable($table);
 
@@ -240,6 +242,15 @@ class GeneralController extends Controller
                 if (!$request->has($column)) continue;
 
                 $value = $request->input($column);
+
+                // MySQL's zero date (e.g. an old email_verified_at) is rejected by strict mode on write:
+                // store NULL when the column allows it, otherwise leave the column out
+                if (is_string($value) && str_starts_with($value, '0000-00-00')) {
+                    if (in_array($column, $nullableColumns, true)) {
+                        $data[$column] = null;
+                    }
+                    continue;
+                }
 
                 if ($column === 'password') {
                     if (filled($value)) {
