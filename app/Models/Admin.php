@@ -80,6 +80,7 @@ class Admin extends Authenticatable implements JWTSubject
         'offline' => 'Offline Tasks',
         'marketting' => 'Marketing',
         'gigs' => 'Gigs',
+        'academics' => 'Academics',
         'offline_center' => 'Offline Center',
         'locks' => 'Locks',
         'stats' => 'Stats',
