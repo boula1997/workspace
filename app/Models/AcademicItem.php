@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class AcademicItem extends Model
 {
-    protected $fillable = ['academic_id', 'question', 'answer'];
+    protected $fillable = ['academic_id', 'question', 'answer', 'is_hidden'];
+
+    protected $casts = ['is_hidden' => 'boolean'];
 
     public function academic()
     {
