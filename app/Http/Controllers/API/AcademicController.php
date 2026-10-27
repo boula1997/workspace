@@ -21,9 +21,17 @@ class AcademicController extends Controller
         return AcademicItem::whereIn('academic_id', $this->mine()->select('id'))->findOrFail($id);
     }
 
+    // Topics only, with how many items each has; the items themselves are paged by items()
     public function index()
     {
-        return response()->json($this->mine()->with('items')->orderBy('title')->get());
+        return response()->json($this->mine()->withCount('items')->orderBy('title')->get());
+    }
+
+    public function items(Request $request, $id)
+    {
+        $perPage = min(max((int) $request->query('per_page', 20), 1), 100);
+
+        return response()->json($this->mine()->findOrFail($id)->items()->paginate($perPage));
     }
 
     public function store(Request $request)
@@ -32,7 +40,7 @@ class AcademicController extends Controller
 
         $academic = Academic::create($data + ['admin_id' => (int) auth('admin-api')->id()]);
 
-        return response()->json($academic->load('items'), 201);
+        return response()->json($academic->loadCount('items'), 201);
     }
 
     public function update(Request $request, $id)
@@ -40,7 +48,7 @@ class AcademicController extends Controller
         $academic = $this->mine()->findOrFail($id);
         $academic->update($request->validate(['title' => 'required|string|max:255']));
 
-        return response()->json($academic->load('items'));
+        return response()->json($academic->loadCount('items'));
     }
 
     public function destroy($id)

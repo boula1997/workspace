@@ -155,6 +155,7 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
     Route::apiResource('plans', \App\Http\Controllers\API\PlanController::class)->except(['show']);
     Route::apiResource('learnings', \App\Http\Controllers\API\LearningController::class)->except(['show']);
     Route::apiResource('academics', \App\Http\Controllers\API\AcademicController::class)->except(['show']);
+    Route::get('academics/{id}/items', [\App\Http\Controllers\API\AcademicController::class, 'items']);
     Route::post('academics/{id}/items', [\App\Http\Controllers\API\AcademicController::class, 'storeItem']);
     Route::put('academic_items/{id}', [\App\Http\Controllers\API\AcademicController::class, 'updateItem']);
     Route::delete('academic_items/{id}', [\App\Http\Controllers\API\AcademicController::class, 'destroyItem']);
