@@ -163,6 +163,7 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
     Route::put('academic_items/{id}', [\App\Http\Controllers\API\AcademicController::class, 'updateItem']);
     Route::delete('academic_items/{id}', [\App\Http\Controllers\API\AcademicController::class, 'destroyItem']);
     Route::apiResource('procedures', \App\Http\Controllers\API\ProcedureController::class);
+    Route::apiResource('methodologies', \App\Http\Controllers\API\MethodologyController::class);
 
     Route::get('/showEditCreate/{dbname}/{table}/{itemId}', [GeneralController::class, 'showEditCreate']);
     Route::post('/storeUpdate/{dbname}/{table}/{itemId}', [GeneralController::class, 'storeUpdate']);
