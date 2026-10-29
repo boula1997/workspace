@@ -32,7 +32,7 @@ class GigController extends Controller
     {
         try {
             $filters = $request->validate([
-                'kind'     => 'nullable|in:phone,post',
+                'kind'     => 'nullable|in:phone,post,sale',
                 'type'     => 'nullable|in:job,freelance',
                 'status'   => 'nullable|in:new,contacted',
                 'platform' => 'nullable|in:facebook,linkedin,other',
@@ -228,6 +228,59 @@ class GigController extends Controller
     {
         try {
             return successResponse($this->gigService->restorePostGig((int) $id));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return failedResponse('This gig no longer exists.');
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    //  Sale Gigs (a system we build first and sell to clients: title + description only)
+    // ─────────────────────────────────────────────
+
+    /**
+     * POST /add/sale/gig
+     */
+    public function addSaleGig(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'title'       => 'required|string|max:255',
+                'description' => 'required|string',
+            ]);
+
+            $saleGig = $this->gigService->createSaleGig($data + ['author_id' => auth('admin-api')->id()]);
+            return successResponse($saleGig);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return failedResponse($e->validator->errors()->first());
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
+    }
+
+    /**
+     * DELETE /sale-gig/{id}
+     */
+    public function deleteSaleGig($id)
+    {
+        try {
+            $this->gigService->deleteSaleGig((int) $id);
+            return successResponse([]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return failedResponse('This gig no longer exists.');
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
+    }
+
+    /**
+     * POST /sale-gig/{id}/restore
+     */
+    public function restoreSaleGig($id)
+    {
+        try {
+            return successResponse($this->gigService->restoreSaleGig((int) $id));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return failedResponse('This gig no longer exists.');
         } catch (Exception $e) {

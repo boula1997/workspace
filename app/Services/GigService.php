@@ -60,6 +60,21 @@ class GigService
         return $this->gigRepository->restorePostGig($id);
     }
 
+    public function createSaleGig(array $data)
+    {
+        return $this->gigRepository->createSaleGig($data);
+    }
+
+    public function deleteSaleGig(int $id)
+    {
+        return $this->gigRepository->deleteSaleGig($id);
+    }
+
+    public function restoreSaleGig(int $id)
+    {
+        return $this->gigRepository->restoreSaleGig($id);
+    }
+
     public function createCallHistory(int $phoneGigId, ?int $adminId = null)
     {
         return $this->gigRepository->createCallHistory($phoneGigId, $adminId);

@@ -8,6 +8,7 @@ use App\Models\CallHistory;
 use App\Models\LinkHistory;
 use App\Models\phoneGig;
 use App\Models\postGig;
+use App\Models\saleGig;
 use Illuminate\Support\Facades\DB;
 
 class GigRepository implements GigRepositoryInterface
@@ -117,7 +118,34 @@ class GigRepository implements GigRepositoryInterface
     }
 
     // ─────────────────────────────────────────────
-    //  Gig feed (phone + post gigs together)
+    //  Sale Gigs
+    // ─────────────────────────────────────────────
+
+    public function createSaleGig(array $data): saleGig
+    {
+        return saleGig::create($data);
+    }
+
+    public function deleteSaleGig(int $id): saleGig
+    {
+        $saleGig = saleGig::withTrashed()->findOrFail($id);
+        if (!$saleGig->trashed()) {
+            $saleGig->delete();
+        }
+        return $saleGig;
+    }
+
+    public function restoreSaleGig(int $id): saleGig
+    {
+        $saleGig = saleGig::withTrashed()->findOrFail($id);
+        if ($saleGig->trashed()) {
+            $saleGig->restore();
+        }
+        return $saleGig;
+    }
+
+    // ─────────────────────────────────────────────
+    //  Gig feed (phone + post + sale gigs together)
     // ─────────────────────────────────────────────
 
     // Post links by site. LIKE patterns on the lower-cased link.
@@ -150,11 +178,13 @@ class GigRepository implements GigRepositoryInterface
         $linkedin = (int) ($byPlatform['linkedin'] ?? 0);
         $other = (int) ($byPlatform['other'] ?? 0);
         $phone = (int) ($byPlatform['phone'] ?? 0);
+        $sale = (int) ($byPlatform['sale'] ?? 0);
 
         return [
             'authors'  => $this->authorFacet($filters, $adminId),
-            'all'      => $phone + $facebook + $linkedin + $other,
+            'all'      => $phone + $facebook + $linkedin + $other + $sale,
             'phone'    => $phone,
+            'sale'     => $sale,
             'post'     => $facebook + $linkedin + $other,
             'facebook' => $facebook,
             'linkedin' => $linkedin,
@@ -231,13 +261,17 @@ class GigRepository implements GigRepositoryInterface
         return $query;
     }
 
-    // Both tables in one shape: kind, id, target (phone or link), phone, post_link, description,
-    // type, platform, last_contact (this user's last contact), histories_count, my_histories_count.
+    // All three tables in one shape: kind, id, target (phone, link or sale title), phone, post_link,
+    // platform, title (sale gigs only), description, type, last_contact (this user's last contact),
+    // histories_count, my_histories_count. Sale gigs have no contact, so no history.
     private function feedUnion(?int $adminId): \Illuminate\Database\Query\Builder
     {
+        $text = DB::getDriverName() === 'mysql' ? 'CHAR' : 'VARCHAR';
+        $time = DB::getDriverName() === 'mysql' ? 'DATETIME' : 'TIMESTAMP';
+
         $phones = $this->feedPart('phone_gigs', 'call_histories', 'phone_gig_id', $adminId)
             ->selectRaw("'phone' as kind, g.id, g.phone as target, g.phone, NULL as post_link")
-            ->selectRaw("'phone' as platform");
+            ->selectRaw("'phone' as platform, CAST(NULL AS $text) as title");
         $this->addSharedFeedColumns($phones);
 
         $platform = 'CASE';
@@ -250,10 +284,18 @@ class GigRepository implements GigRepositoryInterface
 
         $posts = $this->feedPart('post_gigs', 'link_histories', 'post_gig_id', $adminId)
             ->selectRaw("'post' as kind, g.id, g.post_link as target, NULL as phone, g.post_link")
-            ->selectRaw($platform, $bindings);
+            ->selectRaw($platform . ", CAST(NULL AS $text) as title", $bindings);
         $this->addSharedFeedColumns($posts);
 
-        return $phones->unionAll($posts);
+        $sales = DB::table('sale_gigs as g')
+            ->selectRaw("'sale' as kind, g.id, g.title as target, CAST(NULL AS $text) as phone, CAST(NULL AS $text) as post_link")
+            ->selectRaw("'sale' as platform, g.title")
+            ->selectRaw("g.description, CAST('sale' AS $text) as type, CAST(NULL AS $time) as last_contact")
+            ->selectRaw('0 as histories_count, 0 as my_histories_count')
+            ->selectRaw('g.created_at, g.updated_at, g.deleted_at, g.author_id')
+            ->selectRaw('(SELECT admins.name FROM admins WHERE admins.id = g.author_id) as author_name');
+
+        return $phones->unionAll($posts)->unionAll($sales);
     }
 
     private function feedPart(string $table, string $historyTable, string $gigColumn, ?int $adminId): \Illuminate\Database\Query\Builder

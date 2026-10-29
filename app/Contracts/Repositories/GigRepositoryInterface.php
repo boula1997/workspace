@@ -17,7 +17,12 @@ interface GigRepositoryInterface
     public function deletePostGig(int $id): \App\Models\postGig;
     public function restorePostGig(int $id): \App\Models\postGig;
 
-    // Phone and post gigs in one filtered, paginated feed
+    // Sale Gigs (title + description, no contact)
+    public function createSaleGig(array $data): \App\Models\saleGig;
+    public function deleteSaleGig(int $id): \App\Models\saleGig;
+    public function restoreSaleGig(int $id): \App\Models\saleGig;
+
+    // Phone, post and sale gigs in one filtered, paginated feed
     public function paginateGigFeed(array $filters, int $perPage, ?int $adminId): \Illuminate\Contracts\Pagination\LengthAwarePaginator;
     public function gigFeedFacets(array $filters, ?int $adminId): array;
 

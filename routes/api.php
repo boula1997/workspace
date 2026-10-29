@@ -259,7 +259,10 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
         // Gigs
         Route::post('/add/phone/gig', [GigController::class, 'addPhoneGig']);
         Route::post('/add/post/gig', [GigController::class, 'addPostGig']);
-        Route::post('/add/call/history', [GigController::class, 'addCallHistory']);
+        Route::post('/add/sale/gig', [GigController::class, 'addSaleGig']);
+        Route::delete('sale-gig/{id}', [GigController::class, 'deleteSaleGig']);
+        Route::post('sale-gig/{id}/restore', [GigController::class, 'restoreSaleGig']);
+        Route::post('/add/call/history',[GigController::class, 'addCallHistory']);
         Route::post('/add/link/history', [GigController::class, 'addLinkHistory']);
         Route::get('/get/all/phone/gigs', [GigController::class, 'getAllPhoneGigs']);
         Route::get('/get/all/post/gigs', [GigController::class, 'getAllPostGigs']);
