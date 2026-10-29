@@ -503,7 +503,7 @@ class TaskController extends Controller
 
     /**
      * POST /async/create
-     * Atomic batch endpoint for the app's offline queues: creates tasks, notes, phone/post gigs and
+     * Atomic batch endpoint for the app's offline queues: creates tasks, notes, phone/post/sale gigs and
      * surveys; updates and deletes tasks; and reassigns employees - all in one transaction.
      * Everything is validated first, so a 422 means nothing was saved.
      */
@@ -514,6 +514,7 @@ class TaskController extends Controller
             'notes'            => 'nullable|array',
             'phone_gigs'       => 'nullable|array',
             'post_gigs'        => 'nullable|array',
+            'sale_gigs'        => 'nullable|array',
             'task_updates'     => 'nullable|array',
             'task_deletes'     => 'nullable|array',
             'task_assignments' => 'nullable|array',
@@ -568,6 +569,18 @@ class TaskController extends Controller
             }
             if (!in_array($item['type'] ?? null, ['job', 'freelance'], true)) {
                 $errors[] = "post_gigs[$index]: type must be job or freelance.";
+            }
+        }
+
+        foreach ($request->sale_gigs ?? [] as $index => $item) {
+            $title = trim((string) ($item['title'] ?? ''));
+            if ($title === '') {
+                $errors[] = "sale_gigs[$index]: title is required.";
+            } elseif (mb_strlen($title) > 255) {
+                $errors[] = "sale_gigs[$index]: title must not be longer than 255 characters.";
+            }
+            if (!$filled($item['description'] ?? null)) {
+                $errors[] = "sale_gigs[$index]: description is required.";
             }
         }
 
@@ -654,6 +667,7 @@ class TaskController extends Controller
                 'notes'      => [],
                 'phone_gigs' => [],
                 'post_gigs'  => [],
+                'sale_gigs'  => [],
                 'surveys'    => [],
                 'plans'      => [],
                 'learnings'  => [],
@@ -772,6 +786,20 @@ class TaskController extends Controller
                 $created['post_gigs'][] = [
                     'temp_id' => $item['id'] ?? null,
                     'real_id' => $postGig->id,
+                ];
+            }
+
+            // SALE GIGS
+            foreach ($request->sale_gigs ?? [] as $item) {
+                $saleGig = \App\Models\saleGig::create([
+                    'title'       => trim($item['title']),
+                    'description' => $item['description'],
+                    'author_id'   => $adminId,
+                ]);
+
+                $created['sale_gigs'][] = [
+                    'temp_id' => $item['id'] ?? null,
+                    'real_id' => $saleGig->id,
                 ];
             }
 
