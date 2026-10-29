@@ -10,8 +10,8 @@ use Illuminate\Validation\ValidationException;
 
 class TimerController extends Controller
 {
-    // One day at most, same as the app
-    private const MAX_SECONDS = 86400;
+    // One year at most, same as the app
+    private const MAX_SECONDS = 365 * 86400;
 
     /**
      * GET /timers
