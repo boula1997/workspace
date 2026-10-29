@@ -14,4 +14,10 @@ class AcademicItem extends Model
     {
         return $this->belongsTo(Academic::class);
     }
+
+    // Multiple choice options (none = a plain question and answer card)
+    public function options()
+    {
+        return $this->hasMany(AcademicItemOption::class)->orderBy('id');
+    }
 }

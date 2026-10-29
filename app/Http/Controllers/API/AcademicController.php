@@ -37,6 +37,7 @@ class AcademicController extends Controller
      * Filters: search (question or answer, case-insensitive), hidden (0 = visible only, the
      * default; 1 = hidden only; all). With random=1 the order is shuffled but fixed by `seed`,
      * so the pages of one shuffle never repeat or skip an item.
+     * Each item carries its multiple choice `options` (id, option_text, is_correct), empty when it has none.
      */
     public function items(Request $request, $id)
     {
@@ -67,14 +68,14 @@ class AcademicController extends Controller
         }
 
         if (! ($filters['random'] ?? false)) {
-            return response()->json($query->paginate($perPage));
+            return response()->json($query->with('options')->paginate($perPage));
         }
 
         // Shuffle only the ids (small), then load just the rows of the requested page
         $seed = (int) ($filters['seed'] ?? 0);
         $ids = $query->reorder()->pluck('id')->sortBy(fn ($itemId) => crc32($seed . ':' . $itemId))->values();
         $pageIds = $ids->forPage($page, $perPage);
-        $rows = AcademicItem::whereIn('id', $pageIds)->get()->keyBy('id');
+        $rows = AcademicItem::with('options')->whereIn('id', $pageIds)->get()->keyBy('id');
 
         return response()->json(new LengthAwarePaginator(
             $pageIds->map(fn ($itemId) => $rows->get($itemId))->filter()->values(),
