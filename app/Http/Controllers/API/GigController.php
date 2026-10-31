@@ -236,7 +236,7 @@ class GigController extends Controller
     }
 
     // ─────────────────────────────────────────────
-    //  Sale Gigs (a system we build first and sell to clients: title + description only)
+    //  Sale Gigs (a system we build first and sell to clients: title, description, what it solves and what to discuss with the owner)
     // ─────────────────────────────────────────────
 
     /**
@@ -246,8 +246,10 @@ class GigController extends Controller
     {
         try {
             $data = $request->validate([
-                'title'       => 'required|string|max:255',
-                'description' => 'required|string',
+                'title'            => 'required|string|max:255',
+                'description'      => 'required|string',
+                'solved_problems'  => 'nullable|string',
+                'owner_discussion' => 'nullable|string',
             ]);
 
             $saleGig = $this->gigService->createSaleGig($data + ['author_id' => auth('admin-api')->id()]);

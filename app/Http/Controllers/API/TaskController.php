@@ -808,6 +808,8 @@ class TaskController extends Controller
                 $saleGig = \App\Models\saleGig::create([
                     'title'       => trim($item['title']),
                     'description' => $item['description'],
+                    'solved_problems'  => trim((string) ($item['solved_problems'] ?? '')) ?: null,
+                    'owner_discussion' => trim((string) ($item['owner_discussion'] ?? '')) ?: null,
                     'author_id'   => $adminId,
                 ]);
 

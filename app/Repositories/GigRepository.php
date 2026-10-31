@@ -262,7 +262,7 @@ class GigRepository implements GigRepositoryInterface
     }
 
     // All three tables in one shape: kind, id, target (phone, link or sale title), phone, post_link,
-    // platform, title (sale gigs only), description, type, last_contact (this user's last contact),
+    // platform, title (sale gigs only), description, solved_problems and owner_discussion (sale gigs only), type, last_contact (this user's last contact),
     // histories_count, my_histories_count. Sale gigs have no contact, so no history.
     private function feedUnion(?int $adminId): \Illuminate\Database\Query\Builder
     {
@@ -293,7 +293,8 @@ class GigRepository implements GigRepositoryInterface
             ->selectRaw("g.description, CAST('sale' AS $text) as type, CAST(NULL AS $time) as last_contact")
             ->selectRaw('0 as histories_count, 0 as my_histories_count')
             ->selectRaw('g.created_at, g.updated_at, g.deleted_at, g.author_id')
-            ->selectRaw('(SELECT admins.name FROM admins WHERE admins.id = g.author_id) as author_name');
+            ->selectRaw('(SELECT admins.name FROM admins WHERE admins.id = g.author_id) as author_name')
+            ->selectRaw('g.solved_problems, g.owner_discussion');
 
         return $phones->unionAll($posts)->unionAll($sales);
     }
@@ -322,7 +323,8 @@ class GigRepository implements GigRepositoryInterface
         $query->selectRaw("g.description, CAST(g.type AS $text) as type, mine.last_at as last_contact")
             ->selectRaw('COALESCE(allh.cnt, 0) as histories_count, COALESCE(mine.cnt, 0) as my_histories_count')
             ->selectRaw('g.created_at, g.updated_at, g.deleted_at, g.author_id')
-            ->selectRaw('(SELECT admins.name FROM admins WHERE admins.id = g.author_id) as author_name');
+            ->selectRaw('(SELECT admins.name FROM admins WHERE admins.id = g.author_id) as author_name')
+            ->selectRaw("CAST(NULL AS $text) as solved_problems, CAST(NULL AS $text) as owner_discussion");
     }
 
     // ─────────────────────────────────────────────
