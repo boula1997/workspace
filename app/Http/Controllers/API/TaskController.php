@@ -521,6 +521,7 @@ class TaskController extends Controller
             'surveys'          => 'nullable|array',
             'plans'            => 'nullable|array',
             'learnings'        => 'nullable|array',
+            'methodologies'    => 'nullable|array',
         ]);
 
         $errors = [];
@@ -611,6 +612,18 @@ class TaskController extends Controller
             }
         }
 
+        foreach ($request->methodologies ?? [] as $index => $item) {
+            $title = trim((string) ($item['title'] ?? ''));
+            if ($title === '') {
+                $errors[] = "methodologies[$index]: title is required.";
+            } elseif (mb_strlen($title) > 255) {
+                $errors[] = "methodologies[$index]: title must not be longer than 255 characters.";
+            }
+            if (trim((string) ($item['description'] ?? '')) === '') {
+                $errors[] = "methodologies[$index]: description is required.";
+            }
+        }
+
         foreach ($request->task_updates ?? [] as $index => $item) {
             if (empty($item['task_id'])) {
                 $errors[] = "task_updates[$index]: task_id is required.";
@@ -671,6 +684,7 @@ class TaskController extends Controller
                 'surveys'    => [],
                 'plans'      => [],
                 'learnings'  => [],
+                'methodologies' => [],
             ];
 
             $destinationPath = public_path('uploads/tasks');
@@ -837,6 +851,19 @@ class TaskController extends Controller
                 $created['learnings'][] = [
                     'temp_id' => $item['id'] ?? null,
                     'real_id' => $learning->id,
+                ];
+            }
+
+            // METHODOLOGIES
+            foreach ($request->methodologies ?? [] as $item) {
+                $methodology = \App\Models\Methodology::create([
+                    'title'       => trim($item['title']),
+                    'description' => trim($item['description']),
+                ]);
+
+                $created['methodologies'][] = [
+                    'temp_id' => $item['id'] ?? null,
+                    'real_id' => $methodology->id,
                 ];
             }
 
