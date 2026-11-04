@@ -166,6 +166,7 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
     Route::apiResource('methodologies', \App\Http\Controllers\API\MethodologyController::class);
     Route::get('transfer-text', [\App\Http\Controllers\API\TransferTextController::class, 'show']);
     Route::put('transfer-text', [\App\Http\Controllers\API\TransferTextController::class, 'update']);
+    Route::get('ai-test-instructions', [\App\Http\Controllers\API\AiTestInstructionsController::class, 'show']);
 
     Route::get('/showEditCreate/{dbname}/{table}/{itemId}', [GeneralController::class, 'showEditCreate']);
     Route::post('/storeUpdate/{dbname}/{table}/{itemId}', [GeneralController::class, 'storeUpdate']);
