@@ -211,6 +211,7 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
     // Counters (the app's Counters tab; each admin sees only their own, synced from the device)
     Route::get('/counters', [CounterBoardController::class, 'index']);
     Route::post('/counters/sync', [CounterBoardController::class, 'sync']);
+    Route::get('/counters/history/{uuid}', [CounterBoardController::class, 'history']);
 
     // Navigation / Links
     Route::get('/links',[NavigationController::class, 'links'])->name('links');

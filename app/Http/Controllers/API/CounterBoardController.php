@@ -24,9 +24,13 @@ class CounterBoardController extends Controller
         'item.upsert', 'item.count', 'item.note', 'item.hidden', 'item.delete',
     ];
 
+    // History rows per page (GET /counters/history/{uuid})
+    private const HISTORY_PER_PAGE = 20;
+
     /**
      * GET /counters
-     * Everything the signed-in admin has: categories, items and their history (newest first).
+     * The signed-in admin's categories and items. History is not included (it only grows): it is
+     * loaded per item, a page at a time, from GET /counters/history/{uuid}.
      */
     public function index()
     {
@@ -161,15 +165,35 @@ class CounterBoardController extends Controller
         ]);
     }
 
+    /**
+     * GET /counters/history/{uuid}?page=1
+     * One item's count / note changes, newest first, HISTORY_PER_PAGE per page.
+     */
+    public function history(Request $request, string $uuid)
+    {
+        try {
+            $page = CounterHistory::where('admin_id', auth('admin-api')->id())
+                ->where('item_uuid', $uuid)
+                ->orderByDesc('changed_at')->orderByDesc('id')
+                ->paginate(self::HISTORY_PER_PAGE, ['op_uuid', 'item_uuid', 'field', 'old_value', 'new_value', 'changed_at']);
+
+            return successResponse([
+                'histories' => $page->items(),
+                'page'      => $page->currentPage(),
+                'has_more'  => $page->hasMorePages(),
+                'total'     => $page->total(),
+            ]);
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
+    }
+
     private function state(int $adminId): array
     {
         return [
             'categories' => CounterCategory::where('admin_id', $adminId)->orderBy('id')->get(['uuid', 'name']),
             'items'      => CounterItem::where('admin_id', $adminId)->orderBy('id')
                 ->get(['uuid', 'category_uuid', 'title', 'count', 'note', 'is_hidden', 'updated_at']),
-            'histories'  => CounterHistory::where('admin_id', $adminId)
-                ->orderByDesc('changed_at')->orderByDesc('id')
-                ->get(['op_uuid', 'item_uuid', 'field', 'old_value', 'new_value', 'changed_at']),
         ];
     }
 }
