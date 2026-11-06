@@ -30,6 +30,8 @@ class ProjectResource extends JsonResource
             "last_worked_on" => $this->projectHours()->latest()->first()?->created_at?->locale('en')->diffForHumans() ?? 'N/A',
             'deadline' => $this->deadline,
             'reminder' => (bool) $this->reminder,
+            // Hosting deadline has come: the reminder is forced on until the deadline is moved forward
+            'hosting_due' => $this->isHostingDue(),
             'is_yousab' => $this->is_yousab,
             'is_personal' => $this->is_personal,
             'days_to_deadline' => $this->deadline

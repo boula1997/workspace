@@ -32,6 +32,23 @@ class Project extends \App\Models\BaseModel
     });
 }
 
+    // Hosting deadline = renewal_date. Once it is today or past, the project's reminder is on and
+    // cannot be turned off until the hosting deadline is moved into the future.
+    public function isHostingDue(): bool
+    {
+        return !empty($this->renewal_date)
+            && Carbon::parse($this->renewal_date)->toDateString() <= now()->toDateString();
+    }
+
+    // Turns the reminder on for every project whose hosting deadline has come
+    public static function enableDueHostingReminders(): void
+    {
+        static::whereNotNull('renewal_date')
+            ->whereDate('renewal_date', '<=', now()->toDateString())
+            ->where(fn ($q) => $q->where('reminder', false)->orWhereNull('reminder'))
+            ->update(['reminder' => true]);
+    }
+
     public function getDeadlineAttribute($value)
     {
         return $value ? Carbon::parse($value)->timezone('Africa/Cairo') : null;

@@ -141,10 +141,40 @@ class MiscController extends Controller
             'reminder'   => 'required|boolean',
         ]);
 
-        \App\Models\Project::findOrFail($request->project_id)
-            ->update(['reminder' => $request->boolean('reminder')]);
+        $project = \App\Models\Project::findOrFail($request->project_id);
+        if (!$request->boolean('reminder') && $project->isHostingDue()) {
+            return failedResponse('The hosting deadline has come. Set a new hosting deadline in the future to turn the reminder off.');
+        }
+        $project->update(['reminder' => $request->boolean('reminder')]);
 
         return successResponse(['count' => $this->projectReminderCount()]);
+    }
+
+    /**
+     * POST /project/hosting-deadline
+     * Sets (or clears, with null) a project's hosting deadline (renewal_date). A deadline that is today
+     * or past turns the reminder on.
+     */
+    public function setProjectHostingDeadline(Request $request)
+    {
+        $request->validate([
+            'project_id'   => 'required|exists:projects,id',
+            'renewal_date' => 'nullable|date',
+        ]);
+
+        $project = \App\Models\Project::findOrFail($request->project_id);
+        $date = $request->filled('renewal_date') ? \Carbon\Carbon::parse($request->renewal_date)->toDateString() : null;
+        $project->update(['renewal_date' => $date]);
+        if ($project->isHostingDue()) {
+            $project->update(['reminder' => true]);
+        }
+
+        return successResponse([
+            'count'        => $this->projectReminderCount(),
+            'renewal_date' => $project->renewal_date,
+            'reminder'     => (bool) $project->reminder,
+            'hosting_due'  => $project->isHostingDue(),
+        ]);
     }
 
     /**
@@ -195,6 +225,7 @@ class MiscController extends Controller
 
     private function projectReminderCount(): int
     {
+        \App\Models\Project::enableDueHostingReminders();
         return \App\Models\Project::where('appearance', 1)->where('reminder', true)->count();
     }
 

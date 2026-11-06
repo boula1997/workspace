@@ -43,6 +43,7 @@ class DashboardRepository implements DashboardRepositoryInterface
 
     public function boardProjects(): \Illuminate\Database\Eloquent\Collection
     {
+        Project::enableDueHostingReminders();
         return Project::orderBy('deadline', 'asc')->where('appearance', 1)->get();
     }
 

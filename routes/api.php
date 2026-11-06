@@ -268,6 +268,7 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
         // Project hours
         Route::post('/add/project/hours', [MiscController::class, 'addProjectHours']);
         Route::post('/project/reminder', [MiscController::class, 'setProjectReminder']);
+        Route::post('/project/hosting-deadline', [MiscController::class, 'setProjectHostingDeadline']);
         Route::get('/project/reminders/count', [MiscController::class, 'projectReminders']);
         Route::post('/project/appearance', [MiscController::class, 'setProjectAppearance']);
         Route::get('/project/hidden', [MiscController::class, 'hiddenProjects']);
