@@ -42,7 +42,6 @@ use App\Http\Controllers\API\DeadlineController;
 use App\Http\Controllers\API\MarketingController;
 use App\Http\Controllers\API\GigController;
 use App\Http\Controllers\API\TimerController;
-use App\Http\Controllers\API\CounterBoardController;
 use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\IssueController;
 use App\Http\Controllers\API\MiscController;
@@ -207,11 +206,6 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
     Route::post('/timers', [TimerController::class, 'store']);
     Route::put('/timers/{id}', [TimerController::class, 'update']);
     Route::delete('/timers/{id}', [TimerController::class, 'destroy']);
-
-    // Counters (the app's Counters tab; each admin sees only their own, synced from the device)
-    Route::get('/counters', [CounterBoardController::class, 'index']);
-    Route::post('/counters/sync', [CounterBoardController::class, 'sync']);
-    Route::get('/counters/history/{uuid}', [CounterBoardController::class, 'history']);
 
     // Navigation / Links
     Route::get('/links',[NavigationController::class, 'links'])->name('links');
