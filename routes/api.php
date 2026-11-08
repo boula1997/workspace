@@ -42,6 +42,7 @@ use App\Http\Controllers\API\DeadlineController;
 use App\Http\Controllers\API\MarketingController;
 use App\Http\Controllers\API\GigController;
 use App\Http\Controllers\API\TimerController;
+use App\Http\Controllers\API\MoneyController;
 use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\IssueController;
 use App\Http\Controllers\API\MiscController;
@@ -206,6 +207,12 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
     Route::post('/timers', [TimerController::class, 'store']);
     Route::put('/timers/{id}', [TimerController::class, 'update']);
     Route::delete('/timers/{id}', [TimerController::class, 'destroy']);
+
+    // Money (the app's Money tab; each admin sees only their own)
+    Route::get('/money', [MoneyController::class, 'index']);
+    Route::put('/money/income', [MoneyController::class, 'saveIncome']);
+    Route::post('/money/debts', [MoneyController::class, 'storeDebt']);
+    Route::delete('/money/debts/{id}', [MoneyController::class, 'destroyDebt']);
 
     // Navigation / Links
     Route::get('/links',[NavigationController::class, 'links'])->name('links');
