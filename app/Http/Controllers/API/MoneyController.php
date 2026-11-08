@@ -15,7 +15,8 @@ class MoneyController extends Controller
 
     /**
      * GET /money?month=2026-11
-     * The signed-in admin's income for that month (null when not set) and their fixed debts.
+     * The signed-in admin's income for that month (null when not set) and their fixed debts, each
+     * with `skipped` for that month.
      */
     public function index(Request $request)
     {
@@ -30,7 +31,10 @@ class MoneyController extends Controller
             return successResponse([
                 'month'  => $data['month'],
                 'income' => $income?->amount,
-                'debts'  => MoneyDebt::where('admin_id', $adminId)->orderBy('id')->get(),
+                'debts'  => MoneyDebt::where('admin_id', $adminId)
+                    ->withExists(['skips as skipped' => fn ($q) => $q->where('month', $data['month'])])
+                    ->orderBy('id')
+                    ->get(),
             ]);
         } catch (ValidationException $e) {
             return failedResponse($e->validator->errors()->first());
@@ -81,9 +85,43 @@ class MoneyController extends Controller
                 'amount' => 'required|numeric|min:0|max:' . self::MAX_AMOUNT,
             ]);
 
-            return successResponse(MoneyDebt::create($data + ['admin_id' => auth('admin-api')->id()]));
+            $debt = MoneyDebt::create($data + ['admin_id' => auth('admin-api')->id()]);
+            $debt->skipped = false;
+
+            return successResponse($debt);
         } catch (ValidationException $e) {
             return failedResponse($e->validator->errors()->first());
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
+    }
+
+    /**
+     * PUT /money/debts/{id}/skip
+     * Skips (or un-skips) one of the signed-in admin's debts for a month only.
+     */
+    public function skipDebt(Request $request, $id)
+    {
+        try {
+            $data = $request->validate([
+                'month'   => 'required|date_format:Y-m',
+                'skipped' => 'required|boolean',
+            ]);
+
+            $debt = MoneyDebt::where('admin_id', auth('admin-api')->id())->findOrFail($id);
+
+            if ($data['skipped']) {
+                $debt->skips()->firstOrCreate(['month' => $data['month']]);
+            } else {
+                $debt->skips()->where('month', $data['month'])->delete();
+            }
+            $debt->skipped = (bool) $data['skipped'];
+
+            return successResponse($debt);
+        } catch (ValidationException $e) {
+            return failedResponse($e->validator->errors()->first());
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return failedResponse('This debt no longer exists.');
         } catch (Exception $e) {
             return failedResponse($e->getMessage());
         }

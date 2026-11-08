@@ -212,6 +212,7 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
     Route::get('/money', [MoneyController::class, 'index']);
     Route::put('/money/income', [MoneyController::class, 'saveIncome']);
     Route::post('/money/debts', [MoneyController::class, 'storeDebt']);
+    Route::put('/money/debts/{id}/skip', [MoneyController::class, 'skipDebt']);
     Route::delete('/money/debts/{id}', [MoneyController::class, 'destroyDebt']);
 
     // Navigation / Links

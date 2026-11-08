@@ -10,6 +10,13 @@ class MoneyDebt extends Model
     protected $fillable = ['admin_id', 'name', 'amount'];
 
     protected $casts = [
-        'amount' => 'float',
+        'amount'  => 'float',
+        // Loaded per month by MoneyController (withExists on skips)
+        'skipped' => 'boolean',
     ];
+
+    public function skips()
+    {
+        return $this->hasMany(MoneyDebtSkip::class);
+    }
 }
