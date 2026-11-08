@@ -97,6 +97,31 @@ class MoneyController extends Controller
     }
 
     /**
+     * PUT /money/debts/{id}
+     * Changes the name and / or the amount of one of the signed-in admin's debts.
+     */
+    public function updateDebt(Request $request, $id)
+    {
+        try {
+            $data = $request->validate([
+                'name'   => 'sometimes|required|string|max:255',
+                'amount' => 'sometimes|required|numeric|min:0|max:' . self::MAX_AMOUNT,
+            ]);
+
+            $debt = MoneyDebt::where('admin_id', auth('admin-api')->id())->findOrFail($id);
+            $debt->update($data);
+
+            return successResponse($debt);
+        } catch (ValidationException $e) {
+            return failedResponse($e->validator->errors()->first());
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return failedResponse('This debt no longer exists.');
+        } catch (Exception $e) {
+            return failedResponse($e->getMessage());
+        }
+    }
+
+    /**
      * PUT /money/debts/{id}/skip
      * Skips (or un-skips) one of the signed-in admin's debts for a month only.
      */
