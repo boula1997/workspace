@@ -1,0 +1,49 @@
+# docker compose up -d --build   ->  API on http://localhost:8090
+# The code is mounted, so edits show up without rebuilding. Values come from .env;
+# only the database host/port and APP_URL are overridden for the containers.
+x-laravel: &laravel
+  build: .
+  image: workspace-app
+  volumes:
+    - .:/var/www/html
+  environment:
+    DB_CONNECTION: pgsql
+    DB_HOST: db
+    DB_PORT: 5432
+    APP_URL: http://localhost:8090
+  depends_on:
+    db:
+      condition: service_healthy
+  restart: unless-stopped
+
+services:
+  app:
+    <<: *laravel
+    ports:
+      - "8090:80"
+
+  # Runs the WhatsApp digest schedule (replaces the server cron).
+  scheduler:
+    <<: *laravel
+    command: php artisan schedule:work
+
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - db-data:/var/lib/postgresql
+      # On the first start only: restores docker/initdb/workspace.dump if it is there.
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      retries: 20
+    restart: unless-stopped
+
+volumes:
+  db-data:
