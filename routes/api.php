@@ -43,6 +43,7 @@ use App\Http\Controllers\API\MarketingController;
 use App\Http\Controllers\API\GigController;
 use App\Http\Controllers\API\TimerController;
 use App\Http\Controllers\API\MoneyController;
+use App\Http\Controllers\API\CvController;
 use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\IssueController;
 use App\Http\Controllers\API\MiscController;
@@ -94,6 +95,10 @@ Route::get('/is/boula', function () {
 });
 
 Route::post('/postFunction', [ActionController::class, 'postFunction']);
+
+// Public, signed link to an admin's latest CV (the app's CV tab copies it); always serves the newest upload
+Route::get('/cv/{admin}/{type}/{signature}', [CvController::class, 'download'])
+    ->whereNumber('admin')->whereIn('type', ['pdf', 'docx'])->middleware('throttle:60,1');
 
 // Visits of profile.blanko.tech (logged against the personal "Profile" project); must stay above the generic route
 Route::get('/clienttrack/profile/{action}', [ClienttrackController::class, 'profileTrack'])->middleware('throttle:30,1');
@@ -215,6 +220,10 @@ Route::middleware('auth:admin-api', 'apiLocalization', 'cors')->group(function (
     Route::put('/money/debts/{id}', [MoneyController::class, 'updateDebt']);
     Route::put('/money/debts/{id}/skip', [MoneyController::class, 'skipDebt']);
     Route::delete('/money/debts/{id}', [MoneyController::class, 'destroyDebt']);
+
+    // CV (the app's CV tab; each admin keeps one PDF and one Word CV)
+    Route::get('/cv', [CvController::class, 'index']);
+    Route::post('/cv/{type}', [CvController::class, 'upload'])->whereIn('type', ['pdf', 'docx']);
 
     // Navigation / Links
     Route::get('/links',[NavigationController::class, 'links'])->name('links');
