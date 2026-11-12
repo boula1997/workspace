@@ -43,6 +43,12 @@ class AdminResource extends JsonResource
             // Falls back to Marketing for admins saved before the Gigs switch existed
             "gigs" => (bool) ($this->gigs ?? $this->marketting),
             "academics" => (bool) $this->academics,
+            // Falls back to Academics for admins saved before the Quiz switch existed
+            "quiz" => (bool) ($this->quiz ?? $this->academics),
+            // Default on: these tabs were always visible before they had a switch
+            "timers" => (bool) ($this->timers ?? true),
+            "money" => (bool) ($this->money ?? true),
+            "cv" => (bool) ($this->cv ?? true),
             "offline_center" => $this->offline_center?true:false,
             "locks" => $this->locks?true:false,
             "stats" => $this->stats?true:false,

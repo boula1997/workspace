@@ -80,7 +80,11 @@ class Admin extends Authenticatable implements JWTSubject
         'offline' => 'Offline Tasks',
         'marketting' => 'Marketing',
         'gigs' => 'Gigs',
+        'timers' => 'Timers',
+        'money' => 'Money',
+        'cv' => 'CV',
         'academics' => 'Academics',
+        'quiz' => 'Quiz',
         'offline_center' => 'Offline Center',
         'locks' => 'Locks',
         'stats' => 'Stats',
@@ -93,7 +97,7 @@ class Admin extends Authenticatable implements JWTSubject
     ];
 
     // Tabs that are on unless turned off (they were always visible before they had a switch)
-    public const APP_TABS_ON_BY_DEFAULT = ['account', 'explore', 'logout'];
+    public const APP_TABS_ON_BY_DEFAULT = ['timers', 'money', 'cv', 'account', 'explore', 'logout'];
 
     protected $fillable = [
         'name',
