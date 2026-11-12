@@ -24,6 +24,29 @@ class Admin extends Authenticatable implements JWTSubject
         return $this->hasRole(self::SUPER_ADMIN_ROLE, 'admin');
     }
 
+    // Index-tab modules a new admin gets on the create form (what every non-super admin saw before)
+    public const DEFAULT_INDEX_MODULES = ['fees', 'projects'];
+
+    /** Index-tab modules (categories of type "modules") this admin may see. Ignored for super admins. */
+    public function indexModules()
+    {
+        return $this->belongsToMany(Category::class, 'admin_category')->withTimestamps();
+    }
+
+    /** Whether this admin may see and edit the records of this Index-tab module. */
+    public function canSeeModule(Category $category): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+        // The audit log stays super admin only, whatever is ticked
+        if ($category->model === AuditLog::class) {
+            return false;
+        }
+
+        return $this->indexModules()->whereKey($category->id)->exists();
+    }
+
     /**
      * Applies the role picked in an admin form (Blade, API or the generic dashboard table).
      *

@@ -594,6 +594,8 @@ return [
 
     "app_tabs" => "App tabs",
     "app_tabs_hint" => "Tabs this user sees in the app. Changes apply the next time they open the app.",
+    "index_modules" => "Table tab modules",
+    "index_modules_hint" => "Modules this user can see and edit in the app's Table tab dropdown. Super admins always see all of them.",
     "db_port" => "Port",
     "db_port_hint" => "Empty = standard port (e.g. 5432)",
     "db_port_default" => "standard",

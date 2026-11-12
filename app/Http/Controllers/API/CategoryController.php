@@ -26,9 +26,12 @@ public function index()
             $query->where('type', request()->query('type'));
         }
         
-        // If user is not Boula, only show fees and projects categories
+        // Everyone but a super admin sees only the modules ticked on their admin page (the
+        // "Index modules" section); this replaces the fixed fees + projects list
         if (!boula()) {
-            $query->whereIn('title', ['fees', 'projects']);
+            $admin = auth('admin-api')->user() ?? auth('api')->user();
+            $allowed = $admin instanceof \App\Models\Admin ? $admin->indexModules()->pluck('categories.id') : collect();
+            $query->whereIn('id', $allowed);
         }
         
         $data['categories'] = CategoryResource::collection(

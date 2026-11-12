@@ -68,16 +68,34 @@ class AdminController extends Controller
             ->all();
     }
 
+    // Index-tab modules ticked in the form's index_modules[] checkboxes. Only ids of real modules are
+    // kept. Synced only when the form showed the section (index_modules_shown), so a request without it
+    // never clears an admin's modules.
+    private function syncIndexModules(Request $request, Admin $admin): void
+    {
+        if (!$request->boolean('index_modules_shown')) {
+            return;
+        }
+
+        $ids = \App\Models\Category::withoutGlobalScopes()
+            ->where('type', 'modules')
+            ->whereIn('id', collect($request->input('index_modules', []))->map(fn ($id) => (int) $id)->all())
+            ->pluck('id');
+
+        $admin->indexModules()->sync($ids);
+    }
+
     public function store(AdminRequest $request)
     {
         try {
             dectatorBoula();
-            $input = $request->except('image','profile_avatar_remove','tabs');
+            $input = $request->except('image','profile_avatar_remove','tabs','index_modules','index_modules_shown');
             $input["type"]=$request->input('roles');
 
             $input['password'] = Hash::make($input['password']);
             $admin = Admin::create($input);
             $admin->forceFill($this->appTabs($request))->save();
+            $this->syncIndexModules($request, $admin);
             $admin->assignRole($request->input('roles'));
             $admin->uploadFile();
             return redirect()->route('admins.index')
@@ -128,7 +146,7 @@ class AdminController extends Controller
         try {
       
             dectatorBoula();
-            $input = $request->except('image','profile_avatar_remove','tabs');
+            $input = $request->except('image','profile_avatar_remove','tabs','index_modules','index_modules_shown');
             $input["type"]=$request->input('roles');
             if (!empty($input['password'])) {
                 $input['password'] = Hash::make($input['password']);
@@ -138,6 +156,7 @@ class AdminController extends Controller
             $admin = Admin::find($id);
             $admin->update($input);
             $admin->forceFill($this->appTabs($request))->save();
+            $this->syncIndexModules($request, $admin);
             $admin->applyRole($request->input('roles'));
             $admin->updateFile();
             return redirect()->route('admins.index')

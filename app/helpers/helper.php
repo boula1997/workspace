@@ -1259,6 +1259,26 @@ function boula()
     return $user instanceof Admin && $user->isSuperAdmin();
 }
 
+/**
+ * Whether the signed-in admin may NOT use this Index-tab module (a category of type "modules").
+ * Pass the category, or the table name the generic CRUD endpoints use (a module's title is its table).
+ * Anything that isn't an Index module is never blocked here.
+ */
+function moduleForbidden(\App\Models\Category|string|null $category): bool
+{
+    if (is_string($category)) {
+        // Inactive modules too: hiding a module must not open its table to everyone
+        $category = \App\Models\Category::withoutGlobalScopes()->where('type', 'modules')->where('title', $category)->first();
+    }
+    if (!$category) {
+        return false;
+    }
+
+    $user = auth('admin-api')->user() ?? auth('api')->user() ?? auth('admin')->user();
+
+    return !($user instanceof Admin && $user->canSeeModule($category));
+}
+
 function projectBudgetDays($project)
 {
     $total = ((rest($project) - $project->future_expense) * 0.6) / 500;

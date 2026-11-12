@@ -106,6 +106,7 @@
                                 </div>
 
                                 @include('admin.crud.admins._app_tabs', ['admin' => $admin])
+                                @include('admin.crud.admins._index_modules', ['admin' => $admin])
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">@lang('general.role')</label>

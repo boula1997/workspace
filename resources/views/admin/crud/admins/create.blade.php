@@ -103,6 +103,7 @@
                                         placeholder="@lang('general.confirm_password')">
                                 </div>
                                 @include('admin.crud.admins._app_tabs', ['admin' => null])
+                                @include('admin.crud.admins._index_modules', ['admin' => null])
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">@lang('general.role')</label>

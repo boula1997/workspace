@@ -77,6 +77,25 @@ class GeneralController extends Controller
     }
 
     /**
+     * 403 when $table is an Index-tab module of this app's own database that the signed-in admin
+     * may not use (see moduleForbidden()). Other databases and non-module tables are not affected.
+     * Call after connectDynamic().
+     */
+    private function moduleAccessDenied(string $table)
+    {
+        $own = config('database.connections.' . config('database.default'));
+        $dynamic = config('database.connections.dynamic');
+        $isOwnDatabase = ($dynamic['database'] ?? null) === ($own['database'] ?? null)
+            && ($dynamic['host'] ?? null) === ($own['host'] ?? null);
+
+        if ($isOwnDatabase && moduleForbidden($table)) {
+            return response()->json(['success' => false, 'message' => 'You do not have access to this module.'], 403);
+        }
+
+        return null;
+    }
+
+    /**
      * A column of the connected database under whichever name it really has: the snake_case one
      * (this workspace, e.g. is_multiply) or the legacy camelCase one that client databases still
      * use (isMultiply). Falls back to the snake_case name.
@@ -203,6 +222,9 @@ class GeneralController extends Controller
         }
 
         $this->connectDynamic($dbname);
+        if ($denied = $this->moduleAccessDenied($table)) {
+            return $denied;
+        }
         $columnInfo = collect($this->tableColumns($table));
         $columnNames = $columnInfo->pluck('COLUMN_NAME')->all();
         $nullableColumns = $columnInfo->filter(fn ($c) => strtoupper((string) $c->IS_NULLABLE) === 'YES')->pluck('COLUMN_NAME')->all();
@@ -493,6 +515,9 @@ class GeneralController extends Controller
     public function showEditCreate($dbname, $table, $itemId = null)
     {
         $this->connectDynamic($dbname);
+        if ($denied = $this->moduleAccessDenied($table)) {
+            return $denied;
+        }
         $conn = DB::connection('dynamic');
 
         // Step 1: Base table columns
@@ -728,6 +753,9 @@ class GeneralController extends Controller
         }
 
         $this->connectDynamic($dbname);
+        if ($denied = $this->moduleAccessDenied($table)) {
+            return $denied;
+        }
         $this->tableColumns($table);
         $conn = DB::connection('dynamic');
         $audited = $this->isAuditedTable($table);
@@ -770,6 +798,9 @@ class GeneralController extends Controller
     public function index($dbname, $table, $column = null, $equal = null)
     {
         $this->connectDynamic($dbname);
+        if ($denied = $this->moduleAccessDenied($table)) {
+            return $denied;
+        }
         $conn = DB::connection('dynamic');
 
         // Step 1: Base columns of the main table
